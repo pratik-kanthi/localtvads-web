@@ -1,4 +1,4 @@
-# Local TV Ads Website
+# localtvads-website
 
 ## Project setup
 ```
@@ -25,14 +25,5 @@ npm run test
 npm run lint
 ```
 
-### Contribution guidelines
-- All Commit messages must be in small letters
-- Use 1 space while beautifying the code
-- 
-
-### ES Lint configuration
-
-
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-
