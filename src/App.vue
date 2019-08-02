@@ -12,7 +12,7 @@
     </v-app-bar>
 
     <v-content>
-      <div></div>
+      <router-view></router-view>
     </v-content>
   </v-app>
 </template>
