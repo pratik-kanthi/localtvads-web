@@ -1,27 +1,28 @@
 <template>
   <v-app>
-    <top-bar></top-bar>
+    <v-app-bar app>
+      <v-toolbar-title class="headline text-uppercase">
+        <span>Local TV Ads</span>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-btn text>Sign up</v-btn>
+        <v-btn text>Log in</v-btn>
+      </v-toolbar-items>
+    </v-app-bar>
+
     <v-content>
-      <!-- <router-view></router-view> -->
+      <router-view></router-view>
     </v-content>
   </v-app>
 </template>
 
 <script>
-import TopBar from "./components/Layout/TopBar";
 
 export default {
   name: 'App',
-  components: {
-    TopBar
-  },
   data: () => ({
     //
   }),
 };
 </script>
-
-<style scoped >
-
-</style>
-
