@@ -1,12 +1,9 @@
 module.exports = {
-	publicPath: process.env.NODE_ENV === 'production' ? '/vuetify-demo/' : '/',
+	publicPath: process.env.NODE_ENV === 'production' ? '/localtvads-website/' : '/',
 	css: {
 		loaderOptions: {
 			sass: {
-				// data: `
-				//   @import "@/scss/_variables.scss";
-				//   @import "@/scss/_mixins.scss";
-				// `
+				data: `@import '~@/scss/styles.scss'`
 			}
 		}
 	}

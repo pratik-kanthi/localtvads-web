@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn class="mt-5" small @click="googleAuth()">Google</v-btn>
+        <v-btn left color="#4285f4" class="mt-5 white--text text-capitalize font-weight-bold" @click="googleAuth()" block><span><v-img :src="googleIcon" max-width="24px" style="margin-left:-104px" /></span> Sign up with Google</v-btn>
     </div>
 </template>
 
@@ -11,6 +11,7 @@
         name: "Google",
         data() {
             return {
+                googleIcon: require('@/assets/images/google.png'),
                 profile: '',
                 gapi: ''
             };
