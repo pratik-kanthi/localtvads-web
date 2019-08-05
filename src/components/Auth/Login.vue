@@ -1,24 +1,21 @@
 <template>
-    <div class="text-center">
-        <v-dialog v-model="dialog" width="500">
-            <v-card>
-                <v-card-title>Register</v-card-title>
-                <v-card-text>
-                    <Google></Google>
-                </v-card-text>
-            </v-card>
-        </v-dialog>
+    <div>
+        <Google :api="api"></Google>
+        <Facebook :api="api"></Facebook>
+        <StandardLogin></StandardLogin>
     </div>
 </template>
 
 <script>
-    import Google from "@/components/Auth/Google";
+    import Google from "@/components/Auth/Social/Google";
+    import Facebook from "./Social/Facebook";
+    import StandardLogin from "./Standard/StandardLogin";
     export default {
         name: 'Login',
-        components: {Google},
-        data() {
+        components: {StandardLogin, Facebook, Google},
+        data(){
             return {
-                dialog: true
+                api: 'api/auth/clientsociallogin'
             }
         }
     }

@@ -1,19 +1,16 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib';
-import colors from 'vuetify/lib/util/colors';
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
 Vue.use(Vuetify);
 
 export default new Vuetify({
 	icons: {
-		iconfont: 'mdi'
+		iconfont: 'md'
 	},
 	theme: {
 		primary: '#FF6500',
 		secondary: '#4C4C4C',
-		error: '#4C4C4C',
-		warning: '#FF8F46',
-		info: '#319FF0',
-		success: '#52CB3C'
+		white: '#fff'
 	}
 });

@@ -5,13 +5,13 @@
   </v-app-bar-nav-icon>
   <v-toolbar-title class="ml-2 white--text font-weight-bold body-1">low cost, local TV airtime</v-toolbar-title>
   <v-spacer></v-spacer>
-  <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold">My Campaigns</v-btn>
-  <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold">My Ads</v-btn>
+  <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold" v-if="isLoggedIn">My Campaigns</v-btn>
+  <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold" v-if="isLoggedIn">My Ads</v-btn>
   <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold">FAQ's</v-btn>
-  <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold">Log in</v-btn>
-  <v-btn class="text-capitalize mr-4 ml-4 btn-primary font-weight-bold body-1" @click="dialog=true">Register</v-btn>
+  <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold" v-if="!isLoggedIn">Log in</v-btn>
+  <v-btn class="text-capitalize mr-4 ml-4 btn-primary font-weight-bold body-1" @click="dialog=true" v-if="!isLoggedIn">Register</v-btn>
   <div class="text-center">
-        <v-dialog v-model="dialog" width="500" height="500" persistent>
+        <v-dialog v-model="dialog" width="500" persistent>
          <v-tabs v-model="active" centered grow slider-color="white" background-color="transparent" hide-slider height="48px">
           <v-tab v-for="tab in tabs" :key="tab.name" class="text-capitalize font-weight-bold subtitle-1 btn-primary">{{tab.name}}</v-tab>
          </v-tabs>
@@ -20,8 +20,7 @@
           <v-card class="register">
            <v-card-title>Sign up to Local TV Ads</v-card-title>
            <v-card-text>
-            <Facebook></Facebook>
-            <Google></Google>
+            <Register></Register>
             <v-btn text @click="dialog=false" class="mt-6 pl-0">Close</v-btn>
            </v-card-text>
           </v-card>
@@ -29,8 +28,7 @@
          <v-tab-item>
           <div class="login">
           <h3>Login to Local TV Ads</h3>
-           <Facebook></Facebook>
-           <Google></Google>
+            <Login></Login>
           </div>
          </v-tab-item>
          </v-tabs-items>
@@ -40,13 +38,13 @@
 </template>
 
 <script>
-import Facebook from "@/components/Auth/Facebook";
-import Google from "@/components/Auth/Google";
+import Login from "@/components/Auth/Login";
+import Register from "@/components/Auth/Register";
 export default {
  name: "TopBar",
  components: {
-  Facebook,
-  Google
+  Login,
+  Register
  },
  data() {
   return {
@@ -61,6 +59,11 @@ export default {
    }]
   }
  },
+ computed: {
+     isLoggedIn() {
+         return this.$store.getters.isLoggedIn
+     }
+ }
 }
 </script>
 

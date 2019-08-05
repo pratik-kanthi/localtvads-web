@@ -6,14 +6,17 @@
 
 <script>
     import instance from '@/api';
+    import {User} from '@/models/User';
 
     export default {
         name: "Google",
+        props: ['api'],
         data() {
             return {
                 googleIcon: require('@/assets/images/google.png'),
                 profile: '',
-                gapi: ''
+                gapi: '',
+                user: new User()
             };
         },
         methods: {
@@ -26,8 +29,8 @@
                     this.gapi = gapi;
                     gapi.load('client:auth2', () => {
                         gapi.client.init({
-                            apiKey: '20k8iF8V4pJnjAwrhQqexEq2',
-                            clientId: '955842204870-l42aal4di5env4ud2t31m4ici46l70lf.apps.googleusercontent.com',
+                            apiKey: window.google.apiKey,
+                            clientId: window.google.clientId,
                             scope: 'https://www.googleapis.com/auth/userinfo.profile'
                         }).then(() => {
                             gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
@@ -62,7 +65,7 @@
                         token: this.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse(),
                         AuthorisationScheme: 'Google'
                     };
-                    instance.post('api/socialauth', body).then((result) => {
+                    instance.post(this.api, body).then((result) => {
                         this.$cookies.set('token', result.data.TokenString, (result.data.iat - Math.floor(Date.now()/1000) + 's'));
                         delete result.data.TokenString;
                         localStorage.setItem('user', JSON.stringify(result.data));
@@ -72,6 +75,9 @@
                     this.gapi.auth2.getAuthInstance().signIn();
                 }
             }
+        },
+        created(){
+            console.log(this.user.schema());
         }
     }
 </script>
