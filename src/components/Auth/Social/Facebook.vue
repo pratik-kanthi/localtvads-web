@@ -37,6 +37,7 @@
                 FB.login((response) => {
                     if (response.status === 'connected') {
                         this.onSignInSuccess(response.authResponse);
+                        FB.logout();
                     } else {
                         this.onSignInError();
                     }
@@ -46,7 +47,7 @@
         created() {
             window.fbAsyncInit = function () {
                 FB.init({
-                    appId: '639711399851969',
+                    appId: window.facebook.appId,
                     cookie: true,
                     xfbml: true,
                     version: 'v2.8'

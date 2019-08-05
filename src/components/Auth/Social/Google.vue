@@ -70,6 +70,7 @@
                         delete result.data.TokenString;
                         localStorage.setItem('user', JSON.stringify(result.data));
                         this.$store.dispatch('loginSuccess');
+                        this.gapi.auth2.getAuthInstance().signOut();
                     });
                 } else {
                     this.gapi.auth2.getAuthInstance().signIn();

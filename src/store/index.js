@@ -28,9 +28,6 @@ export const store = new Vuex.Store({
         },
         logout({ commit }) {
             VueCookies.remove("token");
-            if(state.user.AuthorisationScheme === 'Facebook') {
-                FB.logout();
-            }
             commit(LOGOUT);
         }
     },
