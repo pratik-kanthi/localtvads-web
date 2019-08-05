@@ -2,20 +2,20 @@
     <div>
         <Google :api="api"></Google>
         <Facebook :api="api"></Facebook>
-        <StandardLogin></StandardLogin>
+        <StandardRegister></StandardRegister>
     </div>
 </template>
 
 <script>
-    import Google from "@/components/Auth/Social/Google";
+    import Google from "./Social/Google";
     import Facebook from "./Social/Facebook";
-    import StandardLogin from "./Standard/StandardLogin";
+    import StandardRegister from "./Standard/StandardRegister";
     export default {
-        name: 'Login',
-        components: {StandardLogin, Facebook, Google},
+        name: "Register",
+        components: {StandardRegister, Facebook, Google},
         data(){
             return {
-                api: 'api/auth/clientsociallogin'
+                api: 'api/auth/clientsocialregister'
             }
         }
     }
