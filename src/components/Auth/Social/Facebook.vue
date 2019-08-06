@@ -1,12 +1,16 @@
 <template>
-    <v-btn color="#3b5998" class="mt-5 white--text text-capitalize font-weight-bold" block @click="login()"><span><v-img contain position="0 0" :src="fbIcon" max-width="24px" style="margin-left:-96px" /></span>Sign up with Facebook</v-btn>
+    <v-btn large color="#3b5998" class="mt-5 white--text text-capitalize font-weight-bold" block @click="login()" depressed>
+        <img :src="fbIcon" />
+        <span v-if="type === 'Login'">Login with Facebook</span>
+        <span v-if="type === 'Register'">Sign up with Facebook</span>
+    </v-btn>
 </template>
 
 <script>
     import instance from '@/api';
     export default {
         name: "Facebook",
-        props: ['api'],
+        props: ['api', 'type'],
         data() {
             return {
                 fbIcon: require('@/assets/images/facebook.png'),
@@ -64,6 +68,14 @@
     }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+    img {
+        position: absolute;
+        left: 0;
+        width: 24px;
+        top: -4px;
+    }
+    .v-btn {
+        padding: 0 12px !important;
+    }
 </style>

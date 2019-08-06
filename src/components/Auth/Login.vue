@@ -1,7 +1,8 @@
 <template>
     <div>
-        <Google :api="api"></Google>
-        <Facebook :api="api"></Facebook>
+        <h3>Login to Local TV Ads</h3>
+        <Google :api="api" :type="'Login'"></Google>
+        <Facebook :api="api" :type="'Login'"></Facebook>
         <StandardLogin></StandardLogin>
     </div>
 </template>
@@ -15,12 +16,12 @@
         components: {StandardLogin, Facebook, Google},
         data(){
             return {
-                api: 'api/auth/clientsociallogin'
+                api: 'api/auth/clientsociallogin',
             }
         }
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 </style>

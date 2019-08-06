@@ -9,8 +9,11 @@ export default new Vuetify({
 		iconfont: 'md'
 	},
 	theme: {
-		primary: '#FF6500',
-		secondary: '#4C4C4C',
-		white: '#fff'
+		themes: {
+			light: {
+				primary: '#FF6500',
+				secondary: '#4C4C4C'
+			}
+		}
 	}
 });

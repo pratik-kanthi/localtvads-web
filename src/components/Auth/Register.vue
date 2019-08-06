@@ -1,7 +1,8 @@
 <template>
     <div>
-        <Google :api="api"></Google>
-        <Facebook :api="api"></Facebook>
+        <h3>Sign up to Local TV Ads</h3>
+        <Google :api="api" :type="'Register'"></Google>
+        <Facebook :api="api" :type="'Register'"></Facebook>
         <StandardRegister></StandardRegister>
     </div>
 </template>

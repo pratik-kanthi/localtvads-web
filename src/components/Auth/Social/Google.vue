@@ -1,6 +1,10 @@
 <template>
     <div>
-        <v-btn left color="#4285f4" class="mt-5 white--text text-capitalize font-weight-bold" @click="googleAuth()" block><span><v-img :src="googleIcon" max-width="24px" style="margin-left:-104px" /></span> Sign up with Google</v-btn>
+        <v-btn large color="#4285f4" class="mt-5 white--text text-capitalize font-weight-bold" @click="googleAuth()" block depressed>
+            <img :src="googleIcon" />
+            <span v-if="type === 'Login'">Login with Google</span>
+            <span v-if="type === 'Register'">Sign up with Google</span>
+        </v-btn>
     </div>
 </template>
 
@@ -10,7 +14,7 @@
 
     export default {
         name: "Google",
-        props: ['api'],
+        props: ['api','type'],
         data() {
             return {
                 googleIcon: require('@/assets/images/google.png'),
@@ -82,6 +86,15 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+    img {
+        position: absolute;
+        left: 0;
+        width: 24px;
+        top: -4px;
+    }
+    .v-btn {
+        padding: 0 12px !important;
+    }
 
 </style>
