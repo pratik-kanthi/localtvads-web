@@ -7,6 +7,7 @@ import './vue9_components/filters';
 import {store} from './store';
 
 Vue.config.productionTip = false;
+Vue.config.GOOGLE_BUCKET_ENDPOINT = window.bucketendpoint;
 
 new Vue({
   vuetify,
