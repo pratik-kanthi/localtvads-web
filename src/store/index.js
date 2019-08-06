@@ -10,7 +10,7 @@ const LOGOUT = "LOGOUT";
 export const store = new Vuex.Store({
     state: {
         isLoggedIn: !!VueCookies.get('token'),                // state to check whether user has logged in
-        user: localStorage.getItem('user')
+        user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : ''
     },
     mutations: {
         [LOGIN_SUCCESS] (state) {
@@ -28,9 +28,6 @@ export const store = new Vuex.Store({
         },
         logout({ commit }) {
             VueCookies.remove("token");
-            if(state.user.AuthorisationScheme === 'Facebook') {
-                FB.logout();
-            }
             commit(LOGOUT);
         }
     },
