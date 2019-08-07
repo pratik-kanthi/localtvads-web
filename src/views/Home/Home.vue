@@ -28,7 +28,7 @@
             </div>
         </v-container>
     </section>
- 
+
 </template>
 
 <script>
@@ -93,7 +93,7 @@ export default {
                     background-color: $brand-primary;
                     width: 50%;
                     text-align: center;
-                    padding: 8px;
+                    padding: 12px;
                     border: 1px solid #ddd;
                     border-top-left-radius: 4px;
                     border-top-right-radius: 4px;

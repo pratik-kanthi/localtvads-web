@@ -75,6 +75,7 @@
                         this.$store.dispatch('loginSuccess');
                         this.$store.state.auth.loader = false;
                         this.$store.commit('DIALOG', false);
+                        // this.gapi.auth2.getAuthInstance().signOut();
                     });
                 } else {
                     this.gapi.auth2.getAuthInstance().signIn();
