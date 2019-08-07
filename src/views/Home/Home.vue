@@ -1,51 +1,126 @@
 <template>
- <div>
-  <v-card flat class="no-radius">
-   <v-img :src="backgroundImage" height="300px"></v-img>
-  </v-card>
-  <v-container class="main-content pt-0 pr-0 pl-0 pb-0">
-    <v-tabs v-model="active" background-color="transparent" centered color="white" grow height="56px">
-     <v-tab v-for="tab in tabs" :key="tab.name" :to="tab.path">{{tab.name}}</v-tab>
-    </v-tabs>
-    <BookAd></BookAd>
-  </v-container>
- </div>
+    <section>
+        <div class="cover">
+            <v-img :src="backgroundImage" alt="" height="300px">
+                <div class="overlay"></div>
+                <div class="cover-text">
+                    <h1 class="page-title font-weight-bold mb-5">Grow Your Business <span class="faster">Faster</span></h1>
+                    <p class="mb-1 body-1 font-weight-light">Creating an ad for your business is easier than you think.</p>
+                    <p class="mb-1 body-1 font-weight-light">Free ad slot for all new user.</p>
+                </div>
+            </v-img>
+        </div>
+        <v-container>
+            <div class="content-area">
+                <div class="tabs">
+                    <ul>
+                        <li :class="{'active' : activeTab === 'bookad'}"><a @click="goToComponent('bookad')"><v-icon color="white" class="mr-4">ondemand_video</v-icon>Book Your Ad</a></li>
+                        <li :class="{'active' : activeTab === 'createad'}"><a @click="goToComponent('createad')"><v-icon color="white" class="mr-4">video_call</v-icon>Create Your Ad</a></li>
+                    </ul>
+                </div>
+                <div class="content">
+                    <v-img :src="patternImage" alt="">
+                        <keep-alive>
+                            <component :is="currentComponent"></component>
+                        </keep-alive>
+                    </v-img>
+                </div>
+            </div>
+        </v-container>
+    </section>
+ 
 </template>
 
 <script>
 import BookAd from "@/components/BookAd";
+import CreateAd from "@/components/CreateAd.vue";
 export default {
- name: 'Home',
- components: {
-   BookAd
- },
- data() {
-  return {
-   backgroundImage: require('@/assets/images/home-cover.jpg'),
-   pattern: require('@/assets/images/pattern.svg'),
-   active: 'book-ad',
-   tabs: [{
-     name: 'Book Your Ad',
-     path: 'book-ad'
-   }, {
-     name: 'Create Ad',
-     path: 'create-ad'
-   }]
-  }
- },
+    name: 'Home',
+    components: {
+        BookAd,
+        CreateAd
+    },
+    data() {
+        return {
+            backgroundImage: require('@/assets/images/home-cover.jpg'),
+            patternImage: require('@/assets/images/pattern.svg'),
+            component: {
+                bookad: BookAd,
+                createad: CreateAd
+            },
+            currentComponent: BookAd,
+            activeTab: 'bookad'
+        }
+    },
+    methods: {
+        goToComponent(name) {
+            this.currentComponent = this.component[name];
+            this.activeTab = name;
+        }
+    }
 }
 </script>
 
-<style lang="css" scoped>
- .no-radius {
-  border-radius: 0;
- }
- .main-content {
-  position: relative;
-  margin-top: -56px;
-  color: white;
-  background-color: #FF6500;
-  border-radius: 4px;
- }
+<style lang="scss" scoped>
+    .cover {
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.6);
+        }
+        .cover-text {
+            position: relative;
+            padding: 80px 150px;
+            color: white;
+            .faster {
+                color: primary !important;
+            }
+        }
+    }
+    .content-area {
+        margin-top: -56px;
+        position: relative;
+        .tabs {
+            ul {
+                list-style: none;
+                padding: 0;
+                height: 64px;
+                li {
+                    display: inline-block;
+                    background-color: $brand-primary;
+                    width: 50%;
+                    text-align: center;
+                    padding: 16px;
+                    border: 1px solid #ddd;
+                    border-top-left-radius: 4px;
+                    border-top-right-radius: 4px;
+                    height: 48px;
+                    vertical-align: text-bottom;
+                    a {
+                        text-decoration: none;
+                        color: white;
+                        font-weight: bold;
+                    }
+                    &.active {
+                        border-bottom: 1px solid transparent;
+                        height: 64px;
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+        .content {
+            height: 300px;
+            padding: 24px 40px;
+            color: #fff;
+            background-color: $brand-primary;
+            border: 1px solid #fff;
+            border-top: 1px solid transparent;
+            border-bottom: 1px solid transparent;
+        }
+    }
 </style>
 

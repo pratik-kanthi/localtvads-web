@@ -3,7 +3,7 @@
         <v-text-field v-model="user.Name" :rules="rules.name" :counter="20" label="Full Name" required></v-text-field>
         <v-text-field v-model="user.Email" :rules="rules.email" label="Email ID" required></v-text-field>
         <v-text-field v-model="user.Password" :append-icon="'visibility'" :rules="rules.password" :type="'password'" name="password" label="Password" hint="At least 8 characters" counter @click:append="show1 = !show1"></v-text-field>
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="register">
+        <v-btn :disabled="!valid" color="primary" class="mt-4 text-capitalize" @click="register" large block>
             Register
         </v-btn>
     </v-form>
@@ -44,7 +44,10 @@
         methods: {
             async register(){
                 try {
+                    this.$store.state.auth.loader = true;
                     let result = await instance.post('api/auth/clientregister', this.user);
+                    this.$store.state.auth.loader = false;
+                    this.$store.commit('DIALOG', false);
                 } catch (ex) {
 
                 }
@@ -53,6 +56,7 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
 
 </style>

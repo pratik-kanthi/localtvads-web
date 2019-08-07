@@ -1,15 +1,14 @@
 <template>
- <v-layout>
-  <h3>Book</h3>
- </v-layout>
+    <div>Book</div>
 </template>
+
 <script>
 export default {
- name: 'BookAd',
- data() {
-  return {
-
-  }
- }
+    name: 'BookAd'
 }
 </script>
+
+<style>
+
+</style>
+

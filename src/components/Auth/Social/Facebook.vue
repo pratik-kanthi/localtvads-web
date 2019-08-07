@@ -31,6 +31,8 @@
                         delete result.data.TokenString;
                         localStorage.setItem('user', JSON.stringify(result.data));
                         this.$store.dispatch('loginSuccess');
+                        this.$store.state.auth.loader = false;
+                        this.$store.commit('DIALOG', false);
                     });
                 })
             },
@@ -38,12 +40,13 @@
                 console.log('Cancelled', error)
             },
             login() {
+                this.$store.state.auth.loader = true;
                 FB.login((response) => {
                     if (response.status === 'connected') {
                         this.onSignInSuccess(response.authResponse);
-                        FB.logout();
                     } else {
                         this.onSignInError();
+                        this.$store.state.auth.loader = false;
                     }
                 }, {scope: 'public_profile,email'});
             }

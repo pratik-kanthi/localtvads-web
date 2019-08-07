@@ -32,6 +32,7 @@
                     }
                     this.gapi = gapi;
                     gapi.load('client:auth2', () => {
+                        this.$store.state.auth.loader = true;
                         gapi.client.init({
                             apiKey: window.google.apiKey,
                             clientId: window.google.clientId,
@@ -74,15 +75,13 @@
                         delete result.data.TokenString;
                         localStorage.setItem('user', JSON.stringify(result.data));
                         this.$store.dispatch('loginSuccess');
-                        this.gapi.auth2.getAuthInstance().signOut();
+                        this.$store.state.auth.loader = false;
+                        this.$store.commit('DIALOG', false);
                     });
                 } else {
                     this.gapi.auth2.getAuthInstance().signIn();
                 }
             }
-        },
-        created(){
-            console.log(this.user.schema());
         }
     }
 </script>
