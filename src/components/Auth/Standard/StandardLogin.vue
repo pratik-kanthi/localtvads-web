@@ -45,8 +45,17 @@
                     this.$store.dispatch('loginSuccess');
                     this.$store.state.auth.loader = false;
                     this.$store.commit('DIALOG', false);
-                } catch (ex) {
-
+                } catch (err) {
+                    if (err.status == 401) {
+                        this.$swal({
+                            title: "Error",
+                            text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                            type: "error",
+                            confirmButtonColor: this.$vuetify.theme.themes.light.primary
+                        });
+                        this.$store.state.auth.loader = false;
+                    }
+                    
                 }
 
             }

@@ -93,11 +93,12 @@ export default {
                     background-color: $brand-primary;
                     width: 50%;
                     text-align: center;
-                    padding: 16px;
+                    padding: 8px;
                     border: 1px solid #ddd;
                     border-top-left-radius: 4px;
                     border-top-right-radius: 4px;
                     height: 48px;
+                    line-height: 24px;
                     vertical-align: text-bottom;
                     a {
                         text-decoration: none;
@@ -108,6 +109,7 @@ export default {
                         border-bottom: 1px solid transparent;
                         height: 64px;
                         margin-top: 0;
+                        line-height: 40px;
                     }
                 }
             }

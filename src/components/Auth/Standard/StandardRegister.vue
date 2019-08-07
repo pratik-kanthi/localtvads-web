@@ -27,7 +27,6 @@
                 rules: {
                     name: [
                         v => !!v || 'Name is required',
-                        v => /^[A-Za-z]+$/.test(v) || 'Name must contain only alphabets',
                         v => v.length <= 20 || 'Name must be less than 20 characters'
                     ],
                     email: [
@@ -48,8 +47,20 @@
                     let result = await instance.post('api/auth/clientregister', this.user);
                     this.$store.state.auth.loader = false;
                     this.$store.commit('DIALOG', false);
-                } catch (ex) {
-
+                    this.$swal({
+                        title: "Registration successful",
+                        text: 'Thank you for registering with Local TV ads. Please check your email to confirm.',
+                        type: "success",
+                        confirmButtonColor: this.$vuetify.theme.themes.light.primary
+                    });
+                } catch (err) {
+                    this.$swal({
+                        title: "Error",
+                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        type: "error",
+                        confirmButtonColor: this.$vuetify.theme.themes.light.primary
+                    });
+                    this.$store.state.auth.loader = false;
                 }
             }
         }

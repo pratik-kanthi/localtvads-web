@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-btn large color="#4285f4" class="mt-5 white--text text-capitalize font-weight-bold" @click="googleAuth()" block depressed>
-            <img :src="googleIcon" />
+            <img src="@/assets/images/google.png" />
             <span v-if="type === 'Login'">Login with Google</span>
             <span v-if="type === 'Register'">Sign up with Google</span>
         </v-btn>
@@ -17,10 +17,8 @@
         props: ['api','type'],
         data() {
             return {
-                googleIcon: require('@/assets/images/google.png'),
                 profile: '',
-                gapi: '',
-                user: new User()
+                gapi: ''
             };
         },
         methods: {
