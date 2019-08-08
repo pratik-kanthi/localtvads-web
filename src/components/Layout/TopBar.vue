@@ -3,24 +3,24 @@
         <router-link to="/">
             <img :src="logoUrl" alt="logo" width="72px" />
         </router-link>
-        <v-toolbar-title class="ml-6 white--text font-weight-bold body-1">low cost, local TV airtime</v-toolbar-title>
+        <v-toolbar-title class="ml-6 white--text font-weight-bold body-1 brand-title">low cost, local TV airtime</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold" v-if="isLoggedIn">My Campaigns</v-btn>
         <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold" v-if="isLoggedIn">My Ads</v-btn>
         <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold">FAQs</v-btn>
-        <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold" v-if="!isLoggedIn" @click="chooseAuth('login')">Log in</v-btn>
+        <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold" v-if="!isLoggedIn" @click="chooseAuth('login')">Login</v-btn>
         <v-btn class="text-capitalize mr-4 ml-4 font-weight-bold body-1 primary--text" v-if="!isLoggedIn" @click="chooseAuth('register')" depressed>Register</v-btn>
-        <v-avatar v-if="isLoggedIn && !$store.state.user || ($store.state.user && $store.state.user.Owner && !$store.state.user.Owner.ImageUrl)" color="white" class="mr-4 ml-4">
-            <span class="primary-text headline">{{$store.state.user.Owner.Title[0]}}</span>
-        </v-avatar>
-        <v-menu :offset-x="false" :offset-y="true" :absolute="false" v-else-if="isLoggedIn">
+        <v-menu :offset-x="false" :offset-y="true" :absolute="false" v-if="isLoggedIn">
             <template v-slot:activator="{ on }">
                 <div v-on="on" class="pointer pt-1 pb-1">
-                    <v-avatar class="ml-2">
+                    <v-avatar v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" color="white" class="mr-2 ml-4">
+                        <span class="primary-text headline">{{$store.state.user.Owner.Title[0]}}</span>
+                    </v-avatar>
+                    <v-avatar class="ml-2 mr-2" v-else-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl">
                         <img :src="getImageUrl" :alt="$store.state.user.Owner.Title">
                     </v-avatar>
                     <strong class="white--text subheading ml-3 middle" v-text="$store.state.user.Owner.Title"></strong>
-                    <v-btn icon class="mr-5">
+                    <v-btn icon class="mr-0">
                         <v-icon color="white" large>arrow_drop_down</v-icon>
                     </v-btn>
                 </div>
@@ -33,7 +33,7 @@
                 </v-list-item>
             </v-list>
         </v-menu>
-        <AuthModal :default="defaultChosen"></AuthModal>
+        <AuthModal :active="defaultChosen"></AuthModal>
     </v-app-bar>
 </template>
 
@@ -54,8 +54,8 @@
         },
         methods: {
             chooseAuth(name) {
-                this.$store.commit('DIALOG', true);
                 this.defaultChosen = name;
+                this.$store.commit('DIALOG', true);
             },
             logout() {
                 this.$store.dispatch('logout');
@@ -69,7 +69,6 @@
                 return this.$store.getters.getUser;
             },
             getImageUrl() {
-                debugger
                 return Vue.config.GOOGLE_BUCKET_ENDPOINT + this.$store.state.user.Owner.ImageUrl;
             }
         }
@@ -77,6 +76,7 @@
 </script>
 
 <style scoped lang="scss">
-
-
+    .brand-title {
+        font-family: $font-family-heading;
+    }
 </style>

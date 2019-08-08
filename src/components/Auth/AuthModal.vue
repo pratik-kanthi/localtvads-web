@@ -40,19 +40,17 @@
 
     export default {
         name: "AuthModal",
-        props: ['default'],
+        props: ['active'],
         components: {
             Login,
             Register
         },
         data() {
             return {
-                component: {
+                availComponents: {
                     login: Login,
                     register: Register
-                },
-                currentComponent: Login,
-                active: this.default,
+                }
             }
         },
         methods: {
@@ -60,15 +58,17 @@
                 this.$store.commit('DIALOG', false);
             },
             goToComponent(name) {
-                this.currentComponent = this.component[name];
                 this.active = name;
             }
         },
         computed: {
             getShowDialog() {
                 return this.$store.getters.getShowDialog;
+            },
+            currentComponent() {
+                return this.availComponents[this.active];
             }
-        }
+        },
     }
 </script>
 
@@ -82,12 +82,11 @@
                 height: 64px;
 
                 li {
-                    background-color: #fff;
+                    background-color: #EEE;
                     display: inline-block;
                     width: 50%;
                     text-align: center;
                     padding: 16px;
-                    border: 1px solid #ddd;
                     height: 48px;
                     vertical-align: text-bottom;
                     border-top-left-radius: 4px;
@@ -101,10 +100,17 @@
                     }
 
                     &.active {
-                        border: none;
+                        background-color: #fff;
                         height: 64px;
                         margin-top: 0;
                         line-height: 32px;
+                        width: calc(50% - 2px);
+                        &:first-child {
+                            margin-right: 2px;
+                        }
+                        &:last-child {
+                            margin-left: 2px;
+                        }
                     }
                 }
             }

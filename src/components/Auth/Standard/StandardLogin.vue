@@ -4,7 +4,7 @@
         <v-text-field v-model="user.password" :append-icon="show ? 'visibility' : 'visibility_off'"
                       :rules="rules.password" :type="show ? 'text' : 'password'" name="password" label="Password"
                       hint="Enter your password" counter @click:append="show = !show"></v-text-field>
-        <v-btn :disabled="!valid" color="primary" class="mt-4 text-capitalize" @click="login" large block>
+        <v-btn :disabled="!valid" color="primary" class="mt-4 text-capitalize" @click="login" large block depressed>
             Login
         </v-btn>
         <v-alert class="mt-4" dense outlined type="error" v-if="errMessage" depressed>{{errMessage}}</v-alert>

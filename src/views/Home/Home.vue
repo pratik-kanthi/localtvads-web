@@ -73,7 +73,7 @@ export default {
         }
         .cover-text {
             position: relative;
-            padding: 80px 150px;
+            padding: 50px 150px;
             color: white;
             .faster {
                 color: primary !important;
@@ -81,7 +81,7 @@ export default {
         }
     }
     .content-area {
-        margin-top: -75px;
+        margin-top: -76px;
         position: relative;
         .tabs {
             ul {
@@ -90,15 +90,14 @@ export default {
                 height: 64px;
                 li {
                     display: inline-block;
-                    background-color: $brand-primary;
+                    background-color: #F56100;
                     width: 50%;
                     text-align: center;
                     padding: 12px;
-                    border: 1px solid #ddd;
                     border-top-left-radius: 4px;
                     border-top-right-radius: 4px;
                     height: 48px;
-                    line-height: 24px;
+                    line-height: 20px;
                     vertical-align: text-bottom;
                     a {
                         text-decoration: none;
@@ -106,6 +105,7 @@ export default {
                         font-weight: bold;
                     }
                     &.active {
+                        background-color: $brand-primary;
                         border-bottom: none;
                         height: 64px;
                         margin-top: 0;
@@ -123,10 +123,8 @@ export default {
         }
         .content {
             height: 300px;
-            padding: 24px 40px;
             color: #fff;
             background-color: $brand-primary;
-            border: 1px solid #fff;
             border-top: 1px solid transparent;
             border-bottom: 1px solid transparent;
         }

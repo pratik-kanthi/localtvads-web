@@ -1,10 +1,11 @@
 $body-font-family: 'Noto Sans', sans-serif !important;
-$heading-font-family: $body-font-family;
+$heading-font-family: 'Azo Sans', sans-serif !important;
 $font-size-root: 14px;
 @import '~sweetalert2/src/sweetalert2.scss';
 @import 'variables.scss';
 @import 'common.scss';
+@import 'buttons.scss';
 @import '~vuetify/src/styles/styles.sass';
 .v-application {
-	font-family: $body-font-family;
+	font-family: $font-family-body;
 }
