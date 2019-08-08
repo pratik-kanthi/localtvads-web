@@ -81,7 +81,7 @@ export default {
         }
     }
     .content-area {
-        margin-top: -56px;
+        margin-top: -75px;
         position: relative;
         .tabs {
             ul {
@@ -106,10 +106,17 @@ export default {
                         font-weight: bold;
                     }
                     &.active {
-                        border-bottom: 1px solid transparent;
+                        border-bottom: none;
                         height: 64px;
                         margin-top: 0;
                         line-height: 40px;
+                        width: calc(50% - 2px);
+                        &:first-child {
+                            margin-right: 2px;
+                        }
+                        &:last-child {
+                            margin-left: 2px;
+                        }
                     }
                 }
             }

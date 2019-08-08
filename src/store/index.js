@@ -19,14 +19,15 @@ export const store = new Vuex.Store({
 	},
 	mutations: {
 		[LOGIN_SUCCESS](state) {
-			state.isLoggedIn = true;
 			state.auth.showDialog = false;
 			state.auth.loader = false;
+			state.user = JSON.parse(localStorage.getItem('user'));
+			state.isLoggedIn = true;
 		},
 		[LOGOUT](state) {
-			state.isLoggedIn = false;
 			localStorage.removeItem('user');
 			VueCookies.remove('token');
+			state.isLoggedIn = false;
 		},
 		[DIALOG](state, val) {
 			state.auth.showDialog = val;

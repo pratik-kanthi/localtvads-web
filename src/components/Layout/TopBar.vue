@@ -9,8 +9,8 @@
         <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold" v-if="isLoggedIn">My Ads</v-btn>
         <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold">FAQs</v-btn>
         <v-btn text class="white--text text-capitalize subtitle-1 font-weight-bold" v-if="!isLoggedIn" @click="chooseAuth('login')">Log in</v-btn>
-        <v-btn class="text-capitalize mr-4 ml-4 font-weight-bold body-1 primary--text" v-if="!isLoggedIn" @click="chooseAuth('register')">Register</v-btn>
-        <v-avatar v-if="isLoggedIn && (!$store.state.user || !$store.state.user.Owner.ImageUrl)" color="white" class="mr-4 ml-4">
+        <v-btn class="text-capitalize mr-4 ml-4 font-weight-bold body-1 primary--text" v-if="!isLoggedIn" @click="chooseAuth('register')" depressed>Register</v-btn>
+        <v-avatar v-if="isLoggedIn && !$store.state.user || ($store.state.user && $store.state.user.Owner && !$store.state.user.Owner.ImageUrl)" color="white" class="mr-4 ml-4">
             <span class="primary-text headline">{{$store.state.user.Owner.Title[0]}}</span>
         </v-avatar>
         <v-menu :offset-x="false" :offset-y="true" :absolute="false" v-else-if="isLoggedIn">
@@ -69,6 +69,7 @@
                 return this.$store.getters.getUser;
             },
             getImageUrl() {
+                debugger
                 return Vue.config.GOOGLE_BUCKET_ENDPOINT + this.$store.state.user.Owner.ImageUrl;
             }
         }
