@@ -25,14 +25,8 @@ instance.interceptors.response.use(
 		return response;
 	},
 	(error) => {
-		debugger;
 		if (error.response && error.response.status) {
 			switch (error.response.status) {
-				case 401: {
-					this.$store.dispatch('logout');
-					router.push('/login');
-					break;
-				}
 				case 403: {
 					this.$store.dispatch('logout');
 					router.push('/login');

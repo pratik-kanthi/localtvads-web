@@ -7,6 +7,7 @@
         <v-btn :disabled="!valid" color="primary" class="mt-4 text-capitalize" @click="login" large block>
             Login
         </v-btn>
+        <v-alert class="mt-4" dense outlined type="error" v-if="errMessage" depressed>{{errMessage}}</v-alert>
     </v-form>
 </template>
 
@@ -23,6 +24,7 @@
                     password: ''
                 },
                 show: false,
+                errMessage: '',
                 rules: {
                     email: [
                         v => !!v || 'E-mail is required',
@@ -36,28 +38,18 @@
         },
         methods: {
             async login() {
+                this.errMessage = '';
+                this.$store.state.auth.loader = true;
                 try {
-                    this.$store.state.auth.loader = true;
                     let result = await instance.post('api/auth/clientlogin', this.user);
                     this.$cookies.set('token', result.data.TokenString, (result.data.iat - Math.floor(Date.now() / 1000) + 's'));
                     delete result.data.TokenString;
                     localStorage.setItem('user', JSON.stringify(result.data));
                     this.$store.dispatch('loginSuccess');
-                    this.$store.state.auth.loader = false;
-                    this.$store.commit('DIALOG', false);
                 } catch (err) {
-                    if (err.status == 401) {
-                        this.$swal({
-                            title: "Error",
-                            text: err.data && err.data.message ? err.data.message : 'Some error occurred',
-                            type: "error",
-                            confirmButtonColor: this.$vuetify.theme.themes.light.primary
-                        });
-                        this.$store.state.auth.loader = false;
-                    }
-                    
+                    this.$store.state.auth.loader = false;
+                    this.errMessage = err.data ? err.data.message : '';
                 }
-
             }
         }
     }

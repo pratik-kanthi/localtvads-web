@@ -1,9 +1,10 @@
 <template>
     <div>
         <v-btn large color="#4285f4" class="mt-5 white--text text-capitalize font-weight-bold" @click="googleAuth()" block depressed>
-            <img src="@/assets/images/google.png" />
+            <img src="@/assets/images/google.png" alt="facebook"/>
             <span v-if="type === 'Login'">Login with Google</span>
             <span v-if="type === 'Register'">Sign up with Google</span>
+            <v-snackbar :top="true" v-model="isError">{{errMessage}}</v-snackbar>
         </v-btn>
     </div>
 </template>
@@ -18,7 +19,9 @@
         data() {
             return {
                 profile: '',
-                gapi: ''
+                gapi: '',
+                isError: false,
+                errMessage: ''
             };
         },
         methods: {
@@ -57,7 +60,7 @@
                     document.getElementsByTagName('head')[0].appendChild(script)
                 })
             },
-            updateSigninStatus(isSignedIn) {
+            async updateSigninStatus(isSignedIn) {
                 if (isSignedIn) {
                     let profile = this.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
                     let body = {
@@ -68,15 +71,18 @@
                         token: this.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse(),
                         AuthorisationScheme: 'Google'
                     };
-                    instance.post(this.api, body).then((result) => {
+                    try {
+                        this.isError = false;
+                        let result = await instance.post(this.api, body);
                         this.$cookies.set('token', result.data.TokenString, (result.data.iat - Math.floor(Date.now()/1000) + 's'));
                         delete result.data.TokenString;
                         localStorage.setItem('user', JSON.stringify(result.data));
                         this.$store.dispatch('loginSuccess');
+                    } catch (ex) {
+                        this.isError = true;
+                        this.errMessage = ex.data && ex.data.message ? ex.data.message: 'Some error occurred';
                         this.$store.state.auth.loader = false;
-                        this.$store.commit('DIALOG', false);
-                        // this.gapi.auth2.getAuthInstance().signOut();
-                    });
+                    }
                 } else {
                     this.gapi.auth2.getAuthInstance().signIn();
                 }

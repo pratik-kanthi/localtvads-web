@@ -20,6 +20,8 @@ export const store = new Vuex.Store({
 	mutations: {
 		[LOGIN_SUCCESS](state) {
 			state.isLoggedIn = true;
+			state.auth.showDialog = false;
+			state.auth.loader = false;
 		},
 		[LOGOUT](state) {
 			state.isLoggedIn = false;

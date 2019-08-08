@@ -1,8 +1,9 @@
 <template>
     <v-btn large color="#3b5998" class="mt-5 white--text text-capitalize font-weight-bold" block @click="login()" depressed>
-        <img :src="fbIcon" />
+        <img :src="fbIcon" alt="facebook"/>
         <span v-if="type === 'Login'">Login with Facebook</span>
         <span v-if="type === 'Register'">Sign up with Facebook</span>
+        <v-snackbar :top="true" v-model="isError" color="orange">{{errMessage}}</v-snackbar>
     </v-btn>
 </template>
 
@@ -14,11 +15,13 @@
         data() {
             return {
                 fbIcon: require('@/assets/images/facebook.png'),
+                isError: false,
+                errMessage: ''
             }
         },
         methods: {
-            onSignInSuccess(token) {
-                FB.api('/me?fields=name,email,picture&token=' + token.accessToken, profile => {
+             onSignInSuccess(token) {
+                FB.api('/me?fields=name,email,picture&token=' + token.accessToken, async (profile) => {
                     let body = {
                         Name: profile.name,
                         ImageUrl: profile.picture ? profile.picture.data.url : undefined,
@@ -26,14 +29,18 @@
                         token: token.accessToken,
                         AuthorisationScheme: 'Facebook'
                     };
-                    instance.post(this.api, body).then((result) => {
+                    try {
+                        this.isError = false;
+                        let result = await instance.post(this.api, body);
                         this.$cookies.set('token', result.data.TokenString, (result.data.iat - Math.floor(Date.now()/1000) + 's'));
                         delete result.data.TokenString;
                         localStorage.setItem('user', JSON.stringify(result.data));
                         this.$store.dispatch('loginSuccess');
+                    } catch (ex) {
+                        this.isError = true;
+                        this.errMessage = ex.data && ex.data.message ? ex.data.message: 'Some error occurred';
                         this.$store.state.auth.loader = false;
-                        this.$store.commit('DIALOG', false);
-                    });
+                    }
                 })
             },
             onSignInError(error) {

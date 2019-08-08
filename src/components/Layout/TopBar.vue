@@ -1,7 +1,7 @@
 <template>
     <v-app-bar height="60px" color="#FF6500" :src="backgroundImage" flat app class="pl-4 pr-4">
         <router-link to="/">
-            <img :src="logoUrl" width="72px" />
+            <img :src="logoUrl" alt="logo" width="72px" />
         </router-link>
         <v-toolbar-title class="ml-6 white--text font-weight-bold body-1">low cost, local TV airtime</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -33,7 +33,7 @@
                 </v-list-item>
             </v-list>
         </v-menu>
-        <AuthModal></AuthModal>
+        <AuthModal :default="defaultChosen"></AuthModal>
     </v-app-bar>
 </template>
 
@@ -48,14 +48,14 @@
             return {
                 backgroundImage: require('@/assets/images/pattern.svg'),
                 logoUrl: require('@/assets/images/logo-white.svg'),
-
+                defaultChosen: 'login',
                 dropdown: false
             }
         },
         methods: {
             chooseAuth(name) {
                 this.$store.commit('DIALOG', true);
-                this.goToComponent(name);
+                this.defaultChosen = name;
             },
             logout() {
                 this.$store.dispatch('logout');

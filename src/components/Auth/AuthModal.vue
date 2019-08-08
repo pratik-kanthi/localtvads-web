@@ -14,9 +14,8 @@
                         <keep-alive>
                             <component :is="currentComponent" @loginSucces="close"></component>
                         </keep-alive>
-
                         <center>
-                            <v-btn text @click="close" color="primary" class="mt-6 pl-0 text-capitalize">Continue as
+                            <v-btn text @click="close" color="primary" class="mt-3 pl-0 text-capitalize">Continue as
                                 guest
                             </v-btn>
                         </center>
@@ -41,6 +40,7 @@
 
     export default {
         name: "AuthModal",
+        props: ['default'],
         components: {
             Login,
             Register
@@ -52,7 +52,7 @@
                     register: Register
                 },
                 currentComponent: Login,
-                active: 'login',
+                active: this.default,
             }
         },
         methods: {
@@ -114,7 +114,7 @@
             position: relative;
             background-color: #fff;
             padding: 32px 64px;
-            height: 590px;
+            min-height: 590px;
 
             .overlay {
                 position: absolute;

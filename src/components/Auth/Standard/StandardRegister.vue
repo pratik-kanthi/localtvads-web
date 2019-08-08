@@ -2,10 +2,11 @@
     <v-form v-model="valid">
         <v-text-field v-model="user.Name" :rules="rules.name" :counter="20" label="Full Name" required></v-text-field>
         <v-text-field v-model="user.Email" :rules="rules.email" label="Email ID" required></v-text-field>
-        <v-text-field v-model="user.Password" :append-icon="'visibility'" :rules="rules.password" :type="'password'" name="password" label="Password" hint="At least 8 characters" counter @click:append="show1 = !show1"></v-text-field>
+        <v-text-field v-model="user.Password" :append-icon="show ? 'visibility' : 'visibility_off'" :rules="rules.password" :type="show ? 'text' : 'password'"  name="password" label="Password" hint="At least 8 characters" counter @click:append="show = !show"></v-text-field>
         <v-btn :disabled="!valid" color="primary" class="mt-4 text-capitalize" @click="register" large block>
             Register
         </v-btn>
+        <v-alert class="mt-4" dense outlined type="error" v-if="errMessage" depressed>{{errMessage}}</v-alert>
     </v-form>
 </template>
 
@@ -23,7 +24,7 @@
                     Password: '',
                     AuthorisationScheme: 'Standard'
                 },
-                show1: false,
+                show: false,
                 rules: {
                     name: [
                         v => !!v || 'Name is required',
@@ -37,7 +38,8 @@
                         v => !!v || 'Password is required',
                         v => /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/.test(v) || 'Password must contain at least 8 characters with 1 uppercase, 1 lowercase, 1 number'
                     ]
-                }
+                },
+                errMessage: ''
             }
         },
         methods: {
@@ -54,13 +56,8 @@
                         confirmButtonColor: this.$vuetify.theme.themes.light.primary
                     });
                 } catch (err) {
-                    this.$swal({
-                        title: "Error",
-                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
-                        type: "error",
-                        confirmButtonColor: this.$vuetify.theme.themes.light.primary
-                    });
                     this.$store.state.auth.loader = false;
+                    this.errMessage = err.data ? err.data.message : '';
                 }
             }
         }
