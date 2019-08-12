@@ -1,18 +1,16 @@
 <template>
-  <v-app>
-    <top-bar></top-bar>
-    <v-content>
-      <router-view></router-view>
-    </v-content>
-  </v-app>
+  <div>
+    <Header></Header>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import TopBar from './components/Layout/TopBar';
+import Header from '@/webapp/layout/Header';
 export default {
   name: 'App',
   components: {
-    TopBar
+    Header
   },
   data: () => ({
     //
@@ -20,6 +18,6 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
-</style>
+<style lang="less">
 
+</style>

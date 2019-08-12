@@ -1,9 +1,0 @@
-button {
-	font-family: $font-family-heading !important;
-}
-.theme--light.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
-	background-color: $brand-primary !important;
-	opacity: 0.6 !important;
-	color: #fff !important;
-	font-weight: bold;
-}
