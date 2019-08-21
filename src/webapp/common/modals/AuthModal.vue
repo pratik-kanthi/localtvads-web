@@ -3,14 +3,14 @@
         <div class="user-login">
             <div class="tabs">
                 <ul>
-                    <li :class="{'active' : active === 'register'}" @click="goToComponent('register')">Register</li>
-                    <li :class="{'active' : active === 'login'}" @click="goToComponent('login')">Login</li>
+                    <li :class="{'active' : tabActive === 'register'}" @click="goToComponent('register')">Register</li>
+                    <li :class="{'active' : tabActive === 'login'}" @click="goToComponent('login')">Login</li>
                 </ul>
             </div>
             <div class="content">
                 <div class="content-area">
-                    <Login v-if="active === 'login'"></Login>
-                    <Register v-if="active === 'register'"></Register>
+                    <Login v-if="tabActive === 'login'"></Login>
+                    <Register v-else></Register>
                     <div class="lh16 text-center" >
                         <a @click="close" class="brand-primary">Continue as guest</a>
                     </div>
@@ -33,6 +33,7 @@
         },
         data() {
             return {
+                tabActive: ''
             }
         },
         methods: {
@@ -40,7 +41,7 @@
                 this.$store.commit('DIALOG', false);
             },
             goToComponent(name) {
-                this.active = name;
+                this.tabActive = name;
             }
         },
         computed: {
@@ -48,6 +49,9 @@
                 return this.$store.getters.getShowDialog;
             }
         },
+        created() {
+            this.tabActive = this.active;
+        }
     }
 </script>
 
