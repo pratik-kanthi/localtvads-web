@@ -9,8 +9,12 @@
             </div>
             <div class="content">
                 <div class="content-area">
-                    <Login v-if="tabActive === 'login'"></Login>
-                    <Register v-else></Register>
+                    <div v-if="tabActive === 'login'">
+                        <Login></Login>
+                    </div>
+                    <div v-else>
+                        <Register></Register>
+                    </div>
                     <div class="lh16 text-center" >
                         <a @click="close" class="brand-primary">Continue as guest</a>
                     </div>
