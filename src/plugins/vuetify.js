@@ -5,10 +5,7 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css';
 Vue.use(Vuetify, {
 	components: {
 		VDialog
-	}
-});
-
-export default new Vuetify({
+	},
 	icons: {
 		iconfont: 'md'
 	},

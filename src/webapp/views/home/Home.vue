@@ -17,17 +17,16 @@
                 <li :class="{'active' : activeTab === 'createad'}" @click="goToComponent('createad')">Create Your Ad</li>
             </ul>
             <div class="content">
-                <keep-alive>
-                    <component :is="currentComponent"></component>
-                </keep-alive>
+                <BookAd v-if="activeTab === 'bookad'"></BookAd>
+                <CreateAd v-if="activeTab === 'createad'"></CreateAd>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import BookAd from "@/webapp/home/BookAd.vue";
-import CreateAd from "@/webapp/home/CreateAd.vue";
+import BookAd from "@/webapp/views/home/BookAd.vue";
+import CreateAd from "@/webapp/views/home/CreateAd.vue";
 export default {
     name: 'Home',
     components: {
@@ -36,17 +35,11 @@ export default {
     },
     data() {
         return {
-            component: {
-                bookad: BookAd,
-                createad: CreateAd
-            },
-            currentComponent: BookAd,
             activeTab: 'bookad'
         }
     },
     methods: {
         goToComponent(name) {
-            this.currentComponent = this.component[name];
             this.activeTab = name;
         }
     }
@@ -56,7 +49,7 @@ export default {
 <style lang="less">
     .home {
         .cover {
-            background-image: url('../../assets/images/home-cover.jpg');
+            background-image: url('../../../assets/images/home-cover.jpg');
             background-size: cover;
             height: 300px;
             background-repeat: no-repeat;
@@ -83,7 +76,7 @@ export default {
             }
         }
         .content-area {
-            margin-top: -64px;
+            margin-top: -88px;
             ul.tabs {
                 list-style: none;
                 padding: 0;
@@ -126,7 +119,7 @@ export default {
                 }
             }
             .content {
-                background-image: url('../../assets/images/pattern.svg');
+                background-image: url('../../../assets/images/pattern.svg');
                 background-size: cover;
                 background-position: center center;
                 height: 300px;
