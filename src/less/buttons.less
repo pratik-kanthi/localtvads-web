@@ -2,8 +2,16 @@
 	border-radius: 6px !important;
 	font-size: 16px !important;
 	font-weight: 500 !important;
-	min-width: 120px !important;
+	min-width: 100px !important;
+	padding: 0 16px !important;
 	font-family: @font-family-heading;
+	&:focaus {
+		outline: none;
+	}
+	&:hover,
+	&:visited {
+		color: @brand-primary !important;
+	}
 	&.btn-primary {
 		background-color: @brand-primary;
 		color: #fff;
@@ -13,6 +21,17 @@
 		background-color: #fff;
 		color: @brand-primary;
 		text-transform: capitalize;
+		&.btn-bordered {
+			background-color: transparent;
+			color: #fff;
+			&:focaus {
+				outline: none;
+			}
+			&:hover,
+			&:visited {
+				color: #fff !important;
+			}
+		}
 	}
 	&.btn-full {
 		width: 100%;

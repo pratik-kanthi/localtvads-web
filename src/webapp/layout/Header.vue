@@ -13,7 +13,7 @@
                             <li v-if="isLoggedIn"><a>My Ads</a></li>
                             <li><a>FAQs</a></li>
                             <li v-if="!isLoggedIn"><a @click="chooseAuth('login')">Login</a></li>
-                            <li v-if="!isLoggedIn"><button class="btn btn-white" @click="chooseAuth('register')">Register</button></li>
+                            <li v-if="!isLoggedIn"><button class="btn btn-sm btn-white pl0 pr0" @click="chooseAuth('register')">Register</button></li>
                             <li v-if="isLoggedIn">
                                 <a class="profile">
                                     <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="text">{{$store.state.user.Owner.Title[0]}}</div>
@@ -113,6 +113,10 @@ export default {
                                 a {
                                     font-family: @font-family-heading;
                                     cursor: pointer;
+                                }
+                                .btn-sm {
+                                    padding: 0 16px !important;
+                                    min-width: 100px !important;
                                 }
                             }
                         }
