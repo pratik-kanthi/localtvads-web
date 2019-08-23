@@ -1,47 +1,31 @@
 <template>
     <div class="book-ads">
-        <!-- <div class="plan-type">
-            <div class="radio-inline">
-                <input type="radio" name="recurring" checked>
-                <label>Recurring</label>
+        <div class="plan-type">
+            <!-- div.form-gru -->
+            <!-- <input type="radio" v-model="recurring"> Recurring
+            <input type="radio" v-model="recurring"> On-off (free of charge for new clients) -->
+        </div>
+        <div>
+            <div class="form-group">
+                <select class="form-control" v-model="selected">
+                    <option disabled value="">Select Broadcast Location</option>
+                    <option :value="channel._id" v-for="channel in channels" :key="channel._id">{{channel.Name}}</option>
+                </select>
             </div>
-            <div class="radio-inline">
-                <input type="radio" name="onoff">
-                <label>On-off (free of charge for new clients)</label>
+            <div class="form-group">
+                <select class="form-control" v-model="adLength">
+                    <option disabled value="">Select Ad length</option>
+                    <option value="15">15 Seconds</option>
+                    <option value="20">20 Seconds</option>
+                    <option value="25">25 Seconds</option>
+                    <option value="30">30 Seconds</option>
+                </select>
             </div>
-        </div> -->
-        <div class="row">
-            <div class="col-sm-10">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group select-area">
-                            <select class="form-control" v-model="selected">
-                                <option disabled value="">Select Broadcast Location</option>
-                                <option :value="channel._id" v-for="channel in channels" :key="channel._id">{{channel.Name}}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group select-area">
-                            <select class="form-control" v-model="adLength">
-                                <option disabled value="">Select Ad length</option>
-                                <option value="15">15 Seconds</option>
-                                <option value="20">20 Seconds</option>
-                                <option value="25">25 Seconds</option>
-                                <option value="30">30 Seconds</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group select-area">
-                            <flat-pickr v-model="startDate" :config="{ dateFormat: 'd/m/Y' }" class="form-control datepicker" placeholder="DD/MM/YYY"></flat-pickr>
-                        </div>
-                    </div>
-                </div>
+            <div class="form-group">
+                <flat-pickr v-model="startDate" :config="{ dateFormat: 'd/m/Y', minDate: new Date() }" class="form-control datepicker" placeholder="DD/MM/YYY"></flat-pickr>
             </div>
-            <div class="col-sm-2">
-                <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans">Lets Go!</button>
-            </div>
+
+            <button class="btn btn-white btn-bordered" @click="getChannelPlans" :disabled="isProceedable">Lets Go!</button>
         </div>
         <div v-if="nearbyChannels.length > 0" class="channelplan">
             chanel plans
@@ -75,8 +59,8 @@ export default {
                 this.nearbyChannels = result.data;
             } catch (err) {
                 this.$swal({
-                    title: "Error",
-                    text: err.data && err.data.message ? err.data.message : 'Some error has been occured.',
+                    title: "Some error occured",
+                    text: 'Some error has been occured.',
                     type: "error"
                 });
             }
@@ -89,9 +73,14 @@ export default {
         } catch (err) {
             this.$swal({
                 title: "Some error occured",
-                text: err.data && err.data.message ? err.data.message : 'Some error has been occured.',
+                text: 'Some error has been occured.',
                 type: "error"
             });
+        }
+    },
+    computed: {
+        isProceedable(){
+            return !this.selected || !this.adLength || !this.startDate || this.moment(this.startDate,'DD/MM/YYYY') < this.moment();
         }
     }
 }
@@ -106,21 +95,33 @@ export default {
             margin-bottom: 16px;
 
         }
-        // .select-area {
-        //     width: 100%;
-        //     margin-bottom: 0;
-        //     .form-control {
-        //         margin-bottom: 0;
-        //     }
-        //     .datepicker {
-        //         background-color: #fff;
-        //         &:before {
-        //             background-image: url('../../../assets/images/datepicker.png');
-        //             width: 14px;
-        //             height: 30px;
-        //         }
-        //     }
-        // }
+        .form-group {
+            width: 280px;
+            margin-right: 16px;
+            display: inline-block;
+            margin-bottom: 0;
+            .form-control {
+                margin-bottom: 0;
+            }
+            .datepicker {
+                background-color: #fff;
+                &:before {
+                    background-image: url('../../../assets/images/datepicker.png');
+                    width: 14px;
+                    height: 30px;
+                }
+            }
+        }
+        .btn {
+            width: calc(~'100% - 888px');
+            display: inline-block;
+            margin-bottom: 3px;
+            &:hover,
+            &:visited {
+                background-color: mix(#000,@brand-primary,10%) !important;
+                .box-shadow(1px 1px 8px 0 rgba(0,0,0,0.3));
+            }
+        }
         .channelplan {
             margin-top: 16px;
         }

@@ -5,9 +5,11 @@ import './less/styles.less';
 import 'vuetify/dist/vuetify.min.css';
 import './plugins';
 import { store } from './store';
+import moment from 'moment';
 
 Vue.config.productionTip = false;
 Vue.config.GOOGLE_BUCKET_ENDPOINT = window.bucketendpoint;
+Vue.prototype.moment = moment;
 
 new Vue({
 	router,
