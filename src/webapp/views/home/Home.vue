@@ -122,11 +122,13 @@ export default {
                 background-image: url('../../../assets/images/pattern.svg');
                 background-size: cover;
                 background-position: center center;
-                height: 300px;
+                min-height: 300px;
                 color: #fff;
                 background-color: @brand-primary;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
+                border-bottom-left-radius: 6px;
+                border-bottom-right-radius: 6px;
             }
         }
     }

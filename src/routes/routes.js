@@ -1,13 +1,16 @@
 import Home from '@/webapp/views/home/Home';
-// import Login from '@/webapp/common/Auth/Login';
-// import Register from '@/webapp/common/Auth/Register';
-// import BookAd from '@/webapp/common/BookAd';
+import CreateVideoAd from '@/webapp/views/create-ad/CreateVideoAd';
 
 export const routes = [
 	{
 		path: '',
 		name: 'Home',
 		component: Home
+	},
+	{
+		path: '/create-ad',
+		name: 'CreateVideoAd',
+		component: CreateVideoAd
 	},
 	{
 		path: '*',
