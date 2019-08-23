@@ -15,7 +15,7 @@
                     <div v-else>
                         <Register></Register>
                     </div>
-                    <div class="lh16 text-center" >
+                    <div class="lh16 text-center mt16">
                         <a @click="close" class="brand-primary">Continue as guest</a>
                     </div>
                 </div>

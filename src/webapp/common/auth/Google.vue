@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mb16">
         <button class="btn btn-google" @click="googleAuth">
             <img src="@/assets/images/google.png" alt="google"/>
             <span v-if="type === 'Login'">Login with Google</span>

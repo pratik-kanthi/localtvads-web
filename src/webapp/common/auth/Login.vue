@@ -2,6 +2,7 @@
     <div>
         <Google :api="api" :type="'Login'"></Google>
         <Facebook :api="api" :type="'Login'"></Facebook>
+        <br class="clearfix">
         <div class="separater text-center">
             <span class="content">or log in with email address</span>
         </div>

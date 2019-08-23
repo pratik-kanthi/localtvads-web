@@ -1,9 +1,11 @@
 <template>
-    <button class="btn btn-facebook" @click="login()">
-        <img src="@/assets/images/facebook.png" alt="facebook"/>
-        <span v-if="type === 'Login'">Login with Facebook</span>
-        <span v-if="type === 'Register'">Sign up with Facebook</span>
-    </button>
+    <div>
+        <button class="btn btn-facebook" @click="login()">
+            <img src="@/assets/images/facebook.png" alt="facebook"/>
+            <span v-if="type === 'Login'">Login with Facebook</span>
+            <span v-if="type === 'Register'">Sign up with Facebook</span>
+        </button>
+    </div>
 </template>
 
 <script>

@@ -2,6 +2,7 @@
     <div>
         <Google :api="api" :type="'Register'"></Google>
         <Facebook :api="api" :type="'Register'"></Facebook>
+        <br class="clearfix">
         <div class="separater text-center">
             <span class="content">or sign up with email address</span>
         </div>
@@ -100,5 +101,5 @@
             top: -12px;
         }
     }
-    
+
 </style>

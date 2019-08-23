@@ -79,7 +79,6 @@ export default {
         line-height: 65px;
         color: #fff !important;
         padding: 0 32px;
-        background-size: cover;
         nav {
             background-color: transparent;
             .nav-bar {
@@ -124,7 +123,7 @@ export default {
                 }
             }
         }
-        
+
     }
     .menu li a{ font-size: 16px; text-transform: capitalize; font-weight: 500; letter-spacing: 1px; color: #fff; opacity: 1; .transition(0.3s); }
     .menu li .profile {

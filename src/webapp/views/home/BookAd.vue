@@ -22,10 +22,10 @@
                 </select>
             </div>
             <div class="form-group">
-                <flat-pickr v-model="startDate" :config="{ dateFormat: 'd/m/Y' }" class="form-control datepicker" placeholder="DD/MM/YYY"></flat-pickr>
+                <flat-pickr v-model="startDate" :config="{ dateFormat: 'd/m/Y', minDate: new Date() }" class="form-control datepicker" placeholder="DD/MM/YYY"></flat-pickr>
             </div>
-            
-            <button class="btn btn-white btn-bordered" @click="getChannelPlans">Lets Go!</button>
+
+            <button class="btn btn-white btn-bordered" @click="getChannelPlans" :disabled="isProceedable">Lets Go!</button>
         </div>
         <div v-if="nearbyChannels.length > 0" class="channelplan">
             chanel plans
@@ -77,6 +77,11 @@ export default {
                 type: "error"
             });
         }
+    },
+    computed: {
+        isProceedable(){
+            return !this.selected || !this.adLength || !this.startDate || this.moment(this.startDate,'DD/MM/YYYY') < this.moment();
+        }
     }
 }
 </script>
@@ -111,7 +116,11 @@ export default {
             width: calc(~'100% - 888px');
             display: inline-block;
             margin-bottom: 3px;
-
+            &:hover,
+            &:visited {
+                background-color: mix(#000,@brand-primary,10%) !important;
+                .box-shadow(1px 1px 8px 0 rgba(0,0,0,0.3));
+            }
         }
         .channelplan {
             margin-top: 16px;

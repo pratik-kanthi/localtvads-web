@@ -1,0 +1,51 @@
+.modal-header {
+  .loading-img{
+    margin-top: -15px;
+  }
+  .border-radius(6px 6px 0 0);
+  height: 48px;
+  position: relative;
+  background-color: #fff;
+  h3 {
+    color: @brand-primary;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 16px;
+  }
+  .close {
+    position: absolute;
+    right: 16px;
+    top: 12px;
+    padding: 4px;
+    font-size: 16px;
+    color: #fff!important;
+    background-color: @brand-secondary;
+    line-height: 12px;
+    border-radius: 50%;
+    .opacity(100);
+    i{
+      font-size: 14px;
+    }
+  }
+}
+.modal-body {
+  padding: 20px;
+  .form-group {
+    border: 0;
+    padding: 0;
+    &.focused {
+      background-color: transparent;
+    }
+  }
+  h3.section-title {
+    font-family: @font-family-body;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 0;
+    color: @grey;
+  }
+}
+.modal-footer {
+  background: transparent;
+  .border-radius(0 0 6px 6px);
+}

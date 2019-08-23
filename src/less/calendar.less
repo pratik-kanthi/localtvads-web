@@ -1,0 +1,33 @@
+.flatpickr-calendar{
+  width: 314px;
+  .numInputWrapper{
+    margin-left: 32px;
+  }
+  .flatpickr-rContainer{
+    padding: 4px;
+    .flatpickr-weekdays{
+      margin-top: 8px;
+    }
+    .flatpickr-day{
+      margin: 4px;
+      line-height: 38px;
+      &.selected {
+        background-color: @brand-primary;
+        color: @dirty-white;
+        border: none;
+      }
+      &.today {
+        border-color: @brand-primary;
+      }
+      &:hover {
+        background-color: @brand-primary !important;
+        color: @dirty-white !important;
+      }
+      &.flatpickr-disabled {
+        &:hover {
+          background: none !important;
+        }
+      }
+    }
+  }
+}
