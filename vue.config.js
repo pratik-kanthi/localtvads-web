@@ -6,5 +6,8 @@ module.exports = {
 			preProcessor: 'less',
 			patterns: [ path.resolve(__dirname, './src/less/styles.less') ]
 		}
+	},
+	configureWebpack: {
+		devtool: 'eval'
 	}
 };

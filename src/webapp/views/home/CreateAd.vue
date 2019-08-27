@@ -22,7 +22,7 @@ export default {
     name: "CreateAd",
     data() {
         return {
-            
+
         }
     }
 
@@ -44,7 +44,7 @@ export default {
                 background: @brand-primary;
                 padding: 0 12px;
                 font-size: 18px;
-                color: FFF !important;
+                color: #FFF !important;
                 position: relative;
                 top: -14px;
             }
