@@ -6,19 +6,33 @@
 	padding: 0 16px !important;
 	font-family: @font-family-heading;
 	margin-bottom: 0 !important;
+	position: relative;
 	text-transform: capitalize !important;
+	border: none;
+	i {
+		position: absolute;
+		top: 8px;
+		left: 8px;
+		margin-right: 16px;
+		font-size: 18px;
+	}
+	&:hover {
+		border: none;
+	}
 	&:focus {
 		outline: none;
 	}
 	&.btn-primary {
 		background-color: @brand-primary;
 		color: #fff;
-		text-transform: capitalize;
+	}
+	&.btn-secondary {
+		background-color: @brand-secondary;
+		color: #fff;
 	}
 	&.btn-white {
 		background-color: #fff;
 		color: @brand-primary;
-		text-transform: capitalize;
 		&.btn-bordered {
 			background-color: transparent;
 			color: #fff;
@@ -33,16 +47,6 @@
 	}
 	&.btn-full {
 		width: 100%;
-	}
-	&.btn-info {
-		border: none;
-		color: #fff;
-		text-transform: capitalize;
-	}
-	&.btn-success {
-		border: none;
-		color: #fff;
-		text-transform: capitalize;
 	}
 }
 .btn.disabled,
