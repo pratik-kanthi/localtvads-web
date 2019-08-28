@@ -9,7 +9,7 @@ const instance = axios.create({
 
 instance.defaults.headers.common['Content-Type'] = 'application/json';
 instance.defaults.headers.get['Accepts'] = 'application/json';
-instance.defaults.headers.common['Authorization'] = VueCookies.get('token');
+instance.defaults.headers.common['Authorization'] = 'bearer ' + VueCookies.get('token');
 
 instance.interceptors.request.use(
 	function(config) {

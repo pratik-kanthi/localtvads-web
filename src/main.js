@@ -8,7 +8,7 @@ import { store } from './store';
 import moment from 'moment';
 
 Vue.config.productionTip = false;
-Vue.config.GOOGLE_BUCKET_ENDPOINT = window.bucketendpoint;
+Vue.prototype.GOOGLE_BUCKET_ENDPOINT = window.bucketendpoint;
 Vue.prototype.moment = moment;
 
 new Vue({

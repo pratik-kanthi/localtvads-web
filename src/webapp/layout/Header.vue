@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import AuthModal from "@/webapp/common/modals/AuthModal";
 export default {
     name: "Header",
@@ -62,7 +61,7 @@ export default {
             return this.$store.getters.getUser;
         },
         getImageUrl() {
-            return Vue.config.GOOGLE_BUCKET_ENDPOINT + this.$store.state.user.Owner.ImageUrl;
+            return this.GOOGLE_BUCKET_ENDPOINT + this.$store.state.user.Owner.ImageUrl;
         }
     }
 }
