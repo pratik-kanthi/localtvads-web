@@ -86,8 +86,8 @@
                     xhr.send(formData);
                 });
             },
-            close(){
-                this.$emit('close');
+            close(image){
+                this.$emit('close', image);
             },
             extractImage() {
                 let img = new Image();
@@ -124,12 +124,19 @@
             },
             async uploadFull() {
                 this.loading = true;
+                this.data.name = this.$refs.fileUpload.files[0].name;
                 let formData = new window.FormData();
                 formData.append('file', this.upload.chosen);
                 formData.append('document', JSON.stringify(this.data));
                 try {
                     let result = await this.callAPI(formData);
                     this.loading = false;
+                    this.close(JSON.parse(result));
+                    this.$swal({
+                        title: 'Uploaded',
+                        text: 'Image has been uploaded successfully',
+                        type: 'success',
+                    });
                 } catch (err) {
                     this.loading = false;
                     this.$swal({
@@ -141,6 +148,7 @@
             },
             async uploadCropped() {
                 this.loading = true;
+                this.data.name = this.$refs.fileUpload.files[0].name;
                 let formData = new window.FormData();
                 formData.append('file', this.upload.chosen);
                 let bodyObj = {
@@ -155,6 +163,12 @@
                 try {
                     let result = await this.callAPI(formData);
                     this.loading = false;
+                    this.close(JSON.parse(result));
+                    this.$swal({
+                        title: 'Uploaded',
+                        text: 'Image has been uploaded successfully',
+                        type: 'success',
+                    });
                 } catch (err) {
                     this.loading = false;
                     this.$swal({
