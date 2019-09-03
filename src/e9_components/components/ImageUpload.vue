@@ -1,5 +1,6 @@
 <template>
     <div class="bg-white">
+        <LoaderModal :showloader="loading" message="Adding image file..."></LoaderModal>
         <v-dialog v-model="show" width="700" persistent data-app>
             <div class="modal-header">
                 <h3>Upload Picture</h3>
@@ -34,12 +35,13 @@
 
 <script>
     import {Cropper} from 'vue-advanced-cropper';
-
+    import LoaderModal from  '@/webapp/common/modals/LoaderModal.vue';
     export default {
         name: "ImageUpload",
         props: ['show', 'config', 'data'],
         components: {
-            Cropper
+            Cropper,
+            LoaderModal
         },
         data() {
             return {
@@ -168,6 +170,7 @@
                         title: 'Uploaded',
                         text: 'Image has been uploaded successfully',
                         type: 'success',
+                        confirmButtonColor: '#ff6500'
                     });
                 } catch (err) {
                     this.loading = false;

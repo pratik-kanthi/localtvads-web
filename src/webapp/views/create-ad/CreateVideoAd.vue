@@ -1,5 +1,6 @@
 <template>
     <div class="create-video container-fluid">
+        <LoaderModal :showloader="loading" message="Preparing your video..."></LoaderModal>
         <div class="resource-wrapper">
             <div class="row">
                 <div class="col-sm-2">
@@ -32,12 +33,12 @@
                         <div v-if="showFileUpload">
                             <FileUpload :config="configAudio" :show="showFileUpload" :data="data" @close="close"></FileUpload>
                         </div>
-
                     </div>
+                    
                 </div>
                 <div class="col-sm-4">
                     <div class="preview">
-                        <video controls v-if="clientAd">
+                        <video controls v-if="clientAd" object-fit="fill">
                             <source :src="getPreviewUrl(clientAd)" type="video/mp4">
                         </video>
                     </div>
@@ -58,11 +59,11 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="collected-audio-items" v-if="collectedAudio">
+            <div class="collected-audio-items" v-if="collectedAudio">
                 <div class="image">
                     <img src="../../../assets/images/audio.png" alt="">
                 </div>
-            </div> -->
+            </div>
         </div>
         <div class="actions">
             <div class="row">
@@ -73,7 +74,7 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="right">
-                        <button class="btn btn-info" @click="convertToVideo">Convert</button>
+                        <button class="btn btn-info" @click="convertToVideo">Create Preview</button>
                         <button class="btn btn-success">Publish</button>
                     </div>
                 </div>
@@ -86,14 +87,17 @@
 import instance from '@/api';
 import ImageUpload from '@/e9_components/components/ImageUpload';
 import FileUpload from '@/e9_components/components/FileUpload';
+import LoaderModal from  '@/webapp/common/modals/LoaderModal.vue'
 export default {
     name: 'CreateVideoAd',
     components: {
         ImageUpload,
-        FileUpload
+        FileUpload,
+        LoaderModal
     },
     data() {
         return {
+            loading: false,
             activeTab: '',
             addedMedia: [],
             clientAd: undefined,
@@ -127,7 +131,6 @@ export default {
     methods: {
         addSelected() {
             let selectedImagesObjs = [];
-            
             for(let i=0 ; i < this.filterredResources.length; i++) {
                 let f = this.filterredResources[i];
                 if (this.selectedImages.indexOf(f._id) > -1 || this.selectedAudio === f._id) {
@@ -140,7 +143,7 @@ export default {
                 }
             }
             this.collectedImages = this.collectedImages.concat(selectedImagesObjs);
-        
+            selectedImagesObjs = [];
         },
         addMedia(mediaType){
             if(mediaType == 'IMAGE') {
@@ -158,24 +161,29 @@ export default {
                 this.showFileUpload = false
         },
         async convertToVideo() {
+            this.loading = true;
             let bodyObj = {
                 pictures: this.collectedImages,
                 audio: this.collectedAudio,
                 clientAd: this.clientAdId
             }
             try {
-                this.videoAd = await instance.post('api/clientad/ffmpeg/preview', bodyObj);
+                let result = await instance.post('api/clientad/ffmpeg/preview', bodyObj);
+                this.videoAd = result.data;
+                this.loading = false;
                 this.$swal({
                     title: 'Video Converted',
                     text: 'Video  has been converted successfully',
                     type: 'success',
+                    confirmButtonColor: '#ff6500'
                 });
+                this.$router.go();
             } catch (err) {
                 this.$swal({
                     title: 'Error',
                     text: err.data && err.data.message ? err.data.message : 'Some error occurred',
                     type: 'error',
-                    confirmButtonColor: 'ButtonColor'
+                    confirmButtonColor: '#ff6500'
                 });
             }
             
@@ -228,6 +236,11 @@ export default {
             }
             return undefined;
         },
+        getPoster(ad) {
+            if(ad) {
+                return this.GOOGLE_BUCKET_ENDPOINT + ad.ResourceUrl;
+            }
+        },
         removeItem(media) {
             if(media.Type === 'IMAGE') {
                 let i = this.collectedImages.findIndex(f => f._id == media._id);
@@ -259,7 +272,6 @@ export default {
         try {
             let result = await instance.get('api/clientresource/all?id=' + this.$store.state.user.Owner._id);
             this.resources = result.data;
-            // this.filterMedia('IMAGE');
             this.activeTab = 'IMAGE';
         } catch (err) {
             this.$swal({
@@ -312,6 +324,7 @@ export default {
             }
             .media-resources {
                 background-color: #f4f4f4;
+                overflow: auto;
                 .stretch-height();
                 padding: 16px;
                 .media-item {
@@ -370,14 +383,22 @@ export default {
                 .media-actions {
                     position: absolute;
                     bottom: 0;
-                    padding: 16px 0;
+                    left: 16px;
+                    padding: 16px;
+                    background: #e4e4e4;
+                    width: calc(~'100% - 32px');
                 }
                 
             }
             .preview {
-                background-color: #f4f4f4;
+                background-color: #000;
                 .stretch-height();
-                padding: 16px;
+                padding: 64px 0;
+                video {
+                    &:focus {
+                        outline: none;
+                    }
+                }
             }
         }
         .video-editor {
@@ -385,6 +406,7 @@ export default {
             background-color: #f4f4f4;
             padding: 16px;
             margin-bottom: 16px;
+            overflow: scroll;
             .collected-media-items {
                 width: 110px;
                 display: inline-block;

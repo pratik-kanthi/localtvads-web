@@ -147,6 +147,7 @@ export default {
             li {
                 a {
                     cursor: pointer !important;
+                    float: left !important;
                 }
             }
         }

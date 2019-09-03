@@ -1,5 +1,6 @@
 <template>
     <div class="bg-white">
+        <LoaderModal :showloader="loading" message="Adding audio file..."></LoaderModal>
         <v-dialog v-model="show" width="700" persistent data-app>
             <div class="modal-header">
                 <h3>Upload Picture</h3>
@@ -23,8 +24,13 @@
 </template>
 
 <script>
+import LoaderModal from  '@/webapp/common/modals/LoaderModal.vue'
+
 export default {
     name: 'FileUpload',
+    components: {
+        LoaderModal
+    },
     data() {
         return {
             loading: false,
@@ -85,6 +91,7 @@ export default {
                     title: 'Uploaded',
                     text: 'File has been uploaded successfully',
                     type: 'success',
+                    confirmButtonColor: '#ff6500'
                 });
             } catch (err) {
                 this.loading = false;
