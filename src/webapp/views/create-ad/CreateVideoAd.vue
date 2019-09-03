@@ -1,6 +1,5 @@
 <template>
     <div class="create-video container-fluid">
-        <LoaderModal :showloader="loading" message="Preparing your video..."></LoaderModal>
         <div class="resource-wrapper">
             <div class="row">
                 <div class="col-sm-2">
@@ -11,13 +10,13 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="media-resources">
-                        <div class="media-item mb16" v-for="r in filterredResources" :key="r._id">
-                            <div v-if="r.Type == 'IMAGE'" class="image" :style="{'background-image':'url(' + getResourceUrl(r) + ')'}" @click="selectMedia(r)">
-                                <div v-if="selectedImages.find(f => f === r._id)" class="selectedMedia"><i class="material-icons">check</i></div>
+                        <div class="media-item mb16" v-for="r in filteredResources" :key="r._id">
+                            <div v-if="r.Type === 'IMAGE'" class="image" :style="{'background-image':'url(' + getResourceUrl(r) + ')'}" @click="selectMedia(r)">
+                                <div v-if="selectedImageIds.find(f => f === r._id)" class="selectedMedia"><i class="material-icons">check</i></div>
                             </div>
                             <div v-else class="image" @click="selectMedia(r)">
                                 <img src="../../../assets/images/audio.png" alt="">
-                                <div v-if="selectedAudio && selectedAudio === r._id" class="selectedMedia"><i class="material-icons">check</i></div>
+                                <div v-if="selectedAudioId && selectedAudioId === r._id" class="selectedMedia"><i class="material-icons">check</i></div>
                             </div>
                             <!-- <small v-text="r.Name"></small> -->
                         </div>
@@ -33,12 +32,12 @@
                         <div v-if="showFileUpload">
                             <FileUpload :config="configAudio" :show="showFileUpload" :data="data" @close="close"></FileUpload>
                         </div>
+
                     </div>
-                    
                 </div>
                 <div class="col-sm-4">
                     <div class="preview">
-                        <video controls v-if="clientAd" object-fit="fill">
+                        <video controls v-if="clientAd">
                             <source :src="getPreviewUrl(clientAd)" type="video/mp4">
                         </video>
                     </div>
@@ -59,11 +58,11 @@
                     </div>
                 </div>
             </div>
-            <div class="collected-audio-items" v-if="collectedAudio">
+            <!-- <div class="collected-audio-items" v-if="collectedAudio">
                 <div class="image">
                     <img src="../../../assets/images/audio.png" alt="">
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="actions">
             <div class="row">
@@ -74,8 +73,8 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="right">
-                        <button class="btn btn-info" @click="convertToVideo">Create Preview</button>
-                        <button class="btn btn-success">Publish</button>
+                        <button class="btn btn-info" @click="convertToVideo">Convert</button>
+                        <button class="btn btn-success" @click="publishVideo">Publish</button>
                     </div>
                 </div>
             </div>
@@ -87,17 +86,14 @@
 import instance from '@/api';
 import ImageUpload from '@/e9_components/components/ImageUpload';
 import FileUpload from '@/e9_components/components/FileUpload';
-import LoaderModal from  '@/webapp/common/modals/LoaderModal.vue'
 export default {
     name: 'CreateVideoAd',
     components: {
         ImageUpload,
-        FileUpload,
-        LoaderModal
+        FileUpload
     },
     data() {
         return {
-            loading: false,
             activeTab: '',
             addedMedia: [],
             clientAd: undefined,
@@ -119,38 +115,39 @@ export default {
                 owner: 'Client',
                 ownerid: this.$store.state.user.Owner._id
             },
-            filterredResources: [],
-            selectedImages: [],
-            selectedAudio: undefined,
+            filteredResources: [],
+            selectedImageIds: [],
+            selectedAudioId: undefined,
             showImageUpload: false,
-            showFileUpload: false,            
+            showFileUpload: false,
             resources: [],
             videoAd: undefined
         }
     },
     methods: {
-        addSelected() {
-            let selectedImagesObjs = [];
-            for(let i=0 ; i < this.filterredResources.length; i++) {
-                let f = this.filterredResources[i];
-                if (this.selectedImages.indexOf(f._id) > -1 || this.selectedAudio === f._id) {
-                    if (f.Type === 'IMAGE') {
-                        selectedImagesObjs.push(f);
-                    } else {
-                        this.collectedAudio = f;
-                    }
-                    this.filterredResources.splice(i,1);    
-                }
-            }
-            this.collectedImages = this.collectedImages.concat(selectedImagesObjs);
-            selectedImagesObjs = [];
-        },
         addMedia(mediaType){
-            if(mediaType == 'IMAGE') {
+            if(mediaType === 'IMAGE') {
                 this.showImageUpload = true;
             } else {
                 this.showFileUpload = true;
             }
+        },
+        addSelected() {
+            let selectedImageIdsObjs = [];
+
+            for(let i=0 ; i < this.filteredResources.length; i++) {
+                let f = this.filteredResources[i];
+                if (this.selectedImageIds.indexOf(f._id) > -1 || this.selectedAudioId === f._id) {
+                    if (f.Type === 'IMAGE') {
+                        selectedImageIdsObjs.push(f);
+                    } else {
+                        this.collectedAudio = f;
+                    }
+                    this.filteredResources.splice(i,1);
+                }
+            }
+            this.collectedImages = this.collectedImages.concat(selectedImageIdsObjs);
+
         },
         close(resource){
             this.resources.push(resource);
@@ -161,33 +158,26 @@ export default {
                 this.showFileUpload = false
         },
         async convertToVideo() {
-            this.loading = true;
             let bodyObj = {
                 pictures: this.collectedImages,
                 audio: this.collectedAudio,
                 clientAd: this.clientAdId
-            }
+            };
             try {
-                let result = await instance.post('api/clientad/ffmpeg/preview', bodyObj);
-                this.videoAd = result.data;
-                this.loading = false;
+                this.videoAd = await instance.post('api/clientad/ffmpeg/preview', bodyObj);
                 this.$swal({
                     title: 'Video Converted',
-                    text: 'Video  has been converted successfully',
-                    type: 'success',
-                    confirmButtonColor: '#ff6500'
+                    text: 'Video has been converted successfully',
+                    type: 'success'
                 });
-                this.$router.go();
             } catch (err) {
                 this.$swal({
                     title: 'Error',
                     text: err.data && err.data.message ? err.data.message : 'Some error occurred',
                     type: 'error',
-                    confirmButtonColor: '#ff6500'
+                    confirmButtonColor: 'ButtonColor'
                 });
             }
-            
-        
         },
         // deleteMedia(item) {
         //     try {
@@ -217,10 +207,10 @@ export default {
         //     }
         // },
         filterMedia(media) {
-            let collectedImageIds =[]; 
+            let collectedImageIds =[];
             this.collectedImages.map(item => collectedImageIds.push(item._id));
-            this.filterredResources = this.resources.filter(f =>{
-                return f.Type === media && this.selectedImages.indexOf(f._id) === -1 && this.selectedAudio !== f._id && collectedImageIds.indexOf(f._id) === -1 && this.collectedAudio._id !== f._id
+            this.filteredResources = this.resources.filter(f =>{
+                return f.Type === media && this.selectedImageIds.indexOf(f._id) === -1 && this.selectedAudioId !== f._id && collectedImageIds.indexOf(f._id) === -1 && this.collectedAudio._id !== f._id;
             });
             this.activeTab = media;
         },
@@ -232,38 +222,52 @@ export default {
         },
         getPreviewUrl(resource) {
             if(resource.PreviewUrl) {
-                return 'http://localhost:8080/' + resource.PreviewUrl;
+                return this.ENDPOINT + resource.PreviewUrl;
             }
             return undefined;
         },
-        getPoster(ad) {
-            if(ad) {
-                return this.GOOGLE_BUCKET_ENDPOINT + ad.ResourceUrl;
+        async publishVideo() {
+            let bodyObj = {
+                clientAd: this.clientAdId
+            };
+            try {
+                this.videoAd = await instance.post('api/clientad/ffmpeg/save', bodyObj);
+                this.$swal({
+                    title: 'Sent for Review',
+                    text: 'Video has been sent successfully for review. Our Administrator team will review it within next 24 hours and get back to you with a confirmation',
+                    type: 'success'
+                });
+            } catch (err) {
+                this.$swal({
+                    title: 'Error',
+                    text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error',
+                    confirmButtonColor: 'ButtonColor'
+                });
             }
         },
         removeItem(media) {
             if(media.Type === 'IMAGE') {
-                let i = this.collectedImages.findIndex(f => f._id == media._id);
+                let i = this.collectedImages.findIndex(f => f._id === media._id);
                 this.collectedImages.splice(i,1);
-                this.filterredResources.push(media);
+                this.filteredResources.push(media);
             } else {
                 this.collectedAudio = undefined;
-                this.filterredResources.push(media);
+                this.filteredResources.push(media);
             }
-
         },
         selectMedia(media) {
             if(media.Type === 'IMAGE') {
-                let index = this.selectedImages.findIndex(f => f === media._id);
+                let index = this.selectedImageIds.findIndex(f => f === media._id);
                 if (index === -1)
-                    this.selectedImages.push(media._id);
+                    this.selectedImageIds.push(media._id);
                 else
-                    this.selectedImages.splice(index,1);
+                    this.selectedImageIds.splice(index,1);
             } else {
-                if(this.selectedAudio && this.selectedAudio === media._id) {
-                    this.selectedAudio = undefined;
+                if(this.selectedAudioId && this.selectedAudioId === media._id) {
+                    this.selectedAudioId = undefined;
                 } else {
-                    this.selectedAudio = media._id;
+                    this.selectedAudioId = media._id;
                 }
             }
         }
@@ -287,25 +291,24 @@ export default {
             this.collectedAudio = this.clientAd.Options.AudioOptions;
             this.filterMedia('IMAGE');
         } catch (err) {
-            throw err;
             this.$swal({
                 title: 'Error',
                 text: err.data && err.data.message ? err.data.message: 'Some error occurred',
                 type: 'error'
             });
+            throw err;
         }
     },
     computed: {
         isSelected() {
-            if(this.selectedImages.length > 0 && this.activeTab === 'IMAGE')
+            if(this.selectedImageIds.length > 0 && this.activeTab === 'IMAGE')
                 return true;
-            else if(this.selectedAudio && this.activeTab === 'AUDIO')
+            else if(this.selectedAudioId && this.activeTab === 'AUDIO')
                 return true;
 
             return false
         }
-    },
-    
+    }
 }
 </script>
 
@@ -324,7 +327,6 @@ export default {
             }
             .media-resources {
                 background-color: #f4f4f4;
-                overflow: auto;
                 .stretch-height();
                 padding: 16px;
                 .media-item {
@@ -383,22 +385,14 @@ export default {
                 .media-actions {
                     position: absolute;
                     bottom: 0;
-                    left: 16px;
-                    padding: 16px;
-                    background: #e4e4e4;
-                    width: calc(~'100% - 32px');
+                    padding: 16px 0;
                 }
-                
+
             }
             .preview {
-                background-color: #000;
+                background-color: #f4f4f4;
                 .stretch-height();
-                padding: 64px 0;
-                video {
-                    &:focus {
-                        outline: none;
-                    }
-                }
+                padding: 16px;
             }
         }
         .video-editor {
@@ -406,7 +400,6 @@ export default {
             background-color: #f4f4f4;
             padding: 16px;
             margin-bottom: 16px;
-            overflow: scroll;
             .collected-media-items {
                 width: 110px;
                 display: inline-block;
