@@ -4,7 +4,9 @@
             <nav>
                 <div class="nav-bar">
                     <div class="module left">
-                        <img class="logo" src="@/assets/images/logo-white.svg" alt="Local TV Ads">
+                        <router-link tag="a" to="/">
+                            <img class="logo" src="@/assets/images/logo-white.svg" alt="Local TV Ads">
+                        </router-link>
                         <span class="tagline">low cost, local TV Time</span>
                     </div>
                     <div class="module-group right">
@@ -28,7 +30,9 @@
                 </div>
             </nav>
         </div>
-        <AuthModal :active="defaultChosen"></AuthModal>
+        <div v-if="defaultChosen">
+            <AuthModal :active="defaultChosen" @closed="defaultChosen=null"></AuthModal>
+        </div>
     </div>
 </template>
 
@@ -41,7 +45,7 @@ export default {
     },
     data() {
         return {
-            defaultChosen: 'login',
+            defaultChosen: '',
         }
     },
     methods: {
@@ -89,8 +93,8 @@ export default {
                     padding: 0;
                     height: 65px;
                     .logo {
-                        display: inline;
-                        max-height: 65%;
+                        max-height: 80%;
+                        margin-bottom: 4px;
                     }
                     .tagline {
                         margin-left: 32px;

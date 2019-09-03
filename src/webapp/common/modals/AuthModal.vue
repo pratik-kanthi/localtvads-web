@@ -43,6 +43,7 @@
         methods: {
             close() {
                 this.$store.commit('DIALOG', false);
+                this.$emit('closed', true);
             },
             goToComponent(name) {
                 this.tabActive = name;

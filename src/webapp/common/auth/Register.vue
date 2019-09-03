@@ -21,6 +21,7 @@
                 <small>{{errMessage}}</small>
             </div>
         </form>
+        <LoaderModal :showloader="$store.state.auth.loader" message="Please stand by while we authenticate..."></LoaderModal>
     </div>
 </template>
 
@@ -28,9 +29,10 @@
     import Google from "@/webapp/common/auth/Google";
     import Facebook from "@/webapp/common/auth/Facebook";
     import instance from "@/api";
+    import LoaderModal from  '@/webapp/common/modals/LoaderModal.vue'
     export default {
         name: "Register",
-        components: {Facebook, Google},
+        components: {Facebook, Google, LoaderModal},
         data(){
             return {
                 api: 'api/auth/clientsocialregister',
@@ -54,7 +56,8 @@
                     this.$swal({
                         title: "Registration successful",
                         text: 'Thank you for registering with Local TV ads. Please check your email to confirm.',
-                        type: "success"
+                        type: "success",
+                        confirmButtonColor: '#ff6500'
                     });
                     this.user = '';
                 } catch (err) {

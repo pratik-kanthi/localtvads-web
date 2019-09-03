@@ -1,5 +1,6 @@
 <template>
     <div class="create-video container-fluid">
+        <LoaderModal :showloader="loading" message="Preparing your video..."></LoaderModal>
         <div class="resource-wrapper">
             <div class="row">
                 <div class="col-sm-2">
@@ -86,14 +87,17 @@
 import instance from '@/api';
 import ImageUpload from '@/e9_components/components/ImageUpload';
 import FileUpload from '@/e9_components/components/FileUpload';
+import LoaderModal from  '@/webapp/common/modals/LoaderModal.vue'
 export default {
     name: 'CreateVideoAd',
     components: {
         ImageUpload,
-        FileUpload
+        FileUpload,
+        LoaderModal
     },
     data() {
         return {
+            loading: false,
             activeTab: '',
             addedMedia: [],
             clientAd: undefined,
@@ -134,7 +138,7 @@ export default {
         },
         addSelected() {
             let selectedImageIdsObjs = [];
-
+            let splicedIds = [];
             for(let i=0 ; i < this.filteredResources.length; i++) {
                 let f = this.filteredResources[i];
                 if (this.selectedImageIds.indexOf(f._id) > -1 || this.selectedAudioId === f._id) {
@@ -143,21 +147,26 @@ export default {
                     } else {
                         this.collectedAudio = f;
                     }
-                    this.filteredResources.splice(i,1);
+                    splicedIds.push(f._id);
                 }
             }
+            this.filteredResources = this.filteredResources.filter(resource => splicedIds.indexOf(resource._id) === -1);
             this.collectedImages = this.collectedImages.concat(selectedImageIdsObjs);
+            this.selectedImageIds = [];
+            this.selectedAudioId = [];
 
         },
         close(resource){
-            this.resources.push(resource);
-            this.filterMedia(resource.Type);
-            if(resource.Type === 'IMAGE')
-                this.showImageUpload = false;
-            else
-                this.showFileUpload = false
+            if(resource) {
+                this.resources.push(resource);
+                this.filterMedia(resource.Type);
+            }
+            this.showImageUpload = false;
+            this.showFileUpload = false
+            
         },
         async convertToVideo() {
+            this.loading = true;
             let bodyObj = {
                 pictures: this.collectedImages,
                 audio: this.collectedAudio,
@@ -165,47 +174,22 @@ export default {
             };
             try {
                 this.videoAd = await instance.post('api/clientad/ffmpeg/preview', bodyObj);
+                this.loading = false;
                 this.$swal({
                     title: 'Video Converted',
                     text: 'Video has been converted successfully',
-                    type: 'success'
+                    type: 'success',
+                    confirmButtonColor: '#ff6500'
                 });
             } catch (err) {
                 this.$swal({
                     title: 'Error',
                     text: err.data && err.data.message ? err.data.message : 'Some error occurred',
                     type: 'error',
-                    confirmButtonColor: 'ButtonColor'
+                    confirmButtonColor: '#ff6500'
                 });
             }
         },
-        // deleteMedia(item) {
-        //     try {
-        //         this.$swal({
-        //             title: 'Are you sure?',
-        //             text: 'Item will be deleted permanently',
-        //             type: 'warning',
-        //             showCancelButton: true,
-        //             confirmButtonColor: '#F65374',
-        //             confirmButtonText: 'Confirm',
-        //             closeOnConfirm: false
-        //         }).then(async () => {
-        //             let result = await instance.delete('api/clientresource/image?id=' + item._id);
-        //             this.$swal({
-        //                 title: 'Deleted',
-        //                 text: 'Item has been deleted',
-        //                 type: 'success',
-        //                 confirmButtonColor: 'ButtonColor'
-        //             });
-        //         });
-        //     } catch (err) {
-        //         this.$swal({
-        //             title: 'Error',
-        //             text: err.data && err.data.message ? err.data.message: 'Some error occurred',
-        //             type: 'error'
-        //         });
-        //     }
-        // },
         filterMedia(media) {
             let collectedImageIds =[];
             this.collectedImages.map(item => collectedImageIds.push(item._id));
@@ -327,6 +311,7 @@ export default {
             }
             .media-resources {
                 background-color: #f4f4f4;
+                overflow: auto;
                 .stretch-height();
                 padding: 16px;
                 .media-item {
@@ -385,7 +370,10 @@ export default {
                 .media-actions {
                     position: absolute;
                     bottom: 0;
-                    padding: 16px 0;
+                    left: 16px;
+                    padding: 16px;
+                    background: #e4e4e4;
+                    width: calc(~'100% - 32px');
                 }
 
             }
