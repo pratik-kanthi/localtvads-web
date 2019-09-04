@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import axios from 'axios';
 import VueCookies from 'vue-cookies';
 import router from 'vue-router';
@@ -7,12 +6,18 @@ const instance = axios.create({
 	baseURL: window.endpoint
 });
 
+let token = VueCookies.get('token');
+let user = localStorage.getItem('user');
 instance.defaults.headers.common['Content-Type'] = 'application/json';
 instance.defaults.headers.get['Accepts'] = 'application/json';
-instance.defaults.headers.common['Authorization'] = 'bearer ' + VueCookies.get('token');
+
+if (!token && user) {
+	localStorage.removeItem('user');
+}
 
 instance.interceptors.request.use(
 	function(config) {
+		config.headers['Authorization'] = 'bearer ' + VueCookies.get('token');
 		return config;
 	},
 	(error) => {

@@ -45,7 +45,7 @@ export default {
     },
     data() {
         return {
-            defaultChosen: '',
+            defaultChosen: 'login',
         }
     },
     methods: {

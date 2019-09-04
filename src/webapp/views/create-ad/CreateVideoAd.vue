@@ -114,6 +114,8 @@ export default {
             },
             collectedImages: [],
             collectedAudio: undefined,
+            collectedImagesOriginal: [],
+            collectedAudioOriginal: undefined,
             data: {
                 name: '',
                 owner: 'Client',
@@ -163,7 +165,7 @@ export default {
             }
             this.showImageUpload = false;
             this.showFileUpload = false
-            
+
         },
         async convertToVideo() {
             this.loading = true;
@@ -175,6 +177,8 @@ export default {
             try {
                 this.videoAd = await instance.post('api/clientad/ffmpeg/preview', bodyObj);
                 this.loading = false;
+                this.collectedImagesOriginal = JSON.parse(JSON.stringify(this.collectedImages));
+                this.collectedAudioOriginal = JSON.parse(JSON.stringify(this.collectedAudio));
                 this.$swal({
                     title: 'Video Converted',
                     text: 'Video has been converted successfully',
@@ -273,6 +277,8 @@ export default {
             this.clientAd = result.data;
             this.collectedImages = this.clientAd.Options.ImagesOptions;
             this.collectedAudio = this.clientAd.Options.AudioOptions;
+            this.collectedImagesOriginal = JSON.parse(JSON.stringify(this.clientAd.Options.ImagesOptions));
+            this.collectedAudioOriginal = JSON.parse(JSON.stringify(this.clientAd.Options.AudioOptions));
             this.filterMedia('IMAGE');
         } catch (err) {
             this.$swal({
@@ -292,6 +298,39 @@ export default {
 
             return false
         }
+    },
+    beforeRouteLeave: function(to, from, next) {
+        let flag=false;
+        if (this.collectedImages.length !== this.collectedImagesOriginal.length)
+            flag = true;
+        loop1:
+        for(let i=0; i < this.collectedImages.length; i++){
+            for(let key in this.collectedImages[i]) {
+                if (this.collectedImages[i].hasOwnProperty(key) && this.collectedImages[i][key] === this.collectedImagesOriginal[i][key]) {
+
+                } else {
+                    flag = true;
+                    break loop1;
+                }
+            }
+        }
+        if (flag) {
+            this.$swal({
+                title: "Are you sure?",
+                text: "You have unsaved changes, do you still want to leave ? All your unsaved changes will be lost",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Confirm",
+                closeOnConfirm: false
+            }).then((isConfirm) => {
+                if (isConfirm.value)
+                    next();
+                else
+                    next(false);
+            });
+        }
+        else
+            next();
     }
 }
 </script>

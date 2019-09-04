@@ -38,7 +38,6 @@ export const store = new Vuex.Store({
 			commit(LOGIN_SUCCESS);
 		},
 		logout({ commit }) {
-			VueCookies.remove('token');
 			commit(LOGOUT);
 		}
 	},
