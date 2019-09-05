@@ -1,32 +1,29 @@
 <template>
     <div class="book-ads">
-        <div class="plan-type">
-            <!-- div.form-gru -->
-            <!-- <input type="radio" v-model="recurring"> Recurring
-            <input type="radio" v-model="recurring"> On-off (free of charge for new clients) -->
-        </div>
         <div>
             <div class="form-group">
+                <label for="" class="text-white">Broadcast location</label>
                 <select class="form-control" v-model="selected" @change="loadSecondsbyChannel">
-                    <option disabled value="">Select Broadcast Location</option>
+                    <option disabled selected hidden value="">Select Broadcast Location</option>
                     <option :value="channel._id" v-for="channel in channels" :key="channel._id">{{channel.Name}}</option>
                 </select>
             </div>
             <div class="form-group">
+                <label for="" class="text-white">Ad Length</label>
                 <select class="form-control" v-model="adLength">
-                    <option disabled value="">Select Ad length</option>
+                    <option disabled selected hidden value="">Select Ad length</option>
                     <option v-for="(sec,key) in seconds" :key="key" :value="sec">{{sec}} Seconds</option>
                 </select>
             </div>
             <div class="form-group">
+                <label for="" class="text-white">Start Date</label>
                 <flat-pickr v-model="startDate" :config="{ dateFormat: 'd/m/Y', minDate: new Date() }" class="form-control datepicker" placeholder="DD/MM/YYY"></flat-pickr>
             </div>
-
-            <button class="btn btn-white btn-bordered" @click="getChannelPlans" :disabled="isProceedable">Lets Go!</button>
+            <div class="action">
+                <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans" :disabled="isProceedable">Lets Go!</button>
+            </div>
         </div>
-        <div v-if="nearbyChannels.length > 0" class="channelplan">
-            chanel plans
-        </div>
+        <div class="ad-views"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated Views<span>845,00,00</span></div>
     </div>
 </template>
 
@@ -115,25 +112,40 @@ export default {
             }
             .datepicker {
                 background-color: #fff;
-                &:before {
-                    background-image: url('../../../assets/images/datepicker.png');
-                    width: 14px;
-                    height: 30px;
+            }
+        }
+        .action {
+            width: calc(~'100% - 888px');
+            display: inline-block;
+            vertical-align: bottom;
+            margin-bottom: 1px;
+            .btn {
+                &:hover,
+                &:visited {
+                    background-color: mix(#000,@brand-primary,10%) !important;
+                    .box-shadow(1px 1px 8px 0 rgba(0,0,0,0.3));
                 }
             }
         }
-        .btn {
-            width: calc(~'100% - 888px');
-            display: inline-block;
-            margin-bottom: 3px;
-            &:hover,
-            &:visited {
-                background-color: mix(#000,@brand-primary,10%) !important;
-                .box-shadow(1px 1px 8px 0 rgba(0,0,0,0.3));
+        .ad-views {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 40px;
+            background-color: @brand-secondary;
+            width: 300px;
+            text-align: center;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            padding: 16px;
+            margin-bottom: -40px;
+            img {
+                margin-bottom: 6px;
             }
-        }
-        .channelplan {
-            margin-top: 16px;
+            span {
+                font-size: 20px;
+                font-weight: 700;
+                padding-left: 8px;
+            }
         }
     }
 </style>
