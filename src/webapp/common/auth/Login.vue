@@ -49,6 +49,7 @@
                     delete result.data.TokenString;
                     localStorage.setItem('user', JSON.stringify(result.data));
                     this.$store.dispatch('loginSuccess');
+                    this.$emit('close');
                 } catch (err) {
                     this.$store.state.auth.loader = false;
                     this.errMessage = err.data ? err.data.message : '';

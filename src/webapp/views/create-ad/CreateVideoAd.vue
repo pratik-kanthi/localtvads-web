@@ -65,6 +65,7 @@
                 </div>
             </div> -->
         </div>
+        <p class="text-muted mb8">Sum of duration of images must be equal to {{clientAdPlan.Seconds}} seconds</p>
         <div class="actions">
             <div class="row">
                 <div class="col-sm-8">
@@ -74,8 +75,8 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="right">
-                        <button class="btn btn-info" @click="convertToVideo">Convert</button>
-                        <button class="btn btn-success" @click="publishVideo">Publish</button>
+                        <button class="btn btn-info" @click="convertToVideo" :disabled="convertProceedable"> Convert</button>
+                        <button class="btn btn-success" @click="publishVideo" :disabled="publishProceedable">Publish</button>
                     </div>
                 </div>
             </div>
@@ -101,6 +102,9 @@ export default {
             activeTab: '',
             addedMedia: [],
             clientAd: undefined,
+            clientAdPlan: {
+                Seconds: 20
+            },
             clientAdId: '5d5a69a86642eb128b44649c',
             configPictures: {
                 api: 'api/clientresource/image',
@@ -127,6 +131,7 @@ export default {
             showImageUpload: false,
             showFileUpload: false,
             resources: [],
+            usedTime: 0,
             videoAd: undefined
         }
     },
@@ -156,7 +161,21 @@ export default {
             this.collectedImages = this.collectedImages.concat(selectedImageIdsObjs);
             this.selectedImageIds = [];
             this.selectedAudioId = [];
-
+            let nonTimedImages = [];
+            let tempUsedTime = this.usedTime;
+            this.collectedImages.map((item) => {
+                if (!item.Time) {
+                    nonTimedImages.push(item._id);
+                }
+            });
+            this.collectedImages.map(item => {
+                if (!item.Time) {
+                    item.Time = (this.clientAdPlan.Seconds - this.usedTime) / (nonTimedImages.length || 1);
+                    tempUsedTime += item.Time;
+                }
+                return item;
+            });
+            this.usedTime = tempUsedTime;
         },
         close(resource){
             if(resource) {
@@ -208,11 +227,13 @@ export default {
             }
             return undefined;
         },
-        getPreviewUrl(resource) {
-            if(resource.PreviewUrl) {
-                return this.ENDPOINT + resource.PreviewUrl;
-            }
-            return undefined;
+        getPreviewUrl() {
+            return (resource) => {
+                if(resource.PreviewUrl) {
+                    return this.ENDPOINT + resource.PreviewUrl;
+                }
+                return undefined;
+            };
         },
         async publishVideo() {
             let bodyObj = {
@@ -239,6 +260,7 @@ export default {
                 let i = this.collectedImages.findIndex(f => f._id === media._id);
                 this.collectedImages.splice(i,1);
                 this.filteredResources.push(media);
+                this.usedTime -= f.Time;
             } else {
                 this.collectedAudio = undefined;
                 this.filteredResources.push(media);
@@ -279,6 +301,9 @@ export default {
             this.collectedAudio = this.clientAd.Options.AudioOptions;
             this.collectedImagesOriginal = JSON.parse(JSON.stringify(this.clientAd.Options.ImagesOptions));
             this.collectedAudioOriginal = JSON.parse(JSON.stringify(this.clientAd.Options.AudioOptions));
+            this.collectedImages.map(img => {
+                this.usedTime += img.Time ? parseInt(img.Time) : 0
+            });
             this.filterMedia('IMAGE');
         } catch (err) {
             this.$swal({
@@ -297,6 +322,19 @@ export default {
                 return true;
 
             return false
+        },
+        convertProceedable() {
+            let nonTimedImage = this.collectedImages.find(item => {
+                return !item.Name
+            });
+            if (nonTimedImage) {
+                return true;
+            }
+            return this.clientAdPlan.Seconds !== this.usedTime;
+
+        },
+        publishProceedable() {
+            return true;
         }
     },
     beforeRouteLeave: function(to, from, next) {
