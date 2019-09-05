@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VueCookies from 'vue-cookies';
+import VueRouter from 'vue-router';
 
 Vue.use(Vuex);
 

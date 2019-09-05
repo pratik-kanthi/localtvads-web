@@ -36,7 +36,8 @@
                             apiKey: window.google.apiKey,
                             clientId: window.google.clientId,
                             scope: 'https://www.googleapis.com/auth/userinfo.profile'
-                        }).then(() => {
+                        });
+                        gapi.auth2.getAuthInstance().grantOfflineAccess({'redirect_uri': 'postmessage', 'approval_prompt': 'force'}).then(() => {
                             gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
                             this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
                         });

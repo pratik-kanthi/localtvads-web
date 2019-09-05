@@ -10,7 +10,7 @@
             <div class="content">
                 <div class="content-area">
                     <div v-if="tabActive === 'login'">
-                        <Login></Login>
+                        <Login @close="close"></Login>
                     </div>
                     <div v-else>
                         <Register></Register>

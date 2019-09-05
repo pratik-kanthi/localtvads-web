@@ -7,7 +7,7 @@
         </div>
         <div>
             <div class="form-group">
-                <select class="form-control" v-model="selected">
+                <select class="form-control" v-model="selected" @change="loadSecondsbyChannel">
                     <option disabled value="">Select Broadcast Location</option>
                     <option :value="channel._id" v-for="channel in channels" :key="channel._id">{{channel.Name}}</option>
                 </select>
@@ -15,10 +15,7 @@
             <div class="form-group">
                 <select class="form-control" v-model="adLength">
                     <option disabled value="">Select Ad length</option>
-                    <option value="15">15 Seconds</option>
-                    <option value="20">20 Seconds</option>
-                    <option value="25">25 Seconds</option>
-                    <option value="30">30 Seconds</option>
+                    <option v-for="(sec,key) in seconds" :key="key" :value="sec">{{sec}} Seconds</option>
                 </select>
             </div>
             <div class="form-group">
@@ -45,10 +42,11 @@ export default {
     },
     data() {
         return {
+            adLength: '',
             channels: [],
             nearbyChannels: [],
+            seconds: [],
             selected: '',
-            adLength: '',
             startDate: null
         }
     },
@@ -64,6 +62,18 @@ export default {
                     type: "error"
                 });
             }
+        },
+        async loadSecondsbyChannel() {
+            try {
+                let result = await instance.get('/api/channel/seconds?channel=' + this.selected);
+                this.seconds = result.data;
+            } catch (err) {
+                this.$swal({
+                    title: "Some error occured",
+                    text: 'Some error has been occured.',
+                    type: "error"
+                });
+            }
         }
     },
     async created() {
@@ -72,8 +82,8 @@ export default {
             this.channels = result.data;
         } catch (err) {
             this.$swal({
-                title: "Some error occured",
-                text: 'Some error has been occured.',
+                title: "Some error occurred",
+                text: 'Some error has been occurred.',
                 type: "error"
             });
         }
