@@ -1,20 +1,17 @@
 <template>
     <div class="book-ads">
-        <div class="plan-type">
-            <!-- div.form-gru -->
-            <!-- <input type="radio" v-model="recurring"> Recurring
-            <input type="radio" v-model="recurring"> On-off (free of charge for new clients) -->
-        </div>
         <div>
             <div class="form-group">
-                <select class="form-control" v-model="selected">
-                    <option disabled value="">Select Broadcast Location</option>
+                <label for="" class="text-white">Broadcast location</label>
+                <select class="form-control" v-model="selectedChannel">
+                    <option value="" disabled hidden selected>Choose Channel</option>
                     <option :value="channel._id" v-for="channel in channels" :key="channel._id">{{channel.Name}}</option>
                 </select>
             </div>
             <div class="form-group">
+                <label for="" class="text-white">Broadcast location</label>
                 <select class="form-control" v-model="adLength">
-                    <option disabled value="">Select Ad length</option>
+                    <option value="" disabled hidden selected>Select your ad length</option>
                     <option value="15">15 Seconds</option>
                     <option value="20">20 Seconds</option>
                     <option value="25">25 Seconds</option>
@@ -22,14 +19,14 @@
                 </select>
             </div>
             <div class="form-group">
-                <flat-pickr v-model="startDate" :config="{ dateFormat: 'd/m/Y', minDate: new Date() }" class="form-control datepicker" placeholder="DD/MM/YYY"></flat-pickr>
+                <label for="" class="text-white">Start Date</label>
+                <flat-pickr v-model="startDate" :config="{ dateFormat: 'd/m/Y', minDate: new Date() }" class="form-control datepicker" placeholder="Select strating date"></flat-pickr>
             </div>
-
-            <button class="btn btn-white btn-bordered" @click="getChannelPlans" :disabled="isProceedable">Lets Go!</button>
+            <div class="action">
+                <button class="btn btn-white btn-bordered btn-full" @click="goToChoosePlan" :disabled="isProceedable">Lets Go!</button>
+            </div>
         </div>
-        <div v-if="nearbyChannels.length > 0" class="channelplan">
-            chanel plans
-        </div>
+        <div class="ad-views"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated Views<span>845,00,00</span></div>
     </div>
 </template>
 
@@ -46,24 +43,14 @@ export default {
     data() {
         return {
             channels: [],
-            nearbyChannels: [],
-            selected: '',
+            selectedChannel: '',
             adLength: '',
             startDate: null
         }
     },
     methods: {
-        async getChannelPlans() {
-            try {
-                let result = await instance.get('/api/channel/nearbychannelplans?channel=' + this.selected + '&seconds=' + this.adLength);
-                this.nearbyChannels = result.data;
-            } catch (err) {
-                this.$swal({
-                    title: "Some error occured",
-                    text: 'Some error has been occured.',
-                    type: "error"
-                });
-            }
+        goToChoosePlan() {
+            this.$router.push({name: 'ChoosePlan', query: {channel: this.selectedChannel, seconds: this.adLength, startdate: this.startDate.replace(/\//g,'-')}});
         }
     },
     async created() {
@@ -80,7 +67,7 @@ export default {
     },
     computed: {
         isProceedable(){
-            return !this.selected || !this.adLength || !this.startDate || this.moment(this.startDate,'DD/MM/YYYY') < this.moment();
+            return !this.selectedChannel || !this.adLength || !this.startDate || this.moment(this.startDate,'DD/MM/YYYY') < this.moment();
         }
     }
 }
@@ -105,25 +92,43 @@ export default {
             }
             .datepicker {
                 background-color: #fff;
-                &:before {
-                    background-image: url('../../../assets/images/datepicker.png');
-                    width: 14px;
-                    height: 30px;
-                }
             }
         }
-        .btn {
+        .action {
             width: calc(~'100% - 888px');
             display: inline-block;
-            margin-bottom: 3px;
-            &:hover,
-            &:visited {
-                background-color: mix(#000,@brand-primary,10%) !important;
-                .box-shadow(1px 1px 8px 0 rgba(0,0,0,0.3));
+            vertical-align: bottom;
+            margin-bottom: 1px;
+            .btn {
+                &:hover,
+                &:visited {
+                    background-color: mix(#000,@brand-primary,10%) !important;
+                    .box-shadow(1px 1px 8px 0 rgba(0,0,0,0.3));
+                }
             }
         }
         .channelplan {
             margin-top: 16px;
+        }
+        .ad-views {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 40px;
+            background-color: @brand-secondary;
+            width: 300px;
+            text-align: center;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            padding: 16px;
+            margin-bottom: -40px;
+            img {
+                margin-bottom: 6px;
+            }
+            span {
+                font-size: 20px;
+                font-weight: 700;
+                padding-left: 8px;
+            }
         }
     }
 </style>

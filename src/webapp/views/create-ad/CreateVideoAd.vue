@@ -419,7 +419,12 @@ export default {
             .preview {
                 background-color: #f4f4f4;
                 .stretch-height();
-                padding: 16px;
+                padding: 64px 0;
+                video {
+                    &:focus {
+                        outline: none;
+                    }
+                }
             }
         }
         .video-editor {

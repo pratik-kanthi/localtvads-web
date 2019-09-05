@@ -47,7 +47,6 @@ body {
 	font-size: @font-size-base;
 	line-height: 24px;
 	font-family: @font-family-base;
-	color: #666;
 }
 body.boxed-layout {
 	background: #eee;
@@ -615,7 +614,7 @@ blockquote .author {
 
 @color-primary: @brand-primary;
 @bg-secondary: rgba(148, 128, 96, 0.06);
-@bg-dark: #292929;
+@bg-dark: #4C4C4C;
 .bg-primary {
 	background: @color-primary !important;
 }
@@ -800,7 +799,7 @@ footer.bg-dark,
 	min-width: 0;
 }
 .btn-filled {
-	background: @color-primary;
+	background: @brand-primary;
 	color: #fff;
 }
 .btn-white,
@@ -1852,7 +1851,7 @@ select {
 	cursor: pointer;
 }
 select:focus {
-	background: #eee;
+	// background: #eee;
 }
 select:active,
 select:focus,
@@ -5356,4 +5355,8 @@ footer.bg-dark a {
 	.pb-xs-240 {
 		padding-bottom: 240px !important;
 	}
+}
+.container {
+	padding-top: 0;
+	padding-bottom: 0;
 }

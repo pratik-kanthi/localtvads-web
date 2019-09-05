@@ -122,7 +122,6 @@ export default {
                 background-image: url('../../../assets/images/pattern.svg');
                 background-size: cover;
                 background-position: center center;
-                min-height: 300px;
                 color: #fff;
                 background-color: @brand-primary;
                 border-top: 1px solid transparent;
