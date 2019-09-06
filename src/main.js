@@ -6,6 +6,7 @@ import 'vuetify/dist/vuetify.min.css';
 import './plugins';
 import { store } from './store';
 import moment from 'moment';
+import './e9_components';
 
 Vue.config.productionTip = false;
 Vue.prototype.GOOGLE_BUCKET_ENDPOINT = window.bucketendpoint;

@@ -1,18 +1,45 @@
 <template>
     <div class="choose-plan">
-        <div class="channel-wrapper">
-            <div class="container">
-                <div class="selected-channel">
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <div class="channel-info">
-                                <h5 class="brand-primary mb0 lh40 bold">West Midland TV - Freeview 7, Sky Guide 117, Virgin Media 159</h5>
-                            </div>
+        <div class="selected-broadcast-location">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="broadcast-location">
+                            <label>Broadcast Location</label>
+                            <h5 v-if="channels && channels[0].Name">
+                                <span class="name">{{channels[0].Name}}</span>
+                                <span class="address">(Freeview 7, Skyguide, Virgin Media)</span>
+                            </h5>
                         </div>
-                        <div class="col-sm-4">
-                            <div class="form-group mb0">
-                                <input type="text" class="form-control mb0" placeholder="Total Cost">
-                            </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="broadcast-start">
+                            <label>Broadcast Start</label>
+                            <h5>{{startDate | formatDate('LL')}}</h5>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="ad-length">
+                            <label>Ad Length</label>
+                            <h5>{{adLength}} seconds</h5>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="broadcast-duration">
+                            <label>Broadcast Duration</label>
+                            <h5>6 months</h5>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="recurring">
+                            <label>Recurring</label>
+                            <h5></h5>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="tolatcost">
+                            <label>Total Cost</label>
+                            <h5 class="bold">£ 200.00</h5>
                         </div>
                     </div>
                 </div>
@@ -27,7 +54,7 @@
                         <div class="date-range">
                             <div class="start-date">
                                 <div class="mb0"><small>Starting Mon</small></div>
-                                <h5 class="bold">{{$route.query.startdate}}</h5>
+                                <h5 class="bold">{{startDate}}</h5>
                             </div>
                             <div class="divider mb16">
                                 <div class="mb8 text-center"><small>1 slot / week for 6 Months</small></div>
@@ -66,7 +93,9 @@ export default {
     name: 'ChoosePlan',
     data() {
         return {
-            channels: []
+            channels: [],
+            startDate: this.moment(this.$route.query.startdate, "DD/MM/YYYY"),
+            adLength: this.$route.query.seconds
         }
     },
     async created() {
@@ -81,18 +110,35 @@ export default {
                 confirmButtonColor: '#ff6500'
             });
         }
-    },
+    }
 }
 </script>
 
 <style lang="less" scoped>
     .choose-plan {
-        .channel-wrapper {
+        label {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+        .selected-broadcast-location {
+            padding: 16px;
             background-color: #FFF !important;
-            .selected-channel {
-                padding: 8px 0;
-                .channel-info {
-                    line-height: 16px;
+            h5 {
+                font-weight: 500;
+                margin-bottom: 8px;
+                span {
+                    margin-right: 8px;
+                    &.name {
+                        color: @brand-dark;
+                        font-weight: 500;
+                    }
+                    &.address {
+                        font-size: 13px;
+                    }
+                    &:last-child {
+                        margin-right: 0;
+                    }
                 }
             }
         }
