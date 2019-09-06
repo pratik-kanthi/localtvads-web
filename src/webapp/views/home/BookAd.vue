@@ -3,7 +3,7 @@
         <div>
             <div class="form-group">
                 <label for="" class="text-white">Broadcast location</label>
-                <select class="form-control" v-model="selected" @change="loadSecondsbyChannel">
+                <select class="form-control" v-model="broadcastLocation" @change="loadSecondsbyChannel">
                     <option disabled selected hidden value="">Select Broadcast Location</option>
                     <option :value="channel._id" v-for="channel in channels" :key="channel._id">{{channel.Name}}</option>
                 </select>
@@ -20,7 +20,7 @@
                 <flat-pickr v-model="startDate" :config="{ dateFormat: 'd/m/Y', minDate: new Date() }" class="form-control datepicker" placeholder="DD/MM/YYY"></flat-pickr>
             </div>
             <div class="action">
-                <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans" :disabled="isProceedable">Lets Go!</button>
+                <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Lets Go!</button>
             </div>
         </div>
         <div class="ad-views"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated Views<span>845,00,00</span></div>
@@ -41,28 +41,18 @@ export default {
         return {
             adLength: '',
             channels: [],
-            nearbyChannels: [],
             seconds: [],
-            selected: '',
+            broadcastLocation: '',
             startDate: null
         }
     },
     methods: {
-        async getChannelPlans() {
-            try {
-                let result = await instance.get('/api/channel/nearbychannelplans?channel=' + this.selected + '&seconds=' + this.adLength);
-                this.nearbyChannels = result.data;
-            } catch (err) {
-                this.$swal({
-                    title: "Some error occured",
-                    text: 'Some error has been occured.',
-                    type: "error"
-                });
-            }
+        getChannelPlans() {
+            this.$router.push({name: 'ChoosePlan', query: {channel: this.broadcastLocation, seconds: this.adLength, startdate: this.startDate.replace(/\//g,'-')}});
         },
         async loadSecondsbyChannel() {
             try {
-                let result = await instance.get('/api/channel/seconds?channel=' + this.selected);
+                let result = await instance.get('/api/channel/seconds?channel=' + this.broadcastLocation);
                 this.seconds = result.data;
             } catch (err) {
                 this.$swal({
@@ -87,7 +77,7 @@ export default {
     },
     computed: {
         isProceedable(){
-            return !this.selected || !this.adLength || !this.startDate || this.moment(this.startDate,'DD/MM/YYYY') < this.moment();
+            return !this.broadcastLocation || !this.adLength || !this.startDate || this.moment(this.startDate,'DD/MM/YYYY') < this.moment();
         }
     }
 }
