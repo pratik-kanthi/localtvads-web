@@ -6,8 +6,8 @@
                     <div class="col-sm-4">
                         <div class="broadcast-location">
                             <label>Broadcast Location</label>
-                            <h5 v-if="channels && channels[0].Name">
-                                <span class="name">{{channels[0].Name}}</span>
+                            <h5 v-if="channels">
+                                <span class="name">West Midlands TV</span>
                                 <span class="address">(Freeview 7, Skyguide, Virgin Media)</span>
                             </h5>
                         </div>
@@ -45,37 +45,53 @@
                 </div>
             </div>
         </div>
-        <div class="slots-wrapper">
-            <div class="container">
-                <div class="slot-wrapper" v-for="channel in channels" :key="channel._id">
-                    <h5 class="mb0 lh40">{{channel.Name}}</h5>
-                    <div class="plan-slider"></div>
-                    <div class="channel-plans">
-                        <div class="date-range">
-                            <div class="start-date">
-                                <div class="mb0"><small>Starting Mon</small></div>
-                                <h5 class="bold">{{startDate}}</h5>
-                            </div>
-                            <div class="divider mb16">
-                                <div class="mb8 text-center"><small>1 slot / week for 6 Months</small></div>
-                                <div class="line"></div>
-                            </div>
-                            <div class="end-date">
-                                <div class="mb0"><small>Ending Mon</small></div>
-                                <h5 class="bold">{{$route.query.startdate}}</h5>
+        <div class="container">
+            <div class="channels-wrapper">
+                <div class="channel-wrapper" v-for="channel in channels" :key="channel._id">
+                    <div class="available-slots">
+                        <h5 class="mb8">Available Slots</h5>
+                        <div class="slots">
+                            <ul class="list-inline mb0">
+                                <li v-for="slot in availableSlots" :key="slot._id" :class="{'active': slot.Active}">
+                                    <h5>{{slot.Date | formatDate('ll')}}</h5>
+                                    <h5 class="mb0">£ {{slot.Amount}}.00</h5>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="broadcast-details">
+                        <h5 class="mb8">Broadcast Details</h5>
+                        <div class="details">
+                            <div class="row">
+                                <div class="col-sm-4 text-center">
+                                    <h5>Starting On</h5>
+                                    <h5 class="bold">19th Sep 2019, Monday</h5>
+                                </div>
+                                <div class="col-sm-4 text-center"></div>
+                                <div class="col-sm-4 text-center">
+                                    <h5>Ending On</h5>
+                                    <h5 class="bold">19th Sep 2019, Monday</h5>
+                                </div>
                             </div>
                         </div>
-                        <div class="plan-list">
-                            <div class="plan" v-for="plan in channel.Plans" :key="plan._id">
-                                <div class="plan-info">
-                                    <h5 class="brand-primary plan-title">{{plan.AdSchedule.Name}}</h5>
-                                    <div class="plan-details">
-                                        <ul>
-                                            <li><span class="brand-primary bold">> {{plan.AdSchedule.ExpectedAdViews}}</span> expected ad views over 6 months</li>
-                                        </ul>
+                    </div>
+                    <div class="broadcast-slots">
+                        <h5 class="mb8">Choose Your Broadcast Slots</h5>
+                        <div class="row">
+                            <div class="col-sm-4" v-for="plan in channel.Plans" :key="plan._id">
+                                <div class="plan">
+                                    <div class="plan-name">
+                                        <h5 class="mb0">{{plan.ChannelAdSchedule.AdSchedule.Name}}</h5>
+                                        <p class="mb0">6am to 9am</p>
                                     </div>
                                     <div class="plan-amount">
-                                        <h4 class="brand-primary text-center mb0">£ {{plan.BaseAmount}}</h4>
+                                        <h4>£{{plan.BaseAmount}}.00</h4>
+                                        <p class="mb0">for 26 weeks</p>
+                                    </div>
+                                    <div class="features">
+                                        <ul>
+                                            <li>Played every Monday between 6am - 9am</li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -94,6 +110,32 @@ export default {
     data() {
         return {
             channels: [],
+            availableSlots: [{
+                _id: 1,
+                Date: this.moment('17/09/2019', "DD/MM/YYYY"),
+                Amount: 190,
+                Active: false
+            }, {
+                _id: 2,
+                Date: this.moment('18/09/2019', "DD/MM/YYYY"),
+                Amount: 170,
+                Active: false
+            }, {
+                _id: 3,
+                Date: this.moment('19/09/2019', "DD/MM/YYYY"),
+                Amount: 200,
+                Active: true
+            }, {
+                _id: 4,
+                Date: this.moment('20/09/2019', "DD/MM/YYYY"),
+                Amount: 180,
+                Active: false
+            }, {
+                _id: 5,
+                Date: this.moment('21/09/2019', "DD/MM/YYYY"),
+                Amount: 190,
+                Active: false
+            }],
             startDate: this.moment(this.$route.query.startdate, "DD/MM/YYYY"),
             adLength: this.$route.query.seconds
         }
@@ -104,9 +146,9 @@ export default {
             this.channels = result.data;
         } catch (err) {
             this.$swal({
-                title: "Some error occured",
-                text: 'Some error has been occured.',
-                type: "error",
+                title: 'Error',
+                text: err.data && err.data.message ? err.data.message: 'Some error occurred',
+                type: 'error',
                 confirmButtonColor: '#ff6500'
             });
         }
@@ -130,7 +172,6 @@ export default {
                 span {
                     margin-right: 8px;
                     &.name {
-                        color: @brand-dark;
                         font-weight: 500;
                     }
                     &.address {
@@ -142,81 +183,86 @@ export default {
                 }
             }
         }
-        .slots-wrapper {
-            .slot-wrapper {
-                padding: 16px 80px;
-                .plan-slider {
-                    min-height: 56px;
-                    border: 1px solid #DDD;
-                    border-radius: 6px;
-                    background-color: #fff;
-                }
-                .channel-plans {
-                    margin: 16px 80px;
-                    border: 1px solid @brand-primary;
-                    padding: 16px;
-                    background-color: #fff;
-                    .date-range {
-                        .start-date {
-                            width: 25%;
-                            display: inline-block;
-                            text-align: center;
-                        }
-                        .divider {
-                            width: 50%;
-                            display: inline-block;
-                            vertical-align: top;
-                            .line {
-                                height: 1px;
-                                background: #ddd;
-                                margin-bottom: 8px;
+        .channels-wrapper {
+            padding: 16px 80px;
+            .channel-wrapper {
+                .available-slots {
+                    margin-bottom: 24px;
+                    .slots {
+                        padding: 0 64px;
+                        border: 1px solid #DDD;
+                        border-radius: 6px;
+                        ul {
+                            li {
+                                width: 20%;
+                                text-align: center;
+                                padding: 10px;
+                                border-right: 1px solid #ddd;
+                                &:last-child{
+                                    border-right: none;
+                                }
+                                h5 {
+                                    margin-bottom: 8px;
+                                    font-weight: 500;
+                                    &:first-child {
+                                        font-weight: 400;
+                                        color: @brand-primary;
+                                    }
+                                }
+                                &.active {
+                                    background-color: @brand-primary;
+                                    color: #FFF;
+                                    h5 {
+                                        color: #fff;
+                                    }
+                                }
                             }
-                        }
-                        .end-date {
-                            width: 25%;
-                            display: inline-block;
-                            text-align: center;
                         }
                     }
-                    .plan-list {
-                        .plan {
-                            display: inline-block;
-                            width: 33.33%;
-                            .plan-info {
-                                margin-right: 16px;
-                                border: 1px solid #ddd;
-                                border-top: 3px solid @brand-primary;
-                                
-                                .plan-title {
-                                    border-bottom: 1px dashed #ddd;
-                                    padding: 16px;
-                                    margin: 0;
-                                }
-                                .plan-details {
-                                    padding: 16px;
-                                    ul {
-                                        margin: 0;
-                                        li {
-                                            font-size: 12px;
-                                            line-height: 16px;
-                                            margin-bottom: 16px;
-                                            &:last-child {
-                                                margin: 0;
-                                            }
-                                        }
-                                    }
-                                }
-                                .plan-amount {
-                                    background: #DDD;
-                                    padding: 16px;
-                                    h4 {
-                                        font-weight: 500;
-                                    }
-                                }
-                            }
+                }
+                .broadcast-details {
+                    margin-bottom: 24px;
+                    .details {
+                        border: 1px solid #ddd;
+                        border-radius: 6px;
+                        padding: 8px 40px;
+                        h5 {
+                            margin-bottom: 8px;
                             &:last-child {
-                                .plan-info {
-                                    margin-right: 0;
+                                margin-bottom: 0;
+                            }
+                        }
+                    }
+                }
+                .broadcast-slots {
+                    .plan {
+                        border: 1px solid @brand-primary;
+                        text-align: center;
+                        .plan-name {
+                            padding: 8px;
+                            border-bottom: 1px solid #ddd;
+                            h5 {
+                                font-weight: 500;
+                                color: @brand-primary;
+                            }
+                        }
+                        .plan-amount {
+                            padding: 8px;
+                            border-bottom: 1px solid #ddd;
+                            h4 {
+                                font-weight: 700;
+                                margin-bottom: 0;
+                            }
+                        }
+                        .features {
+                            padding: 8px;
+                            ul {
+                                li {
+                                    font-size: 12px;
+                                    color: #333;
+                                    &:before {
+                                        content: url('')
+                                    }
                                 }
                             }
                         }
@@ -224,5 +270,6 @@ export default {
                 }
             }
         }
+        
     }
 </style>
