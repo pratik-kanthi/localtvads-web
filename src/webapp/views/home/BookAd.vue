@@ -70,7 +70,7 @@
         methods: {
             getChannelPlans() {
                 this.$router.push({
-                    name: 'ChoosePlan',
+                    name: 'BookingFlow',
                     query: {
                         channel: this.broadcastLocation,
                         seconds: this.adLength,

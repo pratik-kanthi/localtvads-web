@@ -11,11 +11,6 @@ export const routes = [
 		component: Home
 	},
 	{
-		path: '/choose-plan',
-		name: 'ChoosePlan',
-		component: ChoosePlan
-	},
-	{
 		path: '/booking-flow',
 		name: 'BookingFlow',
 		component: BookingFlow

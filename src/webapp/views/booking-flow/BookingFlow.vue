@@ -14,7 +14,7 @@
             </v-stepper>
         </div>
         <div v-show="!isLoading">
-            <component :is="currentStage"></component>
+            <component :is="currentStage" @advanceToPayment="goToPayment"></component>
         </div>
         <LoaderModal :showloader="isLoading" message="Please stand by while we fetch data..."></LoaderModal>
     </div>
@@ -25,12 +25,10 @@
     import UploadAd from './UploadAd';
     import ChoosePlan from './ChoosePlan';
     import Review from './Review';
+    import Payment from './Payment';
 
     export default {
         name: "BookingFlow",
-        components: {
-            UploadAd
-        },
         data() {
             return {
                 currentStage: UploadAd,
@@ -46,7 +44,11 @@
                         this.isLoading = true;
                         let result = await instance.get('api/clientad/getclientadplan?clientadplan=' + this.$route.query.clientadplan);
                         this.clientAdPlan = result.data;
-                        if (!this.clientAdPlan.ClientAd) {
+                        if (!this.clientAdPlan) {
+                            this.currentStep = 1;
+                            this.currentStage = ChoosePlan;
+                        }
+                        else if (!this.clientAdPlan.ClientAd) {
                             this.currentStep = 3;
                             this.currentStage = UploadAd;
                         } else  {
@@ -68,9 +70,14 @@
                     this.currentStep = 1;
                     this.currentStage = ChoosePlan;
                 }
+            },
+            goToPayment() {
+                this.currentStep = 2;
+                this.currentStage = Payment;
             }
         },
         async created() {
+            setTimeout(() => $('.v-stepper__step__step').text(''));
             this.fetchClientAdPlan();
         }
     }
