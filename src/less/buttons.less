@@ -61,6 +61,24 @@
 	&.btn-full {
 		width: 100%;
 	}
+	&.btn-danger {
+		border: none;
+		color: #fff;
+		text-transform: capitalize;
+		&.btn-bordered {
+			background-color: transparent;
+			color: @error !important;
+			border: 2px solid @error;
+			&:focus {
+				outline: none;
+			}
+			&:hover,
+			&:visited {
+				color: @error !important;
+				border: 2px solid @error;
+			}
+		}
+	}
 	&.btn-info {
 		border: none;
 		color: #fff;

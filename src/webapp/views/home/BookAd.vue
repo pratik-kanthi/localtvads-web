@@ -74,7 +74,8 @@
                     query: {
                         channel: this.broadcastLocation,
                         seconds: this.adLength,
-                        startdate: this.startDate.replace(/\//g, '-')
+                        startdate: this.moment(this.startDate, "DD/MM/YYYY").format("YYYY-MM-DD")
+                        // startdate: this.startDate.replace(/\//g, '-')
                     }
                 });
             },
