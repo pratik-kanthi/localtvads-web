@@ -17,7 +17,7 @@
                 </div>
                 <button v-if="upload.chosen" class="btn btn-secondary btn-filled" :disabled="loading || !isValid" @click="uploadFile">
                         <i class="material-icons">crop</i> <span class="ml16">Upload</span>
-                    </button>
+                </button>
             </div>
         </v-dialog>
     </div>

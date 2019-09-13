@@ -15,6 +15,7 @@
     "jquery.payment": "^3.0.0",
     "moment": "^2.24.0",
     "ramda": "^0.26.1",
+    "socket.io-client": "^2.0.4",
     "vue": "^2.6.10",
     "vue-advanced-cropper": "^0.12.2",
     "vue-cli-plugin-vuetify": "^0.5.0",
