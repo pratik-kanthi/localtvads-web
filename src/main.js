@@ -7,6 +7,7 @@ import './plugins';
 import { store } from './store';
 import moment from 'moment';
 import './e9_components';
+import './webapp/globals';
 window.$ = require('jquery');
 
 Vue.config.productionTip = false;

@@ -1,10 +1,11 @@
 import Vue from 'vue';
-import Vuetify, { VDialog } from 'vuetify/lib';
+import Vuetify, { VDialog, VProgressLinear } from 'vuetify/lib';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
 Vue.use(Vuetify, {
 	components: {
-		VDialog
+		VDialog,
+		VProgressLinear
 	},
 	icons: {
 		iconfont: 'md'

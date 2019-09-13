@@ -1,6 +1,6 @@
 import axios from 'axios';
 import VueCookies from 'vue-cookies';
-import router from 'vue-router';
+import router from '@/routes';
 
 const instance = axios.create({
 	baseURL: window.endpoint
@@ -34,7 +34,7 @@ instance.interceptors.response.use(
 			switch (error.response.status) {
 				case 403: {
 					this.$store.dispatch('logout');
-					router.push('/login');
+					router.go('/login');
 					break;
 				}
 			}
