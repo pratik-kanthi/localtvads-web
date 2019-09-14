@@ -166,7 +166,7 @@
     }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
     .book-ads {
         padding: 40px;
         color: #FFF !important;

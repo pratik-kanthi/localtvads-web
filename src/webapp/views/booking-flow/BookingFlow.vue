@@ -1,18 +1,16 @@
 <template>
     <div>
-        <div class="mb32">
-            <v-stepper alt-labels :value="currentStep">
-                <v-stepper-header>
-                    <v-stepper-step step="1">Book Your Ad</v-stepper-step>
-                    <v-divider :class="{'completed': currentStep > 1}"></v-divider>
-                    <v-stepper-step step="2">Payment</v-stepper-step>
-                    <v-divider :class="{'completed': currentStep > 2}"></v-divider>
-                    <v-stepper-step step="3">Upload Your Ad</v-stepper-step>
-                    <v-divider :class="{'completed': currentStep > 3}"></v-divider>
-                    <v-stepper-step step="3">Verification</v-stepper-step>
-                </v-stepper-header>
-            </v-stepper>
-        </div>
+        <v-stepper alt-labels :value="currentStep">
+            <v-stepper-header>
+                <v-stepper-step step="1">Book Your Ad</v-stepper-step>
+                <v-divider :class="{'completed': currentStep > 1}"></v-divider>
+                <v-stepper-step step="2">Payment</v-stepper-step>
+                <v-divider :class="{'completed': currentStep > 2}"></v-divider>
+                <v-stepper-step step="3">Upload Your Ad</v-stepper-step>
+                <v-divider :class="{'completed': currentStep > 3}"></v-divider>
+                <v-stepper-step step="3">Verification</v-stepper-step>
+            </v-stepper-header>
+        </v-stepper>
         <div v-show="!isLoading">
             <component :is="currentStage" @advanceToPayment="goToPayment"></component>
         </div>

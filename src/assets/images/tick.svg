@@ -1,1 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M9 16.2l-3.5-3.5c-.39-.39-1.01-.39-1.4 0-.39.39-.39 1.01 0 1.4l4.19 4.19c.39.39 1.02.39 1.41 0L20.3 7.7c.39-.39.39-1.01 0-1.4-.39-.39-1.01-.39-1.4 0L9 16.2z"/></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>Group 9</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Slot" transform="translate(-342.000000, -960.000000)">
+            <g id="Group-2" transform="translate(59.000000, 179.000000)">
+                <g id="Group-5" transform="translate(233.000000, 423.000000)">
+                    <g id="Group-9" transform="translate(50.000000, 358.000000)">
+                        <circle id="Oval" fill="#FF6500" cx="7" cy="7" r="7"></circle>
+                        <polyline id="Path-11" stroke="#FFFFFF" stroke-width="2" points="3.20145762 7 6.1924679 9.90519248 11.3475481 3.90519248"></polyline>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
