@@ -53,23 +53,23 @@
                                 <h5 class="text-center">Booking Details</h5>
                                 <div class="booking-items">
                                     <h6 class="title">Broadcast Location</h6>
-                                    <p class="desc">West Midland Tv (Freeview 7, Skyguide, Virgin Media)</p>
+                                    <p class="desc">{{$parent.selectedPlan.broadcastLocation.Name}} <span v-if="$parent.selectedPlan.broadcastLocation.Description">({{$parent.selectedPlan.broadcastLocation.Description}})</span></p>
                                 </div>
                                 <div class="booking-items">
                                     <h6 class="title">Broadcast Slot</h6>
-                                    <p class="desc">Breakfast (6am to 9am)</p>
+                                    <p class="desc">{{$parent.selectedPlan.broadcastSlot}} ({{$parent.selectedPlan.adStartTime}} to {{$parent.selectedPlan.adEndTime}})</p>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="booking-items">
                                             <h6 class="title">Broadcast Start</h6>
-                                            <p class="desc">19th September 2019</p>
+                                            <p class="desc">{{moment($parent.selectedPlan.broadcastStartDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</p>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="booking-items">
                                             <h6 class="title">Broadcast End</h6>
-                                            <p class="desc">18th March 2020</p>
+                                            <p class="desc">{{moment($parent.selectedPlan.broadcastEndDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -77,7 +77,7 @@
                                     <div class="col-sm-6">
                                         <div class="booking-items">
                                             <h6 class="title">Ad Length</h6>
-                                            <p class="desc">20 Sec</p>
+                                            <p class="desc">{{$parent.selectedPlan.adLength}} Seconds</p>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -97,7 +97,7 @@
                                         <h5>Total Amount</h5>
                                     </div>
                                     <div class="col-sm-6">
-                                        <h5 class="amount pull-right">200.00</h5>
+                                        <h5 class="amount pull-right">{{$parent.selectedPlan.totalAmount | currency}}</h5>
                                     </div>
                                 </div>
                                 <p><small>*All tax inclusive</small></p>
@@ -152,12 +152,12 @@
                 let obj = {
                     save: true,
                     clientadplan: {
-                        Name: 'Client Ad',
+                        Name: this.$parent.selectedPlan.broadcastStartDate + '_' + this.$parent.selectedPlan.broadcastLocation.Name + '_' + this.$parent.selectedPlan.broadcastSlot,
                         Client: client,
-                        StartDate: '2019-09-12',
+                        StartDate: this.$parent.selectedPlan.broadcastStartDate,
                         IsRenewal: true
                     },
-                    channelplan: "5d5e4238f8ea326e580a597c",
+                    channelplan: this.$parent.selectedPlan.Plan,
                     addons: [],
                     token: token,
                     client: client

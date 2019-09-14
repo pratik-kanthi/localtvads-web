@@ -33,15 +33,17 @@
                         </div>
                     </div>
                     <div class="col-sm-1">
-                        <div class="recurring">
-                            <label>Recurring</label>
-                            <h5></h5>
+                        <div class="recurring form-group">
+                            <label for="recurring" class="control-label">Recurring</label>
+                            <input class="check" type="checkbox" name="recurring" id="recurring" v-model="isRenewable"/>
+                            <label class="check-label" for="recurring"></label>
+                            <br class="clearfix">
                         </div>
                     </div>
                     <div class="col-sm-1">
                         <div class="tolatcost">
                             <label>Total Cost</label>
-                            <h5 class="bold">{{selectedPlan.BaseAmount | currency}}</h5>
+                            <h5 class="bold">{{selectedPlan.TotalAmount | currency}}</h5>
                         </div>
                     </div>
                 </div>
@@ -58,7 +60,7 @@
                                 <li v-for="(slot,key) in availableSlots" :key="key"
                                     @click="selectSlot(key, slot)" :class="{'active': slotStartDate === key}">
                                     <h5>{{moment(key, 'YYYY-MM-DD').format('DD-MMM ddd')}}</h5>
-                                    <h5 class="mb0">{{slot.Breakfast.BaseAmount | currency}}</h5>
+                                    <h5 class="mb0">{{slot.Breakfast.TotalAmount | currency}}</h5>
                                 </li>
                             </ul>
                             <button class="next" @click="getNextSlots"><i class="material-icons">keyboard_arrow_right</i></button>
@@ -78,7 +80,7 @@
                                 </div>
                                 <div class="col-sm-4 text-center">
                                     <h5>Ending On</h5>
-                                    <h5 class="bold">{{slotEndDate}}</h5>
+                                    <h5 class="bold">{{slotEndDate.format('Do MMM YYYY,dddd')}}</h5>
                                 </div>
                             </div>
                         </div>
@@ -90,13 +92,10 @@
                                 <div class="plan" :class="{'active-slot': selectedPlan.Plan === plan.Plan}">
                                     <div class="plan-name">
                                         <h5 class="mb0">{{plan.AdSchedule.Name}}</h5>
-                                        <p class="mb0" v-if="plan.AdSchedule.Name === 'Breakfast'">6am to 9am</p>
-                                        <p class="mb0" v-else-if="plan.AdSchedule.Name === 'Lunch Time'">11am to
-                                            1pm</p>
-                                        <p class="mb0" v-else>5pm to 9pm</p>
+                                        <p class="mb0">{{plan.AdSchedule.StartTime}} to {{plan.AdSchedule.EndTime}}</p>
                                     </div>
                                     <div class="plan-amount">
-                                        <h4>{{plan.BaseAmount | currency}}</h4>
+                                        <h4>{{plan.TotalAmount | currency}}</h4>
                                         <p class="mb0">for 26 weeks</p>
                                     </div>
                                     <div class="features">
@@ -125,7 +124,7 @@
                     <div class="action">
                         <center>
                             <button class="btn btn-danger btn-bordered">Cancel</button>
-                            <button class="btn btn-primary" :disabled="!selectedPlan" @click="$emit('advanceToPayment')">
+                            <button class="btn btn-primary" :disabled="!selectedPlan" @click="goToPayment">
                                 Proceed
                             </button>
                         </center>
@@ -148,6 +147,7 @@
                 availableSlots: {},
                 channels: [],
                 channelSelected: this.$route.query.channel,
+                isRenewable: true,
                 loading: false,
                 seconds: [],
                 secondSelected: this.$route.query.seconds,
@@ -156,7 +156,7 @@
                 sliderEndDate: '',
                 sliderStartDate: '',
                 slotStartDate: this.$route.query.startdate,
-                slotEndDate: this.moment(this.$route.query.startdate, 'YYYY-MM-DD').add(window.slotduration, 'days').format('Do MMM YYYY, dddd')
+                slotEndDate: this.moment(this.$route.query.startdate, 'YYYY-MM-DD').add(window.slotduration, 'days')
             }
         },
         methods: {
@@ -209,6 +209,21 @@
                 this.sliderStartDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(5, 'days').format('YYYY-MM-DD');
                 this.getAvailableSlots();
             },
+            goToPayment() {
+                this.$parent.selectedPlan = {
+                    broadcastLocation: this.channels.find(channel => this.channelSelected === channel._id),
+                    broadcastSlot: this.selectedPlan.AdSchedule.Name,
+                    adStartTime: this.selectedPlan.AdSchedule.StartTime,
+                    adEndTime: this.selectedPlan.AdSchedule.EndTime,
+                    broadcastStartDate: this.slotStartDate,
+                    broadcastEndDate: this.slotEndDate,
+                    adLength: this.secondSelected,
+                    broadcastDuration: '6 months',
+                    totalAmount: this.selectedPlan.TotalAmount,
+                    plan: this.selectedPlan.Plan
+                }
+                this.$emit('advanceToPayment');
+            },
             async getAvailableSlotsByChannel(isFirstTime) {
                 try {
                     let result = await instance.get('api/channel/seconds?channel=' + this.channelSelected);
@@ -240,7 +255,6 @@
             },
             selectPlan(plan) {
                 this.selectedPlan = plan;
-                this.activePlan = plan.Plan;
             }
         },
         computed: {

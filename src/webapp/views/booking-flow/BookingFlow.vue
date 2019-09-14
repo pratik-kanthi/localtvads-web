@@ -33,7 +33,8 @@
                 currentStep: 1,
                 clientAdPlan: null,
                 isLoading: false,
-                loaderMessage: 'Please stand by while we fetch data'
+                loaderMessage: 'Please stand by while we fetch data',
+                selectedPlan: {},
             }
         },
         methods: {
