@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "bootstrap": "^3.4.1",
+    "card": "^2.4.0",
     "core-js": "^2.6.5",
     "jquery": "^3.4.1",
     "jquery.payment": "^3.0.0",

@@ -8,29 +8,33 @@
                         <div class="card-details">
                             <div class="header">
                                 <h5 class="mb0">Credit & Debit cards</h5>
-                                <p class="mb0">Transection fee may apply</p>
+                                <p class="mb0">Transaction fee may apply</p>
                             </div>
                             <div class="body">
-                                <form class="form">
-                                    <div class="form-group">
-                                        <label for="" class="mb8">Cardholder Name</label>
-                                        <input type="text" class="form-control" v-model="card.Name">
-                                    </div>
+                                <form class="form" ref="form">
+                                    <div class="hidden-container"></div>
                                     <div class="form-group">
                                         <label class="mb8">Card Number</label>
-                                        <input type="tel" class="form-control" v-model="card.Number">
+                                        <div class="input-group">
+                                            <input name="number" type="tel" class="form-control" v-model="cardNumber">
+                                            <span class="input-group-btn jp-card-logo" :class="getCardType">visa</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="mb8">Cardholder Name</label>
+                                        <input name="name" type="text" class="form-control" v-model="name" autocomplete="off">
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label class="mb8">Expiry Date</label>
-                                                <input type="tel" class="form-control" v-model="card.Expiry">
+                                                <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••">
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label class="mb8">CVV</label>
-                                                <input type="password" class="form-control" v-model="card.Cvv">
+                                                <input name="cvc" type="password" class="form-control" v-model="cvv">
                                             </div>
                                         </div>
                                     </div>
@@ -38,7 +42,7 @@
                                     <label for="consent" class="check-label box mt8 mr8"><span></span>  </label>
                                     <span>I have read and accept the terms of use, rules of Local Ads and privacy policy</span>
                                     <br/><br/>
-                                    <button class="btn btn-success btn-full" :disabled="!consent">Pay Now </button>
+                                    <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable" @click="generateToken">Pay Now </button>
                                 </form>
                             </div>
                         </div>
@@ -107,28 +111,144 @@
 </template>
 
 <script>
+    import instance from '@/api';
+    import Card from 'card';
     export default {
         name: "Payment",
         data() {
             return {
-                card: {
-                    Name: '',
-                    Number: null,
-                    Expiry: null,
-                    Cvv: null
-                },
-                consent: false
+                name: '',
+                cardNumber: null,
+                expiry: null,
+                cvv: null,
+                consent: false,
+                cardObj: null
             }
         },
         methods: {
+            generateToken() {
+                Stripe.card.createToken({
+                    number: this.cardNumber,
+                    cvc: this.cvv,
+                    exp_month: this.expiry.substring(0,2),
+                    exp_year: parseInt(this.expiry.substring(this.expiry.indexOf('/') + 1)),
+                    name: this.name
+                }, (code, result) => {
+                    if (code === 200) {
+                        this.payNow(result.id, this.$store.getters.getUser.Owner._id);
+                    } else {
+                        this.$swal({
+                            title: "Error",
+                            text: result.error.message,
+                            type: "error"
+                        });
+                    }
+                });
+            },
             isLoggedIn() {
                 return this.$store.getters.isLoggedIn
+            },
+            async payNow(token, client) {
+                let obj = {
+                    save: true,
+                    clientadplan: {
+                        Name: 'Client Ad',
+                        Client: client,
+                        StartDate: '2019-09-12',
+                        IsRenewal: true
+                    },
+                    channelplan: "5d5e4238f8ea326e580a597c",
+                    addons: [],
+                    token: token,
+                    client: client
+                };
+                try {
+                    this.$parent.isLoading = true;
+                    let result = await instance.post('api/clientad/new',obj);
+                    this.$router.push({
+                        name: 'BookingFlow',
+                        query: {
+                            clientadplan: result.data._id
+                        }
+                    });
+                    this.$swal({
+                        title: "Successful",
+                        text: "Payment has been successful. You are now being redirected to upload",
+                        type: "success"
+                    });
+                    this.$parent.fetchClientAdPlan(result.data._id);
+                } catch (err) {
+                    this.$parent.isLoading = false;
+                    this.$swal({
+                        title: "Error",
+                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        type: "error"
+                    });
+                    throw err;
+                }
+            },
+        },
+        computed: {
+            getCardType () {
+                if (this.cardNumber) {
+                    let re = new RegExp("^4");
+                    if (this.cardNumber.match(re) != null)
+                        return "jp-card-visa";
+
+                    // Mastercard
+                    // Updated for Mastercard 2017 BINs expansion
+                    if (/^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/.test(this.cardNumber))
+                        return "jp-card-mastercard";
+
+                    // AMEX
+                    re = new RegExp("^3[47]");
+                    if (this.cardNumber.match(re) != null)
+                        return "jp-card-amex";
+
+                    // Discover
+                    re = new RegExp("^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)");
+                    if (this.cardNumber.match(re) != null)
+                        return "jp-card-discover";
+
+                    // Diners
+                    re = new RegExp("^36");
+                    if (this.cardNumber.match(re) != null)
+                        return "jp-card-dinersclub";
+
+                    // Diners - Carte Blanche
+                    re = new RegExp("^30[0-5]");
+                    if (this.cardNumber.match(re) != null)
+                        return "jp-card-dinersclub";
+
+                    // JCB
+                    re = new RegExp("^35(2[89]|[3-8][0-9])");
+                    if (this.cardNumber.match(re) != null)
+                        return "jp-card-jcb";
+
+                    // Visa Electron
+                    re = new RegExp("^(4026|417500|4508|4844|491(3|7))");
+                    if (this.cardNumber.match(re) != null)
+                        return "jp-card-visaelectron";
+                }
+                return "";
+            },
+            isProceedable() {
+                return this.name && this.cvv && this.cardNumber.length > 12 && this.cardNumber.length <= 19 && this.consent && new Date(this.expiry.substring(this.expiry.indexOf('/') + 1), this.expiry.substring(0,2))
             }
         },
         created() {
             if (!this.isLoggedIn()) {
                 this.$store.commit('DIALOG', true);
             }
+            setTimeout(() => {
+                this.cardObj = new Card({
+                    form: this.$refs.form,
+                    container: '.hidden-container',
+                    placeholders: {
+                        expiry: '••/••••'
+                    }
+                });
+            });
         }
     }
 </script>
@@ -169,6 +289,12 @@
                                 font-weight: 8px;
                             }
                         }
+                    }
+                    .input-group {
+                        width: 100%;
+                    }
+                    .hidden-container {
+                        display: none;
                     }
                 }
             }

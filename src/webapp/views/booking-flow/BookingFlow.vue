@@ -16,7 +16,7 @@
         <div v-show="!isLoading">
             <component :is="currentStage" @advanceToPayment="goToPayment"></component>
         </div>
-        <LoaderModal :showloader="isLoading" message="Please stand by while we fetch data..."></LoaderModal>
+        <LoaderModal :showloader="isLoading" :message="loaderMessage + '...'"></LoaderModal>
     </div>
 </template>
 
@@ -34,7 +34,8 @@
                 currentStage: UploadAd,
                 currentStep: 1,
                 clientAdPlan: null,
-                isLoading: false
+                isLoading: false,
+                loaderMessage: 'Please stand by while we fetch data'
             }
         },
         methods: {
@@ -74,7 +75,7 @@
             goToPayment() {
                 this.currentStep = 2;
                 this.currentStage = Payment;
-            }
+            },
         },
         async created() {
             setTimeout(() => $('.v-stepper__step__step').text(''));

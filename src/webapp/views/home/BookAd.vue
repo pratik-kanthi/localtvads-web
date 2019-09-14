@@ -63,8 +63,10 @@
                 seconds: [],
                 startDate: null,
                 endDate: null,
-                sDate: new this.moment(),
-                disabledDates: []
+                sDate: new this.moment().add(1, 'days'),
+                disabledDates: [
+                    this.moment().format("DD/MM/YYYY")
+                ]
             }
         },
         methods: {

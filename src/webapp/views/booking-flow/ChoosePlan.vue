@@ -160,6 +160,10 @@
         },
         methods: {
             async getAvailableSlots(startDate, endDate, isFirstTime) {
+                if (!startDate || !this.$route.query.channel || !this.$route.query.seconds) {
+                    this.$router.push('/');
+                    return;
+                }
                 try {
                     this.loading = true;
                     let result = await instance.get('api/channel/plans?channel=' + this.$route.query.channel + '&seconds=' + this.$route.query.seconds + '&startdate=' + startDate + '&enddate=' + endDate);
@@ -186,7 +190,6 @@
             },
             selectSlot(date, slot) {
                 this.selectedSlot = slot;
-                this.activeSlot = slot;
                 this.slotStartDate = date;
                 this.slotEndDate = this.moment(date, 'YYYY-MM-DD').add(window.slotduration, 'days').format('Do MMM YYYY, dddd');
             },

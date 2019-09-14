@@ -49,11 +49,23 @@
             fileUploaded() {
                 this.isValid = false;
                 this.upload.chosen = this.$refs.fileUpload.files[0];
+                window.URL = window.URL || window.webkitURL;
+                let duration, video = document.createElement('video');
+                video.preload = 'metadata';
+                video.onloadedmetadata = () => {
+                    window.URL.revokeObjectURL(video.src);
+                    duration = video.duration;
+                    if (duration > this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds) {
+                        this.$swal("Warning", "Video duration exceeds " + this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds + " seconds. Please keep it within allowed duration", "warning");
+                        return;
+                    }
+                };
+                video.src = URL.createObjectURL(this.upload.chosen);
                 if (this.config.maxSize && this.upload.chosen.size > 1024 * 1024 * this.config.maxSize) {
                     this.$swal("Warning", "File exceeds the minimum size of " + this.config.maxSize + " MB", "warning");
                     return;
                 }
-                if (this.config.allowedExtensions && this.config.allowedExtensions.indexOf(this.upload.chosen.name.substr(this.upload.chosen.name.lastIndexOf('.'))) === -1) {
+                if (this.config.allowedExtensions && this.config.allowedExtensions.indexOf(this.upload.chosen.name.substr(this.upload.chosen.name.lastIndexOf('.') + 1)) === -1) {
                     this.$swal("Warning", "We accept only following file types : " + this.config.allowedExtensions.join(', '), "warning");
                     return;
                 }
@@ -74,7 +86,7 @@
                     this.socket.emit('UPLOAD_CHUNK', {
                         data: chunk,
                         sequence: ++counter,
-                        isLast: chunk.size < chunkSize ? true : false,
+                        isLast: chunk.size < chunkSize,
                         client: this.$parent.clientAdPlan.Client,
                         clientAdPlan: this.$parent.clientAdPlan._id,
                         name: this.upload.chosen.name
@@ -111,6 +123,7 @@
                     },1000);
                 });
             },
+
         },
         created() {
 
