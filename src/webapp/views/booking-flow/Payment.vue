@@ -10,6 +10,14 @@
                                 <h5 class="mb0">Credit & Debit cards</h5>
                                 <p class="mb0">Transaction fee may apply</p>
                             </div>
+                            <div class="header" v-if="savedCards.length > 0">
+                                <h5 class="mb0">Saved cards</h5>
+                                <p class="mb0">Transaction fee may apply</p>
+                                <div v-for="(card,key) in savedCards" :key="key">
+                                    <span v-text="card.Card.LastFour"></span>
+                                    <input type="password" placeholder="•••">
+                                </div>
+                            </div>
                             <div class="body">
                                 <form class="form" ref="form">
                                     <div class="hidden-container"></div>
@@ -122,11 +130,14 @@
                 expiry: null,
                 cvv: null,
                 consent: false,
-                cardObj: null
+                cardObj: null,
+                savedCards: [],
+                existingCard: null
             }
         },
         methods: {
             generateToken() {
+                this.$parent.isLoading = true;
                 Stripe.card.createToken({
                     number: this.cardNumber,
                     cvc: this.cvv,
@@ -137,6 +148,7 @@
                     if (code === 200) {
                         this.payNow(result.id, this.$store.getters.getUser.Owner._id);
                     } else {
+                        this.$parent.isLoading = false;
                         this.$swal({
                             title: "Error",
                             text: result.error.message,
@@ -157,26 +169,15 @@
                         StartDate: this.$parent.selectedPlan.broadcastStartDate,
                         IsRenewal: true
                     },
-                    channelplan: this.$parent.selectedPlan.Plan,
+                    channelplan: this.$parent.selectedPlan.plan,
+                    cardid: this.existingCard,
                     addons: [],
                     token: token,
                     client: client
                 };
+                let result;
                 try {
-                    this.$parent.isLoading = true;
-                    let result = await instance.post('api/clientad/new',obj);
-                    this.$router.push({
-                        name: 'BookingFlow',
-                        query: {
-                            clientadplan: result.data._id
-                        }
-                    });
-                    this.$swal({
-                        title: "Successful",
-                        text: "Payment has been successful. You are now being redirected to upload",
-                        type: "success"
-                    });
-                    this.$parent.fetchClientAdPlan(result.data._id);
+                    result = await instance.post('api/clientad/new',obj);
                 } catch (err) {
                     this.$parent.isLoading = false;
                     this.$swal({
@@ -186,7 +187,19 @@
                     });
                     throw err;
                 }
-            },
+                this.$router.push({
+                    name: 'BookingFlow',
+                    query: {
+                        clientadplan: result.data._id
+                    }
+                });
+                this.$swal({
+                    title: "Successful",
+                    text: "Payment has been successful. You are now being redirected to upload",
+                    type: "success"
+                });
+                this.$parent.fetchClientAdPlan(result.data._id);
+            }
         },
         computed: {
             getCardType () {
@@ -236,7 +249,7 @@
                 return this.name && this.cvv && this.cardNumber.length > 12 && this.cardNumber.length <= 19 && this.consent && new Date(this.expiry.substring(this.expiry.indexOf('/') + 1), this.expiry.substring(0,2))
             }
         },
-        created() {
+        async created() {
             if (!this.isLoggedIn()) {
                 this.$store.commit('DIALOG', true);
             }
@@ -249,6 +262,20 @@
                     }
                 });
             });
+            try {
+                this.$parent.isLoading = true;
+                let result = await instance.get('api/client/cards?client=' + this.$store.state.user.Owner._id);
+                this.savedCards = result.data;
+                this.$parent.isLoading = false;
+            } catch (err) {
+                this.$parent.isLoading = false;
+                this.$swal({
+                    title: "Error",
+                    text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: "error"
+                });
+                throw err;
+            }
         }
     }
 </script>

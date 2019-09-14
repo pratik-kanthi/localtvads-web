@@ -80,7 +80,7 @@
                                 </div>
                                 <div class="col-sm-4 text-center">
                                     <h5>Ending On</h5>
-                                    <h5 class="bold">{{slotEndDate.format('Do MMM YYYY,dddd')}}</h5>
+                                    <h5 class="bold">{{moment(slotEndDate).format('Do MMM YYYY,dddd')}}</h5>
                                 </div>
                             </div>
                         </div>
@@ -221,7 +221,7 @@
                     broadcastDuration: '6 months',
                     totalAmount: this.selectedPlan.TotalAmount,
                     plan: this.selectedPlan.Plan
-                }
+                };
                 this.$emit('advanceToPayment');
             },
             async getAvailableSlotsByChannel(isFirstTime) {
@@ -236,7 +236,7 @@
                     });
                     throw(err);
                 }
-                if(this.seconds.indexOf(this.secondSelected) === -1) {
+                if(this.seconds.indexOf(parseInt(this.secondSelected)) === -1) {
                     this.$swal({
                         title: 'Warning',
                         text: 'Ad length has changed according to the channel. Please select your desired Ad length',
