@@ -6,54 +6,57 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="card-details">
-                            <div class="header">
-                                <h5 class="mb0">Credit & Debit cards</h5>
-                                <p class="mb0">Transaction fee may apply</p>
-                            </div>
-                            <div class="header" v-if="savedCards.length > 0">
+                            <div class="header" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}">
                                 <h5 class="mb0">Saved cards</h5>
-                                <p class="mb0">Transaction fee may apply</p>
-                                <div v-for="(card,key) in savedCards" :key="key">
-                                    <span v-text="card.Card.LastFour"></span>
-                                    <input type="password" placeholder="•••">
+                            </div>
+                            <div class="cards" v-if="activeToggle === 'SavedCards'">
+                                <div v-for="(card,key) in savedCards" :key="key" class="card" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
+                                    <span >xxxx xxxx xxxx {{card.Card.LastFour}}</span>
+                                    <img :src="getImageUrl(card.Card.Vendor)" alt="" class="pull-right">
                                 </div>
                             </div>
-                            <div class="body">
-                                <form class="form" ref="form">
-                                    <div class="hidden-container"></div>
-                                    <div class="form-group">
-                                        <label class="mb8">Card Number</label>
-                                        <div class="input-group">
-                                            <input name="number" type="tel" class="form-control" v-model="cardNumber">
-                                            <span class="input-group-btn jp-card-logo" :class="getCardType">visa</span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" class="mb8">Cardholder Name</label>
-                                        <input name="name" type="text" class="form-control" v-model="name" autocomplete="off">
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="mb8">Expiry Date</label>
-                                                <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="mb8">CVV</label>
-                                                <input name="cvc" type="password" class="form-control" v-model="cvv">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <input type="checkbox" id="consent" class="check" v-model="consent"/>
-                                    <label for="consent" class="check-label box mt8 mr8"><span></span>  </label>
-                                    <span>I have read and accept the terms of use, rules of Local Ads and privacy policy</span>
-                                    <br/><br/>
-                                    <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable" @click="generateToken">Pay Now </button>
-                                </form>
+                            <div class="header mt8" @click="togglePaymentOptions('NewCard')" :class="{'active':activeToggle === 'NewCard'}">
+                                <h5 class="mb0">New card</h5>
                             </div>
+                            <form ref="form" v-if="activeToggle==='NewCard'">
+                                <div class="hidden-container"></div>
+                                <div class="form-group">
+                                    <label class="mb8">Card Number</label>
+                                    <div class="input-card-number">
+                                        <input name="number" type="tel" class="form-control" v-model="cardNumber">
+                                        <img :src="getCardType" alt="" class="pull-right">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="" class="mb8">Cardholder Name</label>
+                                    <input name="name" type="text" class="form-control" v-model="name" autocomplete="off">
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="mb8">Expiry Date</label>
+                                            <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="mb8">CVV</label>
+                                            <input name="cvc" type="password" class="form-control" v-model="cvv">
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="checkbox" id="save" class="check"  v-model="save" :disabled="savedCards.length === 0 && $parent.selectedPlan.isRenewal" />
+                                <label for="save" class="check-label box mt8 mr8"><span></span>  </label>
+                                <span class="brand-primary bold">Save Card</span><i class="material-icons">info</i>
+                                <br>
+                                <input type="checkbox" id="consent" class="check" v-model="consent"/>
+                                <label for="consent" class="check-label box mt8 mr8"><span></span>  </label>
+                                <span>I have read and accept the terms of use, rules of Local Ads and privacy policy</span>
+                            </form>
                         </div>
+                        <br class="clearfix">
+                        <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now </button>
+                        
                     </div>
                     <div class="col-sm-6">
                         <div class="booking-details">
@@ -132,37 +135,47 @@
                 consent: false,
                 cardObj: null,
                 savedCards: [],
-                existingCard: null
+                save: false,
+                existingCard: null,
+                activeToggle: 'NewCard'
             }
         },
         methods: {
             generateToken() {
                 this.$parent.isLoading = true;
-                Stripe.card.createToken({
-                    number: this.cardNumber,
-                    cvc: this.cvv,
-                    exp_month: this.expiry.substring(0,2),
-                    exp_year: parseInt(this.expiry.substring(this.expiry.indexOf('/') + 1)),
-                    name: this.name
-                }, (code, result) => {
-                    if (code === 200) {
-                        this.payNow(result.id, this.$store.getters.getUser.Owner._id);
-                    } else {
-                        this.$parent.isLoading = false;
-                        this.$swal({
-                            title: "Error",
-                            text: result.error.message,
-                            type: "error"
-                        });
-                    }
-                });
+                if (this.existingCard) {
+                    this.payNow(null, this.$store.getters.getUser.Owner._id);
+                }
+                else {
+                    Stripe.card.createToken({
+                        number: this.cardNumber,
+                        cvc: this.cvv,
+                        exp_month: this.expiry.substring(0,2),
+                        exp_year: parseInt(this.expiry.substring(this.expiry.indexOf('/') + 1)),
+                        name: this.name
+                    }, (code, result) => {
+                        if (code === 200) {
+                            this.payNow(result.id, this.$store.getters.getUser.Owner._id);
+                        } else {
+                            this.$parent.isLoading = false;
+                            this.$swal({
+                                title: "Error",
+                                text: result.error.message,
+                                type: "error"
+                            });
+                        }
+                    });
+                }
+            },
+            getImageUrl(vendor) {
+                return require('@/assets/images/cards/' + vendor + '.svg');
             },
             isLoggedIn() {
                 return this.$store.getters.isLoggedIn
             },
             async payNow(token, client) {
                 let obj = {
-                    save: true,
+                    save: this.save,
                     clientadplan: {
                         Name: this.$parent.selectedPlan.broadcastStartDate + '_' + this.$parent.selectedPlan.broadcastLocation.Name + '_' + this.$parent.selectedPlan.broadcastSlot,
                         Client: client,
@@ -199,6 +212,17 @@
                     type: "success"
                 });
                 this.$parent.fetchClientAdPlan(result.data._id);
+            },
+            selectExistingCard(card) {
+                this.existingCard = card;
+            },
+            async togglePaymentOptions(option) {
+                this.activeToggle = option;
+                if(option === 'SavedCards' && this.savedCards.length > 0) {
+                    this.existingCard = this.savedCards.find( s => s.IsPreferred)._id;
+                } else {
+                    this.existingCard = null;
+                }
             }
         },
         computed: {
@@ -206,78 +230,81 @@
                 if (this.cardNumber) {
                     let re = new RegExp("^4");
                     if (this.cardNumber.match(re) != null)
-                        return "jp-card-visa";
+                        return require('@/assets/images/cards/VISA.svg');
 
                     // Mastercard
                     // Updated for Mastercard 2017 BINs expansion
                     if (/^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/.test(this.cardNumber))
-                        return "jp-card-mastercard";
+                        return require('@/assets/images/cards/MASTERCARD.svg');
 
                     // AMEX
                     re = new RegExp("^3[47]");
                     if (this.cardNumber.match(re) != null)
-                        return "jp-card-amex";
+                        return require('@/assets/images/cards/AMERICANEXPRESS.svg');
 
                     // Discover
                     re = new RegExp("^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)");
                     if (this.cardNumber.match(re) != null)
-                        return "jp-card-discover";
+                        return require('@/assets/images/cards/DISCOVER.svg');
 
                     // Diners
                     re = new RegExp("^36");
                     if (this.cardNumber.match(re) != null)
-                        return "jp-card-dinersclub";
+                        return require('@/assets/images/cards/DINERSCLUB.svg');
 
                     // Diners - Carte Blanche
                     re = new RegExp("^30[0-5]");
                     if (this.cardNumber.match(re) != null)
-                        return "jp-card-dinersclub";
+                        return require('@/assets/images/cards/DINERSCLUB.svg');
 
                     // JCB
                     re = new RegExp("^35(2[89]|[3-8][0-9])");
                     if (this.cardNumber.match(re) != null)
-                        return "jp-card-jcb";
+                        return require('@/assets/images/cards/JCB.svg');
 
                     // Visa Electron
                     re = new RegExp("^(4026|417500|4508|4844|491(3|7))");
                     if (this.cardNumber.match(re) != null)
-                        return "jp-card-visaelectron";
+                        return require('@/assets/images/cards/VISA.svg');
                 }
                 return "";
             },
             isProceedable() {
-                return this.name && this.cvv && this.cardNumber.length > 12 && this.cardNumber.length <= 19 && this.consent && new Date(this.expiry.substring(this.expiry.indexOf('/') + 1), this.expiry.substring(0,2))
+                return this.name && this.cvv && this.cardNumber && this.cardNumber.length > 12 && this.cardNumber.length <= 19 && this.consent && this.expiry && new Date(this.expiry.substring(this.expiry.indexOf('/') + 1), this.expiry.substring(0,2))
             }
         },
         async created() {
             if (!this.isLoggedIn()) {
                 this.$store.commit('DIALOG', true);
             }
-            else {
-                setTimeout(() => {
-                    this.cardObj = new Card({
-                        form: this.$refs.form,
-                        container: '.hidden-container',
-                        placeholders: {
-                            expiry: '••/••••'
-                        }
-                    });
-                });
-                try {
-                    this.$parent.isLoading = true;
-                    let result = await instance.get('api/client/cards?client=' + this.$store.state.user.Owner._id);
-                    this.savedCards = result.data;
-                    this.$parent.isLoading = false;
-                } catch (err) {
-                    this.$parent.isLoading = false;
-                    this.$swal({
-                        title: "Error",
-                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
-                        type: "error"
-                    });
-                    throw err;
+            
+            try {
+                this.$parent.isLoading = true;
+                let result = await instance.get('api/client/cards?client=' + this.$store.state.user.Owner._id);
+                this.savedCards = result.data;
+                if (this.$parent.selectedPlan.isRenewal && this.savedCards.length === 0) {
+                    this.save = true;
                 }
+                this.$parent.isLoading = false;
+            } catch (err) {
+                this.$parent.isLoading = false;
+                this.$swal({
+                    title: "Error",
+                    text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: "error"
+                });
+                throw err;
             }
+            
+            setTimeout(() => {
+                this.cardObj = new Card({
+                    form: this.$refs.form,
+                    container: '.hidden-container',
+                    placeholders: {
+                        expiry: '••/••••'
+                    }
+                });
+            });
         }
     }
 </script>
@@ -292,39 +319,79 @@
             border-radius: 6px;
             .card-details {
                 .header {
-                    border: 1px solid #0C6CD4;
-                    padding: 8px 16px;
-                    border-radius: 2px;
+                    background-color: @brand-primary;
+                    padding: 16px;
+                    border-radius: 6px;
+                    cursor: pointer;
                     h5 {
                         line-height: 16px;
-                        font-size: 14px;
+                        color: #fff;
                     }
-                    p {
-                        font-size: 13px;
-                        line-height: 16px;
+                    opacity: 0.5;
+                    &.active {
+                        opacity: 1;
                     }
                 }
-                .body {
-                    border: 1px solid #0C6CD4;
-                    border-radius: 2px;
-                    padding: 16px;
-                    .form {
-                        label {
-                            font-size: 14px;
-                            font-weight: 300;
+                .cards {
+                    padding: 8px 0;
+                    height: 300px;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                    .card {
+                        padding: 8px;
+                        background-color: #f9f9f9;
+                        margin-bottom: 4px;
+                        opacity: 0.5;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        span {
+                            letter-spacing: 2px;
                         }
-                        .button {
+                        img {
+                            width: 34px;
+                        }
+                        &.active {
+                            border: 1px solid @brand-secondary;
+                            opacity: 1;
                             span {
-                                font-weight: 8px;
+                                font-weight: 700;
                             }
                         }
                     }
-                    .input-group {
-                        width: 100%;
+                }
+                form {
+                    padding: 16px 0;
+                    label {
+                        font-size: 14px;
+                        font-weight: 300;
                     }
-                    .hidden-container {
-                        display: none;
+                    i {
+                        position: relative;
+                        top: 3px;
+                        left: 6px;
+                        font-size: 18px;
+                        color: @brand-primary;
                     }
+                    .button {
+                        span {
+                            font-weight: 8px;
+                        }
+                    }
+                }
+                .input-card-number {
+                    width: 100%;
+                    position: relative;
+                    img {
+                        position: absolute;
+                        right: 8px;
+                        width: 40px;
+                        top: 29px;
+                        overflow: auto;
+                        z-index: 2 !important;
+                    }
+                }
+                .hidden-container {
+                    display: none;
                 }
             }
             .booking-details {
