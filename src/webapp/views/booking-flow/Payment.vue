@@ -95,7 +95,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="recurring">
+                                <div class="recurring" v-if="$parent.selectedPlan.isRenewal">
                                     <h6><i class="material-icons">done</i> Recurring Broadcast</h6>
                                 </div>
                             </div>
@@ -167,7 +167,7 @@
                         Name: this.$parent.selectedPlan.broadcastStartDate + '_' + this.$parent.selectedPlan.broadcastLocation.Name + '_' + this.$parent.selectedPlan.broadcastSlot,
                         Client: client,
                         StartDate: this.$parent.selectedPlan.broadcastStartDate,
-                        IsRenewal: true
+                        IsRenewal: this.$parent.selectedPlan.isRenewal
                     },
                     channelplan: this.$parent.selectedPlan.plan,
                     cardid: this.existingCard,
@@ -253,28 +253,30 @@
             if (!this.isLoggedIn()) {
                 this.$store.commit('DIALOG', true);
             }
-            setTimeout(() => {
-                this.cardObj = new Card({
-                    form: this.$refs.form,
-                    container: '.hidden-container',
-                    placeholders: {
-                        expiry: '••/••••'
-                    }
+            else {
+                setTimeout(() => {
+                    this.cardObj = new Card({
+                        form: this.$refs.form,
+                        container: '.hidden-container',
+                        placeholders: {
+                            expiry: '••/••••'
+                        }
+                    });
                 });
-            });
-            try {
-                this.$parent.isLoading = true;
-                let result = await instance.get('api/client/cards?client=' + this.$store.state.user.Owner._id);
-                this.savedCards = result.data;
-                this.$parent.isLoading = false;
-            } catch (err) {
-                this.$parent.isLoading = false;
-                this.$swal({
-                    title: "Error",
-                    text: err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: "error"
-                });
-                throw err;
+                try {
+                    this.$parent.isLoading = true;
+                    let result = await instance.get('api/client/cards?client=' + this.$store.state.user.Owner._id);
+                    this.savedCards = result.data;
+                    this.$parent.isLoading = false;
+                } catch (err) {
+                    this.$parent.isLoading = false;
+                    this.$swal({
+                        title: "Error",
+                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        type: "error"
+                    });
+                    throw err;
+                }
             }
         }
     }

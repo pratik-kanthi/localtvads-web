@@ -33,9 +33,9 @@
                         </div>
                     </div>
                     <div class="col-sm-1">
-                        <div class="recurring form-group">
+                        <div class="recurring form-group mb0">
                             <label for="recurring" class="control-label">Recurring</label>
-                            <input class="check" type="checkbox" name="recurring" id="recurring" v-model="isRenewable"/>
+                            <input class="check" type="checkbox" name="recurring" id="recurring" v-model="isRenewal"/>
                             <label class="check-label" for="recurring"></label>
                             <br class="clearfix">
                         </div>
@@ -60,7 +60,7 @@
                                 <li v-for="(slot,key) in availableSlots" :key="key"
                                     @click="selectSlot(key, slot)" :class="{'active': slotStartDate === key}">
                                     <h5>{{moment(key, 'YYYY-MM-DD').format('DD-MMM ddd')}}</h5>
-                                    <h5 class="mb0">{{slot.Breakfast.TotalAmount | currency}}</h5>
+                                    <h5 class="mb0" v-if="Object.keys(slot).length > 0">{{slot[Object.keys(slot)[0]].TotalAmount | currency}}</h5>
                                 </li>
                             </ul>
                             <button class="next" @click="getNextSlots"><i class="material-icons">keyboard_arrow_right</i></button>
@@ -147,7 +147,7 @@
                 availableSlots: {},
                 channels: [],
                 channelSelected: this.$route.query.channel,
-                isRenewable: true,
+                isRenewal: true,
                 loading: false,
                 seconds: [],
                 secondSelected: this.$route.query.seconds,
@@ -221,7 +221,7 @@
                     broadcastDuration: '6 months',
                     totalAmount: this.selectedPlan.TotalAmount,
                     plan: this.selectedPlan.Plan,
-                    isRenewable: this.isRenewable
+                    isRenewal: this.isRenewal
                 }
                 this.$emit('advanceToPayment');
             },
@@ -253,6 +253,8 @@
                 this.selectedSlot = slot;
                 this.slotStartDate = date;
                 this.slotEndDate = this.moment(date, 'YYYY-MM-DD').add(window.slotduration, 'days');
+                let key = Object.keys(this.selectedSlot)[0];
+                this.selectedPlan = this.selectedSlot[key];
             },
             selectPlan(plan) {
                 this.selectedPlan = plan;
