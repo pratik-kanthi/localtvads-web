@@ -1,4 +1,3 @@
-//Basic Style
 .check {
 	display: none;
 }
@@ -23,20 +22,19 @@
 	background: none;
 }
 
-//Style for switch
-.check + label.check-label.switch {
+.check + label.check-label {
 	outline: 0;
 	display: block;
 	margin-top: 5px;
 	width: 4em;
-	height: 2em;
+	height: 2.1em;
 	position: relative;
 	cursor: pointer;
 	user-select: none;
 }
 
-.check + label.check-label.switch:after,
-.check + label.check-label.switch:before {
+.check + label.check-label:after,
+.check + label.check-label:before {
 	position: relative;
 	display: block;
 	content: "";
@@ -44,33 +42,33 @@
 	height: 100%;
 }
 
-.check + label.check-label.switch:after {
+.check + label.check-label:after {
 	left: 0;
 }
 
-.check + label.check-label.switch:before {
+.check + label.check-label:before {
 	display: none;
 }
 
-.check:checked + label.check-label.switch:after {
+.check:checked + label.check-label:after {
 	left: 50%;
 }
 
-.check + label.check-label.switch {
-	background: #f0f0f0;
+.check + label.check-label {
+	background: #d8d8d8;
 	border-radius: 2em;
 	padding: 2px;
 	transition: all .4s ease;
 }
 
-.check + label.check-label.switch:after {
+.check + label.check-label:after {
 	border-radius: 50%;
 	background: #fff;
 	transition: all .2s ease;
 }
 
-.check:checked + label.check-label.switch {
-	background: @brand-secondary;
+.check:checked + label.check-label {
+	background: @brand-primary !important;
 }
 
 .check:disabled + label {
@@ -80,13 +78,22 @@
 //Style for box
 .check + label.check-label.box {
 	margin: 0;
+	background: none !important;
+	display: inline-block;
+	height: auto;
+	width: auto;
+	padding: 0;
+	&:after {
+		display: none;
+	}
 	> span {
 		display: block;
 		margin-top: -3px;
 		position: relative;
 		top: 4px;
 		margin-right: 2px;
-		border: 1px solid #ccc;
+		background-color: #fff !important;
+		border: 1px solid @brand-primary;
 		.border-radius(4px);
 		height: 20px;
 		width: 20px;

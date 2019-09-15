@@ -80,7 +80,7 @@
                                 </div>
                                 <div class="col-sm-4 text-center">
                                     <h5>Ending On</h5>
-                                    <h5 class="bold">{{slotEndDate.format('Do MMM YYYY,dddd')}}</h5>
+                                    <h5 class="bold">{{moment(slotEndDate, 'YYYY-MM-DD').format('Do MMM YYYY,dddd')}}</h5>
                                 </div>
                             </div>
                         </div>
@@ -100,7 +100,7 @@
                                     </div>
                                     <div class="features">
                                         <ul>
-                                            <li>Played every Monday between 6am - 9am</li>
+                                            <li>Played every {{moment(slotStartDate, 'YYYY-MM-DD').format('dddd')}} between {{plan.AdSchedule.StartTime}} - {{plan.AdSchedule.EndTime}}</li>
                                             <li>><span class="brand-primary">100,000</span> expected ad views over 6
                                                 months
                                             </li>
@@ -220,7 +220,8 @@
                     adLength: this.secondSelected,
                     broadcastDuration: '6 months',
                     totalAmount: this.selectedPlan.TotalAmount,
-                    plan: this.selectedPlan.Plan
+                    plan: this.selectedPlan.Plan,
+                    isRenewable: this.isRenewable
                 }
                 this.$emit('advanceToPayment');
             },
@@ -236,7 +237,7 @@
                     });
                     throw(err);
                 }
-                if(this.seconds.indexOf(this.secondSelected) === -1) {
+                if(this.seconds.indexOf(parseInt(this.secondSelected)) === -1) {
                     this.$swal({
                         title: 'Warning',
                         text: 'Ad length has changed according to the channel. Please select your desired Ad length',
@@ -251,7 +252,7 @@
             selectSlot(date, slot) {
                 this.selectedSlot = slot;
                 this.slotStartDate = date;
-                this.slotEndDate = this.moment(date, 'YYYY-MM-DD').add(window.slotduration, 'days').format('Do MMM YYYY, dddd');
+                this.slotEndDate = this.moment(date, 'YYYY-MM-DD').add(window.slotduration, 'days');
             },
             selectPlan(plan) {
                 this.selectedPlan = plan;
