@@ -59,18 +59,18 @@
                         this.$swal("Warning", "Video duration exceeds " + this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds + " seconds. Please keep it within allowed duration", "warning");
                         return;
                     }
+                    if (this.config.maxSize && this.upload.chosen.size > 1024 * 1024 * this.config.maxSize) {
+                        this.$swal("Warning", "File exceeds the minimum size of " + this.config.maxSize + " MB", "warning");
+                        return;
+                    }
+                    if (this.config.allowedExtensions && this.config.allowedExtensions.indexOf(this.upload.chosen.name.substr(this.upload.chosen.name.lastIndexOf('.') + 1)) === -1) {
+                        this.$swal("Warning", "We accept only following file types : " + this.config.allowedExtensions.join(', '), "warning");
+                        return;
+                    }
+                    this.isValid = true;
+                    this.uploadFile();
                 };
                 video.src = URL.createObjectURL(this.upload.chosen);
-                if (this.config.maxSize && this.upload.chosen.size > 1024 * 1024 * this.config.maxSize) {
-                    this.$swal("Warning", "File exceeds the minimum size of " + this.config.maxSize + " MB", "warning");
-                    return;
-                }
-                if (this.config.allowedExtensions && this.config.allowedExtensions.indexOf(this.upload.chosen.name.substr(this.upload.chosen.name.lastIndexOf('.') + 1)) === -1) {
-                    this.$swal("Warning", "We accept only following file types : " + this.config.allowedExtensions.join(', '), "warning");
-                    return;
-                }
-                this.isValid = true;
-                this.uploadFile();
             },
             async uploadFile() {
                 this.isLoading = true;
@@ -97,8 +97,10 @@
                     this.processing = true;
                 });
                 this.socket.on('UPLOAD_CHUNK_FINISHED', (data) => {
-                    this.progress = (((data * 1000000) / this.upload.chosen.size) * 100).toFixed(0);
-                    console.log(this.progress);
+                    setTimeout(() => {
+                        if (this.progress !== 100)
+                            this.progress = (((data * 1000000) / this.upload.chosen.size) * 100).toFixed(0);
+                    }, 100);
                 });
                 this.socket.on('UPLOAD_ERROR', () => {
                     this.$swal({
