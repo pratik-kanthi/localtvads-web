@@ -43,7 +43,7 @@
                     <div class="col-sm-1">
                         <div class="tolatcost">
                             <label>Total Cost</label>
-                            <h5 class="bold">{{selectedPlan.TotalAmount | currency}}</h5>
+                            <h5 class="bold" v-if="selectedPlan">{{selectedPlan.TotalAmount | currency}}</h5>
                         </div>
                     </div>
                 </div>
@@ -61,6 +61,7 @@
                                     @click="selectSlot(key, slot)" :class="{'active': slotStartDate === key}">
                                     <h5>{{moment(key, 'YYYY-MM-DD').format('DD-MMM ddd')}}</h5>
                                     <h5 class="mb0" v-if="Object.keys(slot).length > 0">{{slot[Object.keys(slot)[0]].TotalAmount | currency}}</h5>
+                                    <h5 class="mb0" v-else>-</h5>
                                 </li>
                             </ul>
                             <button class="next" @click="getNextSlots"><i class="material-icons">keyboard_arrow_right</i></button>
@@ -86,8 +87,8 @@
                         </div>
                     </div>
                     <div class="broadcast-slots" v-if="selectedSlot">
-                        <h5 class="mb8">Choose Your Broadcast Slots</h5>
-                        <div class="row">
+                        <h5 class="mb8">Choose Your Plan</h5>
+                        <div class="row" v-if="Object.keys(selectedSlot).length > 0">
                             <div class="col-sm-4" v-for="plan in selectedSlot" :key="plan.Plan">
                                 <div class="plan" :class="{'active-slot': selectedPlan.Plan === plan.Plan}">
                                     <div class="plan-name">
@@ -127,12 +128,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div v-else>
+                            There are no plans available for this date. Please choose another date to book your slot.
+                        </div>
                     </div>
-
-                    <div class="action">
+                    <div class="action" v-if="selectedPlan">
                         <center>
                             <button class="btn btn-danger btn-bordered" @click="cancel">Cancel</button>
-                            <button class="btn btn-primary" :disabled="!selectedPlan" @click="goToPayment">
+                            <button class="btn btn-primary" @click="goToPayment">
                                 Proceed
                             </button>
                         </center>
@@ -175,7 +178,6 @@
                 let startDate = this.sliderStartDate ? this.sliderStartDate : this.slotStartDate;
                 let endDate = this.sliderEndDate ? this.sliderEndDate : this.slotEndDate;
                 try {
-                    this.loading = true;
                     let result = await instance.get('api/channel/plans?channel=' + this.channelSelected + '&seconds=' + this.secondSelected + '&startdate=' + startDate + '&enddate=' + endDate);
                     this.availableSlots = result.data;
                     if (isFirstTime) {
@@ -235,10 +237,10 @@
                     broadcastEndDate: this.slotEndDate,
                     adLength: this.secondSelected,
                     broadcastDuration: '6 months',
-                    totalAmount: this.selectedPlan.TotalAmount,
-                    plan: this.selectedPlan.Plan,
+                    totalAmount: this.selectedPlan ? this.selectedPlan.TotalAmount : '',
+                    plan: this.selectedPlan ? this.selectedPlan.Plan : '',
                     isRenewal: this.isRenewal
-                }
+                };
                 this.$emit('advanceToPayment');
             },
             async getAvailableSlotsByChannel(isFirstTime) {
@@ -282,6 +284,7 @@
             }
         },
         created() {
+            this.loading = true;
             this.sliderStartDate = this.$route.query.startdate;
             this.sliderEndDate = this.moment(this.$route.query.startdate, "YYYY-MM-DD").add(4, 'days').format("YYYY-MM-DD");
             this.getAllChannels();

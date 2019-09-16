@@ -1,6 +1,5 @@
 import Home from '@/webapp/views/home/Home';
 import CreateVideoAd from '@/webapp/views/create-ad/CreateVideoAd';
-import ChoosePlan from '@/webapp/views/booking-flow/ChoosePlan.vue';
 import { store } from '@/store';
 import BookingFlow from "../webapp/views/booking-flow/BookingFlow";
 
