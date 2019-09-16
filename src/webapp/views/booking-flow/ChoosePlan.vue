@@ -110,17 +110,25 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <div class="selectplan">
+                                    <!-- <div class="selectplan">
                                         <button class="btn btn-primary btn-full" @click="selectPlan(plan)"
                                                 :class="{'btn-active': selectedPlan.Plan === plan.Plan}">
                                             <span v-if="selectedPlan.Plan === plan.Plan">Selected</span>
                                             <span v-else>Choose this plan</span>
                                         </button>
-                                    </div>
+                                    </div> -->
+                                </div>
+                                <div class="selectplan">
+                                    <button class="btn btn-primary btn-full" @click="selectPlan(plan)"
+                                            :class="{'btn-active': selectedPlan.Plan === plan.Plan}">
+                                        <span v-if="selectedPlan.Plan === plan.Plan">Selected</span>
+                                        <span v-else>Choose this plan</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="action">
                         <center>
                             <button class="btn btn-danger btn-bordered">Cancel</button>
@@ -432,6 +440,7 @@
                         border: 1px solid @brand-primary;
                         text-align: center;
                         border-radius: 6px;
+                        padding-bottom: 56px;
                         .opacity(50);
                         &.active-slot {
                             .box-shadow(0 0 8px 0 rgba(255, 101, 0, 0.5));
@@ -497,13 +506,22 @@
                             }
                         }
 
-                        .selectplan {
-                            padding: 0 40px 24px;
-                            opacity: 1;
-                            .btn-active {
-                                background-color: @brand-secondary;
-                                border: none;
-                            }
+                        // .selectplan {
+                        //     padding: 0 40px 24px;
+                        //     opacity: 1;
+                        //     .btn-active {
+                        //         background-color: @brand-secondary;
+                        //         border: none;
+                        //     }
+                        // }
+                    }
+                    .selectplan {
+                        margin-top: -64px;
+                        padding: 0 40px 24px;
+                        opacity: 1;
+                        .btn-active {
+                            background-color: @brand-secondary;
+                            border: none;
                         }
                     }
                 }

@@ -14,7 +14,7 @@
                 <input type="password" v-model="user.password" class="form-control" placeholder="Password">
             </div>
             <button class="btn btn-primary btn-full" @click="login" :disabled="!isValid || $store.state.auth.loader">Login</button>
-            <div class="alert alert-danger text-center" v-if="errMessage">
+            <div class="alert alert-danger text-center mt24" v-if="errMessage">
                 <small>{{errMessage}}</small>
             </div>
         </form>

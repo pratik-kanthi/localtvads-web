@@ -8,6 +8,7 @@
                         <div class="card-details">
                             <div class="header" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}">
                                 <h5 class="mb0">Saved cards</h5>
+                                <i class="material-icons">keyboard_arrow_down</i>
                             </div>
                             <div class="cards" v-if="activeToggle === 'SavedCards'">
                                 <div v-for="(card,key) in savedCards" :key="key" class="card" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
@@ -17,6 +18,7 @@
                             </div>
                             <div class="header mt8" @click="togglePaymentOptions('NewCard')" :class="{'active':activeToggle === 'NewCard'}">
                                 <h5 class="mb0">New card</h5>
+                                <i class="material-icons">keyboard_arrow_down</i>
                             </div>
                             <form ref="form" v-if="activeToggle==='NewCard'">
                                 <div class="hidden-container"></div>
@@ -143,30 +145,41 @@
         },
         methods: {
             generateToken() {
-                this.$parent.isLoading = true;
-                if (this.existingCard) {
-                    this.payNow(null, this.$store.getters.getUser.Owner._id);
-                }
-                else {
-                    Stripe.card.createToken({
-                        number: this.cardNumber,
-                        cvc: this.cvv,
-                        exp_month: this.expiry.substring(0,2),
-                        exp_year: parseInt(this.expiry.substring(this.expiry.indexOf('/') + 1)),
-                        name: this.name
-                    }, (code, result) => {
-                        if (code === 200) {
-                            this.payNow(result.id, this.$store.getters.getUser.Owner._id);
-                        } else {
-                            this.$parent.isLoading = false;
-                            this.$swal({
-                                title: "Error",
-                                text: result.error.message,
-                                type: "error"
+                this.$swal({
+                    title: 'Are you sure?',
+                    text: 'Payment will be processed',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirm',
+                    closeOnConfirm: false
+                }).then(isConfirm => {
+                    if (isConfirm.value) {
+                        this.$parent.isLoading = true;
+                        if (this.existingCard) {
+                            this.payNow(null, this.$store.getters.getUser.Owner._id);
+                        }
+                        else {
+                            Stripe.card.createToken({
+                                number: this.cardNumber,
+                                cvc: this.cvv,
+                                exp_month: this.expiry.substring(0,2),
+                                exp_year: parseInt(this.expiry.substring(this.expiry.indexOf('/') + 1)),
+                                name: this.name
+                            }, (code, result) => {
+                                if (code === 200) {
+                                    this.payNow(result.id, this.$store.getters.getUser.Owner._id);
+                                } else {
+                                    this.$parent.isLoading = false;
+                                    this.$swal({
+                                        title: "Error",
+                                        text: result.error.message,
+                                        type: "error"
+                                    });
+                                }
                             });
                         }
-                    });
-                }
+                    }
+                });
             },
             async getCards() {
                 try {
@@ -315,6 +328,9 @@
                         expiry: '••/••••'
                     }
                 });
+                // $( () => {
+                //     $('[data-toggle="tooltip"]').tooltip();
+                // });
             });
         }
     }
@@ -334,11 +350,18 @@
                     padding: 16px;
                     border-radius: 6px;
                     cursor: pointer;
+                    position: relative;
                     h5 {
                         line-height: 16px;
                         color: #fff;
                     }
                     opacity: 0.5;
+                    i {
+                        position: absolute;
+                        color: #fff;
+                        top: 12px;
+                        right: 12px;
+                    }
                     &.active {
                         opacity: 1;
                     }
