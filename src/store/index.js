@@ -11,7 +11,7 @@ const DIALOG = 'DIALOG';
 
 export const store = new Vuex.Store({
 	state: {
-		isLoggedIn: !!VueCookies.get('token'), // state to check whether user has logged in
+		isAuth: !!VueCookies.get('token'), // state to check whether user has logged in
 		user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : '',
 		auth: {
 			showDialog: false,
@@ -23,12 +23,12 @@ export const store = new Vuex.Store({
 			state.auth.showDialog = false;
 			state.auth.loader = false;
 			state.user = JSON.parse(localStorage.getItem('user'));
-			state.isLoggedIn = true;
+			state.isAuth = true;
 		},
 		[LOGOUT](state) {
 			localStorage.removeItem('user');
 			VueCookies.remove('token');
-			state.isLoggedIn = false;
+			state.isAuth = false;
 		},
 		[DIALOG](state, val) {
 			state.auth.showDialog = val;
@@ -44,7 +44,7 @@ export const store = new Vuex.Store({
 	},
 	getters: {
 		isLoggedIn: (state) => {
-			return state.isLoggedIn;
+			return state.isAuth;
 		},
 		getUser: (state) => {
 			return state.user;

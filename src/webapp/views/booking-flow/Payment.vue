@@ -122,6 +122,7 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex';
     import instance from '@/api';
     import Card from 'card';
     export default {
@@ -165,6 +166,25 @@
                             });
                         }
                     });
+                }
+            },
+            async getCards() {
+                try {
+                    this.$parent.isLoading = true;
+                    let result = await instance.get('api/client/cards?client=' + this.$store.state.user.Owner._id);
+                    this.savedCards = result.data;
+                    if (this.$parent.selectedPlan.isRenewal && this.savedCards.length === 0) {
+                        this.save = true;
+                    }
+                    this.$parent.isLoading = false;
+                } catch (err) {
+                    this.$parent.isLoading = false;
+                    this.$swal({
+                        title: "Error",
+                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        type: "error"
+                    });
+                    throw err;
                 }
             },
             getImageUrl(vendor) {
@@ -271,31 +291,22 @@
             },
             isProceedable() {
                 return this.name && this.cvv && this.cardNumber && this.cardNumber.length > 12 && this.cardNumber.length <= 19 && this.consent && this.expiry && new Date(this.expiry.substring(this.expiry.indexOf('/') + 1), this.expiry.substring(0,2))
+            },
+            ...mapState(['isAuth'])
+        },
+        watch: {
+            isAuth(newValue) {
+                if (newValue) {
+                    this.getCards();
+                }
             }
         },
         async created() {
             if (!this.isLoggedIn()) {
                 this.$store.commit('DIALOG', true);
-            }
-            
-            try {
-                this.$parent.isLoading = true;
-                let result = await instance.get('api/client/cards?client=' + this.$store.state.user.Owner._id);
-                this.savedCards = result.data;
-                if (this.$parent.selectedPlan.isRenewal && this.savedCards.length === 0) {
-                    this.save = true;
-                }
-                this.$parent.isLoading = false;
-            } catch (err) {
-                this.$parent.isLoading = false;
-                this.$swal({
-                    title: "Error",
-                    text: err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: "error"
-                });
-                throw err;
-            }
-            
+            } else
+                this.getCards();
+
             setTimeout(() => {
                 this.cardObj = new Card({
                     form: this.$refs.form,
