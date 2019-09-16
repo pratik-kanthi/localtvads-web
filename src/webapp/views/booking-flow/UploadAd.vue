@@ -15,7 +15,11 @@
                 <div class="pull-right">
                     <strong v-text="progress + ' %'"></strong>
                 </div>
-                <v-progress-linear height="10" :value="progress"></v-progress-linear>
+                <br class="clearfix">
+                <div class="loader">
+                    <div class="value" :style="{'width': progress + '%'}"></div>
+                </div>
+                <br class="clearfix">
             </div>
             <LoaderModal :showloader="progress === 100 && processing" message="Upload successful, please wait while we process the video..."></LoaderModal>
         </div>
@@ -55,10 +59,10 @@
                 video.onloadedmetadata = () => {
                     window.URL.revokeObjectURL(video.src);
                     duration = video.duration;
-                    if (duration > this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds) {
-                        this.$swal("Warning", "Video duration exceeds " + this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds + " seconds. Please keep it within allowed duration", "warning");
-                        return;
-                    }
+                    // if (duration > this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds) {
+                    //     this.$swal("Warning", "Video duration exceeds " + this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds + " seconds. Please keep it within allowed duration", "warning");
+                    //     return;
+                    // }
                     if (this.config.maxSize && this.upload.chosen.size > 1024 * 1024 * this.config.maxSize) {
                         this.$swal("Warning", "File exceeds the minimum size of " + this.config.maxSize + " MB", "warning");
                         return;
@@ -97,10 +101,7 @@
                     this.processing = true;
                 });
                 this.socket.on('UPLOAD_CHUNK_FINISHED', (data) => {
-                    setTimeout(() => {
-                        if (this.progress !== 100)
-                            this.progress = (((data * 1000000) / this.upload.chosen.size) * 100).toFixed(0);
-                    }, 100);
+                    this.progress = (((data * 1000000) / this.upload.chosen.size) * 100).toFixed(0);
                 });
                 this.socket.on('UPLOAD_ERROR', () => {
                     this.$swal({
@@ -176,6 +177,19 @@
                 border: 1px solid @lighter-grey;
                 border-radius: 5px;
                 padding: 8px 16px;
+                .loader {
+                    height: 10px;
+                    width: 100%;
+                    background-color: @lighter-grey;
+                    position:relative;
+                    border-radius: 6px;
+                    .value {
+                        height: inherit;
+                        position: absolute;
+                        left: 0;
+                        background-color: @brand-primary;
+                    }
+                }
             }
         }
     }

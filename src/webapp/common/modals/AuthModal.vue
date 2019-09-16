@@ -3,13 +3,13 @@
         <div class="user-login">
             <div class="tabs">
                 <ul>
-                    <li :class="{'active' : tabActive === 'register'}" @click="goToComponent('register')">Register</li>
-                    <li :class="{'active' : tabActive === 'login'}" @click="goToComponent('login')">Login</li>
+                    <li :class="{'active' : getDefaultChosen === 'register'}" @click="goToComponent('register')">Register</li>
+                    <li :class="{'active' : getDefaultChosen === 'login'}" @click="goToComponent('login')">Login</li>
                 </ul>
             </div>
             <div class="content">
                 <div class="content-area">
-                    <div v-if="tabActive === 'login'">
+                    <div v-if="getDefaultChosen === 'login'">
                         <Login @close="close"></Login>
                     </div>
                     <div v-else>
@@ -25,20 +25,15 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex';
     import Login from "@/webapp/common/auth/Login";
     import Register from "@/webapp/common/auth/Register";
 
     export default {
         name: "AuthModal",
-        props: ['active'],
         components: {
             Login,
             Register
-        },
-        data() {
-            return {
-                tabActive: ''
-            }
         },
         methods: {
             close() {
@@ -46,17 +41,15 @@
                 this.$emit('closed', true);
             },
             goToComponent(name) {
-                this.tabActive = name;
+                this.$store.state.auth.defaultChosen = name;
             }
         },
         computed: {
             getShowDialog() {
                 return this.$store.getters.getShowDialog;
-            }
+            },
+            ...mapGetters(['getDefaultChosen'])
         },
-        created() {
-            this.tabActive = this.active;
-        }
     }
 </script>
 

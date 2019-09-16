@@ -40,6 +40,8 @@
                         gapi.auth2.getAuthInstance().grantOfflineAccess({'redirect_uri': 'postmessage', 'approval_prompt': 'force'}).then(() => {
                             gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
                             this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+                        }, () => {
+                            this.$store.state.auth.loader = false;
                         });
                     });
                 });

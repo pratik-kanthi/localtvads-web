@@ -28,8 +28,8 @@
                 </button>
             </div>
         </div>
-        <div class="ad-views"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated
-            Views<span>845,00,00</span></div>
+        <div class="ad-views" v-if="broadcastLocation && adLength"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated
+            Views<span>845,000</span></div>
     </div>
 </template>
 

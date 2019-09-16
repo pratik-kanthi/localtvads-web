@@ -6,7 +6,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="card-details">
-                            <div class="header" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}">
+                            <div class="header" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}" v-if="savedCards.length > 0">
                                 <h5 class="mb0">Saved cards</h5>
                                 <i class="material-icons">keyboard_arrow_down</i>
                             </div>
@@ -58,7 +58,7 @@
                         </div>
                         <br class="clearfix">
                         <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now </button>
-                        
+
                     </div>
                     <div class="col-sm-6">
                         <div class="booking-details">
@@ -140,7 +140,7 @@
                 savedCards: [],
                 save: false,
                 existingCard: null,
-                activeToggle: 'NewCard'
+                activeToggle: ''
             }
         },
         methods: {
@@ -189,6 +189,11 @@
                     if (this.$parent.selectedPlan.isRenewal && this.savedCards.length === 0) {
                         this.save = true;
                     }
+                    if (this.savedCards.length > 0 && !this.activeToggle) {
+                        this.activeToggle = 'SavedCards';
+                    } else {
+                        this.activeToggle = 'NewCard';
+                    }
                     this.$parent.isLoading = false;
                 } catch (err) {
                     this.$parent.isLoading = false;
@@ -205,6 +210,17 @@
             },
             isLoggedIn() {
                 return this.$store.getters.isLoggedIn
+            },
+            loadCardJS() {
+                setTimeout(() => {
+                    this.cardObj = new Card({
+                        form: this.$refs.form,
+                        container: '.hidden-container',
+                        placeholders: {
+                            expiry: '••/••••'
+                        }
+                    });
+                }, 100);
             },
             async payNow(token, client) {
                 let obj = {
@@ -255,6 +271,7 @@
                     this.existingCard = this.savedCards.find( s => s.IsPreferred)._id;
                 } else {
                     this.existingCard = null;
+                    this.loadCardJS();
                 }
             }
         },
@@ -317,21 +334,10 @@
         async created() {
             if (!this.isLoggedIn()) {
                 this.$store.commit('DIALOG', true);
+                this.$store.state.auth.defaultChosen = 'login';
             } else
                 this.getCards();
-
-            setTimeout(() => {
-                this.cardObj = new Card({
-                    form: this.$refs.form,
-                    container: '.hidden-container',
-                    placeholders: {
-                        expiry: '••/••••'
-                    }
-                });
-                // $( () => {
-                //     $('[data-toggle="tooltip"]').tooltip();
-                // });
-            });
+            this.loadCardJS();
         }
     }
 </script>
@@ -368,7 +374,7 @@
                 }
                 .cards {
                     padding: 8px 0;
-                    height: 300px;
+                    max-height: 300px;
                     overflow-y: auto;
                     overflow-x: hidden;
                     .card {

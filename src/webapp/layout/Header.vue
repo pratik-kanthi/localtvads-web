@@ -30,8 +30,8 @@
                 </div>
             </nav>
         </div>
-        <div v-if="defaultChosen">
-            <AuthModal :active="defaultChosen" @closed="defaultChosen=null"></AuthModal>
+        <div v-if="$store.state.auth.defaultChosen">
+            <AuthModal @closed="$store.state.auth.defaultChosen=null"></AuthModal>
         </div>
     </div>
 </template>
@@ -45,12 +45,12 @@ export default {
     },
     data() {
         return {
-            defaultChosen: 'login',
+
         }
     },
     methods: {
         chooseAuth(name) {
-            this.defaultChosen = name;
+            this.$store.state.auth.defaultChosen = name;
             this.$store.commit('DIALOG', true);
         },
         logout() {

@@ -15,7 +15,8 @@ export const store = new Vuex.Store({
 		user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : '',
 		auth: {
 			showDialog: false,
-			loader: false
+			loader: false,
+			defaultChosen: ''
 		}
 	},
 	mutations: {
@@ -51,6 +52,9 @@ export const store = new Vuex.Store({
 		},
 		getShowDialog: (state) => {
 			return state.auth.showDialog;
+		},
+		getDefaultChosen: (state) => {
+			return state.auth.defaultChosen;
 		}
 	}
 });

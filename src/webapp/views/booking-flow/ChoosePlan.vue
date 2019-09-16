@@ -131,7 +131,7 @@
 
                     <div class="action">
                         <center>
-                            <button class="btn btn-danger btn-bordered">Cancel</button>
+                            <button class="btn btn-danger btn-bordered" @click="cancel">Cancel</button>
                             <button class="btn btn-primary" :disabled="!selectedPlan" @click="goToPayment">
                                 Proceed
                             </button>
@@ -168,6 +168,9 @@
             }
         },
         methods: {
+            cancel() {
+                this.$router.push('/');
+            },
             async getAvailableSlots(isFirstTime) {
                 let startDate = this.sliderStartDate ? this.sliderStartDate : this.slotStartDate;
                 let endDate = this.sliderEndDate ? this.sliderEndDate : this.slotEndDate;
@@ -212,9 +215,14 @@
                 this.getAvailableSlots();
             },
             getPrevSlots() {
-
-                this.sliderEndDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(1, 'days').format('YYYY-MM-DD');
-                this.sliderStartDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(5, 'days').format('YYYY-MM-DD');
+                let prev;
+                if (this.moment() > this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(5, 'days')) {
+                    this.sliderEndDate = this.moment().add(4, 'days').format('YYYY-MM-DD');
+                    this.sliderStartDate = this.moment().format('YYYY-MM-DD');
+                } else {
+                    this.sliderEndDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(1, 'days').format('YYYY-MM-DD');
+                    this.sliderStartDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(5, 'days').format('YYYY-MM-DD');
+                }
                 this.getAvailableSlots();
             },
             goToPayment() {
@@ -347,6 +355,7 @@
                                 text-align: center;
                                 padding: 10px;
                                 border-right: 1px solid #ddd;
+                                cursor: pointer;
 
                                 &:last-child {
                                     border-right: none;
