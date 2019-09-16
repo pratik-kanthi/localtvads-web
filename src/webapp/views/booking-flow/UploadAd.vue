@@ -8,7 +8,7 @@
                 <input id="fileUpload" class="hidden" type="file" @change="fileUploaded" accept="video/mp4,video/x-m4v,video/*" ref="fileUpload" />
                 <button class="btn btn-primary upload" @click="chooseFile" :disabled="isLoading"><img src="@/assets/images/upload.svg"> <span class="button-text">Upload Video</span></button>
             </div>
-            <div v-else-if="progress > 0 && progress < 100" class="details">
+            <div v-else-if="progress > 0" class="details">
                 <div class="pull-left">
                     <strong class="t-l" v-text="upload.chosen.name"></strong>&nbsp;<span class="text-muted">is uploading...</span>
                 </div>
@@ -21,8 +21,8 @@
                 </div>
                 <br class="clearfix">
             </div>
-            <LoaderModal :showloader="progress === 100 && processing" message="Upload successful, please wait while we process the video..."></LoaderModal>
         </div>
+        <LoaderModal :showloader="progress === 100 && processing" message="Upload successful, please wait while we process the video..."></LoaderModal>
     </div>
 </template>
 
@@ -59,10 +59,10 @@
                 video.onloadedmetadata = () => {
                     window.URL.revokeObjectURL(video.src);
                     duration = video.duration;
-                    // if (duration > this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds) {
-                    //     this.$swal("Warning", "Video duration exceeds " + this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds + " seconds. Please keep it within allowed duration", "warning");
-                    //     return;
-                    // }
+                    if (duration > this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds) {
+                        this.$swal("Warning", "Video duration exceeds " + this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds + " seconds. Please keep it within allowed duration", "warning");
+                        return;
+                    }
                     if (this.config.maxSize && this.upload.chosen.size > 1024 * 1024 * this.config.maxSize) {
                         this.$swal("Warning", "File exceeds the minimum size of " + this.config.maxSize + " MB", "warning");
                         return;
@@ -76,32 +76,41 @@
                 };
                 video.src = URL.createObjectURL(this.upload.chosen);
             },
+            sendSocket(chunk, counter, chunkSize) {
+                this.socket.emit('UPLOAD_CHUNK', {
+                    data: chunk,
+                    sequence: counter,
+                    isLast: chunk.size < chunkSize,
+                    client: this.$parent.clientAdPlan.Client,
+                    clientAdPlan: this.$parent.clientAdPlan._id,
+                    name: this.upload.chosen.name
+                });
+            },
             async uploadFile() {
                 this.isLoading = true;
-                let counter = 0;
-                let chunkSize = 1000000;
+                let counter = 1;
+                let chunkSize = 100000;
                 this.socket = this.io(window.socketendpoint, {
                     query: {
                         token: this.$cookies.get('token')
                     }
                 });
-                for (let start = 0; start < this.upload.chosen.size; start += chunkSize) {
-                    let chunk = this.upload.chosen.slice(start, start + chunkSize);
-                    this.socket.emit('UPLOAD_CHUNK', {
-                        data: chunk,
-                        sequence: ++counter,
-                        isLast: chunk.size < chunkSize,
-                        client: this.$parent.clientAdPlan.Client,
-                        clientAdPlan: this.$parent.clientAdPlan._id,
-                        name: this.upload.chosen.name
-                    });
-                }
+                let start = 0;
+                let chunk = this.upload.chosen.slice(start, chunkSize);
+                this.sendSocket(chunk, counter, chunkSize);
+                this.socket.on('UPLOAD_CHUNK_FINISHED', (data) => {
+                    this.progress = (((data * 100000) / this.upload.chosen.size) * 100).toFixed(0);
+                    ++counter;
+                    start = start + chunkSize;
+                    if (start - chunkSize < this.upload.chosen.size) {
+                        chunk = this.upload.chosen.slice(start, start + chunkSize);
+                        this.sendSocket(chunk, counter, chunkSize);
+                    }
+                });
+
                 this.socket.on('UPLOAD_FINISHED', () => {
                     this.progress = 100;
                     this.processing = true;
-                });
-                this.socket.on('UPLOAD_CHUNK_FINISHED', (data) => {
-                    this.progress = (((data * 1000000) / this.upload.chosen.size) * 100).toFixed(0);
                 });
                 this.socket.on('UPLOAD_ERROR', () => {
                     this.$swal({
