@@ -6,7 +6,7 @@
                     <div class="col-sm-4">
                         <div class="broadcast-location">
                             <label>Broadcast Location</label>
-                            <select v-model="channelSelected" @change="getAvailableSlotsByChannel(true)">
+                            <select v-model="channelSelected" @change="getAvailableSlotsByChannel(false)">
                                 <option :value="channel._id" v-for="channel in channels" :key="channel._id">{{channel.Name}}</option>
                             </select>
                         </div>
@@ -20,7 +20,7 @@
                     <div class="col-sm-2">
                         <div class="ad-length">
                             <label>Ad Length</label>
-                            <select v-model="secondSelected" @change="getAvailableSlotsByChannel(true)">
+                            <select v-model="secondSelected" @change="getAvailableSlotsByChannel(false)">
                                 <option v-for="(sec,key) in seconds" :key="key" :value="sec">{{sec}} Seconds</option>
                             </select>
                         </div>
@@ -34,7 +34,7 @@
                     <div class="col-sm-1">
                         <div class="recurring form-group mb0">
                             <label for="recurring" class="control-label">Recurring</label>
-                            <input class="check" type="checkbox" name="recurring" id="recurring" v-model="isRenewal"/>
+                            <input class="check" type="checkbox" name="recurring" id="recurring" v-model="isRenewal" />
                             <label class="check-label" for="recurring"></label>
                             <br class="clearfix">
                         </div>
@@ -56,8 +56,7 @@
                         <div class="slots">
                             <button class="prev" :disabled="!checkStartDate" @click="getPrevSlots"><i class="material-icons">keyboard_arrow_left</i></button>
                             <ul class="list-inline mb0">
-                                <li v-for="(slot,key) in availableSlots" :key="key"
-                                    @click="selectSlot(key, slot)" :class="{'active': slotStartDate === key}">
+                                <li v-for="(slot,key) in availableSlots" :key="key" @click="selectSlot(key, slot)" :class="{'active': slotStartDate === key}">
                                     <h5>{{moment(key, 'YYYY-MM-DD').format('DD-MMM ddd')}}</h5>
                                     <h5 class="mb0" v-if="Object.keys(slot).length > 0">{{slot[Object.keys(slot)[0]].TotalAmount | currency}}</h5>
                                     <h5 class="mb0" v-else>-</h5>
@@ -119,8 +118,7 @@
                                     </div> -->
                                 </div>
                                 <div class="selectplan">
-                                    <button class="btn btn-primary btn-full" @click="selectPlan(plan)"
-                                            :class="{'btn-active': selectedPlan.Plan === plan.Plan}">
+                                    <button class="btn btn-primary btn-full" @click="selectPlan(plan)" :class="{'btn-active': selectedPlan.Plan === plan.Plan}">
                                         <span v-if="selectedPlan.Plan === plan.Plan">Selected</span>
                                         <span v-else>Choose this plan</span>
                                     </button>
@@ -168,7 +166,7 @@
         },
         methods: {
             cancel() {
-                this.$router.push('/', () => {});
+                this.$router.push('/', () => { });
             },
             async getAvailableSlots(isFirstTime) {
                 this.$parent.isLoading = true;
@@ -191,7 +189,7 @@
                         type: 'error',
                         confirmButtonColor: '#ff6500'
                     });
-                    throw(err);
+                    throw (err);
                 }
             },
             async getAllChannels() {
@@ -205,7 +203,7 @@
                         type: 'error',
                         confirmButtonColor: '#ff6500'
                     });
-                    throw(err);
+                    throw (err);
                 }
             },
             getNextSlots() {
@@ -245,7 +243,7 @@
                     let result = await instance.get('api/channel/seconds?channel=' + this.channelSelected);
                     this.seconds = result.data;
 
-                    if(!isFirstTime){
+                    if (!isFirstTime) {
                         this.changeQueryParams();
                     }
 
@@ -255,9 +253,9 @@
                         text: err.data && err.data.message ? err.data.message : 'Some error occurred',
                         type: "error"
                     });
-                    throw(err);
+                    throw (err);
                 }
-                if(this.seconds.indexOf(parseInt(this.secondSelected)) === -1) {
+                if (this.seconds.indexOf(parseInt(this.secondSelected)) === -1) {
                     this.$swal({
                         title: 'Warning',
                         text: 'Ad length has changed according to the channel. Please select your desired Ad length',
@@ -280,8 +278,8 @@
             selectPlan(plan) {
                 this.selectedPlan = plan;
             },
-            changeQueryParams(){
-                this.$router.replace({ name: "BookingFlow", query: {channel: this.channelSelected, seconds : this.secondSelected, startdate : this.slotStartDate }})
+            changeQueryParams() {
+                this.$router.replace({ name: "BookingFlow", query: { channel: this.channelSelected, seconds: this.secondSelected, startdate: this.slotStartDate } })
             }
         },
         computed: {
@@ -290,9 +288,9 @@
             }
         },
         created() {
-            if(!this.$route.query.channel || !this.$route.query.seconds || !this.$route.query.startdate){
-                this.$router.push('/', () => {});
-            }else{
+            if (!this.$route.query.channel || !this.$route.query.seconds || !this.$route.query.startdate) {
+                this.$router.push('/', () => { });
+            } else {
 
                 this.$parent.isLoading = true;
                 this.sliderStartDate = this.$route.query.startdate;
@@ -336,6 +334,7 @@
                     }
                 }
             }
+
             select {
                 background-color: transparent;
                 margin-bottom: 0px;
@@ -357,6 +356,7 @@
             .channel-wrapper {
                 .available-slots {
                     margin-bottom: 24px;
+
                     .slots {
                         padding: 0 64px;
                         border: 1px solid #DDD;
@@ -432,6 +432,7 @@
 
                 .broadcast-details {
                     margin-bottom: 24px;
+
                     .details {
                         border: 1px solid #ddd;
                         border-radius: 6px;
@@ -440,16 +441,19 @@
                         h5 {
                             margin-bottom: 8px;
                             font-weight: 400;
+
                             &:last-child {
                                 margin-bottom: 0;
                                 font-size: 18px;
                             }
                         }
+
                         hr {
                             border-top: 3px solid #ccc;
                             margin-top: 36px;
                             margin-bottom: 0;
                         }
+
                         img.broadcast-img {
                             margin-top: -24px;
                             padding: 0 16px;
@@ -465,10 +469,12 @@
                         border-radius: 6px;
                         padding-bottom: 56px;
                         .opacity(50);
+
                         &.active-slot {
                             .box-shadow(0 0 8px 0 rgba(255, 101, 0, 0.5));
                             .opacity(100);
                         }
+
                         .plan-name {
                             padding: 20px;
                             border-bottom: 1px solid #ddd;
@@ -478,6 +484,7 @@
                                 font-size: 24px;
                                 color: @brand-primary;
                             }
+
                             p {
                                 font-size: 18px;
                             }
@@ -492,6 +499,7 @@
                                 font-size: 32px;
                                 margin-bottom: 4px;
                             }
+
                             p {
                                 font-size: 18px;
                             }
@@ -510,6 +518,7 @@
                                     cursor: pointer !important;
                                     padding-left: 32px;
                                     position: relative;
+
                                     &:last-child {
                                         margin-bottom: 0;
                                     }
@@ -538,10 +547,12 @@
                         //     }
                         // }
                     }
+
                     .selectplan {
                         margin-top: -64px;
                         padding: 0 40px 24px;
                         opacity: 1;
+
                         .btn-active {
                             background-color: @brand-secondary;
                             border: none;

@@ -62,16 +62,32 @@
                                     cancelButtonColor: "#ccc",
                                     cancelButtonText: "No"
                                 }).then(async isConfirm => {
+                                    this.$store.commit('LOGIN_LOADER', true);
                                     if (isConfirm.value) {
-                                        this.$store.commit("DIALOG", true);
+                                        try {
+                                            let result = await instance.post('api/auth/clientsocialregister', body);
+                                            this.$cookies.set(
+                                                "token",
+                                                result.data.TokenString,
+                                                result.data.iat - Math.floor(Date.now() / 1000) + "s"
+                                            );
+                                            delete result.data.TokenString;
+                                            localStorage.setItem("user", JSON.stringify(result.data));
+                                            this.$store.dispatch("loginSuccess");
+                                            this.$store.commit('LOGIN_LOADER', false);
+                                        } catch (err) {
+                                            swal({
+                                                title: 'Error',
+                                                text: err.error,
+                                                type: 'warning',
+                                                confirmButtonColor: "#ff6500",
+                                            })
+                                        }
                                     }
                                 });
                             }
                             this.isError = true;
-                            this.errMessage =
-                                ex.data && ex.data.message
-                                    ? ex.data.message
-                                    : "Some error occurred";
+                            this.errMessage = ex.data && ex.data.message ? ex.data.message : "Some error occurred";
                             this.$store.commit('LOGIN_LOADER', false);
                         }
                     }
