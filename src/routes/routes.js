@@ -28,6 +28,24 @@ export const routes = [
 		}
 	},
 	{
+		path: '/resetpassword',
+		name: 'ResetPassword',
+		component: Home,
+		beforeEnter: (to, from, next) => {
+			if (to.query.token) {
+				next();
+			} else {
+
+				next(false);
+			}
+		}
+	},
+	{
+		path: '/forgotpassword',
+		name: 'ForgotPassword',
+		component: Home
+	},
+	{
 		path: '*',
 		redirect: '/'
 	}

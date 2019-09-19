@@ -7,7 +7,7 @@
                     <div class="col-sm-4">
                         <div class="broadcast-location">
                             <label>Broadcast Location</label>
-                            <select v-model="channelSelected" @change="getAvailableSlotsByChannel">
+                            <select v-model="channelSelected" @change="getAvailableSlotsByChannel(false)">
                                 <option :value="channel._id" v-for="channel in channels" :key="channel._id">{{channel.Name}}</option>
                             </select>
                         </div>
@@ -21,7 +21,7 @@
                     <div class="col-sm-2">
                         <div class="ad-length">
                             <label>Ad Length</label>
-                            <select v-model="secondSelected">
+                            <select v-model="secondSelected" @change="getAvailableSlotsByChannel(false)">
                                 <option v-for="(sec,key) in seconds" :key="key" :value="sec">{{sec}} Seconds</option>
                             </select>
                         </div>
@@ -247,6 +247,11 @@
                 try {
                     let result = await instance.get('api/channel/seconds?channel=' + this.channelSelected);
                     this.seconds = result.data;
+                    
+                    if(!isFirstTime){
+                        this.changeQueryParams();
+                    }
+
                 } catch (err) {
                     this.$swal({
                         title: "Error",
@@ -273,9 +278,13 @@
                 this.slotEndDate = this.moment(date, 'YYYY-MM-DD').add(window.slotduration, 'days');
                 let key = Object.keys(this.selectedSlot)[0];
                 this.selectedPlan = this.selectedSlot[key];
+                this.changeQueryParams();
             },
             selectPlan(plan) {
                 this.selectedPlan = plan;
+            },
+            changeQueryParams(){
+                this.$router.replace({ name: "BookingFlow", query: {channel: this.channelSelected, seconds : this.secondSelected, startdate : this.slotStartDate }})
             }
         },
         computed: {
@@ -284,11 +293,16 @@
             }
         },
         created() {
-            this.loading = true;
-            this.sliderStartDate = this.$route.query.startdate;
-            this.sliderEndDate = this.moment(this.$route.query.startdate, "YYYY-MM-DD").add(4, 'days').format("YYYY-MM-DD");
-            this.getAllChannels();
-            this.getAvailableSlotsByChannel(true);
+            if(!this.$route.query.channel || !this.$route.query.seconds || !this.$route.query.startdate){
+                this.$router.push('/');
+            }else{
+
+                this.loading = true;
+                this.sliderStartDate = this.$route.query.startdate;
+                this.sliderEndDate = this.moment(this.$route.query.startdate, "YYYY-MM-DD").add(4, 'days').format("YYYY-MM-DD");
+                this.getAllChannels();
+                this.getAvailableSlotsByChannel(true);
+            }
         }
     }
 </script>

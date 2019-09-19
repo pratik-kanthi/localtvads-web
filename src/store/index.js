@@ -2,12 +2,14 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VueCookies from 'vue-cookies';
 import VueRouter from 'vue-router';
+import { stat } from 'fs';
 
 Vue.use(Vuex);
 
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGOUT = 'LOGOUT';
 const DIALOG = 'DIALOG';
+const DIALOG_CHOSEN = 'DIALOG_CHOSEN';
 
 export const store = new Vuex.Store({
 	state: {
@@ -33,6 +35,10 @@ export const store = new Vuex.Store({
 		},
 		[DIALOG](state, val) {
 			state.auth.showDialog = val;
+		},
+		[DIALOG_CHOSEN](state, val) {
+			state.auth.showDialog = true;
+			state.auth.defaultChosen = val;
 		}
 	},
 	actions: {
