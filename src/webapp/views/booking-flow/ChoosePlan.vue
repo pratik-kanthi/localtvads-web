@@ -1,13 +1,12 @@
 <template>
     <div class="choose-plan">
-        <LoaderModal :showloader="loading" message="Loading..."></LoaderModal>
         <div class="selected-broadcast-location">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="broadcast-location">
                             <label>Broadcast Location</label>
-                            <select v-model="channelSelected" @change="getAvailableSlotsByChannel(false)">
+                            <select v-model="channelSelected" @change="getAvailableSlotsByChannel(true)">
                                 <option :value="channel._id" v-for="channel in channels" :key="channel._id">{{channel.Name}}</option>
                             </select>
                         </div>
@@ -21,7 +20,7 @@
                     <div class="col-sm-2">
                         <div class="ad-length">
                             <label>Ad Length</label>
-                            <select v-model="secondSelected" @change="getAvailableSlotsByChannel(false)">
+                            <select v-model="secondSelected" @change="getAvailableSlotsByChannel(true)">
                                 <option v-for="(sec,key) in seconds" :key="key" :value="sec">{{sec}} Seconds</option>
                             </select>
                         </div>
@@ -148,18 +147,15 @@
 
 <script>
     import instance from '@/api';
-    import LoaderModal from '@/webapp/common/modals/LoaderModal';
 
     export default {
         name: 'ChoosePlan',
-        components: {LoaderModal},
         data() {
             return {
                 availableSlots: {},
                 channels: [],
                 channelSelected: this.$route.query.channel,
                 isRenewal: true,
-                loading: false,
                 seconds: [],
                 secondSelected: this.$route.query.seconds,
                 selectedSlot: {},
@@ -172,9 +168,10 @@
         },
         methods: {
             cancel() {
-                this.$router.push('/');
+                this.$router.push('/', () => {});
             },
             async getAvailableSlots(isFirstTime) {
+                this.$parent.isLoading = true;
                 let startDate = this.sliderStartDate ? this.sliderStartDate : this.slotStartDate;
                 let endDate = this.sliderEndDate ? this.sliderEndDate : this.slotEndDate;
                 try {
@@ -185,9 +182,9 @@
                         let key = Object.keys(this.selectedSlot)[0];
                         this.selectedPlan = this.selectedSlot[key];
                     }
-                    this.loading = false;
+                    this.$parent.isLoading = false;
                 } catch (err) {
-                    this.loading = false;
+                    this.$parent.isLoading = false;
                     this.$swal({
                         title: 'Error',
                         text: err.data && err.data.message ? err.data.message : 'Some error occurred',
@@ -247,7 +244,7 @@
                 try {
                     let result = await instance.get('api/channel/seconds?channel=' + this.channelSelected);
                     this.seconds = result.data;
-                    
+
                     if(!isFirstTime){
                         this.changeQueryParams();
                     }
@@ -294,10 +291,10 @@
         },
         created() {
             if(!this.$route.query.channel || !this.$route.query.seconds || !this.$route.query.startdate){
-                this.$router.push('/');
+                this.$router.push('/', () => {});
             }else{
 
-                this.loading = true;
+                this.$parent.isLoading = true;
                 this.sliderStartDate = this.$route.query.startdate;
                 this.sliderEndDate = this.moment(this.$route.query.startdate, "YYYY-MM-DD").add(4, 'days').format("YYYY-MM-DD");
                 this.getAllChannels();

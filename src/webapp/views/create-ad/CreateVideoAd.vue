@@ -337,7 +337,7 @@ export default {
             return true;
         }
     },
-    beforeRouteLeave: function(to, from, next) {
+    beforeRouteLeave: (to, from, next) => {
         let flag=false;
         if (this.collectedImages.length !== this.collectedImagesOriginal.length)
             flag = true;

@@ -79,7 +79,7 @@
                         startdate: this.moment(this.startDate, "DD/MM/YYYY").format("YYYY-MM-DD")
                         // startdate: this.startDate.replace(/\//g, '-')
                     }
-                });
+                }, () => {});
             },
             async loadScheduleAvailability() {
                 this._switchShimmer(true);

@@ -6,6 +6,7 @@ import { stat } from 'fs';
 
 Vue.use(Vuex);
 
+const LOGIN_LOADER = 'LOGIN_LOADER';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGOUT = 'LOGOUT';
 const DIALOG = 'DIALOG';
@@ -22,6 +23,9 @@ export const store = new Vuex.Store({
 		}
 	},
 	mutations: {
+		[LOGIN_LOADER](state, val) {
+			state.auth.loader = val;
+		},
 		[LOGIN_SUCCESS](state) {
 			state.auth.showDialog = false;
 			state.auth.loader = false;
@@ -50,6 +54,9 @@ export const store = new Vuex.Store({
 		}
 	},
 	getters: {
+		isAuthLoader: (state) => {
+			return state.auth.loader;
+		},
 		isLoggedIn: (state) => {
 			return state.isAuth;
 		},

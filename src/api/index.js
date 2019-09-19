@@ -16,7 +16,7 @@ if (!token && user) {
 }
 
 instance.interceptors.request.use(
-	function(config) {
+	(config) => {
 		config.headers['Authorization'] = 'bearer ' + VueCookies.get('token');
 		return config;
 	},
@@ -26,7 +26,7 @@ instance.interceptors.request.use(
 );
 
 instance.interceptors.response.use(
-	function(response) {
+	(response) => {
 		return response;
 	},
 	(error) => {

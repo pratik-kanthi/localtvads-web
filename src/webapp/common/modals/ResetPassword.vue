@@ -72,7 +72,7 @@ export default {
           "api/auth/resetpassword/" + this.token,
           { password: this.formData.password2 }
         );
-        this.$router.push({ name: "Home" });
+        this.$router.push({ name: "Home" }, () => {});
         this.$store.commit("DIALOG", true);
         this.$swal({
           title: "Success",
@@ -82,7 +82,7 @@ export default {
           confirmButtonColor: "#ff6500"
         });
       } catch (err) {
-        this.$router.push({ name: "ForgotPassword" });
+        this.$router.push({ name: "ForgotPassword" }, () => {});
         this.$swal({
           title: "Link Expired",
           text:

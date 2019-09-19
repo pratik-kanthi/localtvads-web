@@ -20,7 +20,7 @@ Vue.filter('currency', (value) => {
 	if (typeof value !== 'number') {
 		return value;
 	}
-	var formatter = new Intl.NumberFormat('en-UK', {
+	let formatter = new Intl.NumberFormat('en-UK', {
 		style: 'currency',
 		currency: 'GBP',
 		minimumFractionDigits: 2

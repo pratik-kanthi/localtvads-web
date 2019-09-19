@@ -16,12 +16,16 @@
             <div class="form-group">
                 <input type="password" class="form-control" v-model="user.Password" placeholder="Password">
             </div>
-            <button class="btn btn-primary btn-full" @click="register" :disabled="!isValide || $store.state.auth.loader">Register</button>
+            <div class="form-group">
+                <input type="password" class="form-control" v-model="user.ConfirmPassword" placeholder="Confirm Password">
+            </div>
+            <small>Password must contain at least 8 characters with at least 1 capital letter, 1 small letter and 1 number</small>
+            <button class="btn btn-primary btn-full" @click="register" :disabled="!isValid || isAuthLoader">Register</button>
             <div class="alert alert-danger text-center mt24" v-if="errMessage">
                 <small>{{errMessage}}</small>
             </div>
         </form>
-        <LoaderModal :showloader="$store.state.auth.loader" message="Please stand by while we authenticate..."></LoaderModal>
+        <LoaderModal :showloader="isAuthLoader" message="Please stand by while we authenticate..."></LoaderModal>
     </div>
 </template>
 
@@ -29,7 +33,8 @@
     import Google from "@/webapp/common/auth/Google";
     import Facebook from "@/webapp/common/auth/Facebook";
     import instance from "@/api";
-    import LoaderModal from  '@/webapp/common/modals/LoaderModal.vue'
+    import LoaderModal from  '@/webapp/common/modals/LoaderModal';
+    import {mapGetters} from "vuex";
     export default {
         name: "Register",
         components: {Facebook, Google, LoaderModal},
@@ -40,6 +45,7 @@
                     Name: '',
                     Email: '',
                     Password: '',
+                    ConfirmPassword: '',
                     AuthorisationScheme: 'Standard'
                 },
                 show: false,
@@ -49,9 +55,9 @@
         methods: {
             async register(){
                 try {
-                    this.$store.state.auth.loader = true;
+                    this.$store.commit('LOGIN_LOADER', true);
                     let result = await instance.post('api/auth/clientregister', this.user);
-                    this.$store.state.auth.loader = false;
+                    this.$store.commit('LOGIN_LOADER', true);
                     this.$store.commit('DIALOG', false);
                     this.$swal({
                         title: "Registration successful",
@@ -61,13 +67,13 @@
                     });
                     this.user = '';
                 } catch (err) {
-                    this.$store.state.auth.loader = false;
+                    this.$store.commit('LOGIN_LOADER', false);
                     this.errMessage = err.data ? err.data.message : '';
                 }
             }
         },
         computed: {
-            isValide() {
+            isValid() {
                 let flag = true;
                 if(!this.user.Name) {
                     flag = false;
@@ -75,7 +81,7 @@
                 if(!this.user.Email) {
                     flag = false;
                 }
-                if(!(/.+@.+/.test(this.user.Email))) {
+                if(!(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.user.Email))) {
                     flag = false
                 }
                 if(!this.user.Password) {
@@ -84,8 +90,12 @@
                 if(!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/.test(this.user.Password))) {
                     flag = false
                 }
+                if (this.user.Password !== this.user.ConfirmPassword) {
+                    flag = false;
+                }
                 return flag;
-            }
+            },
+            ...mapGetters(['isAuthLoader'])
         }
     }
 </script>
@@ -104,5 +114,8 @@
             top: -12px;
         }
     }
-
+    small {
+        position: relative;
+        top: -16px;
+    }
 </style>
