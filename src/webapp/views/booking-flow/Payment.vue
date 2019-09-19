@@ -173,12 +173,13 @@
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonText: "Confirm",
-                    closeOnConfirm: false
+                    closeOnConfirm: true
                 }).then(isConfirm => {
                     if (isConfirm.value) {
                         this.$parent.isLoading = true;
+                        let user = this.getUser();
                         if (this.existingCard) {
-                            this.payNow(null, this.getUser.Owner._id);
+                            this.payNow(null, user.Owner._id);
                         } else {
                             Stripe.card.createToken({
                                     number: this.cardNumber,
@@ -191,7 +192,7 @@
                                 },
                                 (code, result) => {
                                     if (code === 200) {
-                                        this.payNow(result.id, this.getUser.Owner._id);
+                                        this.payNow(result.id, user.Owner._id);
                                     } else {
                                         this.$parent.isLoading = false;
                                         this.$swal({
