@@ -78,8 +78,8 @@
 					padding: 16px;
 					height: 48px;
 					vertical-align: text-bottom;
-					border-top-left-radius: 4px;
-					border-top-right-radius: 4px;
+					border-top-left-radius: 6px;
+					border-top-right-radius: 6px;
 					line-height: 13px;
 					color: @brand-primary;
 					font-weight: bold;

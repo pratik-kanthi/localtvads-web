@@ -105,7 +105,7 @@
                     this._switchShimmer(false);
                     this.$swal({
                         title: "Error",
-                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                         type: "error"
                     });
                     throw(err);
@@ -118,9 +118,10 @@
                 } catch (err) {
                     this.$swal({
                         title: "Error",
-                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                         type: "error"
                     });
+                    throw err;
                 }
             },
             _switchShimmer(isAppend) {
@@ -152,10 +153,11 @@
                 this.channels = result.data;
             } catch (err) {
                 this.$swal({
-                    title: "Some error occurred",
-                    text: 'Some error has been occurred',
+                    title: "Error",
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                     type: "error"
                 });
+                throw err;
             }
         },
         computed: {

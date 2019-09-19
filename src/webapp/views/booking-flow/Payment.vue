@@ -6,21 +6,17 @@
                     <div v-if="isLoggedIn()" class="col-sm-6">
                         <h5 class="mb8">Payment Method</h5>
                         <div class="card-details">
-                            <div class="header" @click="togglePaymentOptions('SavedCards')"
-                                 :class="{'active':activeToggle === 'SavedCards'}" v-if="savedCards.length > 0">
+                            <div class="header" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}" v-if="savedCards.length > 0">
                                 <h5 class="mb0">Saved cards</h5>
                                 <i class="material-icons">keyboard_arrow_down</i>
                             </div>
                             <div class="cards" v-if="activeToggle === 'SavedCards'">
-                                <div v-for="(card,key) in savedCards" :key="key" class="card"
-                                     :class="{'active': existingCard === card._id}"
-                                     @click="selectExistingCard(card._id)">
+                                <div v-for="(card,key) in savedCards" :key="key" class="card" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
                                     <span>xxxx xxxx xxxx {{card.Card.LastFour}}</span>
                                     <img :src="getImageUrl(card.Card.Vendor)" alt class="pull-right"/>
                                 </div>
                             </div>
-                            <div class="header mt8" @click="togglePaymentOptions('NewCard')"
-                                 :class="{'active':activeToggle === 'NewCard'}">
+                            <div class="header mt8" @click="togglePaymentOptions('NewCard')" :class="{'active':activeToggle === 'NewCard'}">
                                 <h5 class="mb0">New card</h5>
                                 <i class="material-icons">keyboard_arrow_down</i>
                             </div>
@@ -35,15 +31,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label for class="mb8">Cardholder Name</label>
-                                    <input name="name" type="text" class="form-control" v-model="name"
-                                           autocomplete="off"/>
+                                    <input name="name" type="text" class="form-control" v-model="name" autocomplete="off"/>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label class="mb8">Expiry Date</label>
-                                            <input name="expiry" type="tel" class="form-control" v-model="expiry"
-                                                   placeholder="••/••••"/>
+                                            <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••"/>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -53,24 +47,27 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input type="checkbox" id="save" class="check" v-model="save"
-                                       :disabled="savedCards.length === 0 && $parent.selectedPlan.isRenewal"/>
-                                <label for="save" class="check-label box mt8 mr8">
-                                    <span></span>
-                                </label>
-                                <span class="brand-primary bold">Save Card</span>
-                                <i class="material-icons">info</i>
-                                <br/>
-                                <input type="checkbox" id="consent" class="check" v-model="consent"/>
-                                <label for="consent" class="check-label box mt8 mr8">
-                                    <span></span>
-                                </label>
-                                <span>I have read and accept the terms of use, rules of Local Ads and privacy policy</span>
+                                <div class="consents">
+                                    <input type="checkbox" id="save" class="check" v-model="save" :disabled="savedCards.length === 0 && $parent.selectedPlan.isRenewal"/>
+                                    <label for="save" class="check-label box mt8 mr8">
+                                        <span></span>
+                                    </label>
+                                    <span class="brand-primary bold">Save Card</span>
+                                    <i class="material-icons" v-if="savedCards.length === 0 && $parent.selectedPlan.isRenewal" @mouseover="showInfo(true)" @mouseout="showInfo(false)">info</i>
+                                    <span v-show="tooltip" class="tooltip-info">
+                                        Your current plan is recurring and you don't have any saved cards so saving a card is mandatory.
+                                    </span>
+                                    <br/>
+                                    <input type="checkbox" id="consent" class="check" v-model="consent"/>
+                                    <label for="consent" class="check-label box mt8 mr8">
+                                        <span></span>
+                                    </label>
+                                    <span>I have read and accept the terms of use, rules of Local Ads and privacy policy</span>
+                                </div>
                             </form>
                         </div>
                         <br class="clearfix"/>
-                        <button type="button" class="btn btn-success btn-full"
-                                :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now
+                        <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now
                         </button>
                     </div>
                     <div v-else class="col-sm-6">
@@ -89,22 +86,19 @@
                                 </div>
                                 <div class="booking-items">
                                     <h6 class="title">Broadcast Slot</h6>
-                                    <p class="desc">{{$parent.selectedPlan.broadcastSlot}}
-                                        ({{$parent.selectedPlan.adStartTime}} to {{$parent.selectedPlan.adEndTime}})</p>
+                                    <p class="desc">{{$parent.selectedPlan.broadcastSlot}} ({{$parent.selectedPlan.adStartTime}} to {{$parent.selectedPlan.adEndTime}})</p>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="booking-items">
                                             <h6 class="title">Broadcast Start</h6>
-                                            <p class="desc">{{moment($parent.selectedPlan.broadcastStartDate,
-                                                'YYYY-MM-DD').format('Do MMMM YYYY')}}</p>
+                                            <p class="desc">{{moment($parent.selectedPlan.broadcastStartDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</p>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="booking-items">
                                             <h6 class="title">Broadcast End</h6>
-                                            <p class="desc">{{moment($parent.selectedPlan.broadcastEndDate,
-                                                'YYYY-MM-DD').format('Do MMMM YYYY')}}</p>
+                                            <p class="desc">{{moment($parent.selectedPlan.broadcastEndDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -134,8 +128,7 @@
                                         <h5>Total Amount</h5>
                                     </div>
                                     <div class="col-sm-6">
-                                        <h5 class="amount pull-right">{{$parent.selectedPlan.totalAmount |
-                                            currency}}</h5>
+                                        <h5 class="amount pull-right">{{$parent.selectedPlan.totalAmount | currency}}</h5>
                                     </div>
                                 </div>
                                 <p>
@@ -159,16 +152,17 @@
         name: "Payment",
         data() {
             return {
-                name: "",
+                activeToggle: "",
                 cardNumber: null,
-                expiry: null,
                 cvv: null,
                 consent: false,
                 cardObj: null,
+                expiry: null,
+                existingCard: null,
+                name: "",
                 savedCards: [],
                 save: false,
-                existingCard: null,
-                activeToggle: ""
+                tooltip: false
             };
         },
         methods: {
@@ -179,12 +173,13 @@
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonText: "Confirm",
-                    closeOnConfirm: false
+                    closeOnConfirm: true
                 }).then(isConfirm => {
                     if (isConfirm.value) {
                         this.$parent.isLoading = true;
+                        let user = this.getUser();
                         if (this.existingCard) {
-                            this.payNow(null, this.getUser.Owner._id);
+                            this.payNow(null, user.Owner._id);
                         } else {
                             Stripe.card.createToken({
                                     number: this.cardNumber,
@@ -197,14 +192,15 @@
                                 },
                                 (code, result) => {
                                     if (code === 200) {
-                                        this.payNow(result.id, this.getUser.Owner._id);
+                                        this.payNow(result.id, user.Owner._id);
                                     } else {
                                         this.$parent.isLoading = false;
                                         this.$swal({
                                             title: "Error",
-                                            text: result.error.message,
+                                            text: result && result.error && result.error.message ? result.error.message : "Some error occurred",
                                             type: "error"
                                         });
+                                        throw result;
                                     }
                                 }
                             );
@@ -224,13 +220,14 @@
                         this.activeToggle = "SavedCards";
                     } else {
                         this.activeToggle = "NewCard";
+                        this.loadCardJS();
                     }
                     this.$parent.isLoading = false;
                 } catch (err) {
                     this.$parent.isLoading = false;
                     this.$swal({
                         title: "Error",
-                        text: err.data && err.data.message ? err.data.message : "Some error occurred",
+                        text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
                         type: "error"
                     });
                     throw err;
@@ -245,7 +242,8 @@
                         form: this.$refs.form,
                         container: ".hidden-container",
                         placeholders: {
-                            expiry: "••/••••"
+                            expiry: "••/••••",
+                            number: "•••• •••• •••• ••••"
                         }
                     });
                 }, 100);
@@ -272,7 +270,7 @@
                     this.$parent.isLoading = false;
                     this.$swal({
                         title: "Error",
-                        text: err.data && err.data.message ? err.data.message : "Some error occurred",
+                        text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
                         type: "error"
                     });
                     throw err;
@@ -293,6 +291,9 @@
             },
             selectExistingCard(card) {
                 this.existingCard = card;
+            },
+            showInfo(isDisplay) {
+                this.tooltip = isDisplay
             },
             async togglePaymentOptions(option) {
                 this.activeToggle = option;
@@ -458,13 +459,29 @@
                         font-weight: 300;
                     }
 
-                    i {
+                    .consents {
                         position: relative;
-                        top: 3px;
-                        left: 6px;
-                        font-size: 18px;
-                        color: @brand-primary;
+                        i {
+                            position: relative;
+                            top: 3px;
+                            left: 6px;
+                            font-size: 18px;
+                            color: @brand-primary;
+                            cursor: pointer;
+                        }
+                        .tooltip-info {
+                            width: 250px;
+                            position: absolute;
+                            left: 126px;
+                            top: -80px;
+                            border-radius: 6px;
+                            background: #fff;
+                            padding: 8px 12px;
+                            box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
+                        }
                     }
+
+                    
 
                     .button {
                         span {

@@ -56,10 +56,10 @@
 				} catch (err) {
 					this.$swal({
 						title: "Error",
-						text: err.data.message,
-						type: "warning",
-						confirmButtonColor: "#ff6500"
+						text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+						type: "error"
 					});
+					throw err;
 				}
 			}
 		},

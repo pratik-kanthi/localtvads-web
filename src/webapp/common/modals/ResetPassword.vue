@@ -30,14 +30,14 @@
 		props: [],
 		data() {
 			return {
-				model: true,
-				token: this.$route.query.token,
 				api: "api/auth/resetpassword/",
 				formData: {
 					password1: null,
 					password2: null,
 					passwordMatch: true
-				}
+				},
+				model: true,
+				token: this.$route.query.token
 			};
 		},
 		methods: {
@@ -66,9 +66,7 @@
 					});
 				}
 			}
-		},
-		computed: {},
-		created() { }
+		}
 	};
 </script>
 
