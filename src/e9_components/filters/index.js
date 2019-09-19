@@ -28,6 +28,16 @@ Vue.filter('currency', (value) => {
 	return formatter.format(value);
 });
 
+Vue.filter('formatValue', (value, fraction) => {
+	if (typeof value !== 'number') {
+		return value;
+	}
+	let formatter = new Intl.NumberFormat('en-UK', {
+		minimumFractionDigits: fraction
+	});
+	return formatter.format(value);
+});
+
 Vue.mixin({
 	computed: {
 		unique() {

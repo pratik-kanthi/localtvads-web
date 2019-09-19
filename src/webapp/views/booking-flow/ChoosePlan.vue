@@ -95,27 +95,20 @@
                                     </div>
                                     <div class="plan-amount">
                                         <h4>{{plan.TotalAmount | currency}}</h4>
-                                        <p class="mb0">for 26 weeks</p>
+                                        <p class="mb0">for {{getTotalSlotDuration / 7}} weeks</p>
                                     </div>
                                     <div class="features">
                                         <ul>
                                             <li>Played every {{moment(slotStartDate, 'YYYY-MM-DD').format('dddd')}} between {{plan.AdSchedule.StartTime}} - {{plan.AdSchedule.EndTime}}</li>
-                                            <li>><span class="brand-primary">100,000</span> expected ad views over 6
+                                            <li>><span class="brand-primary">{{plan.ViewershipCount | formatValue(0)}}</span> expected ad views over 6
                                                 months
                                             </li>
-                                            <li>=0.23 pence per view<br><span class="text-muted"> (53x cheaper per view than leafletting)</span>
+                                            <li>={{((plan.TotalAmount / plan.ViewershipCount) * 100) | formatValue(2)}} pence per view<br><span class="text-muted"> (53x cheaper per view than leafletting)</span>
                                             </li>
-                                            <li>=8.67 per week <br><span class="text-muted">(75x chealer than 1/4 page in local newspaper)</span>
+                                            <li>={{(plan.TotalAmount / (getTotalSlotDuration / 7)) | formatValue(2)}} pounds per week <br><span class="text-muted">(75x chealer than 1/4 page in local newspaper)</span>
                                             </li>
                                         </ul>
                                     </div>
-                                    <!-- <div class="selectplan">
-                                        <button class="btn btn-primary btn-full" @click="selectPlan(plan)"
-                                                :class="{'btn-active': selectedPlan.Plan === plan.Plan}">
-                                            <span v-if="selectedPlan.Plan === plan.Plan">Selected</span>
-                                            <span v-else>Choose this plan</span>
-                                        </button>
-                                    </div> -->
                                 </div>
                                 <div class="selectplan">
                                     <button class="btn btn-primary btn-full" @click="selectPlan(plan)" :class="{'btn-active': selectedPlan.Plan === plan.Plan}">
@@ -285,6 +278,9 @@
         computed: {
             checkStartDate() {
                 return this.moment(this.sliderStartDate, 'YYYY-MM-DD').diff(this.moment(), 'days') >= 1
+            },
+            getTotalSlotDuration() {
+                return window.slotduration;
             }
         },
         created() {
