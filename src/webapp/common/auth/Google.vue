@@ -16,10 +16,10 @@
         props: ["api", "type"],
         data() {
             return {
-                profile: "",
+                errMessage: "",
                 gapi: "",
                 isError: false,
-                errMessage: ""
+                profile: ""
             };
         },
         methods: {
@@ -105,15 +105,15 @@
                         delete result.data.TokenString;
                         localStorage.setItem("user", JSON.stringify(result.data));
                         this.$store.dispatch("loginSuccess");
-                    } catch (ex) {
-                        if (ex.status === 409) {
+                    } catch (err) {
+                        if (err.status === 409) {
                             this.$swal({
                                 title: "Error",
-                                text: ex.data.message,
+                                text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                                 type: "warning",
                                 confirmButtonColor: "#ff6500"
                             });
-                        } else if (ex.status === 404) {
+                        } else if (err.status === 404) {
                             this.$swal({
                                 title: "Error",
                                 text: "Account not found. Would you like to create one?",
@@ -129,11 +129,9 @@
                                 }
                             });
                         }
+                        throw err;
                         this.isError = true;
-                        this.errMessage =
-                            ex.data && ex.data.message
-                                ? ex.data.message
-                                : "Some error occurred";
+                        this.errMessage = err.data && err.data.message ? err.data.message : "Some error occurred";
                         this.$store.commit('LOGIN_LOADER', false);
                     }
                 } else {

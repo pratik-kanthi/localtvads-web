@@ -45,15 +45,19 @@
         data() {
             return {
                 api: "api/auth/clientsociallogin",
+                errMessage: "",
+                show: false,
                 user: {
                     email: "",
                     password: ""
-                },
-                show: false,
-                errMessage: ""
+                }
             };
         },
         methods: {
+            displayForgotPasswordForm() {
+                this.$store.commit("DIALOG", false);
+                this.$router.push({ name: "ForgotPassword" }, () => { });
+            },
             async login() {
                 this.errMessage = "";
                 this.$store.commit('LOGIN_LOADER', true);
@@ -72,10 +76,6 @@
                     this.$store.commit('LOGIN_LOADER', false);
                     this.errMessage = err.data ? err.data.message : "";
                 }
-            },
-            displayForgotPasswordForm() {
-                this.$store.commit("DIALOG", false);
-                this.$router.push({ name: "ForgotPassword" }, () => { });
             }
         },
         computed: {

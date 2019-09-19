@@ -110,13 +110,6 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <!-- <div class="selectplan">
-                                        <button class="btn btn-primary btn-full" @click="selectPlan(plan)"
-                                                :class="{'btn-active': selectedPlan.Plan === plan.Plan}">
-                                            <span v-if="selectedPlan.Plan === plan.Plan">Selected</span>
-                                            <span v-else>Choose this plan</span>
-                                        </button>
-                                    </div> -->
                                 </div>
                                 <div class="selectplan">
                                     <button class="btn btn-primary btn-full" @click="selectPlan(plan)"
@@ -170,6 +163,9 @@
             cancel() {
                 this.$router.push('/', () => {});
             },
+            changeQueryParams(){
+                this.$router.replace({ name: "BookingFlow", query: {channel: this.channelSelected, seconds : this.secondSelected, startdate : this.slotStartDate }})
+            },
             async getAvailableSlots(isFirstTime) {
                 this.$parent.isLoading = true;
                 let startDate = this.sliderStartDate ? this.sliderStartDate : this.slotStartDate;
@@ -187,11 +183,10 @@
                     this.$parent.isLoading = false;
                     this.$swal({
                         title: 'Error',
-                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
-                        type: 'error',
-                        confirmButtonColor: '#ff6500'
+                        text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        type: 'error'
                     });
-                    throw(err);
+                    throw err;
                 }
             },
             async getAllChannels() {
@@ -201,11 +196,10 @@
                 } catch (err) {
                     this.$swal({
                         title: 'Error',
-                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
-                        type: 'error',
-                        confirmButtonColor: '#ff6500'
+                        text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        type: 'error'
                     });
-                    throw(err);
+                    throw err;
                 }
             },
             getNextSlots() {
@@ -252,10 +246,10 @@
                 } catch (err) {
                     this.$swal({
                         title: "Error",
-                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                         type: "error"
                     });
-                    throw(err);
+                    throw err;
                 }
                 if(this.seconds.indexOf(parseInt(this.secondSelected)) === -1) {
                     this.$swal({
@@ -279,9 +273,6 @@
             },
             selectPlan(plan) {
                 this.selectedPlan = plan;
-            },
-            changeQueryParams(){
-                this.$router.replace({ name: "BookingFlow", query: {channel: this.channelSelected, seconds : this.secondSelected, startdate : this.slotStartDate }})
             }
         },
         computed: {

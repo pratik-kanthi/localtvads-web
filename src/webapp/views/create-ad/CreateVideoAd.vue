@@ -98,7 +98,6 @@ export default {
     },
     data() {
         return {
-            loading: false,
             activeTab: '',
             addedMedia: [],
             clientAd: undefined,
@@ -126,6 +125,7 @@ export default {
                 ownerid: this.$store.state.user.Owner._id
             },
             filteredResources: [],
+            loading: false,
             selectedImageIds: [],
             selectedAudioId: undefined,
             showImageUpload: false,
@@ -207,10 +207,10 @@ export default {
             } catch (err) {
                 this.$swal({
                     title: 'Error',
-                    text: err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error',
-                    confirmButtonColor: '#ff6500'
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
                 });
+                throw err;
             }
         },
         filterMedia(media) {
@@ -249,10 +249,10 @@ export default {
             } catch (err) {
                 this.$swal({
                     title: 'Error',
-                    text: err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error',
-                    confirmButtonColor: 'ButtonColor'
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
                 });
+                throw err;
             }
         },
         removeItem(media) {
@@ -290,9 +290,10 @@ export default {
         } catch (err) {
             this.$swal({
                 title: 'Error',
-                text: err.data && err.data.message ? err.data.message: 'Some error occurred',
+                text: err && err.data && err.data.message ? err.data.message: 'Some error occurred',
                 type: 'error'
             });
+            throw err;
         }
         try {
             let result = await instance.get('api/clientad/getone?clientad=' + this.clientAdId);
@@ -315,14 +316,6 @@ export default {
         }
     },
     computed: {
-        isSelected() {
-            if(this.selectedImageIds.length > 0 && this.activeTab === 'IMAGE')
-                return true;
-            else if(this.selectedAudioId && this.activeTab === 'AUDIO')
-                return true;
-
-            return false
-        },
         convertProceedable() {
             let nonTimedImage = this.collectedImages.find(item => {
                 return !item.Name
@@ -332,6 +325,14 @@ export default {
             }
             return this.clientAdPlan.Seconds !== this.usedTime;
 
+        },
+        isSelected() {
+            if(this.selectedImageIds.length > 0 && this.activeTab === 'IMAGE')
+                return true;
+            else if(this.selectedAudioId && this.activeTab === 'AUDIO')
+                return true;
+
+            return false
         },
         publishProceedable() {
             return true;

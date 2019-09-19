@@ -9,7 +9,7 @@
 						<span class="brand-primary">Faster</span>
 					</h1>
 					<h4>
-						Createing an ad for your business is easier than you think.
+						Creating an ad for your business is easier than you think.
 						<br />Free ad slots for all new users.
 					</h4>
 				</div>

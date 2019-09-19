@@ -16,11 +16,25 @@
         props: ["api", "type"],
         data() {
             return {
-                isError: false,
-                errMessage: ""
+                errMessage: "",
+                isError: false
             };
         },
         methods: {
+            login() {
+                this.$store.commit('LOGIN_LOADER', true);
+                FB.login(
+                    response => {
+                        if (response.status === "connected") {
+                            this.onSignInSuccess(response.authResponse);
+                        } else {
+                            this.onSignInError();
+                            this.$store.commit('LOGIN_LOADER', false);
+                        }
+                    },
+                    { scope: "public_profile,email" }
+                );
+            },
             onSignInSuccess(token) {
                 FB.api(
                     "/me?fields=name,email,picture&token=" + token.accessToken,
@@ -43,15 +57,15 @@
                             delete result.data.TokenString;
                             localStorage.setItem("user", JSON.stringify(result.data));
                             this.$store.dispatch("loginSuccess");
-                        } catch (ex) {
-                            if (ex.status === 409) {
+                        } catch (err) {
+                            if (err.status === 409) {
                                 this.$swal({
                                     title: "Error",
-                                    text: ex.data.message,
+                                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                                     type: "warning",
                                     confirmButtonColor: "#ff6500"
                                 });
-                            } else if (ex.status === 404) {
+                            } else if (err.status === 404) {
                                 this.$swal({
                                     title: "Error",
                                     text: "Account not found. Would you like to create one?",
@@ -67,11 +81,9 @@
                                     }
                                 });
                             }
+                            throw err;
                             this.isError = true;
-                            this.errMessage =
-                                ex.data && ex.data.message
-                                    ? ex.data.message
-                                    : "Some error occurred";
+                            this.errMessage = err.data && err.data.message ? err.data.message : "Some error occurred";
                             this.$store.commit('LOGIN_LOADER', false);
                         }
                     }
@@ -79,20 +91,6 @@
             },
             onSignInError(error) {
                 console.log("Cancelled", error);
-            },
-            login() {
-                this.$store.commit('LOGIN_LOADER', true);
-                FB.login(
-                    response => {
-                        if (response.status === "connected") {
-                            this.onSignInSuccess(response.authResponse);
-                        } else {
-                            this.onSignInError();
-                            this.$store.commit('LOGIN_LOADER', false);
-                        }
-                    },
-                    { scope: "public_profile,email" }
-                );
             }
         },
         created() {
