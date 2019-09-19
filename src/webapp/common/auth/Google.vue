@@ -125,7 +125,26 @@
                                 cancelButtonText: "No"
                             }).then(async isConfirm => {
                                 if (isConfirm.value) {
-                                    this.$store.commit("DIALOG", true);
+                                    this.$store.commit('LOGIN_LOADER', true);
+                                    try {
+                                        let result = await instance.post('api/auth/clientsocialregister', body);
+                                        this.$cookies.set(
+                                            "token",
+                                            result.data.TokenString,
+                                            result.data.iat - Math.floor(Date.now() / 1000) + "s"
+                                        );
+                                        delete result.data.TokenString;
+                                        localStorage.setItem("user", JSON.stringify(result.data));
+                                        this.$store.dispatch("loginSuccess");
+                                        this.$store.commit('LOGIN_LOADER', false);
+                                    } catch (err) {
+                                        swal({
+                                            title: 'Error',
+                                            text: err.error,
+                                            type: 'warning',
+                                            confirmButtonColor: "#ff6500",
+                                        })
+                                    }
                                 }
                             });
                         }
