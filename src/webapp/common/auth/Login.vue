@@ -6,7 +6,7 @@
         <div v-if="!isEmailConfirmed">
             <Facebook :api="api" :type="'Login'"></Facebook>
         </div>
-        <br class="clearfix"/>
+        <br class="clearfix" />
         <div v-if="!isEmailConfirmed" class="separater text-center">
             <span class="content">or log in with email address</span>
         </div>
@@ -15,10 +15,10 @@
         </div>
         <form name="loginform">
             <div class="form-group">
-                <input type="email" v-model="user.email" class="form-control" placeholder="Email"/>
+                <input type="email" v-model="user.email" class="form-control" placeholder="Email" />
             </div>
             <div class="form-group">
-                <input type="password" v-model="user.password" class="form-control" placeholder="Password"/>
+                <input type="password" v-model="user.password" class="form-control" placeholder="Password" />
             </div>
             <div class="mt16 mb16">
                 <p class="pointer underline" @click="displayForgotPasswordForm">Forgot Password?</p>
@@ -36,11 +36,11 @@
     import Google from "@/webapp/common/auth/Google";
     import Facebook from "@/webapp/common/auth/Facebook";
     import instance from "@/api";
-    import {mapGetters} from "vuex";
+    import { mapGetters } from "vuex";
 
     export default {
         name: "Login",
-        components: {Facebook, Google},
+        components: { Facebook, Google },
         props: ["isEmailConfirmed"],
         data() {
             return {
@@ -75,7 +75,7 @@
             },
             displayForgotPasswordForm() {
                 this.$store.commit("DIALOG", false);
-                this.$router.push({name: "ForgotPassword"}, () => {});
+                this.$router.push({ name: "ForgotPassword" }, () => { });
             }
         },
         computed: {
