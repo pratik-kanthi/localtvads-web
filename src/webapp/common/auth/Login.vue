@@ -74,7 +74,7 @@
                     this.$emit("close");
                 } catch (err) {
                     this.$store.commit('LOGIN_LOADER', false);
-                    this.errMessage = err.data ? err.data.message : "";
+                    this.errMessage = err && err.data ? err.data.message : "";
                 }
             }
         },

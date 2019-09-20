@@ -143,7 +143,7 @@
                     this.loading = false;
                     this.$swal({
                         title: "Error",
-                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                         type: "error"
                     });
                 }
@@ -176,7 +176,7 @@
                     this.loading = false;
                     this.$swal({
                         title: "Error",
-                        text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                         type: "error"
                     });
                 }

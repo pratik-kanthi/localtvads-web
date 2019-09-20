@@ -57,7 +57,7 @@
                 try {
                     this.$store.commit('LOGIN_LOADER', true);
                     let result = await instance.post('api/auth/clientregister', this.user);
-                    this.$store.commit('LOGIN_LOADER', true);
+                    this.$store.commit('LOGIN_LOADER', false);
                     this.$store.commit('DIALOG', false);
                     this.$swal({
                         title: "Registration successful",
@@ -68,7 +68,7 @@
                     this.user = '';
                 } catch (err) {
                     this.$store.commit('LOGIN_LOADER', false);
-                    this.errMessage = err.data ? err.data.message : '';
+                    this.errMessage = err && err.data && err.data.message ? err.data.message : 'Some error occurred. Please contact administrator.';
                 }
             }
         },

@@ -81,10 +81,10 @@
                                     }
                                 });
                             }
-                            throw err;
                             this.isError = true;
-                            this.errMessage = err.data && err.data.message ? err.data.message : "Some error occurred";
+                            this.errMessage = err && err.data && err.data.message ? err.data.message : "Some error occurred";
                             this.$store.commit('LOGIN_LOADER', false);
+                            throw err;
                         }
                     }
                 );

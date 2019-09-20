@@ -101,10 +101,10 @@
                                     <div class="features">
                                         <ul>
                                             <li>Played every {{moment(slotStartDate, 'YYYY-MM-DD').format('dddd')}} between {{plan.AdSchedule.StartTime}} - {{plan.AdSchedule.EndTime}}</li>
-                                            <li>><span class="brand-primary">{{plan.ViewershipCount | formatValue(0)}}</span> expected ad views over 6
+                                            <li v-if="plan.ViewershipCount"><span class="brand-primary">{{plan.ViewershipCount | formatValue(0)}}</span> expected ad views over 6
                                                 months
                                             </li>
-                                            <li>={{((plan.TotalAmount / plan.ViewershipCount) * 100) | formatValue(2)}} pence per view<br><span class="text-muted"> (53x cheaper per view than leafletting)</span>
+                                            <li v-if="plan.ViewershipCount">={{((plan.TotalAmount / plan.ViewershipCount) * 100) | formatValue(2)}} pence per view<br><span class="text-muted"> (53x cheaper per view than leafletting)</span>
                                             </li>
                                             <li>={{(plan.TotalAmount / (getTotalSlotDuration / 7)) | formatValue(2)}} pounds per week <br><span class="text-muted">(75x chealer than 1/4 page in local newspaper)</span>
                                             </li>
