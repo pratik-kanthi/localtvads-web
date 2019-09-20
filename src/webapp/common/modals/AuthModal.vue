@@ -4,10 +4,10 @@
 			<div class="tabs">
 				<ul>
 					<li :class="{'active' : getDefaultChosen === 'register'}" @click="goToComponent('register')" v-show="!isEmailConfirmed">Register</li>
-					<li :class="{'active' : getDefaultChosen === 'login', 'full_width' : isEmailConfirmed }" @click="goToComponent('login')">Login</li>
+					<li :class="{'active' : getDefaultChosen === 'login', 'full-width' : isEmailConfirmed }" @click="goToComponent('login')">Login</li>
 				</ul>
 			</div>
-			<div class="content">
+			<div class="content" :class="{'pt0': isEmailConfirmed}">
 				<div class="content-area">
 					<div v-if="getDefaultChosen === 'login'">
 						<Login :isEmailConfirmed="isEmailConfirmed" @close="close"></Login>
@@ -101,9 +101,11 @@
 						}
 					}
 
-					&.full_width {
-						margin-left: 0px !important;
+					&.full-width {
+						margin-left: 0 !important;
 						width: 100% !important;
+						padding-bottom: 0 !important;
+						font-size: 18px;
 					}
 				}
 			}

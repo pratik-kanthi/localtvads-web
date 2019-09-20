@@ -26,7 +26,7 @@
             <button class="btn btn-primary btn-full" @click="login" :disabled="!isValid || isAuthLoader">Login</button>
             <LoaderModal :showloader="isAuthLoader" message="Please stand by while we authenticate..."></LoaderModal>
             <div class="alert alert-danger text-center mt24" v-if="errMessage">
-                <small>{{errMessage}}</small>
+                {{errMessage}}
             </div>
         </form>
     </div>

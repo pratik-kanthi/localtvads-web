@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="ad-views" v-if="broadcastLocation && adLength"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated
-            Views<span>845,000</span></div>
+            Views<span>{{getMaximumViewCount() || 0 | formatValue(0)}}</span></div>
     </div>
 </template>
 
@@ -123,6 +123,19 @@
                     });
                     throw err;
                 }
+            },
+            getMaximumViewCount() {
+                let channel = this.channels.find(channel => channel._id === this.broadcastLocation);
+                if (channel.Viewerships) {
+                    let max = channel.Viewerships[0].Count;
+                    channel.Viewerships.map(views => {
+                        if (views.Count > max) {
+                            max = views.Count;
+                        }
+                    });
+                    return max;
+                }
+                return ''
             },
             _switchShimmer(isAppend) {
                 let str = "<div class='shimmer-item'>";

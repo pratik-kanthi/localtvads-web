@@ -138,12 +138,13 @@
                                         this.$store.dispatch("loginSuccess");
                                         this.$store.commit('LOGIN_LOADER', false);
                                     } catch (err) {
-                                        swal({
+                                        this.$swal({
                                             title: 'Error',
                                             text: err.error,
                                             type: 'warning',
                                             confirmButtonColor: "#ff6500",
-                                        })
+                                        });
+                                        throw err;
                                     }
                                 }
                             });

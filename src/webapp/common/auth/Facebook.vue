@@ -36,8 +36,7 @@
                 );
             },
             onSignInSuccess(token) {
-                FB.api(
-                    "/me?fields=name,email,picture&token=" + token.accessToken,
+                FB.api("/me?fields=name,email,picture&token=" + token.accessToken,
                     async profile => {
                         let body = {
                             Name: profile.name,
@@ -49,11 +48,7 @@
                         try {
                             this.isError = false;
                             let result = await instance.post(this.api, body);
-                            this.$cookies.set(
-                                "token",
-                                result.data.TokenString,
-                                result.data.iat - Math.floor(Date.now() / 1000) + "s"
-                            );
+                            this.$cookies.set("token", result.data.TokenString, result.data.iat - Math.floor(Date.now() / 1000) + "s");
                             delete result.data.TokenString;
                             localStorage.setItem("user", JSON.stringify(result.data));
                             this.$store.dispatch("loginSuccess");
@@ -77,7 +72,27 @@
                                     cancelButtonText: "No"
                                 }).then(async isConfirm => {
                                     if (isConfirm.value) {
-                                        this.$store.commit("DIALOG", true);
+                                        try {
+                                            let result = await instance.post('api/auth/clientsocialregister', body);
+                                            this.$cookies.set(
+                                                "token",
+                                                result.data.TokenString,
+                                                result.data.iat - Math.floor(Date.now() / 1000) + "s"
+                                            );
+                                            delete result.data.TokenString;
+                                            localStorage.setItem("user", JSON.stringify(result.data));
+                                            this.$store.dispatch("loginSuccess");
+                                            this.$store.commit('LOGIN_LOADER', false);
+                                        } catch (err) {
+                                            this.$store.commit("DIALOG", false);
+                                            this.$swal({
+                                                title: 'Error',
+                                                text: err.error,
+                                                type: 'warning',
+                                                confirmButtonColor: "#ff6500",
+                                            });
+                                            throw err;
+                                        }
                                     }
                                 });
                             }

@@ -55,7 +55,7 @@
                                     <span class="brand-primary bold">Save Card</span>
                                     <i class="material-icons" v-if="savedCards.length === 0 && $parent.selectedPlan.isRenewal" @mouseover="showInfo(true)" @mouseout="showInfo(false)">info</i>
                                     <span v-show="tooltip" class="tooltip-info">
-                                        Your current plan is recurring and you don't have any saved cards so saving a card is mandatory.
+                                        Your current plan is a recurring one and you don't have any saved cards. Saving a card is mandatory in this case.
                                     </span>
                                     <br/>
                                     <input type="checkbox" id="consent" class="check" v-model="consent"/>
@@ -481,7 +481,7 @@
                         }
                     }
 
-                    
+
 
                     .button {
                         span {

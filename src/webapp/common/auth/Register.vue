@@ -22,7 +22,7 @@
             <small>Password must contain at least 8 characters with at least 1 capital letter, 1 small letter and 1 number</small>
             <button class="btn btn-primary btn-full" @click="register" :disabled="!isValid || isAuthLoader">Register</button>
             <div class="alert alert-danger text-center mt24" v-if="errMessage">
-                <small>{{errMessage}}</small>
+                {{errMessage}}
             </div>
         </form>
         <LoaderModal :showloader="isAuthLoader" message="Please stand by while we authenticate..."></LoaderModal>
