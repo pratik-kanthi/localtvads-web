@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-stepper alt-labels :value="currentStep">
+        <!-- <v-stepper alt-labels :value="currentStep">
             <v-stepper-header>
                 <v-stepper-step step="1">Book Your Ad</v-stepper-step>
                 <v-divider :class="{'completed': currentStep > 1}"></v-divider>
@@ -10,7 +10,7 @@
                 <v-divider :class="{'completed': currentStep > 3}"></v-divider>
                 <v-stepper-step step="3">Verification</v-stepper-step>
             </v-stepper-header>
-        </v-stepper>
+        </v-stepper> -->
         <div v-show="!isLoading">
             <component :is="currentStage" @advanceToPayment="goToPayment"></component>
         </div>
@@ -83,6 +83,6 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 </style>

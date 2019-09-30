@@ -1,14 +1,14 @@
 <template>
     <div v-if="showloader" class="loader">
         <div class="overlay"></div>
-        <v-dialog v-model="showloader" persistent width="300">
+        <b-modal v-model="showloader">
             <div class="card">
                 <div class="content">
                     <p>{{message}}</p>
-                    <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+                    <!-- <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear> -->
                 </div>
             </div>
-        </v-dialog>
+        </b-modal>
     </div>
 </template>
 
@@ -19,9 +19,9 @@
     }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
     .content {
-        background-color: @brand-primary  !important;
+        background-color: $brand-primary  !important;
         color: #fff;
         padding: 8px;
         border-radius: 6px;

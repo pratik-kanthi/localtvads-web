@@ -1,13 +1,12 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './routes';
-import './less/styles.less';
-import 'vuetify/dist/vuetify.min.css';
 import './plugins';
 import { store } from './store';
 import moment from 'moment';
 import './e9_components';
-import './webapp/globals';
+import '@/scss/style.scss';
+
 window.$ = require('jquery');
 
 Vue.config.productionTip = false;
@@ -16,7 +15,7 @@ Vue.prototype.ENDPOINT = window.endpoint;
 Vue.prototype.moment = moment;
 
 new Vue({
-	router,
-	store,
-	render: (h) => h(App)
+	render: (h) => h(App),
+	router: router,
+	store
 }).$mount('#app');

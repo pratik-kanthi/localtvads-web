@@ -1,8 +1,5 @@
 import Home from '@/webapp/views/home/Home';
-import CreateVideoAd from '@/webapp/views/create-ad/CreateVideoAd';
-import { store } from '@/store';
-import BookingFlow from "../webapp/views/booking-flow/BookingFlow";
-
+import BookingFlow from '@/webapp/views/booking-flow/BookingFlow';
 export const routes = [
 	{
 		path: '',
@@ -12,38 +9,15 @@ export const routes = [
 	{
 		path: '/booking-flow',
 		name: 'BookingFlow',
-		component: BookingFlow
-	},
-	{
-		path: '/create-ad',
-		name: 'CreateVideoAd',
-		component: CreateVideoAd,
-		beforeEnter: (to, from, next) => {
-			if (store.getters.isLoggedIn) {
-				next();
-			} else {
-				store.commit('DIALOG', true);
-				next(false);
-			}
+		component: (resolve) => {
+			require.ensure(
+				[ '@/webapp/views/booking-flow/BookingFlow' ],
+				() => {
+					resolve(require('@/webapp/views/booking-flow/BookingFlow'));
+				},
+				'booking-flow'
+			);
 		}
-	},
-	{
-		path: '/resetpassword',
-		name: 'ResetPassword',
-		component: Home,
-		beforeEnter: (to, from, next) => {
-			if (to.query.token) {
-				next();
-			} else {
-
-				next(false);
-			}
-		}
-	},
-	{
-		path: '/forgotpassword',
-		name: 'ForgotPassword',
-		component: Home
 	},
 	{
 		path: '*',

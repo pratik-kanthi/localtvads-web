@@ -140,10 +140,10 @@
     }
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
     .container{
         background-image: url('../../../assets/images/pattern.svg');
-        background-color: @brand-primary;
+        background-color: $brand-primary;
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center center;
@@ -151,14 +151,14 @@
         border-radius: 8px;
         .upload-box {
             background: #FFF;
-            .box-shadow(1px 1px 8px 0 rgba(0, 0, 0, 0.3));
+            box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             padding: 40px;
             text-align: center;
             .upload {
                 padding-left: 8px !important;
                 height: 48px;
-                .box-shadow(1px 1px 8px 0 rgba(0, 0, 0, 0.3));
+                box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
                 &:focus {
                     border: none;
                     outline: 0;
@@ -169,7 +169,7 @@
                     padding-right: 8px;
                 }
                 .button-text{
-                    border-left: 1px solid @light-grey;
+                    border-left: 1px solid $light-grey;
                     padding-top: 2px;
                     padding-bottom: 2px;
                     padding-left: 20px;
@@ -180,20 +180,20 @@
             }
             .details {
                 margin-top: 32px;
-                border: 1px solid @lighter-grey;
+                border: 1px solid $lighter-grey;
                 border-radius: 5px;
                 padding: 8px 16px;
                 .loader {
                     height: 10px;
                     width: 100%;
-                    background-color: @lighter-grey;
+                    background-color: $lighter-grey;
                     position:relative;
                     border-radius: 6px;
                     .value {
                         height: inherit;
                         position: absolute;
                         left: 0;
-                        background-color: @brand-primary;
+                        background-color: $brand-primary;
                     }
                 }
             }

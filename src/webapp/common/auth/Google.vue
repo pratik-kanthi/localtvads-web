@@ -162,7 +162,7 @@
     };
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
     .btn-google {
         width: 100%;
         background-color: #4285f4;
@@ -171,7 +171,8 @@
         text-transform: capitalize;
         position: relative;
         font-weight: 500 !important;
-
+        height: 42px;
+        margin-bottom: 20px;
         &:hover {
             background: #4285f4;
             color: #fff;

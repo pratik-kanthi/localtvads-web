@@ -70,7 +70,7 @@
 	};
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 	.user-login {
 		.tabs {
 			ul {
@@ -91,7 +91,7 @@
 					border-top-left-radius: 4px;
 					border-top-right-radius: 4px;
 					line-height: 13px;
-					color: @brand-primary;
+					color: $brand-primary;
 					font-weight: bold;
 					cursor: pointer;
 

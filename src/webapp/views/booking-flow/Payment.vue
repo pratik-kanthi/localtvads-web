@@ -381,7 +381,7 @@
     };
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
     .payment-wrapper {
         padding: 16px 80px;
 
@@ -393,7 +393,7 @@
 
             .card-details {
                 .header {
-                    background-color: @brand-primary;
+                    background-color: $brand-primary;
                     padding: 16px;
                     border-radius: 6px;
                     cursor: pointer;
@@ -441,7 +441,7 @@
                         }
 
                         &.active {
-                            border: 1px solid @brand-secondary;
+                            border: 1px solid $brand-secondary;
                             opacity: 1;
 
                             span {
@@ -466,7 +466,7 @@
                             top: 3px;
                             left: 6px;
                             font-size: 18px;
-                            color: @brand-primary;
+                            color: $brand-primary;
                             cursor: pointer;
                         }
                         .tooltip-info {
@@ -520,7 +520,7 @@
                         .title {
                             font-size: 14px !important;
                             margin-bottom: 8px;
-                            color: @base;
+                            color: $base;
                         }
                     }
 
@@ -532,7 +532,7 @@
                             padding-left: 28px;
 
                             i {
-                                background: @brand-primary;
+                                background: $brand-primary;
                                 color: white;
                                 font-size: 16px;
                                 position: absolute;

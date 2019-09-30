@@ -31,10 +31,10 @@
     }
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
     .container {
         background-image: url('../../../assets/images/pattern.svg');
-        background-color: @brand-primary;
+        background-color: $brand-primary;
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center center;
@@ -42,7 +42,7 @@
         border-radius: 8px;
         .content-box {
             background: #333;
-            .box-shadow(1px 1px 8px 0 rgba(0, 0, 0, 0.3));
+            box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             padding: 16px;
             text-align: center;

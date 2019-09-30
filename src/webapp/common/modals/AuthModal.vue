@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="getShowDialog" width="500" persistent data-app>
+	<b-modal v-model="$store.state.auth.showDialog" centered hide-header hide-footer no-close-on-esc no-close-on-backdrop>
 		<div class="user-login">
 			<div class="tabs">
 				<ul>
@@ -21,7 +21,7 @@
 				</div>
 			</div>
 		</div>
-	</v-dialog>
+	</b-modal>
 </template>
 
 <script>
@@ -33,7 +33,7 @@
 		name: "AuthModal",
 		components: {
 			Login,
-			Register
+			Register,
 		},
 		data() {
 			return {
@@ -50,7 +50,7 @@
 			}
 		},
 		computed: {
-			...mapGetters(["getDefaultChosen", "getShowDialog"])
+			...mapGetters(["getDefaultChosen"])
 		},
 		created() {
 			if (this.$route.query && this.$route.query.emailconfirmed) {
@@ -60,8 +60,9 @@
 	};
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 	.user-login {
+        width: 100%;
 		.tabs {
 			ul {
 				list-style: none;
@@ -81,7 +82,7 @@
 					border-top-left-radius: 6px;
 					border-top-right-radius: 6px;
 					line-height: 13px;
-					color: @brand-primary;
+					color: $brand-primary;
 					font-weight: bold;
 					cursor: pointer;
 
@@ -115,7 +116,8 @@
 			position: relative;
 			background-color: #fff;
 			padding: 32px 64px;
-
+			border-bottom-left-radius: 6px;
+			border-bottom-right-radius: 6px;
 			.overlay {
 				position: absolute;
 				top: 0;
