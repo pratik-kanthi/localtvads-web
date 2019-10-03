@@ -11,11 +11,11 @@
                 </div>
                 <div class="col-sm-8">
                     <ul class="menu">
-                        <li><a>Book Now</a></li>
-                        <li><a>How it works</a></li>
-                        <li><a>Offers</a></li>
-                        <li><a>About</a></li>
-                        <li><a>Contact us</a></li>
+                        <li><router-link tag="a" to="#/book-now">Book Now</router-link></li>
+                        <li><router-link tag="a" to="/#how-it-works">How it works</router-link></li>
+                        <li><router-link tag="a" to="/#offers">Offers</router-link></li>
+                        <li><router-link tag="a" to="/#about">About</router-link></li>
+                        <li><router-link tag="a" to="/#contact">Contact us</router-link></li>
                     </ul>
                 </div>
                 <div class="col-sm-2">
@@ -28,9 +28,7 @@
                                 <img v-else-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl" class="picture" :src="getImageUrl" :alt="$store.state.user.Owner.Title" />
                             </a>
                             <ul class="" :class="{'profile-menu': showProfile}">
-                                <li>
-                                    <a>My Account</a>
-                                </li>
+                                <router-link tag="li" to="profile">My Account</router-link>
                                 <li @click="logout">
                                     <a>Logout</a>
                                 </li>
@@ -115,6 +113,9 @@ export default {
                 &:last-child {
                     margin-right: 0;
                 }
+                a {
+                    color: $white;
+                }
             }
         }
         ul.auth-wrapper {
@@ -123,7 +124,7 @@ export default {
             li {
                 float: left;
                 margin-right: 40px;
-                line-height: 80px;
+                line-height: 72px;
                 color: $white;
                 font-family: $font-family-heading;
                 font-weight: 400;

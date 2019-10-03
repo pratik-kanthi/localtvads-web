@@ -1,10 +1,15 @@
 import Home from '@/webapp/views/home/Home';
-import BookingFlow from '@/webapp/views/booking-flow/BookingFlow';
+import Profile from '@/webapp/views/profile/Profile';
 export const routes = [
 	{
 		path: '',
 		name: 'Home',
 		component: Home
+	},
+	{
+		path: '/profile',
+		name: 'Profile',
+		component: Profile
 	},
 	{
 		path: '/booking-flow',

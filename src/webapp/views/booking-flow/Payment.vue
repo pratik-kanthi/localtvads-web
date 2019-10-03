@@ -1,141 +1,168 @@
 <template>
-    <div class="container">
-        <div class="payment-wrapper">
-            <div class="payment">
+    <div class="bg--grey">
+        <div v-if="showCoupons">
+            <CoupnsModal :show-coupons = "showCoupons" :options = "{channel: $route.query.channel, channelPlan:$parent.selectedPlan.plan, startDate: $parent.selectedPlan.broadcastStartDate}" @discountChosen="setDiscount"></CoupnsModal>
+        </div>
+        <div class="container">
+            <div class="payment-wrapper">
+                <h3 class="section-title-2 mb24">Payment Method</h3>
                 <div class="row">
-                    <div v-if="isLoggedIn()" class="col-sm-6">
-                        <h5 class="mb8">Payment Method</h5>
-                        <div class="card-details">
-                            <div class="header" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}" v-if="savedCards.length > 0">
-                                <h5 class="mb0">Saved cards</h5>
-                                <i class="material-icons">keyboard_arrow_down</i>
-                            </div>
-                            <div class="cards" v-if="activeToggle === 'SavedCards'">
-                                <div v-for="(card,key) in savedCards" :key="key" class="card" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
-                                    <span>xxxx xxxx xxxx {{card.Card.LastFour}}</span>
-                                    <img :src="getImageUrl(card.Card.Vendor)" alt class="pull-right"/>
-                                </div>
-                            </div>
-                            <div class="header mt8" @click="togglePaymentOptions('NewCard')" :class="{'active':activeToggle === 'NewCard'}">
-                                <h5 class="mb0">New card</h5>
-                                <i class="material-icons">keyboard_arrow_down</i>
-                            </div>
-                            <form ref="form" v-if="activeToggle==='NewCard'">
-                                <div class="hidden-container"></div>
-                                <div class="form-group">
-                                    <label class="mb8">Card Number</label>
-                                    <div class="input-card-number">
-                                        <input name="number" type="tel" class="form-control" v-model="cardNumber"/>
-                                        <img :src="getCardType" alt class="pull-right"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for class="mb8">Cardholder Name</label>
-                                    <input name="name" type="text" class="form-control" v-model="name" autocomplete="off"/>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label class="mb8">Expiry Date</label>
-                                            <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label class="mb8">CVV</label>
-                                            <input name="cvc" type="password" class="form-control" v-model="cvv"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="consents">
-                                    <input type="checkbox" id="save" class="check" v-model="save" :disabled="savedCards.length === 0 && $parent.selectedPlan.isRenewal"/>
-                                    <label for="save" class="check-label box mt8 mr8">
-                                        <span></span>
-                                    </label>
-                                    <span class="brand-primary bold">Save Card</span>
-                                    <i class="material-icons" v-if="savedCards.length === 0 && $parent.selectedPlan.isRenewal" @mouseover="showInfo(true)" @mouseout="showInfo(false)">info</i>
-                                    <span v-show="tooltip" class="tooltip-info">
-                                        Your current plan is a recurring one and you don't have any saved cards. Saving a card is mandatory in this case.
-                                    </span>
-                                    <br/>
-                                    <input type="checkbox" id="consent" class="check" v-model="consent"/>
-                                    <label for="consent" class="check-label box mt8 mr8">
-                                        <span></span>
-                                    </label>
-                                    <span>I have read and accept the terms of use, rules of Local Ads and privacy policy</span>
-                                </div>
-                            </form>
-                        </div>
-                        <br class="clearfix"/>
-                        <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now
-                        </button>
-                    </div>
-                    <div v-else class="col-sm-6">
-                        <h5 class="mb8">Please login to continue with your booking.</h5>
-                    </div>
                     <div class="col-sm-6">
                         <div class="booking-details">
+                            <img class="" src="@/assets/images/logo-dark.svg" alt="">
+                            <div class="header">
+                                <h6>Booking Receipt</h6>
+                            </div>
+                            <hr class="mb24">
                             <div class="content">
-                                <h5 class="text-center">Booking Details</h5>
                                 <div class="booking-items">
-                                    <h6 class="title">Broadcast Location</h6>
-                                    <p class="desc">
+                                    <label>Broadcast Location</label>
+                                    <h6 class="hero-text">
                                         {{$parent.selectedPlan.broadcastLocation.Name}}
                                         <span v-if="$parent.selectedPlan.broadcastLocation.Description">({{$parent.selectedPlan.broadcastLocation.Description}})</span>
-                                    </p>
+                                    </h6>
                                 </div>
                                 <div class="booking-items">
-                                    <h6 class="title">Broadcast Slot</h6>
-                                    <p class="desc">{{$parent.selectedPlan.broadcastSlot}} ({{$parent.selectedPlan.adStartTime}} to {{$parent.selectedPlan.adEndTime}})</p>
+                                    <label>Broadcast Slot</label>
+                                    <h6 class="hero-text">{{$parent.selectedPlan.broadcastSlot}} ({{$parent.selectedPlan.adStartTime}} to {{$parent.selectedPlan.adEndTime}})</h6>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="booking-items">
-                                            <h6 class="title">Broadcast Start</h6>
-                                            <p class="desc">{{moment($parent.selectedPlan.broadcastStartDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</p>
+                                            <label>Broadcast Start</label>
+                                            <h6 class="hero-text">{{moment($parent.selectedPlan.broadcastStartDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</h6>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="booking-items">
-                                            <h6 class="title">Broadcast End</h6>
-                                            <p class="desc">{{moment($parent.selectedPlan.broadcastEndDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</p>
+                                            <label>Broadcast End</label>
+                                            <h6 class="hero-text">{{moment($parent.selectedPlan.broadcastEndDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</h6>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="booking-items">
-                                            <h6 class="title">Ad Length</h6>
-                                            <p class="desc">{{$parent.selectedPlan.adLength}} Seconds</p>
+                                            <label>Ad Length</label>
+                                            <h6 class="hero-text">{{$parent.selectedPlan.adLength}} Seconds</h6>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="booking-items">
-                                            <div class="title">Broadcast Duration</div>
-                                            <div class="desc">6 months</div>
+                                            <label>Broadcast Duration</label>
+                                            <h6 class="hero-text">6 months</h6>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="recurring" v-if="$parent.selectedPlan.isRenewal">
-                                    <h6>
+                                <div class="recurring mb40" v-if="$parent.selectedPlan.isRenewal">
+                                    <h6 class="hero-text">
                                         <i class="material-icons">done</i> Recurring Broadcast
                                     </h6>
                                 </div>
                             </div>
-                            <div class="total">
+                            <div class="dashed-line">
+                                <div class="line"></div>
+                            </div>
+                            <div class="total mt32 mb32">
                                 <div class="row">
                                     <div class="col-sm-6">
+                                        <p>Subscription Amount</p>
+                                        <p v-if="discount">Discount</p>
+                                        <p>Taxes</p>
                                         <h5>Total Amount</h5>
                                     </div>
                                     <div class="col-sm-6">
-                                        <h5 class="amount pull-right">{{$parent.selectedPlan.totalAmount | currency}}</h5>
+                                        <p>
+                                            {{$parent.selectedPlan.baseAmount | currency}}
+                                        </p>
+                                        <p v-if="discount">{{discountAmount}} ({{discount.AmountType === 'FIXED' ? '£' : ''}}{{discount.Amount}}{{discount.AmountType === 'PERCENTAGE' ? '%' : ''}})</p>
+                                        <p>{{taxAmount | currency}}</p>
+                                        <h5 class="amount pull-right"></h5>
                                     </div>
                                 </div>
-                                <p>
-                                    <small>*All tax inclusive</small>
-                                </p>
                             </div>
+                            <div class="dashed-line">
+                                <div class="line"></div>
+                            </div>
+                            <p class="mt32">
+                                <small>*All tax inclusive</small>
+                            </p>
                         </div>
+                    </div>
+                    <div v-if="isLoggedIn()" class="col-sm-6">
+                        <div class="cards-wrapper">
+                            <div class="saved-cards" v-if="savedCards.length > 0">
+                                <div class="cards">
+                                    <h6 class="hero-text mb24" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}">
+                                        <input type="radio" class="mr8" v-model="activeToggle" value="SavedCards"><span>Your saved credit and debit cards</span>
+                                    </h6>
+                                    <div v-for="(card,key) in savedCards" :key="key" class="card-info" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
+                                        <input type="radio" class="mr16" v-model="existingCard" :value="card._id">
+                                        <img :src="getImageUrl(card.Card.Vendor)" alt />
+                                        <span>xxxx xxxx xxxx {{card.Card.LastFour}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="new-card" v-if="activeToggle==='NewCard'"> -->
+                            <div class="new-card">
+                                <form ref="form" class="p0">
+                                    <h6 class="hero-text mb16" @click="togglePaymentOptions('NewCard')">
+                                        <input type="radio" class="mr8" v-model="activeToggle" value="NewCard" ><span :class="{'active':activeToggle === 'NewCard'}">Your saved credit and debit cards</span>
+                                    </h6>
+                                    <div class="hidden-container"></div>
+                                    <div class="form-group">
+                                        <label class="mb8">Card Number</label>
+                                        <div class="input-card-number">
+                                            <input name="number" type="tel" class="form-control" v-model="cardNumber"/>
+                                            <img :src="getCardType" alt class="pull-right"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for class="mb8">Cardholder Name</label>
+                                        <input name="name" type="text" class="form-control" v-model="name" autocomplete="off"/>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="mb8">Expiry Date</label>
+                                                <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="mb8">CVV</label>
+                                                <input name="cvc" type="password" class="form-control" v-model="cvv"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="consents">
+                                        <input type="checkbox" id="save" class="check" v-model="save" :disabled="savedCards.length === 0 && $parent.selectedPlan.isRenewal"/>
+                                        <label for="save" class="check-label box mt8 mr8">
+                                            <span></span>
+                                        </label>
+                                        <span class="brand-primary medium">Save Card</span>
+                                        <i class="material-icons" v-if="savedCards.length === 0 && $parent.selectedPlan.isRenewal" @mouseover="showInfo(true)" @mouseout="showInfo(false)">info</i>
+                                        <span v-show="tooltip" class="tooltip-info">
+                                            Your current plan is a recurring one and you don't have any saved cards. Saving a card is mandatory in this case.
+                                        </span>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="coupon">
+                                <div class="coupon-area">
+                                    <input type="text" placeholder="APPLY COUPON">
+                                </div>
+                                <div class="action">
+                                    <a @click="openCouponsModal"><i class="material-icons brand-primary">keyboard_arrow_right</i></a>
+                                </div>
+                                
+                            </div>
+                            <p class="mt16 mb16">I have read and accept the terms of use,rules of Local TV Ads  and privacy policy</p>
+                            <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now</button>
+                        </div>
+                    </div>
+                    <div v-else class="col-sm-6">
+                        <h5 class="mb8">Please login to continue with your booking.</h5>
                     </div>
                 </div>
             </div>
@@ -147,9 +174,13 @@
     import {mapGetters, mapState} from "vuex";
     import instance from "@/api";
     import Card from "card";
+    import CoupnsModal from "@/webapp/common/modals/CouponsModal";
 
     export default {
         name: "Payment",
+        components: {
+            CoupnsModal
+        },
         data() {
             return {
                 activeToggle: "",
@@ -157,15 +188,25 @@
                 cvv: null,
                 consent: false,
                 cardObj: null,
+                discount: null,
+                discountAmount: 0,
                 expiry: null,
                 existingCard: null,
                 name: "",
                 savedCards: [],
                 save: false,
-                tooltip: false
+                tooltip: false,
+                taxAmount: 0,
+                showCoupons: false
             };
         },
         methods: {
+            calculateDiscount() {
+                if (this.discount.AmountType === 'PERCENTAGE') {
+                    return (this.discount.Amount*subTotal) * 100;
+                } else
+                    return this.discount.Amount;
+            },
             generateToken() {
                 this.$swal({
                     title: "Are you sure?",
@@ -218,6 +259,7 @@
                     }
                     if (this.savedCards.length > 0 && !this.activeToggle) {
                         this.activeToggle = "SavedCards";
+                        this.existingCard = this.savedCards.find(s => s.IsPreferred)._id;
                     } else {
                         this.activeToggle = "NewCard";
                         this.loadCardJS();
@@ -236,6 +278,16 @@
             getImageUrl(vendor) {
                 return require("@/assets/images/cards/" + vendor + ".svg");
             },
+            getTaxAmount() {
+                let subTotal = this.$parent.selectedPlan.baseAmount - this.discountAmount;
+                this.taxAmount = 0;
+                this.$parent.selectedPlan.taxes.map((tax) => {
+                    if (tax.Type === 'PERCENTAGE') {
+                        this.taxAmount += (tax.Value*subTotal) / 100;
+                    } else
+                        this.taxAmount = tax.Value;
+                });
+            },
             loadCardJS() {
                 setTimeout(() => {
                     this.cardObj = new Card({
@@ -247,6 +299,9 @@
                         }
                     });
                 }, 100);
+            },
+            openCouponsModal() {
+                this.showCoupons = true;
             },
             async payNow(token, client) {
                 let obj = {
@@ -292,11 +347,15 @@
             selectExistingCard(card) {
                 this.existingCard = card;
             },
+            setDiscount(discount) {
+                this.showCoupons = false;
+                this.discount = discount;
+                this.getTaxAmount();
+            },
             showInfo(isDisplay) {
                 this.tooltip = isDisplay
             },
             async togglePaymentOptions(option) {
-                this.activeToggle = option;
                 if (option === "SavedCards" && this.savedCards.length > 0) {
                     this.existingCard = this.savedCards.find(s => s.IsPreferred)._id;
                 } else {
@@ -358,7 +417,6 @@
                     this.cardNumber &&
                     this.cardNumber.length > 12 &&
                     this.cardNumber.length <= 19 &&
-                    this.consent &&
                     this.expiry &&
                     new Date(this.expiry.substring(this.expiry.indexOf("/") + 1), this.expiry.substring(0, 2))
                 );
@@ -377,57 +435,123 @@
                 this.$store.commit("DIALOG_CHOSEN", "login");
             } else this.getCards();
             this.loadCardJS();
+            this.getTaxAmount();
         }
     };
 </script>
 
 <style lang="scss" scoped>
     .payment-wrapper {
-        padding: 16px 80px;
-
-        .payment {
-            border: 1px solid #ddd;
-            background-color: #fff;
-            padding: 16px;
-            border-radius: 6px;
-
-            .card-details {
-                .header {
-                    background-color: $brand-primary;
-                    padding: 16px;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    position: relative;
-
-                    h5 {
-                        line-height: 16px;
-                        color: #fff;
+        padding: 24px 64px;
+        .booking-details {
+            height: 100%;
+            padding: 24px;
+            position: relative;
+            background-color: $white;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+            &:after {
+                background: linear-gradient(-45deg, #ffffff 16px, transparent 0), linear-gradient(45deg, #ffffff 16px, transparent 0);
+                background-position: left-bottom;
+                background-repeat: repeat-x;
+                background-size: 32px 32px;
+                content: " ";
+                display: block;
+                position: absolute;
+                bottom: 0px;
+                left: 0px;
+                width: 100%;
+                height: 32px;
+            }
+            img {
+                display: block;
+                margin: 0 auto;
+                max-width: 120px;
+                margin-bottom: 32px
+            }
+            .header {
+                h6 {
+                    font-size: 16px;
+                    font-weight: 500;
+                }
+            }
+            .content {
+                margin-bottom: 32px;
+                .booking-items {
+                    margin-bottom: 24px;
+                    label {
+                        font-size: 14px !important;
+                        margin-bottom: 4px;
+                        color: #acacac;
                     }
-
-                    opacity: 0.5;
-
-                    i {
-                        position: absolute;
-                        color: #fff;
-                        top: 12px;
-                        right: 12px;
-                    }
-
-                    &.active {
-                        opacity: 1;
+                    .desc {
+                        font-size: 16px;
+                        font-weight: 500;
+                        color: $brand-secondary;
                     }
                 }
 
+                .recurring {
+                    h6 {
+                        color: #4c4c4c;
+                        position: relative;
+                        padding-left: 28px;
+                        line-height: 22px;
+                        i {
+                            background: $brand-primary;
+                            color: white;
+                            font-size: 16px;
+                            position: absolute;
+                            padding: 2px;
+                            left: 0;
+                            top: 1px;
+                            border-radius: 3px;
+                        }
+                    }
+                }
+            }
+            .dashed-line {
+                position: relative;
+                height: 1px;
+                .line {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-image: linear-gradient(to right, #223049 50%, transparent 50%);
+                    background-size: 32px 100%;
+                }
+            }
+            .total {
+                h5 {
+                    font-weight: 500;
+
+                    .amount {
+                        text-align: right !important;
+                    }
+                }
+            }
+        }
+        .cards-wrapper {
+            background-color: $white;
+            border-radius: 8px;
+            padding: 24px;
+            height: 100%;
+            border: solid 1.4px #cecece;
+            .saved-cards {
+                border: 1px solid #4a90e2;
+                border-radius: 6px;
+                padding: 16px;
+                margin-bottom: 8px;
                 .cards {
-                    padding: 8px 0;
-                    max-height: 300px;
+                    max-height: 158px;
                     overflow-y: auto;
                     overflow-x: hidden;
-
-                    .card {
-                        padding: 8px;
-                        background-color: #f9f9f9;
-                        margin-bottom: 4px;
+                    input[type="radio"] {
+                        margin-left: 1px;
+                    }
+                    .card-info {
+                        margin-bottom: 24px;
                         opacity: 0.5;
                         border-radius: 6px;
                         cursor: pointer;
@@ -437,20 +561,23 @@
                         }
 
                         img {
-                            width: 34px;
+                            width: 56px;
+                            margin-right: 16px;
                         }
-
                         &.active {
-                            border: 1px solid $brand-secondary;
                             opacity: 1;
-
                             span {
-                                font-weight: 700;
+                                font-weight: 600;
                             }
                         }
                     }
                 }
-
+            }
+            .new-card {
+                border: 1px solid #4a90e2;
+                padding: 16px;
+                border-radius: 6px;
+                margin-bottom: 8px;
                 form {
                     padding: 16px 0;
 
@@ -480,83 +607,64 @@
                             box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
                         }
                     }
-
-
-
                     .button {
                         span {
                             font-weight: 8px;
                         }
                     }
                 }
-
                 .input-card-number {
                     width: 100%;
                     position: relative;
-
                     img {
                         position: absolute;
-                        right: 8px;
+                        right: 10px;
                         width: 40px;
-                        top: 29px;
+                        top: 36px;
                         overflow: auto;
                         z-index: 2 !important;
                     }
                 }
-
                 .hidden-container {
                     display: none;
                 }
             }
-
-            .booking-details {
-                border-left: 1px solid #ccc;
-                padding: 0 24px;
-
-                .content {
-                    margin-bottom: 24px;
-
-                    .booking-items {
-                        .title {
-                            font-size: 14px !important;
-                            margin-bottom: 8px;
-                            color: $base;
+            .coupon {
+                border: 1px solid #4a90e2;
+                border-radius: 6px;
+                padding: 16px;
+                .coupon-area {
+                    display: inline-block;
+                    width: 85%;
+                    input {
+                        width: 100%;
+                        background-color: transparent;
+                        border: 0;
+                        height: 20px;
+                        -webkit-appearance: none;
+		                color: $base;
+                        &:focus {
+                            outline: none;
                         }
                     }
-
-                    .recurring {
-                        h6 {
-                            font-size: 14px !important;
-                            color: #4c4c4c;
-                            position: relative;
-                            padding-left: 28px;
-
-                            i {
-                                background: $brand-primary;
-                                color: white;
-                                font-size: 16px;
-                                position: absolute;
-                                padding: 2px;
-                                left: 0;
-                                top: 1px;
-                                border-radius: 3px;
-                            }
-                        }
-                    }
-
-                    border-bottom: 2px solid #333;
+                    margin-right: 16px;
                 }
-
-                .total {
-                    h5 {
-                        font-weight: 500;
-
-                        .amount {
-                            text-align: right !important;
+                .action {
+                    display: inline-block;
+                    width: 10%;
+                    a {
+                        line-height: 32px;
+                        padding: 9px 6px;
+                        border-radius: 50%;
+                        border: 1px solid #ddd;
+                        i {
+                            vertical-align: middle;
+                            margin-bottom: 5px;
                         }
                     }
                 }
             }
         }
+        
     }
 </style>

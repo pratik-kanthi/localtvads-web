@@ -18,6 +18,11 @@
 		color: $white;
 		border: none;
 		min-height: 42px;
+		&.btn-bordered {
+			background: transparent !important;
+			color: $brand-primary !important;
+			border: 2px solid $brand-primary;
+		}
 	}
 	&.btn-full {
 		width: 100%;

@@ -15,7 +15,7 @@
 <script>
     export default {
         name: "LoaderModal",
-        props: ['showloader', 'message']
+        props: ['message']
     }
 </script>
 

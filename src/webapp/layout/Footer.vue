@@ -11,11 +11,11 @@
                 </div>
                 <div class="col-sm-6">
                     <ul class="menu">
-                        <li><a>Book Now</a></li>
-                        <li><a>How it works</a></li>
-                        <li><a>Offers</a></li>
-                        <li><a>About</a></li>
-                        <li><a>Contact us</a></li>
+                        <li><router-link tag="a" to="/#book-now">Book Now</router-link></li>
+                        <li><router-link tag="a" to="/#how-it-works">How it works</router-link></li>
+                        <li><router-link tag="a" to="/#offers">Offers</router-link></li>
+                        <li><router-link tag="a" to="/#about">About</router-link></li>
+                        <li><router-link tag="a" to="/#contact">Contact us</router-link></li>
                     </ul>
                 </div>
                 <div class="col-sm-3">

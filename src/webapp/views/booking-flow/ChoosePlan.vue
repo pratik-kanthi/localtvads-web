@@ -34,9 +34,9 @@
                     <div class="col-sm-1">
                         <div class="recurring form-group mb0">
                             <label for="recurring" class="control-label">Recurring</label>
-                            <!-- <input class="check" type="checkbox" name="recurring" id="recurring" v-model="isRenewal"/> -->
-                            <!-- <label class="check-label" for="recurring"></label>
-                            <br class="clearfix"> -->
+                            <input class="check" type="checkbox" name="recurring" id="recurring" v-model="isRenewal"/>
+                            <label class="check-label" for="recurring"></label>
+                            <br class="clearfix">
                         </div>
                     </div>
                     <div class="col-sm-1">
@@ -90,22 +90,22 @@
                             <div class="col-sm-4 plan-wrapper" v-for="plan in selectedSlot" :key="plan.Plan">
                                 <div class="plan" :class="{'active-slot': selectedPlan.Plan === plan.Plan}">
                                     <div class="plan-name">
-                                        <h5 class="mb0">{{plan.AdSchedule.Name}}</h5>
-                                        <p class="mb0">{{plan.AdSchedule.StartTime}} to {{plan.AdSchedule.EndTime}}</p>
+                                        <h5>{{plan.AdSchedule.Name}}</h5>
+                                        <p class="timing">{{plan.AdSchedule.StartTime}} to {{plan.AdSchedule.EndTime}}</p>
                                     </div>
                                     <div class="plan-amount">
-                                        <h4>{{plan.TotalAmount | currency}}</h4>
-                                        <p class="mb0">for {{getTotalSlotDuration / 7}} weeks</p>
+                                        <h4 class="amount">{{plan.TotalAmount | currency}}</h4>
+                                        <p class="weeks">for {{getTotalSlotDuration / 7}} weeks</p>
                                     </div>
                                     <div class="features">
-                                        <ul>
-                                            <li>Played every {{moment(slotStartDate, 'YYYY-MM-DD').format('dddd')}} between {{plan.AdSchedule.StartTime}} - {{plan.AdSchedule.EndTime}}</li>
-                                            <li v-if="plan.ViewershipCount"><span class="brand-primary">{{plan.ViewershipCount | formatValue(0)}}</span> expected ad views over 6
+                                        <ul class="mb8">
+                                            <li class="medium">Played every {{moment(slotStartDate, 'YYYY-MM-DD').format('dddd')}} between {{plan.AdSchedule.StartTime}} - {{plan.AdSchedule.EndTime}}</li>
+                                            <li v-if="plan.ViewershipCount"><span class="brand-primary bold">>{{plan.ViewershipCount | formatValue(0)}}</span> expected ad views over 6
                                                 months
                                             </li>
-                                            <li v-if="plan.ViewershipCount">={{((plan.TotalAmount / plan.ViewershipCount) * 100) | formatValue(2)}} pence per view<br><span class="text-muted"> (53x cheaper per view than leafletting)</span>
+                                            <li v-if="plan.ViewershipCount"><span class="t-l medium">={{((plan.TotalAmount / plan.ViewershipCount) * 100) | formatValue(2)}} pence</span> per view<br><span class="text-muted italic">(53x cheaper per view than leafletting)</span>
                                             </li>
-                                            <li>={{(plan.TotalAmount / (getTotalSlotDuration / 7)) | formatValue(2)}} pounds per week <br><span class="text-muted">(75x chealer than 1/4 page in local newspaper)</span>
+                                            <li><span class="t-l medium">={{(plan.TotalAmount / (getTotalSlotDuration / 7)) | currency}}</span> per week <br><span class="text-muted italic">(75x cheaper than 1/4 page in local newspaper)</span>
                                             </li>
                                         </ul>
                                     </div>
@@ -155,7 +155,8 @@
                 sliderEndDate: '',
                 sliderStartDate: '',
                 slotStartDate: this.$route.query.startdate,
-                slotEndDate: this.moment(this.$route.query.startdate, 'YYYY-MM-DD').add(window.slotduration, 'days')
+                slotEndDate: this.moment(this.$route.query.startdate, 'YYYY-MM-DD').add(window.slotduration, 'days'),
+                taxes: []
             }
         },
         methods: {
@@ -171,7 +172,8 @@
                 let endDate = this.sliderEndDate ? this.sliderEndDate : this.slotEndDate;
                 try {
                     let result = await instance.get('api/channel/plans?channel=' + this.channelSelected + '&seconds=' + this.secondSelected + '&startdate=' + startDate + '&enddate=' + endDate);
-                    this.availableSlots = result.data;
+                    this.availableSlots = result.data.plans;
+                    this.taxes = result.data.taxes;
                     if (isFirstTime) {
                         this.selectedSlot = this.availableSlots[startDate];
                         let key = Object.keys(this.selectedSlot)[0];
@@ -219,6 +221,7 @@
             },
             goToPayment() {
                 this.$parent.selectedPlan = {
+                    channel: this.channelSelected,
                     broadcastLocation: this.channels.find(channel => this.channelSelected === channel._id),
                     broadcastSlot: this.selectedPlan.AdSchedule.Name,
                     adStartTime: this.selectedPlan.AdSchedule.StartTime,
@@ -229,7 +232,9 @@
                     broadcastDuration: '6 months',
                     totalAmount: this.selectedPlan ? this.selectedPlan.TotalAmount : '',
                     plan: this.selectedPlan ? this.selectedPlan.Plan : '',
-                    isRenewal: this.isRenewal
+                    isRenewal: this.isRenewal,
+                    baseAmount: this.selectedPlan ? this.selectedPlan.BaseAmount : '',
+                    taxes: this.taxes
                 };
                 this.$emit('advanceToPayment');
             },
@@ -354,7 +359,7 @@
         }
 
         .channels-wrapper {
-            padding: 16px 80px;
+            padding: 24px 120px;
 
             .channel-wrapper {
                 .available-slots {
@@ -492,50 +497,56 @@
                         position: relative;
                         .plan {
                             background: $white;
-                            border: 1px solid $brand-primary;
+                            border: 1px solid #ddd;
                             text-align: center;
                             border-radius: 6px;
-                            padding-bottom: 16px;
                             &.active-slot {
                                 box-shadow: 0 0 8px 0 rgba(255, 101, 0, 0.5);
-                                opacity: 1;
+                                border: 1px solid $brand-primary;
                             }
                             .plan-name {
-                                padding: 20px;
+                                padding: 12px 16px;
                                 border-bottom: 1px solid #ddd;
 
                                 h5 {
                                     font-weight: 500;
                                     font-size: 24px;
                                     color: $brand-primary;
+                                    margin-bottom: 4px;
                                 }
-                                p {
-                                    font-size: 18px;
+                                .timing {
+                                    font-size: 16px;
+                                    font-family: $font-family-heading;
+                                    font-weight: 500;
+                                    margin-bottom: 0;
+                                    opacity: 0.6;
                                 }
                             }
 
                             .plan-amount {
-                                padding: 16px;
+                                padding: 12px 16px;
                                 border-bottom: 1px solid #ddd;
 
-                                h4 {
-                                    font-weight: 700;
-                                    font-size: 32px;
+                                .amount {
+                                    font-weight: 500;
+                                    font-size: 36px;
                                     margin-bottom: 4px;
+                                    color: $brand-secondary;
                                 }
-                                p {
+                                .weeks {
                                     font-size: 18px;
+                                    margin-bottom: 0;
                                 }
                             }
 
                             .features {
-                                padding: 16px 40px;
-
+                                padding: 16px 36px;
                                 ul {
                                     @include list-unstyled();
                                     li {
+                                        font-family: $font-family-heading;
                                         font-size: 13px;
-                                        color: #333;
+                                        color: $base;
                                         text-align: left;
                                         margin-bottom: 16px;
                                         line-height: 20px;
@@ -549,10 +560,10 @@
                                         &:before {
                                             content: '';
                                             background-image: url('../../../assets/images/tick.svg');
-                                            height: 20px;
-                                            width: 20px;
+                                            height: 16px;
+                                            width: 16px;
                                             left: 0;
-                                            top: 4px;
+                                            top: 6px;
                                             background-size: cover;
                                             position: absolute;
                                             background-repeat: no-repeat;
@@ -562,7 +573,7 @@
                             }
 
                             .selectplan {
-                                padding: 0 40px 24px;
+                                padding: 0 32px 24px;
                                 opacity: 1;
                                 z-index: 2;
                                 .btn-active {

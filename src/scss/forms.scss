@@ -84,6 +84,7 @@ input[type="password"] {
 		background-color: $white;
 		border: none;
 		font-size: 16px;
+		cursor: pointer;
 		color: lighten($body-text, 15%);
 		font-weight: 400;
 		font-family: $font-family-heading;

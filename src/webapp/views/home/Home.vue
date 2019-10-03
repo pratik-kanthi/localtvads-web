@@ -1,7 +1,6 @@
 <template>
     <div class="home">
-
-        <div class="page-header">
+        <div class="page-header" id="book-now">
 			<div class="overlay-layer"></div>
 			<div class="container">
 				<div class="tagline">
@@ -28,9 +27,9 @@
 		</div>
         <ResetPassword v-if="$route.name=='ResetPassword'"></ResetPassword>
 		<ForgotPassword v-if="$route.name=='ForgotPassword'"></ForgotPassword>
-		<section class="how-it-works">
+		<section id="how-it-works" class="how-it-works">
 			<div class="container">
-				<h4 class="section-title-2 text-center mb-5">How it works</h4>
+				<h4 class="section-title-2 text-center mb56">How it works</h4>
 				<div class="row works-wrapper">
 					<div class="col-sm-3 text-center" v-for="work in workflow" :key="work.Id">
 						<div class="work" :class="work.Active ? 'selected' : ''">
@@ -42,9 +41,9 @@
 				</div>
 			</div>
 		</section>
-		<section class="latest-offers bg--grey">
+		<section class="latest-offers bg--grey" id="offers">
 			<div class="container">
-				<h4 class="section-title-2 text-center mb-5">Latest Offers</h4>
+				<h4 class="section-title-2 text-center mb56">Latest Offers</h4>
 				<div class="offers">
 					<div class="offer" v-for="offer in offers" :key="offer.Id">
 						<div class="offer-image" :style="{'background-image': 'url(' + offer.ImageUrl + ')'}"></div>
@@ -56,21 +55,21 @@
 				</div>
 			</div>
 		</section>
-		<section class="video">
+		<section class="video" id="about">
 			<div class="background-image-holder video-bg">
 				<div class="play-button"><img src="@/assets/images/play.svg" alt=""></div>
 			</div>
 		</section>
 		<section class="testimonial bg--grey">
 			<div class="container">
-				<h3 class="section-title-1 text-center mb-5">Happy Customers, Happy Businesses</h3>
+				<h2 class="section-title-1 text-center mb56">Happy Customers, Happy Businesses</h2>
 				<p class="text-center mb-5">Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has been the industry's standard dummy text ever since. Corporate social responsibility policymaker inclusion, resist; compassion mass incarceration correlation white paper. Program area energize optimism radical shared value policymaker.</p>
 				<div class="testimonial-slider">
 					
 				</div>
 			</div>
 		</section>
-		<section class="contact-us p-0">
+		<section class="contact-us p-0" id="contact">
 			<div class="row">
 				<div class="col-sm-6 p-0">
 					<div class="info">
@@ -82,30 +81,30 @@
 				<div class="col-sm-6 p-0">
 					<div class="contact-form">
 						<div class="form-group">
-							<label for="" class="ml-0">Name</label>
+							<label for="" class="ml0">Name</label>
 							<input type="text" class="form-control" placeholder="Your Name">
 						</div>
 						<div class="form-group">
-							<label for="" class="ml-0">Email ID</label>
+							<label for="" class="ml0">Email ID</label>
 							<input type="email" class="form-control" placeholder="Your email address">
 						</div>
 						<div class="form-group">
-							<label for="" class="ml-0">Subject</label>
+							<label for="" class="ml0">Subject</label>
 							<input type="text" class="form-control" placeholder="Your email address">
 						</div>
 						<div class="form-group">
-							<label for="" class="ml-0">Message</label>
+							<label for="" class="ml0">Message</label>
 							<textarea name="" id="" cols="30" rows="4" class="form-control" placeholder="Gives us more details.."></textarea>
 						</div>
-						<button class="btn btn-primary btn-full mt-4">Send a Message</button>
+						<button class="btn btn-primary btn-full mt24">Send a Message</button>
 					</div>
 				</div>
 			</div>
 		</section>
 		<section class="subscription bg--grey">
 			<div class="container">
-				<h3 class="section-title-1 text-center mb-5">Get notified <br>about latest updates and offers</h3>
-				<p class="lead text-center mb-5">Lorem Ipsum is simply dummy text of the printing and typesetting industry.<br>It has been the industry's standard dummy text ever since.</p>
+				<h2 class="section-title-1 text-center mb48">Get notified <br>about latest updates and offers</h2>
+				<p class="lead text-center mb48">Lorem Ipsum is simply dummy text of the printing and typesetting industry.<br>It has been the industry's standard dummy text ever since.</p>
 				<div class="form-group email-wrapper">
 					<img src="@/assets/images/mail.svg" class="mail-icon" alt="">
 					<input type="email" class="form-control" placeholder="Your Email" >
@@ -273,7 +272,6 @@
 					}
 				}
 			}
-
 			.content {
 				background-image: url("../../../assets/images/pattern.svg");
 				background-size: cover;
@@ -325,7 +323,7 @@
 			.offers {
 				display: flex;
             	flex-direction: row;
-            	justify-content: space-between;
+				justify-content: space-between;
 				.offer {
 					background: $white;
 					border-radius: 10px;
