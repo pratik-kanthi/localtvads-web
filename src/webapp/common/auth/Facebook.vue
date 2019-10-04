@@ -91,7 +91,7 @@
                                                 type: 'warning',
                                                 confirmButtonColor: "#ff6500",
                                             });
-                                            throw err;
+                                            console.error(err);
                                         }
                                     }
                                 });
@@ -99,7 +99,7 @@
                             this.isError = true;
                             this.errMessage = err && err.data && err.data.message ? err.data.message : "Some error occurred";
                             this.$store.commit('LOGIN_LOADER', false);
-                            throw err;
+                            console.error(err);
                         }
                     }
                 );

@@ -187,7 +187,7 @@
                         text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                         type: 'error'
                     });
-                    throw err;
+                    console.error(err);
                 }
             },
             async getAllChannels() {
@@ -200,7 +200,7 @@
                         text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                         type: 'error'
                     });
-                    throw err;
+                    console.error(err);
                 }
             },
             getNextSlots() {
@@ -253,7 +253,7 @@
                         text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                         type: "error"
                     });
-                    throw err;
+                    console.error(err);
                 }
                 if(this.seconds.indexOf(parseInt(this.secondSelected)) === -1) {
                     this.$swal({
@@ -470,7 +470,7 @@
                         h4 {
                             margin-bottom: 0;
                             font-weight: 500;
-                            font-size: 20px;   
+                            font-size: 20px;
                         }
                         hr {
                             border-top: 3px solid #ccc;
@@ -583,7 +583,7 @@
                             }
                         }
                     }
-                    
+
                 }
 
                 .action {

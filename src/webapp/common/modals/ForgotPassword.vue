@@ -59,7 +59,7 @@
 						text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
 						type: "error"
 					});
-					throw err;
+					console.error(err);
 				}
 			}
 		},

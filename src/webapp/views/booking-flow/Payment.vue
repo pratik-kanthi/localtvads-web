@@ -67,17 +67,17 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <p>Subscription Amount</p>
-                                        <p v-if="discount">Discount</p>
+                                        <p v-if="discount">Discount {{discount.AmountType === 'PERCENTAGE' ? '(' + discount.Amount + '%' + ')' : ''}}</p>
                                         <p>Taxes</p>
                                         <h5>Total Amount</h5>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-6 text-right">
                                         <p>
                                             {{$parent.selectedPlan.baseAmount | currency}}
                                         </p>
-                                        <p v-if="discount">{{discountAmount}} ({{discount.AmountType === 'FIXED' ? '£' : ''}}{{discount.Amount}}{{discount.AmountType === 'PERCENTAGE' ? '%' : ''}})</p>
+                                        <p class="green" v-if="discount">- {{discountAmount | currency}}</p>
                                         <p>{{taxAmount | currency}}</p>
-                                        <h5 class="amount pull-right"></h5>
+                                        <h5 class="amount pull-right"> {{getTotalAmount | currency}}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -150,12 +150,14 @@
                             </div>
                             <div class="coupon">
                                 <div class="coupon-area">
-                                    <input type="text" placeholder="APPLY COUPON">
+                                    <div v-if="!discount">APPLY COUPON</div>
+                                    <div class="bold t-l" v-else>{{discount.CouponCode}}</div>
                                 </div>
                                 <div class="action">
-                                    <a @click="openCouponsModal"><i class="material-icons brand-primary">keyboard_arrow_right</i></a>
+                                    <a @click="openCouponsModal" v-if="!discount"><i class="material-icons brand-primary">keyboard_arrow_right</i></a>
+                                    <a @click="setDiscount(undefined)" v-else><i class="material-icons brand-primary">close</i></a>
                                 </div>
-                                
+
                             </div>
                             <p class="mt16 mb16">I have read and accept the terms of use,rules of Local TV Ads  and privacy policy</p>
                             <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now</button>
@@ -195,15 +197,15 @@
                 name: "",
                 savedCards: [],
                 save: false,
+                showCoupons: false,
                 tooltip: false,
                 taxAmount: 0,
-                showCoupons: false
             };
         },
         methods: {
             calculateDiscount() {
                 if (this.discount.AmountType === 'PERCENTAGE') {
-                    return (this.discount.Amount*subTotal) * 100;
+                    return (this.discount.Amount * this.$parent.selectedPlan.baseAmount) / 100;
                 } else
                     return this.discount.Amount;
             },
@@ -272,7 +274,7 @@
                         text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
                         type: "error"
                     });
-                    throw err;
+                    console.error(err);
                 }
             },
             getImageUrl(vendor) {
@@ -283,7 +285,7 @@
                 this.taxAmount = 0;
                 this.$parent.selectedPlan.taxes.map((tax) => {
                     if (tax.Type === 'PERCENTAGE') {
-                        this.taxAmount += (tax.Value*subTotal) / 100;
+                        this.taxAmount += (tax.Value * subTotal) / 100;
                     } else
                         this.taxAmount = tax.Value;
                 });
@@ -328,7 +330,7 @@
                         text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
                         type: "error"
                     });
-                    throw err;
+                    console.error(err);
                 }
                 this.$router.push({
                     name: "BookingFlow",
@@ -350,6 +352,10 @@
             setDiscount(discount) {
                 this.showCoupons = false;
                 this.discount = discount;
+                if (discount)
+                    this.discountAmount = this.calculateDiscount();
+                else
+                    this.discountAmount = 0;
                 this.getTaxAmount();
             },
             showInfo(isDisplay) {
@@ -420,6 +426,9 @@
                     this.expiry &&
                     new Date(this.expiry.substring(this.expiry.indexOf("/") + 1), this.expiry.substring(0, 2))
                 );
+            },
+            getTotalAmount() {
+                return this.$parent.selectedPlan.baseAmount - this.discountAmount + this.taxAmount;
             },
             ...mapState(["isAuth"])
         },
@@ -665,6 +674,6 @@
                 }
             }
         }
-        
+
     }
 </style>
