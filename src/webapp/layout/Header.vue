@@ -66,6 +66,10 @@ export default {
             this.$store.dispatch("logout");
             this.$router.push("/", () => {});
             this.showProfile = false;
+        },
+        toggleProfile() {
+            debugger
+            this.showProfile = false;
         }
     },
     computed: {

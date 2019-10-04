@@ -1,15 +1,19 @@
 <template>
     <b-modal v-model="showCoupons" centered hide-header hide-footer no-close-on-esc no-close-on-backdrop>
         <div class="coupons-wrapper">
-            <h3 class="section-title-2 mb24" @click="close">Discount Coupons</h3>
+            <h3 class="section-title-2 mb24 pos-relative">Discount Coupons <a @click="close"><i class="material-icons pos-absolute pos-right brand-secondary light">close</i></a></h3>
             <div class="form-group">
                 <input type="text" class="form-control" v-model="couponCode" placeholder="Enter coupon code">
-                <button class="btn btn-primary btn-coupon" :disabled="!couponCode" @click="applyCoupon(undefined)">Apply Coupon</button>
+                <button class="btn btn-primary pos-absolute pos-right pos-top" :disabled="!couponCode" @click="applyCoupon(undefined)">Apply Coupon</button>
             </div>
             <div class="coupons" v-for="coupon in coupons" :key="coupon._id">
-                <h6 class="hero-text">{{coupon.Name}}</h6>
-                <p class="lead mb0">{{coupon.CouponCode}}</p>
-                <p class="text-muted t-s">{{coupon.Description}}</p>
+                <div class="coupon-code mb16">
+                    <p class="mb0">{{coupon.CouponCode}}</p>
+                </div>
+                <h6 class="hero-text mb8">{{coupon.Name}}</h6>
+                
+                <p class="lead t-s mb0">{{coupon.Description}}</p>
+                <p class="t-xs  text-muted mb16">Use code {{coupon.CouponCode}} & get 60% discount on the base subscription amount.</p>
                 <button class="btn btn-primary btn-bordered" @click="applyCoupon(coupon.CouponCode)" :disabled="isLoading">Apply Coupon</button>
             </div>
         </div>
@@ -75,14 +79,19 @@ export default {
     .coupons-wrapper {
         background: $white;
         padding: 16px;
-        .btn-coupon {
-            position: absolute;
-            top: 0;
-            right: 0;
-        }
         .coupons {
             border: 1px solid #ddd;
             padding: 16px;
+            margin-bottom: 24px;
+            .coupon-code {
+                display: inline-block;
+                padding: 8px 16px;
+                background: #fffae6;
+                border: 1px solid #ddd;
+                p {
+                    letter-spacing: 1px;
+                }
+            }
         }
     }
 </style>

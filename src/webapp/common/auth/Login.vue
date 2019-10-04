@@ -19,12 +19,12 @@
             <div class="form-group">
                 <input type="password" v-model="user.password" class="form-control" placeholder="Password" />
             </div>
-            <div>
+            <div class="mb16 lh16">
                 <a class="pointer underline" @click="displayForgotPasswordForm">Forgot Password?</a>
             </div>
             <button class="btn btn-primary btn-full" @click="login" :disabled="!isValid || isAuthLoader">Login</button>
             <LoaderModal :showloader="isAuthLoader" message="Please stand by while we authenticate..."></LoaderModal>
-            <div class="alert alert-danger text-center mt24" v-if="errMessage">
+            <div class="alert alert-danger text-center mt16" v-if="errMessage">
                 {{errMessage}}
             </div>
         </form>

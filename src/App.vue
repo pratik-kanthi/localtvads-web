@@ -28,6 +28,6 @@ export default {
   font-weight: 400;
   height: 100%;
   background-color: $body-background;
-
+  overflow-x: hidden;
 }
 </style>
