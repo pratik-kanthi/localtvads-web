@@ -19,7 +19,7 @@
             <div class="form-group">
                 <input type="password" class="form-control" v-model="user.ConfirmPassword" placeholder="Confirm Password">
             </div>
-            <small>Password must contain at least 8 characters with at least 1 capital letter, 1 small letter and 1 number</small>
+            <p class="mt16 mb16 t-s">Password must contain at least 8 characters with at least 1 capital letter, 1 small letter and 1 number</p>
             <button class="btn btn-primary btn-full" @click="register" :disabled="!isValid || isAuthLoader">Register</button>
             <div class="alert alert-danger text-center mt24" v-if="errMessage">
                 {{errMessage}}
@@ -113,9 +113,5 @@
             position: relative;
             top: -12px;
         }
-    }
-    small {
-        position: relative;
-        top: -16px;
     }
 </style>

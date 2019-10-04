@@ -132,6 +132,48 @@ h6,
 	/* 24px */
 }
 
+/* Position 
+-----------------------------------
+*/
+body {
+	overflow-x: hidden;
+}
+.pos-relative {
+	position: relative;
+}
+.pos-absolute {
+	position: absolute;
+}
+.pos-absolute.container {
+	left: 0;
+	right: 0;
+}
+.pos-top {
+	top: 0;
+}
+.pos-bottom {
+	bottom: 0;
+}
+.pos-right {
+	right: 0;
+}
+.pos-left {
+	left: 0;
+}
+
+.content-column-center {
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: column;
+	justify-content: center;
+}
+.content-row-center {
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: row;
+	justify-content: center;
+}
+
 /* Spacing Styles
 ------------------------------------
 */
@@ -426,6 +468,22 @@ footer {
 
 .green {
 	color: $green;
+}
+
+.alert {
+	color: $alert;
+}
+
+.error {
+	color: $error;
+}
+
+.success {
+	color: $success;
+}
+
+.links {
+	color: $links;
 }
 
 .brand-primary-bg {
