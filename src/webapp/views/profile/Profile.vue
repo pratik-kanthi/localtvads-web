@@ -23,32 +23,21 @@
                                         <label class="ml0">Account Email</label>
                                         <input type="text" class="form-control" v-model="getUser.Owner.Email">
                                     </div>
-                                </div>
-                                <div class="col-sm-6 content-column-center">
-                                    <p class="text-right"><a class="btn btn-link alert mb0">Change account email</a></p>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-sm-6">
                                     <div class="form-group mb16">
-                                        <label class="ml0">Password</label>
-                                        <input type="password" class="form-control">
+                                        <label class="ml0">Current Password</label>
+                                        <input type="password" class="form-control" v-model="currentPassword" placeholder="Enter cuurent password">
                                     </div>
-                                </div>
-                                <div class="col-sm-6 content-column-center">
-                                    <p class="text-right"><a class="btn btn-link alert mb0">Change account email</a></p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
+                                    <div class="form-group mb16">
+                                        <label class="ml0">New Password</label>
+                                        <input type="password" class="form-control" v-model="newPassword" placeholder="Enter new password">
+                                    </div>
                                     <div class="form-group">
                                         <label class="ml0">Phone number</label>
                                         <input type="text" class="form-control" v-model="getUser.Owner.Phone">
                                     </div>
                                 </div>
-                                <div class="col-sm-6 content-column-center">
-                                    <p class="text-right"><a class="btn btn-link alert mb0">Change account email</a></p>
+                                <div class="col-sm-6">
+                                    <p class="text-right"><a class="btn btn-link alert mb0">Edit profile details</a></p>
                                 </div>
                             </div>
                         </div>
@@ -66,7 +55,7 @@
                                 <div class="row" v-for="(card,key) in savedCards" :key="key">
                                     <div class="col-sm-8">
                                         <div class="saved-card">
-                                            <input type="radio" class="mr16" :value="card._id">
+                                            <input type="radio" class="mr16" v-model="isActive" :value="key">
                                             <img :src="getImageUrl(card.Card.Vendor)" alt />
                                             <span>xxxx xxxx xxxx {{card.Card.LastFour}}</span>
                                         </div>
@@ -87,22 +76,53 @@
                     <h4 class="section-subtitle b-b pb16">My Ads</h4>
                     <div class="row ads-wrapper">
                         <div class="col-sm-6">
-                            <div class="ad-video-1">
-                                <div class="background-image-holder ad-bg-1"></div>
+                            <div class="ad-video">
+                                <div class="background-image-holder ad-bg"></div>
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <h4 class="section-subtitle">Booking ID #123456 <button class="btn btn-primary btn-sm pull-right">Renew Plan</button></h4>
-                        </div>
-                    </div>
-                    <div class="row ads-warapper">
-                        <div class="col-sm-6">
-                            <div class="ad-video-2">
-                                <div class="background-image-holder ad-bg-2"></div>
+                            <div class="row mb16">
+                                <div class="col-sm-6"><h4 class="section-subtitle lh40">Booking ID #123456</h4></div>
+                                <div class="col-sm-6"><button class="btn btn-primary btn-sm pull-right">Renew Plan</button></div>
                             </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <h4 class="section-subtitle">Booking ID #123456 <button class="btn btn-primary btn-sm pull-right">Renew Plan</button></h4>
+                            <div class="plan-details">
+                                <div class="plan-info">
+                                    <p class="info-label">Broadcast Location</p>
+                                    <h6 class="hero-text">West Midlands TV</h6>
+                                </div>
+                                <div class="plan-info">
+                                    <p class="info-label">Broadcast Slot</p>
+                                    <h6 class="hero-text">Breakfast (6am to 9pm)</h6>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="plan-info">
+                                            <p class="info-label">Broadcast Start</p>
+                                            <h6 class="hero-text">19th September 2019</h6>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="plan-info">
+                                            <p class="info-label">Broadcast End</p>
+                                            <h6 class="hero-text">19th March 2020</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="plan-info">
+                                            <p class="info-label">Ad Length</p>
+                                            <h6 class="hero-text">20 sec</h6>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="plan-info">
+                                            <p class="info-label">Broadcast Duration</p>
+                                            <h6 class="hero-text">6 months</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -118,7 +138,9 @@ export default {
     name: "Profile",
     data() {
         return {
-            savedCards: []
+            savedCards: [],
+            currentPassword: '',
+            newPassword: ''
         }
     },
     methods: {
@@ -213,11 +235,6 @@ export default {
                             margin-right: 16px;
                         }
                     }
-                    .actions {
-                        .link {
-                            
-                        }
-                    }
                 }
                 
             }
@@ -225,20 +242,20 @@ export default {
         .profile-ads {
             .ads-wrapper {
                 padding: 24px 0 40px;
-                .ad-video-1 {
+                .ad-video {
                     width: 100%;
                     height: 300px;
                     position: relative;
-                    .ad-bg-1 {
+                    .ad-bg {
                         background-image: url('../../../assets/images/home-cover.jpg');
                     }
                 }
-                .ad-video-2 {
-                    width: 100%;
-                    height: 300px;
-                    position: relative;
-                    .ad-bg-2 {
-                        background-image: url('../../../assets/images/home-cover.jpg');
+                .plan-details {
+                    .plan-info {
+                        margin-bottom: 16px;
+                        .info-label {
+                            margin-bottom: 8px;
+                        }
                     }
                 }
             }
