@@ -21,7 +21,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group mb16">
                                         <label class="ml0">Account Email</label>
-                                        <input type="text" class="form-control" v-model="getUser.Owner.Email">
+                                        <input type="text" class="form-control" v-model="getUser().Owner.Email">
                                     </div>
                                     <div class="form-group mb16">
                                         <label class="ml0">Current Password</label>
@@ -33,7 +33,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="ml0">Phone number</label>
-                                        <input type="text" class="form-control" v-model="getUser.Owner.Phone">
+                                        <input type="text" class="form-control" v-model="getUser().Owner.Phone">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -55,15 +55,14 @@
                                 <div class="row" v-for="(card,key) in savedCards" :key="key">
                                     <div class="col-sm-8">
                                         <div class="saved-card">
-                                            <input type="radio" class="mr16" v-model="isActive" :value="key">
+                                            <input type="radio" class="mr16" v-model="preferredCard" :value="card._id" @click="setPreferredCard(preferredCard)">
                                             <img :src="getImageUrl(card.Card.Vendor)" alt />
                                             <span>xxxx xxxx xxxx {{card.Card.LastFour}}</span>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="actions float-right">
-                                            <button class="btn btn-link alert mb0">Edit</button>
-                                            <button class="btn btn-link error mb0">Delete</button>
+                                            <button class="btn btn-link error mb0" @click="deleteCard(card._id)" :disabled="card.IsPreferred">Delete</button>
                                         </div>
                                     </div>
                                 </div>
@@ -88,23 +87,23 @@
                             <div class="plan-details">
                                 <div class="plan-info">
                                     <p class="info-label">Broadcast Location</p>
-                                    <h6 class="hero-text">West Midlands TV</h6>
+                                    <h6 class="info-desc">West Midlands TV</h6>
                                 </div>
                                 <div class="plan-info">
                                     <p class="info-label">Broadcast Slot</p>
-                                    <h6 class="hero-text">Breakfast (6am to 9pm)</h6>
+                                    <h6 class="info-desc">Breakfast (6am to 9pm)</h6>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="plan-info">
                                             <p class="info-label">Broadcast Start</p>
-                                            <h6 class="hero-text">19th September 2019</h6>
+                                            <h6 class="info-desc">19th September 2019</h6>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="plan-info">
                                             <p class="info-label">Broadcast End</p>
-                                            <h6 class="hero-text">19th March 2020</h6>
+                                            <h6 class="info-desc">19th March 2020</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -112,13 +111,13 @@
                                     <div class="col-sm-6">
                                         <div class="plan-info">
                                             <p class="info-label">Ad Length</p>
-                                            <h6 class="hero-text">20 sec</h6>
+                                            <h6 class="info-desc">20 sec</h6>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="plan-info">
                                             <p class="info-label">Broadcast Duration</p>
-                                            <h6 class="hero-text">6 months</h6>
+                                            <h6 class="info-desc">6 months</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -139,17 +138,75 @@ export default {
     data() {
         return {
             savedCards: [],
+            preferredCard: '',
             currentPassword: '',
             newPassword: ''
         }
     },
     methods: {
+        deleteCard(card) {
+            this.$swal({
+                title: 'Are you sure?',
+                text: 'Your card will be deleted permanently',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Confirm',
+                closeOnConfirm: false
+            }).then(async(isConfirm) => {
+                if(isConfirm.value) {
+                    try {
+                        await instance.delete('api/client/deletecard?client=' + this.getUser().Owner._id + '&card=' + card);
+                        this.$swal({
+                            title: 'Deleted',
+                            text: 'Your card has been deleted',
+                            type: 'success',
+                        });
+                    } catch (err) {
+                        this.$swal({
+                            title: "Error",
+                            text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
+                            type: "error"
+                        });
+                        console.error(err);
+                    }
+                }
+            });
+        },
         getImageUrl(vendor) {
             return require("@/assets/images/cards/" + vendor + ".svg");
         },
+        setPreferredCard(oldCard) {
+            this.$swal({
+                    title: 'Are you sure?',
+                    text: 'Your preferred card will be updated',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirm'
+                }).then(async(isConfirm)=> {
+                    if (isConfirm.value) {
+                        try {
+                            await instance.post('api/client/preferredcard', {client: this.getUser().Owner._id, card: this.preferredCard})
+                            this.$swal({
+                                title: 'Updated',
+                                text: 'Preferred card has been updated',
+                                type: 'success'
+                            });
+                        } catch (err) {
+                            this.$swal({
+                                title: "Error",
+                                text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
+                                type: "error"
+                            });
+                            console.error(err);
+                        }
+                    } else {
+                        this.preferredCard = oldCard;
+                    }
+                });
+        },
+        ...mapGetters(["getUser"]),
     },
     computed: {
-        ...mapGetters(["getUser"]),
         getProfileImageUrl() {
             return this.GOOGLE_BUCKET_ENDPOINT + this.$store.state.user.Owner.ImageUrl
         }
@@ -158,6 +215,7 @@ export default {
         try {
             let result = await instance.get("api/client/cards?client=" + this.$store.state.user.Owner._id);
             this.savedCards = result.data;
+            this.preferredCard = this.savedCards.find(card => card.IsPreferred)._id;
         } catch (err) {
             this.$swal({
                 title: "Error",
@@ -228,7 +286,7 @@ export default {
                         width: 100%;
                         padding: 8px 0;
                         span {
-                            letter-spacing: 2px;
+                            letter-spacing: 3px;
                         }
                         img {
                             width: 56px;
@@ -252,9 +310,22 @@ export default {
                 }
                 .plan-details {
                     .plan-info {
-                        margin-bottom: 16px;
+                        margin-bottom: 20px;
                         .info-label {
-                            margin-bottom: 8px;
+                            margin-bottom: 4px;
+                            font-size: 12px;
+                            color: #acacac;
+                            font-weight: 500;
+                            font-family: $font-family-heading;
+                        }
+                        .info-desc {
+                            font-size: 14px;
+                            font-weight: 500;
+                            font-style: normal;
+                            font-stretch: normal;
+                            line-height: normal;
+                            letter-spacing: normal;
+                            color: #4c4c4c;
                         }
                     }
                 }
