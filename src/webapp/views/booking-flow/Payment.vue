@@ -1,7 +1,7 @@
 <template>
     <div class="bg--grey">
         <div v-if="showCoupons">
-            <CoupnsModal :show-coupons = "showCoupons" :options = "{channel: $route.query.channel, channelPlan:$parent.selectedPlan.plan, startDate: $parent.selectedPlan.broadcastStartDate}" @discountChosen="setDiscount"></CoupnsModal>
+            <CoupnsModal :show-coupons = "showCoupons" :options = "{channel: $route.query.channel, adSchedule:$parent.selectedPlan.adSchedule, startDate: $parent.selectedPlan.broadcastStartDate}" @discountChosen="setDiscount"></CoupnsModal>
         </div>
         <div class="container">
             <div class="payment-wrapper">
@@ -97,7 +97,7 @@
                                         <input type="radio" class="mr8" v-model="activeToggle" value="SavedCards"><span>Credit and debit card</span>
                                     </h6>
                                     <div v-for="(card,key) in savedCards" :key="key" class="card-info" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
-                                        <input type="radio" class="mr16" v-model="existingCard" :value="card._id">
+                                        <input type="radio" class="mr16" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'">
                                         <img :src="getImageUrl(card.Card.Vendor)" alt />
                                         <span>xxxx xxxx xxxx {{card.Card.LastFour}}</span>
                                     </div>
@@ -113,30 +113,30 @@
                                     <div class="form-group">
                                         <label class="mb8">Card Number</label>
                                         <div class="input-card-number">
-                                            <input name="number" type="tel" class="form-control" v-model="cardNumber"/>
+                                            <input name="number" type="tel" class="form-control" v-model="cardNumber" :disabled="activeToggle !== 'NewCard'"/>
                                             <img :src="getCardType" alt class="pull-right"/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for class="mb8">Cardholder Name</label>
-                                        <input name="name" type="text" class="form-control" v-model="name" autocomplete="off"/>
+                                        <input name="name" type="text" class="form-control" v-model="name" autocomplete="off" :disabled="activeToggle !== 'NewCard'"/>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label class="mb8">Expiry Date</label>
-                                                <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••"/>
+                                                <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••" :disabled="activeToggle !== 'NewCard'"/>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label class="mb8">CVV</label>
-                                                <input name="cvc" type="password" class="form-control" v-model="cvv"/>
+                                                <input name="cvc" type="password" class="form-control" v-model="cvv" :disabled="activeToggle !== 'NewCard'"/>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="consents">
-                                        <input type="checkbox" id="save" class="check" v-model="save" :disabled="savedCards.length === 0 && $parent.selectedPlan.isRenewal"/>
+                                        <input type="checkbox" id="save" class="check" v-model="save" :disabled="(savedCards.length === 0 && $parent.selectedPlan.isRenewal) || activeToggle !== 'NewCard'"/>
                                         <label for="save" class="check-label box mt8 mr8">
                                             <span></span>
                                         </label>
@@ -308,6 +308,7 @@
             async payNow(token, client) {
                 let obj = {
                     save: this.save,
+                    adschedule: this.$parent.selectedPlan.adSchedule,
                     clientadplan: {
                         Name: this.$parent.selectedPlan.broadcastStartDate + "_" + this.$parent.selectedPlan.broadcastLocation.Name + "_" + this.$parent.selectedPlan.broadcastSlot,
                         Client: client,
@@ -318,11 +319,25 @@
                     cardid: this.existingCard,
                     addons: [],
                     token: token,
-                    client: client
+                    client: client,
+                    coupon: this.discount.CouponCode
                 };
                 let result;
                 try {
                     result = await instance.post("api/clientad/new", obj);
+                    this.$router.push({
+                        name: "BookingFlow",
+                        query: {
+                            clientadplan: result.data._id
+                        }
+                    }, () => {
+                    });
+                    this.$swal({
+                        title: "Successful",
+                        text: "Payment has been successful. You are now being redirected to upload",
+                        type: "success"
+                    });
+                    await this.$parent.fetchClientAdPlan(result.data._id);
                 } catch (err) {
                     this.$parent.isLoading = false;
                     this.$swal({
@@ -332,22 +347,10 @@
                     });
                     console.error(err);
                 }
-                this.$router.push({
-                    name: "BookingFlow",
-                    query: {
-                        clientadplan: result.data._id
-                    }
-                }, () => {
-                });
-                this.$swal({
-                    title: "Successful",
-                    text: "Payment has been successful. You are now being redirected to upload",
-                    type: "success"
-                });
-                this.$parent.fetchClientAdPlan(result.data._id);
             },
             selectExistingCard(card) {
-                this.existingCard = card;
+                if (this.activeToggle === 'SavedCards')
+                    this.existingCard = card;
             },
             setDiscount(discount) {
                 this.showCoupons = false;
@@ -366,6 +369,9 @@
                     this.existingCard = this.savedCards.find(s => s.IsPreferred)._id;
                 } else {
                     this.existingCard = null;
+                    if (this.$parent.selectedPlan.isRenewal && this.savedCards.length === 0) {
+                        this.save = true;
+                    }
                     this.loadCardJS();
                 }
             },
