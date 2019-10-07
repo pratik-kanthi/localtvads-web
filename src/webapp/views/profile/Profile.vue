@@ -1,5 +1,8 @@
 <template>
     <section class="bg--grey pt56">
+        <div v-if="showNewCard">
+            <NewCardModal :show-new-card="showNewCard"></NewCardModal>
+        </div>
         <div class="container">
             <div class="profile-wrapper ml40 mr40">
                 <h3 class="section-title-2 brand-secondary medium mb40">My Account</h3>
@@ -25,7 +28,7 @@
                                     </div>
                                     <div class="form-group mb16">
                                         <label class="ml0">Current Password</label>
-                                        <input type="password" class="form-control" v-model="currentPassword" placeholder="Enter cuurent password">
+                                        <input type="password" class="form-control" v-model="currentPassword" placeholder="Enter current password">
                                     </div>
                                     <div class="form-group mb16">
                                         <label class="ml0">New Password</label>
@@ -48,10 +51,10 @@
                     <div class="row cards-details">
                         <div class="col-sm-4">
                             <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam repudiandae molestias maiores, est distinctio, harum nulla, enim tenetur quae mollitia iste cum corrupti quos.</p>
-                            <button class="btn btn-primary btn-full">Add New Card</button>
+                            <button class="btn btn-primary btn-full" @click="openNewCardModal">Add New Card</button>
                         </div>
                         <div class="col-sm-8">
-                            <div class="cards-wrapper">
+                            <div class="cards-wrapper" v-if="savedCards && savedCards.length > 0">
                                 <div class="row" v-for="(card,key) in savedCards" :key="key">
                                     <div class="col-sm-8">
                                         <div class="saved-card">
@@ -66,7 +69,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+                            </div>
+                            <div v-else>
+                                <p class="lead">No card added yet.</p>
                             </div>
                         </div>
                     </div>
@@ -133,14 +138,19 @@
 <script>
 import { mapGetters } from "vuex";
 import instance from "@/api";
+import NewCardModal from "@/webapp/common/modals/NewCardModal";
 export default {
     name: "Profile",
+    components: {
+        NewCardModal
+    },
     data() {
         return {
             savedCards: [],
             preferredCard: '',
             currentPassword: '',
-            newPassword: ''
+            newPassword: '',
+            showNewCard: false
         }
     },
     methods: {
@@ -204,18 +214,23 @@ export default {
                     }
                 });
         },
+         openNewCardModal() {
+            this.showNewCard = true;
+        },
         ...mapGetters(["getUser"]),
     },
     computed: {
         getProfileImageUrl() {
-            return this.GOOGLE_BUCKET_ENDPOINT + this.$store.state.user.Owner.ImageUrl
+            return this.GOOGLE_BUCKET_ENDPOINT + this.getUser().Owner.ImageUrl
         }
     },
     async created() {
         try {
-            let result = await instance.get("api/client/cards?client=" + this.$store.state.user.Owner._id);
+            let result = await instance.get("api/client/cards?client=" + this.getUser().Owner._id);
             this.savedCards = result.data;
-            this.preferredCard = this.savedCards.find(card => card.IsPreferred)._id;
+            if(this.savedCards.length > 0) {
+                this.preferredCard = this.savedCards.find(card => card.IsPreferred)._id;
+            }
         } catch (err) {
             this.$swal({
                 title: "Error",

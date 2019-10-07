@@ -32,7 +32,7 @@
 				<h4 class="section-title-2 text-center mb56">How it works</h4>
 				<div class="row works-wrapper">
 					<div class="col-sm-3 text-center" v-for="work in workflow" :key="work.Id">
-						<div class="work" :class="work.Active ? 'selected' : ''">
+						<div class="work">
 							<div class="counter mb-2"><h6>{{work.Id}}</h6></div>
 							<h4 class="section-subtitle mb-3">{{work.Name}}</h4>
 							<p class="desc">{{work.Desc}}</p>
@@ -135,22 +135,18 @@
 				workflow: [{
 					Id: 1,
 					Name: 'Select Your Slot',
-					Active: true,
 					Desc: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aut error optio voluptatibus ab voluptatum esse voluptates? Perspiciatis, maxime similique. Debitis, earum nulla. Molestias soluta sit aspernatur ipsa expedita libero ex!'
 				}, {
 					Id: 2,
-					Active: false,
 					Name: 'Choose Your Plan',
 					Desc: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aut error optio voluptatibus ab voluptatum esse voluptates? Perspiciatis, maxime similique. Debitis, earum nulla. Molestias soluta sit aspernatur ipsa expedita libero ex!'
 				}, {
 					Id: 3,
-					Active: false,
 					Name: 'Upload Your Ad',
 					Desc: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aut error optio voluptatibus ab voluptatum esse voluptates? Perspiciatis, maxime similique. Debitis, earum nulla. Molestias soluta sit aspernatur ipsa expedita libero ex!'
 				}, {
 					Id: 4,
 					Name: 'Dont Lorem ipsum',
-					Active: false,
 					Desc: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aut error optio voluptatibus ab voluptatum esse voluptates? Perspiciatis, maxime similique. Debitis, earum nulla. Molestias soluta sit aspernatur ipsa expedita libero ex!'
 				}],
 				offers: [{
@@ -302,7 +298,7 @@
 							box-shadow: 0 10px 10px 0 rgba(255, 101, 0, 0.46);
 						}
 					}
-					&.selected {
+					&:hover {
 						background: $brand-primary;
 						color: $white;
 						.counter {

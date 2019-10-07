@@ -1,5 +1,5 @@
 <template>
-	<b-modal v-model="$store.state.auth.showDialog" centered hide-header hide-footer no-close-on-esc no-close-on-backdrop>
+	<b-modal v-model="$store.state.auth.showDialog" centered hide-header hide-footer no-close-on-esc no-close-on-backdrop id="auth-modal">
 		<div class="user-login">
 			<div class="tabs">
 				<ul>
@@ -60,7 +60,18 @@
 	};
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+	#auth-modal {
+		.modal-content {
+			background-color: transparent !important;
+			border: none;
+			.modal-body {
+				padding: 0;
+			}
+		}
+	}
+</style>
+<style lang="scss" scopped>
 	.user-login {
         width: 100%;
 		.tabs {
