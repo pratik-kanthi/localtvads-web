@@ -154,9 +154,11 @@ export default {
         }
     },
     methods: {
-        close() {
+        close(val) {
             this.showNewCard = false;
-            this.getSavedCards();
+            if(val) {
+                this.getSavedCards();
+            }
         },
         async getSavedCards() {
             try {

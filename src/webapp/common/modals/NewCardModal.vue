@@ -51,7 +51,7 @@ export default {
     },
     methods: {
         closeModal() {
-            this.$emit("close");
+            this.$emit("close", false);
         },
         getImageUrl(vendor) {
             return require("@/assets/images/cards/" + vendor + ".svg");
@@ -101,7 +101,7 @@ export default {
                     text: "Your card has been saved successfully.",
                     type: "success"
                 });
-                this.$emit("close");
+                this.$emit("close", true);
             } catch (err) {
                 this.$parent.isLoading = false;
                 this.$swal({

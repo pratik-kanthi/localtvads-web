@@ -15,6 +15,7 @@
 		"core-js": "^2.6.5",
 		"jquery": "^3.4.1",
 		"jquery.payment": "^3.0.0",
+		"lottie-web": "^5.5.9",
 		"moment": "^2.24.0",
 		"ramda": "^0.26.1",
 		"socket.io-client": "^2.0.4",

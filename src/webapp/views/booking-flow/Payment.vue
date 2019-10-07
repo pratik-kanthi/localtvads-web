@@ -94,7 +94,7 @@
                             <div class="saved-cards" v-if="savedCards.length > 0">
                                 <div class="cards">
                                     <h6 class="hero-text mb24" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}">
-                                        <input type="radio" class="mr8" v-model="activeToggle" value="SavedCards"><span>Credit and debit card</span>
+                                        <input type="radio" class="mr8" v-model="activeToggle" value="SavedCards"><span>Your saved credit and debit cards</span>
                                     </h6>
                                     <div v-for="(card,key) in savedCards" :key="key" class="card-info" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
                                         <input type="radio" class="mr16" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'">
@@ -103,11 +103,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- <div class="new-card" v-if="activeToggle==='NewCard'"> -->
                             <div class="new-card">
                                 <form ref="form" class="p0">
                                     <h6 class="hero-text mb16" @click="togglePaymentOptions('NewCard')">
-                                        <input type="radio" class="mr8" v-model="activeToggle" value="NewCard" ><span :class="{'active':activeToggle === 'NewCard'}">Your saved credit and debit cards</span>
+                                        <input type="radio" class="mr8" v-model="activeToggle" value="NewCard" ><span :class="{'active':activeToggle === 'NewCard'}">Credit and debit card</span>
                                     </h6>
                                     <div class="hidden-container"></div>
                                     <div class="form-group">

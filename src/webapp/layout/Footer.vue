@@ -22,7 +22,7 @@
                     <ul class="social">
                         <li><a><img src="@/assets/images/facebook.svg" alt=""></a></li>
                         <li><a><img src="@/assets/images/twitter.svg" alt=""></a></li>
-                        <li>© 2019 Localtvads.com</li>
+                        <li>© 2019 localtvads.com</li>
                     </ul>
                 </div>
             </div>

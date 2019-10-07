@@ -105,3 +105,42 @@ input[type="password"] {
 		}
 	}
 }
+input[type="file"] {
+	background: transparent;
+	&:before {
+		padding: 0 10px !important;
+	}
+}
+
+input[type="file"] {
+	width: 100%;
+	outline: 0 !important;
+	margin-top: 4px;
+	margin-bottom: 10px;
+	height: 40px;
+	&::-webkit-file-upload-button {
+		visibility: hidden !important;
+		-webkit-appearance: none;
+	}
+	&::before {
+		content: 'Choose File';
+		display: inline-block;
+		background-color: $brand-primary;
+		border-radius: 6px;
+		line-height: 30px;
+		padding: 0px 12px;
+		height: 30px;
+		outline: none;
+		white-space: nowrap;
+		color: #fff;
+		cursor: pointer;
+		font-weight: 700;
+		font-size: 11px;
+		outline: 0 !important;
+	}
+	&:hover {
+		&::before {
+			border-color: $black;
+		}
+	}
+}

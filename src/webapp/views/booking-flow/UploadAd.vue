@@ -155,6 +155,9 @@
             border-radius: 10px;
             padding: 40px;
             text-align: center;
+            .hidden {
+                display: none;
+            }
             .upload {
                 padding-left: 8px !important;
                 height: 48px;
