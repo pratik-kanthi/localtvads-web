@@ -1,7 +1,7 @@
 <template>
     <section class="bg--grey pt56">
         <div v-if="showNewCard">
-            <NewCardModal :show-new-card="showNewCard"></NewCardModal>
+            <NewCardModal :show-new-card="showNewCard" @close="close"></NewCardModal>
         </div>
         <div class="container">
             <div class="profile-wrapper ml40 mr40">
@@ -50,7 +50,7 @@
                     <h4 class="section-subtitle b-b pb16">My Cards</h4>
                     <div class="row cards-details">
                         <div class="col-sm-4">
-                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam repudiandae molestias maiores, est distinctio, harum nulla, enim tenetur quae mollitia iste cum corrupti quos.</p>
+                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam repudiandae molestias maiores, est distinctio, harum nulla, enim tenetur quae mollitia iste.</p>
                             <button class="btn btn-primary btn-full" @click="openNewCardModal">Add New Card</button>
                         </div>
                         <div class="col-sm-8">
@@ -154,6 +154,26 @@ export default {
         }
     },
     methods: {
+        close() {
+            this.showNewCard = false;
+            this.getSavedCards();
+        },
+        async getSavedCards() {
+            try {
+                let result = await instance.get("api/client/cards?client=" + this.getUser().Owner._id);
+                this.savedCards = result.data;
+                if(this.savedCards.length > 0) {
+                    this.preferredCard = this.savedCards.find(card => card.IsPreferred)._id;
+                }
+            } catch (err) {
+                this.$swal({
+                    title: "Error",
+                    text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
+                    type: "error"
+                });
+                console.error(err);
+            }
+        },
         deleteCard(card) {
             this.$swal({
                 title: 'Are you sure?',
@@ -225,20 +245,7 @@ export default {
         }
     },
     async created() {
-        try {
-            let result = await instance.get("api/client/cards?client=" + this.getUser().Owner._id);
-            this.savedCards = result.data;
-            if(this.savedCards.length > 0) {
-                this.preferredCard = this.savedCards.find(card => card.IsPreferred)._id;
-            }
-        } catch (err) {
-            this.$swal({
-                title: "Error",
-                text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
-                type: "error"
-            });
-            console.error(err);
-        }
+        this.getSavedCards();
     }
 }
 </script>
