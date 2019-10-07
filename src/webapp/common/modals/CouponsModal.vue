@@ -22,6 +22,7 @@
 
 <script>
 import instance from "@/api";
+import {mapGetters} from 'vuex';
 export default {
     name: "CouponsModal",
     props: ['showCoupons', 'options'],
@@ -39,7 +40,7 @@ export default {
                 this.couponCode = undefined;
             }
             try {
-                let result = await instance.get('api/clientad/couponexists?clientid=' + this.$store.state.user.Owner._id + '&channel=' + this.options.channel + '&channelplan=' + this.options.channelPlan + '&startdate=' + this.options.startDate + '&couponcode=' + (this.couponCode || couponCode));
+                let result = await instance.get('api/clientad/couponexists?clientid=' + this.$store.state.user.Owner._id + '&channel=' + this.options.channel + '&adschedule=' + this.options.adSchedule + '&startdate=' + this.options.startDate + '&couponcode=' + (this.couponCode || couponCode));
                 this.isLoading = false;
                 this.selectCoupon(result.data);
             } catch (err) {
@@ -57,11 +58,12 @@ export default {
         },
         selectCoupon(discount) {
             this.$emit('discountChosen', discount);
-        }
+        },
+        ...mapGetters(['getUser'])
     },
     async created() {
         try {
-            let result = await instance.get('api/clientad/coupons?clientid=' + this.$store.state.user.Owner._id + '&channel=' +  this.options.channel + '&channelplan=' + this.options.channelPlan + '&startdate=' + this.options.startDate);
+            let result = await instance.get('api/clientad/coupons?clientid=' + this.getUser().Owner._id + '&channel=' +  this.options.channel + '&adschedule=' + this.options.adSchedule + '&startdate=' + this.options.startDate);
             this.coupons = result.data;
         } catch (err) {
             this.$swal({

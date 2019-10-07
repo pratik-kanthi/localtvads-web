@@ -226,6 +226,7 @@
                     broadcastSlot: this.selectedPlan.AdSchedule.Name,
                     adStartTime: this.selectedPlan.AdSchedule.StartTime,
                     adEndTime: this.selectedPlan.AdSchedule.EndTime,
+                    adSchedule: this.selectedPlan.AdSchedule._id,
                     broadcastStartDate: this.slotStartDate,
                     broadcastEndDate: this.slotEndDate,
                     adLength: this.secondSelected,
@@ -290,7 +291,7 @@
         created() {
             if(!this.$route.query.channel || !this.$route.query.seconds || !this.$route.query.startdate){
                 this.$router.push('/', () => {});
-            }else{
+            } else{
 
                 this.$parent.isLoading = true;
                 this.sliderStartDate = this.$route.query.startdate;
