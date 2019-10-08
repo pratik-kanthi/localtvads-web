@@ -84,7 +84,7 @@
                                 <div class="background-image-holder ad-bg">
                                     <div class="action">
                                         <a v-if="ad.ClientAd && ad.ClientAd.VideoUrl" :href="getVideoUrl(ad.ClientAd.VideoUrl)" target="_blank"><img src="@/assets/images/play.png" alt="" class="play"></a>
-                                        <button v-else class="btn btn-white">Upload Your Ad</button>
+                                        <button v-else class="btn btn-white" @click="goToVideoUpload(ad._id)">Upload Your Ad</button>
                                     </div>
                                 </div>
                             </div>
@@ -212,6 +212,14 @@ export default {
         },
         getImageUrl(vendor) {
             return require("@/assets/images/cards/" + vendor + ".svg");
+        },
+        goToVideoUpload(id) {
+            this.$router.push({
+                name: 'BookingFlow',
+                query: {
+                    clientadplan: id
+                }
+            });
         },
         setPreferredCard(oldCard) {
             this.$swal({
