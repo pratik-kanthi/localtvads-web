@@ -209,7 +209,6 @@
                 this.getAvailableSlots();
             },
             getPrevSlots() {
-                let prev;
                 if (this.moment() > this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(5, 'days')) {
                     this.sliderEndDate = this.moment().add(4, 'days').format('YYYY-MM-DD');
                     this.sliderStartDate = this.moment().format('YYYY-MM-DD');

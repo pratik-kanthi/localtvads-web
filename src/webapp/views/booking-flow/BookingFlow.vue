@@ -11,7 +11,7 @@
                 <v-stepper-step step="3">Verification</v-stepper-step>
             </v-stepper-header>
         </v-stepper> -->
-        <div v-show="!isLoading">
+        <div>
             <component :is="currentStage" @advanceToPayment="goToPayment"></component>
         </div>
         <LoaderModal :showloader="isLoading" :message="loaderMessage + '...'"></LoaderModal>

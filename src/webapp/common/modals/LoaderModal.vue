@@ -1,8 +1,9 @@
 <template>
-    <div class="loader">
+    <div class="loader" v-show="showloader">
         <div class="overlay"></div>
-        <div class="content">
+        <div class="content" v-scroll-lock="showloader">
             <div class="loader-wrapper" ref="loader"></div>
+            <p v-if="message" class="brand-primary bold">{{message}}</p>
         </div>
     </div>
 </template>
@@ -14,34 +15,53 @@
         name: "LoaderModal",
         props: ['showloader','message'],
         mounted() {
-            let animation = lottie.loadAnimation({
+            this.anim = lottie.loadAnimation({
                 container: this.$refs.loader,
                 renderer: 'svg',
                 loop: true,
                 autoplay: true,
                 animationData: animationData
             });
-        },
+        }
     }
 </script>
 
 <style lang="scss" scoped>
-    .overlay {
-        opacity: 0.8
-    }
-    .content {
-        color: #fff;
-        padding: 8px;
-        border-radius: 6px;
-        position: absolute;
+    .loader {
+        position: fixed;
         top: 0;
         left: 0;
-        margin: 0 auto;
-        p {
-            margin-bottom: 16px;
+        right: 0;
+        z-index:10;
+        .overlay {
+            opacity: 0.8;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background-color: #fff;
+            z-index: 2;
         }
-        .loader-wrapper {
-            width: 300px;
+        .content {
+            min-height: 100vh;
+            padding: 8px;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            p {
+                margin-top: 16px;
+                font-size: 18px;
+                z-index: 3;
+            }
+            .loader-wrapper {
+                width: 300px;
+                height: 300px;
+                z-index: 3;
+            }
         }
     }
 </style>
