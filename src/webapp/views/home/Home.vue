@@ -1,6 +1,6 @@
 <template>
-    <div class="home">
-        <div class="page-header" id="book-now">
+	<div class="home">
+		<div class="page-header" id="book-now">
 			<div class="overlay-layer"></div>
 			<div class="container">
 				<div class="tagline">
@@ -15,7 +15,7 @@
 				</div>
 			</div>
 		</div>
-        <div class="container content-area">
+		<div class="container content-area">
 			<ul class="tabs">
 				<li :class="{'active' : activeTab === 'bookad'}" @click="goToComponent('bookad')">Book Your Ad</li>
 				<li :class="{'active' : activeTab === 'createad'}" @click="goToComponent('createad')">Create Your Ad</li>
@@ -25,7 +25,7 @@
 				<CreateAd v-if="activeTab === 'createad'"></CreateAd>
 			</div>
 		</div>
-        <ResetPassword v-if="$route.name=='ResetPassword'"></ResetPassword>
+		<ResetPassword v-if="$route.name=='ResetPassword'"></ResetPassword>
 		<ForgotPassword v-if="$route.name=='ForgotPassword'"></ForgotPassword>
 		<section id="how-it-works" class="how-it-works">
 			<div class="container">
@@ -33,7 +33,9 @@
 				<div class="row works-wrapper">
 					<div class="col-sm-3 text-center" v-for="work in workflow" :key="work.Id">
 						<div class="work">
-							<div class="counter mb-2"><h6>{{work.Id}}</h6></div>
+							<div class="counter mb-2">
+								<h6>{{work.Id}}</h6>
+							</div>
 							<h4 class="section-subtitle mb-3">{{work.Name}}</h4>
 							<p class="desc">{{work.Desc}}</p>
 						</div>
@@ -65,7 +67,7 @@
 				<h2 class="section-title-1 text-center mb56">Happy Customers, Happy Businesses</h2>
 				<p class="text-center mb-5">Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has been the industry's standard dummy text ever since. Corporate social responsibility policymaker inclusion, resist; compassion mass incarceration correlation white paper. Program area energize optimism radical shared value policymaker.</p>
 				<div class="testimonial-slider">
-					
+
 				</div>
 			</div>
 		</section>
@@ -82,21 +84,21 @@
 					<div class="contact-form">
 						<div class="form-group">
 							<label for="" class="ml0">Name</label>
-							<input type="text" class="form-control" placeholder="Your Name">
+							<input v-model="enquiryForm.Name" type="text" class="form-control" placeholder="Your Name">
 						</div>
 						<div class="form-group">
 							<label for="" class="ml0">Email ID</label>
-							<input type="email" class="form-control" placeholder="Your email address">
+							<input v-model="enquiryForm.Email" type="email" class="form-control" placeholder="Your email address">
 						</div>
 						<div class="form-group">
 							<label for="" class="ml0">Subject</label>
-							<input type="text" class="form-control" placeholder="Your email address">
+							<input v-model="enquiryForm.Subject" type="text" class="form-control" placeholder="Your email address">
 						</div>
 						<div class="form-group">
 							<label for="" class="ml0">Message</label>
-							<textarea name="" id="" cols="30" rows="4" class="form-control" placeholder="Gives us more details.."></textarea>
+							<textarea v-model="enquiryForm.Message" name="" id="" cols="30" rows="4" class="form-control" placeholder="Gives us more details.."></textarea>
 						</div>
-						<button class="btn btn-primary btn-full mt24">Send a Message</button>
+						<button @click="submitEnquiry" :disabled="!isEnquiryFormValid" class="btn btn-primary btn-full mt24">Send a Message</button>
 					</div>
 				</div>
 			</div>
@@ -107,29 +109,30 @@
 				<p class="lead text-center mb48">Lorem Ipsum is simply dummy text of the printing and typesetting industry.<br>It has been the industry's standard dummy text ever since.</p>
 				<div class="form-group email-wrapper">
 					<img src="@/assets/images/mail.svg" class="mail-icon" alt="">
-					<input type="email" class="form-control" placeholder="Your Email" >
-					<button class="btn btn-primary subscribe">Subscribe</button>
+					<input v-model="subscriberEmail" type="email" class="form-control" placeholder="Your Email">
+					<button :disabled="!isSubscriberEmailValid" @click="subscribeUser" class="btn btn-primary subscribe">Subscribe</button>
 				</div>
 			</div>
 		</section>
-    </div>
+	</div>
 </template>
 
 <script>
-    import BookAd from "@/webapp/views/home/BookAd.vue";
-    import CreateAd from "@/webapp/views/home/CreateAd.vue";
-    import ResetPassword from "@/webapp/common/modals/ResetPassword.vue";
-    import ForgotPassword from "@/webapp/common/modals/ForgotPassword.vue";
-    
-    export default {
-        name: "Home",
-        components: {
+	import BookAd from "@/webapp/views/home/BookAd.vue";
+	import CreateAd from "@/webapp/views/home/CreateAd.vue";
+	import ResetPassword from "@/webapp/common/modals/ResetPassword.vue";
+	import ForgotPassword from "@/webapp/common/modals/ForgotPassword.vue";
+	import instance from "@/api";
+
+	export default {
+		name: "Home",
+		components: {
 			BookAd,
 			CreateAd,
 			ResetPassword,
 			ForgotPassword
-        },
-        data() {
+		},
+		data() {
 			return {
 				activeTab: "bookad",
 				workflow: [{
@@ -164,12 +167,75 @@
 					Name: 'Coffee Slots',
 					ImageUrl: require('@/assets/images/offers/3.jpg'),
 					Desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut abore et dolore magna ali.'
-				}]
+				}],
+				subscriberEmail: '',
+				enquiryForm: {},
+				emailRegex: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 			};
+		},
+		computed: {
+			isSubscriberEmailValid() {
+				let flag = true;
+				if (!this.subscriberEmail || !this.emailRegex.test(this.subscriberEmail)) {
+					flag = false;
+				}
+				return flag;
+			},
+			isEnquiryFormValid() {
+				let flag = true;
+				if (!this.enquiryForm.Email || !this.enquiryForm.Name || !this.enquiryForm.Subject || !this.enquiryForm.Message || !this.emailRegex.test(this.enquiryForm.Email)) {
+					flag = false;
+				}
+				return flag;
+			}
 		},
 		methods: {
 			goToComponent(name) {
 				this.activeTab = name;
+			},
+			async subscribeUser() {
+				try {
+					let result = await instance.post('api/contact/subscribe', { subscriberEmail: this.subscriberEmail });
+					this.$swal({
+						title: "Successful",
+						text: 'You have subscribed sucessfully.',
+						type: "success",
+						confirmButtonColor: '#ff6500'
+					});
+					this.subscriberEmail = null;
+				} catch (err) {
+					this.$swal({
+						text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+						type: "error",
+						confirmButtonColor: '#ff6500'
+					});
+					throw (err);
+				}
+			},
+			async submitEnquiry() {
+				try {
+					let requestObj = {
+						Name: this.enquiryForm.Name,
+						Email: this.enquiryForm.Email,
+						Subject: this.enquiryForm.Subject,
+						Message: this.enquiryForm.Message
+					}
+					let result = await instance.post('/api/contact/enquiry', requestObj);
+					this.$swal({
+						title: "Successful",
+						text: 'Your message was received. Our team will get back to you shortly.',
+						type: "success",
+						confirmButtonColor: '#ff6500'
+					});
+					this.enquiryForm.Name = this.enquiryForm.Email = this.enquiryForm.Subject = this.enquiryForm.Message = null;
+				} catch (err) {
+					this.$swal({
+						text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+						type: "error",
+						confirmButtonColor: '#ff6500'
+					});
+					throw (err);
+				}
 			}
 		},
 		created() {
@@ -177,50 +243,56 @@
 				this.$store.commit("DIALOG_CHOSEN", "login");
 			}
 		}
-    }
+	}
 </script>
 
 <style lang="scss" scoped>
-    .home {
-        .page-header {
-            background-image: url("../../../assets/images/home-cover.jpg");
-            background-size: cover;
+	.home {
+		.page-header {
+			background-image: url("../../../assets/images/home-cover.jpg");
+			background-size: cover;
 			height: 400px;
 			background-repeat: no-repeat;
 			background-position: center center;
-            position: relative;
-            .overlay-layer {
+			position: relative;
+
+			.overlay-layer {
 				position: absolute;
 				background-color: rgba(0, 0, 0, 0.7);
 				top: 0;
 				bottom: 0;
 				left: 0;
 				right: 0;
-            }
-            .tagline {
+			}
+
+			.tagline {
 				position: relative;
 				padding: 88px 120px;
 
 				h1 {
-                    color: $white;
-                    font-weight: 600;
+					color: $white;
+					font-weight: 600;
 					margin-bottom: 24px;
 					font-size: 40px;
+
 					span {
-                        color: $brand-primary;
+						color: $brand-primary;
 					}
-                }
-                h3 {
-                    color: $white;
-                    font-weight: 400;
-                    font-size: 24px;
-                    line-height: normal
-                }
+				}
+
+				h3 {
+					color: $white;
+					font-weight: 400;
+					font-size: 24px;
+					line-height: normal
+				}
 			}
-        }
-        .content-area {
+		}
+
+		.content-area {
 			margin-top: -110px;
-            position: relative;
+			position: relative;
+
 			ul.tabs {
 				list-style: none;
 				padding: 0;
@@ -242,7 +314,8 @@
 					font-weight: 400;
 					font-size: 16px;
 					font-family: $font-family-heading;
-                    cursor: pointer;
+					cursor: pointer;
+
 					a {
 						text-decoration: none;
 						color: #fff !important;
@@ -258,6 +331,7 @@
 						margin-top: 0;
 						line-height: 40px;
 						width: calc(50% - 2px);
+
 						&:first-child {
 							margin-right: 2px;
 						}
@@ -268,6 +342,7 @@
 					}
 				}
 			}
+
 			.content {
 				background-image: url("../../../assets/images/pattern.svg");
 				background-size: cover;
@@ -278,6 +353,7 @@
 				border-bottom-right-radius: 6px;
 			}
 		}
+
 		.how-it-works {
 			.works-wrapper {
 				.work {
@@ -285,8 +361,10 @@
 					border-top-left-radius: 10px;
 					border-bottom-right-radius: 10px;
 					cursor: pointer;
+
 					.counter {
 						padding: 16px;
+
 						h6 {
 							background: $brand-primary;
 							color: $white;
@@ -298,9 +376,11 @@
 							box-shadow: 0 10px 10px 0 rgba(255, 101, 0, 0.46);
 						}
 					}
+
 					&:hover {
 						background: $brand-primary;
 						color: $white;
+
 						.counter {
 							h6 {
 								background: $white;
@@ -308,6 +388,7 @@
 								box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.12);
 							}
 						}
+
 						h4 {
 							color: $white;
 						}
@@ -315,16 +396,19 @@
 				}
 			}
 		}
+
 		.latest-offers {
 			.offers {
 				display: flex;
-            	flex-direction: row;
+				flex-direction: row;
 				justify-content: space-between;
+
 				.offer {
 					background: $white;
 					border-radius: 10px;
 					max-width: 320px;
 					display: inline-block;
+
 					.offer-image {
 						position: relative;
 						border-top-left-radius: 10px;
@@ -334,9 +418,11 @@
 						background-size: cover;
 						background-repeat: no-repeat;
 					}
+
 					.offer-content {
 						padding: 24px 16px;
 						text-align: center;
+
 						p {
 							font-size: 16px;
 							color: #4a4a4a;
@@ -345,14 +431,17 @@
 				}
 			}
 		}
+
 		.video {
 			width: 100%;
 			min-height: 480px;
 			position: relative;
+
 			.video-bg {
 				background-image: url('../../../assets/images/video-bg.jpg');
 				background-position-x: 120%;
 			}
+
 			.play-button {
 				position: relative;
 				top: calc(50% - 64px);
@@ -361,28 +450,32 @@
 				border-radius: 50%;
 				padding: 36px 40px;
 				width: 120px;
-    			height: 120px;
+				height: 120px;
 				margin: 0 auto;
 				border: 8px solid rgba(0, 0, 0, .2);
+
 				img {
 					width: 30px;
 					height: 30px;
 				}
 			}
 		}
+
 		.testimonial {
 			p {
 				line-height: 32px;
 			}
 		}
+
 		.contact-us {
 			.info {
 				background-color: $brand-primary;
 				background-image: url('../../../assets/images/pattern.svg');
 				height: 100%;
 				background-size: 170% 80%;
-    			background-position: 51% 0%;
+				background-position: 51% 0%;
 				padding: 80px 96px;
+
 				img {
 					display: block;
 					margin: 0 auto;
@@ -390,39 +483,48 @@
 					opacity: 0.89;
 					margin-bottom: 40px;
 				}
+
 				h1 {
 					font-weight: 500;
-    				margin-bottom: 24px;
-    				font-size: 40px;
+					margin-bottom: 24px;
+					font-size: 40px;
 				}
+
 				p {
 					line-height: 32px;
 					color: $white;
 				}
 			}
+
 			.contact-form {
 				padding: 80px 104px;
+
 				label {
 					color: #2c3241;
 				}
 			}
 		}
+
 		.subscription {
 			p {
 				line-height: 32px;
 			}
+
 			.email-wrapper {
 				max-width: 500px;
 				position: relative;
 				margin: 0 auto;
+
 				input {
 					padding-left: 50px;
 				}
+
 				.mail-icon {
 					position: absolute;
 					top: 14px;
 					left: 12px;
 				}
+
 				.subscribe {
 					position: absolute;
 					top: 0;
@@ -432,5 +534,5 @@
 				}
 			}
 		}
-    }
+	}
 </style>
