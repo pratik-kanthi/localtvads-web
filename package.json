@@ -19,6 +19,7 @@
 		"moment": "^2.24.0",
 		"ramda": "^0.26.1",
 		"socket.io-client": "^2.0.4",
+		"v-scroll-lock": "^1.0.1",
 		"vue": "^2.6.10",
 		"vue-cookies": "^1.5.13",
 		"vue-flatpickr-component": "^8.1.3",

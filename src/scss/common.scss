@@ -132,7 +132,7 @@ h6,
 	/* 24px */
 }
 
-/* Position 
+/* Position
 -----------------------------------
 */
 body {
@@ -357,7 +357,7 @@ footer {
 	}
 }
 
-/* Border Helpers 
+/* Border Helpers
 ------------------------------------
 */
 .b-a,
@@ -588,4 +588,9 @@ footer {
 
 .green-bd {
 	border-color: $green;
+}
+
+.flex-break {
+	flex-basis: 100%;
+	width: 0;
 }
