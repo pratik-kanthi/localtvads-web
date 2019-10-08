@@ -11,6 +11,7 @@
                 <v-stepper-step step="3">Verification</v-stepper-step>
             </v-stepper-header>
         </v-stepper> -->
+        <Stepper :steps="steps" :current="currentStep"></Stepper>
         <div>
             <component :is="currentStage" @advanceToPayment="goToPayment"></component>
         </div>
@@ -24,9 +25,13 @@
     import ChoosePlan from './ChoosePlan';
     import Review from './Review';
     import Payment from './Payment';
+    import Stepper from "@/e9_components/components/Stepper";
 
     export default {
         name: "BookingFlow",
+        components: {
+            Stepper
+        },
         data() {
             return {
                 currentStage: UploadAd,
@@ -35,6 +40,24 @@
                 isLoading: false,
                 loaderMessage: 'Please stand by while we fetch data',
                 selectedPlan: {},
+                steps: [
+                    {
+                        name: 'Book Your Ad',
+                        index: 1
+                    },
+                    {
+                        name: 'Payment',
+                        index: 2
+                    },
+                    {
+                        name: 'Upload Your Ad',
+                        index: 3
+                    },
+                    {
+                        name: 'Verification',
+                        index: 4
+                    }
+                ]
             }
         },
         methods: {
