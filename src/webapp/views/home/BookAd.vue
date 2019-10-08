@@ -18,15 +18,13 @@
             </div>
             <div class="form-group">
                 <label for="" class="text-white">Start Date</label>
-                <flat-pickr v-model="startDate" :config="{ ...config, disable: disabledDates}" class="form-control no-border datepicker" placeholder="Select starting date" :disabled="!broadcastLocation || !adLength" ref="calendar"></flat-pickr>
+                <flat-pickr v-model="startDate" :config="{ ...config, disable: disabledDates}" class="form-control datepicker" placeholder="Select starting date" :disabled="!broadcastLocation || !adLength" ref="calendar"></flat-pickr>
             </div>
             <div class="action">
-                <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Lets Go!
-                </button>
+                <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Lets Go!</button>
             </div>
         </div>
-        <div class="ad-views" v-if="broadcastLocation && adLength"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated
-            Views<span>{{getMaximumViewCount() || 0 | formatValue(0)}}</span></div>
+        <div class="ad-views" v-if="broadcastLocation && adLength"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated Views<span>{{getMaximumViewCount() || 0 | formatValue(0)}}</span></div>
     </div>
 </template>
 
