@@ -23,9 +23,9 @@ export const routes = [
 				'booking-flow'
 			);
 		}
+	},
+	{
+		path: '*',
+		redirect: '/'
 	}
-	// {
-	// 	path: '*',
-	// 	redirect: '/'
-	// }
 ];
