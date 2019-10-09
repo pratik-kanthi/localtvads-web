@@ -1,7 +1,7 @@
 [
 	{
 		"id": 1,
-		"LogoUrl": "assets/images/testimonials/profile1.jpg",
+		"LogoUrl": "profile1.jpg",
 		"Desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has been the industry's standard dummy text ever since. Corporate social responsibility policymaker inclusion, resist; compassion mass incarceration correlation white paper. Program area energize optimism radical shared value policymaker .",
 		"Active": true,
 		"Manager": "Jennifer Blacksmith",
@@ -9,7 +9,7 @@
 	},
 	{
 		"id": 2,
-		"LogoUrl": "assets/images/testimonials/profile2.jpg",
+		"LogoUrl": "profile2.jpg",
 		"Desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has been the industry's standard dummy text ever since. Corporate social responsibility policymaker inclusion, resist; compassion mass incarceration correlation white paper. Program area energize optimism radical shared value policymaker .",
 		"Active": true,
 		"Manager": "Mollie Jennings",
@@ -17,7 +17,7 @@
 	},
 	{
 		"id": 3,
-		"LogoUrl": "assets/images/testimonials/profile3.jpg",
+		"LogoUrl": "profile3.jpg",
 		"Desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has been the industry's standard dummy text ever since. Corporate social responsibility policymaker inclusion, resist; compassion mass incarceration correlation white paper. Program area energize optimism radical shared value policymaker .",
 		"Active": true,
 		"Manager": "Mickel Bisping",
