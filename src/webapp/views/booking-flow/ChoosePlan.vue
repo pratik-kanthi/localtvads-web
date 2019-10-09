@@ -100,18 +100,13 @@
                                     <div class="features">
                                         <ul class="mb8">
                                             <li class="medium">Played every {{moment(slotStartDate, 'YYYY-MM-DD').format('dddd')}} between {{plan.AdSchedule.StartTime}} - {{plan.AdSchedule.EndTime}}</li>
-                                            <li v-if="plan.ViewershipCount"><span class="brand-primary bold">>{{plan.ViewershipCount | formatValue(0)}}</span> expected ad views over 6
-                                                months
-                                            </li>
-                                            <li v-if="plan.ViewershipCount"><span class="t-l medium">={{((plan.TotalAmount / plan.ViewershipCount) * 100) | formatValue(2)}} pence</span> per view<br><span class="text-muted italic">(53x cheaper per view than leafletting)</span>
-                                            </li>
-                                            <li><span class="t-l medium">={{(plan.TotalAmount / (getTotalSlotDuration / 7)) | currency}}</span> per week <br><span class="text-muted italic">(75x cheaper than 1/4 page in local newspaper)</span>
-                                            </li>
+                                            <li v-if="plan.ViewershipCount"><span class="brand-primary bold">>{{plan.ViewershipCount | formatValue(0)}}</span> expected ad views over 6 months</li>
+                                            <li v-if="plan.ViewershipCount"><span class="t-l medium">={{((plan.TotalAmount / plan.ViewershipCount) * 100) | formatValue(2)}} pence</span> per view<br><span class="text-muted italic">(53x cheaper per view than leafletting)</span></li>
+                                            <li><span class="t-l medium">={{(plan.TotalAmount / (getTotalSlotDuration / 7)) | currency}}</span> per week <br><span class="text-muted italic">(75x cheaper than 1/4 page in local newspaper)</span></li>
                                         </ul>
                                     </div>
                                     <div class="selectplan">
-                                        <button class="btn btn-primary btn-full" @click="selectPlan(plan)"
-                                                :class="{'btn-active': selectedPlan.Plan === plan.Plan}">
+                                        <button class="btn btn-primary btn-full" @click="selectPlan(plan)" :class="{'btn-active': selectedPlan.Plan === plan.Plan}">
                                             <span v-if="selectedPlan.Plan === plan.Plan">Selected</span>
                                             <span v-else>Choose this plan</span>
                                         </button>

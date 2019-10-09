@@ -64,13 +64,13 @@
         methods: {
             cancelUpload() {
                 this.upload.chosen = null;
-                document.removeElement('video');
+                // let elem = document.getElementsByTagName('video')[0];
+                // elem.parentNode.removeChild(elem);
             },
             chooseFile() {
                 $('#fileUpload').click();
             },
             fileUploaded() {
-                debugger
                 this.isValid = false;
                 this.upload.chosen = this.$refs.fileUpload.files[0];
                 window.URL = window.URL || window.webkitURL;
@@ -92,7 +92,6 @@
                         return;
                     }
                     this.isValid = true;
-                    // this.uploadFile();
                 };
                 this.videoUrl = URL.createObjectURL(this.upload.chosen);
             },

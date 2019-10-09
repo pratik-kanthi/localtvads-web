@@ -77,50 +77,55 @@
                     </div>
                 </div>
                 <div class="profile-ads">
-                    <h4 class="section-subtitle b-b pb16">My Ads</h4>
-                    <div class="row ads-wrapper">
+                    <h4 class="section-subtitle b-b pb16 mb24">My Ads</h4>
+                    <div class="row ads-wrapper" v-for="ad in clientAds" :key="ad._id">
                         <div class="col-sm-6">
                             <div class="ad-video">
-                                <div class="background-image-holder ad-bg"></div>
+                                <div class="background-image-holder ad-bg">
+                                    <div class="action">
+                                        <a v-if="ad.ClientAd && ad.ClientAd.VideoUrl" :href="getVideoUrl(ad.ClientAd.VideoUrl)" target="_blank"><img src="@/assets/images/play.png" alt="" class="play"></a>
+                                        <button v-else class="btn btn-white" @click="goToVideoUpload(ad._id)">Upload Your Ad</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <div class="row mb16">
+                            <!-- <div class="row mb16">
                                 <div class="col-sm-6"><h4 class="section-subtitle lh40">Booking ID #123456</h4></div>
                                 <div class="col-sm-6"><button class="btn btn-primary btn-sm pull-right">Renew Plan</button></div>
-                            </div>
+                            </div> -->
                             <div class="plan-details">
                                 <div class="plan-info">
                                     <p class="info-label">Broadcast Location</p>
-                                    <h6 class="info-desc">West Midlands TV</h6>
+                                    <h6 class="info-desc">{{ad.ChannelPlan.Plan.Channel.Name}}</h6>
                                 </div>
                                 <div class="plan-info">
                                     <p class="info-label">Broadcast Slot</p>
-                                    <h6 class="info-desc">Breakfast (6am to 9pm)</h6>
+                                    <h6 class="info-desc">{{ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.Name}} ({{ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.StartTime}} to {{ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.EndTime}})</h6>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="plan-info">
                                             <p class="info-label">Broadcast Start</p>
-                                            <h6 class="info-desc">19th September 2019</h6>
+                                            <h6 class="info-desc">{{moment(ad.StartDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</h6>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="plan-info">
                                             <p class="info-label">Broadcast End</p>
-                                            <h6 class="info-desc">19th March 2020</h6>
+                                            <h6 class="info-desc">{{moment(ad.EndDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</h6>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <div class="plan-info">
+                                        <div class="plan-info mb0">
                                             <p class="info-label">Ad Length</p>
-                                            <h6 class="info-desc">20 sec</h6>
+                                            <h6 class="info-desc">{{ad.ChannelPlan.Plan.Seconds}} sec</h6>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
-                                        <div class="plan-info">
+                                        <div class="plan-info mb0">
                                             <p class="info-label">Broadcast Duration</p>
                                             <h6 class="info-desc">6 months</h6>
                                         </div>
@@ -150,7 +155,8 @@ export default {
             preferredCard: '',
             currentPassword: '',
             newPassword: '',
-            showNewCard: false
+            showNewCard: false,
+            clientAds: []
         }
     },
     methods: {
@@ -207,6 +213,14 @@ export default {
         getImageUrl(vendor) {
             return require("@/assets/images/cards/" + vendor + ".svg");
         },
+        goToVideoUpload(id) {
+            this.$router.push({
+                name: 'BookingFlow',
+                query: {
+                    clientadplan: id
+                }
+            });
+        },
         setPreferredCard(oldCard) {
             this.$swal({
                     title: 'Are you sure?',
@@ -240,6 +254,9 @@ export default {
             this.showNewCard = true;
         },
         ...mapGetters(["getUser"]),
+        getVideoUrl(url) {
+            return this.GOOGLE_BUCKET_ENDPOINT + url;
+        }
     },
     computed: {
         getProfileImageUrl() {
@@ -248,6 +265,17 @@ export default {
     },
     async created() {
         this.getSavedCards();
+        try {
+            let result = await instance.get('api/clientad/getall?clientid=' + this.getUser().Owner._id + '&top=5&skip=0');
+            this.clientAds = result.data;
+        } catch (err) {
+            this.$swal({
+                title: "Error",
+                text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
+                type: "error"
+            });
+            console.error(err);
+        }
     }
 }
 </script>
@@ -268,7 +296,7 @@ export default {
                     background-size: cover;
                     background-repeat: no-repeat;
                     margin-bottom: 24px;
-                    border: 1px solid $brand-primary;
+                    border: 2px solid $brand-primary;
                 }
                 .profile-text {
                     width: 108px;
@@ -323,13 +351,28 @@ export default {
         }
         .profile-ads {
             .ads-wrapper {
-                padding: 24px 0 40px;
+                margin-bottom: 24px;
+                &:last-child {
+                    margin-bottom: 0;
+                }
                 .ad-video {
                     width: 100%;
-                    height: 300px;
+                    height: 240px;
                     position: relative;
                     .ad-bg {
-                        background-image: url('../../../assets/images/home-cover.jpg');
+                        background-image: url('../../../assets/images/ad-video-bg.jpg');
+                    }
+                    .action {
+                        .play {
+                            width: 56px;
+                            display: block;
+                            margin: 96px auto;
+                        }
+                        .btn {
+                            max-width: 150px;
+                            display: block;
+                            margin: 96px auto;
+                        }
                     }
                 }
                 .plan-details {

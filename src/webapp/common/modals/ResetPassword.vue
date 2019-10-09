@@ -1,9 +1,9 @@
 <template>
-	<v-dialog v-model="model" width="500" persistent data-app>
+	<b-modal v-model="model" centered hide-footer no-close-on-esc no-close-on-backdrop title="Reset Password">
 		<div class="user-login">
 			<div class="content">
 				<div class="content-area">
-					<h3>Reset Password</h3>
+					<h3></h3>
 					<p>Please enter your new password.</p>
 					<form name="resetpasswordForm">
 						<div class="form-group">
@@ -18,7 +18,7 @@
 				</div>
 			</div>
 		</div>
-	</v-dialog>
+	</b-modal>
 </template>
 
 
@@ -44,7 +44,6 @@
 			checkPasswordMatch() {
 				this.formData.password1 == this.formData.password2 ? (this.formData.passwordMatch = true) : (this.formData.passwordMatch = false);
 			},
-
 			async resetPasswordRequest() {
 				try {
 					let result = await instance.post("api/auth/resetpassword/" + this.token, { password: this.formData.password2 });

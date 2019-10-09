@@ -1,13 +1,13 @@
 <template>
-	<v-dialog v-model="model" width="500" persistent data-app>
+	<b-modal v-model="model" centered hide-footer no-close-on-esc no-close-on-backdrop title="Forgot Password?">
+		<button slot="modal-header-close" @click="cancel" class="close">×</button>
 		<div class="user-login">
 			<div class="content">
 				<div class="content-area">
-					<h3 class="brand-primary">Forgot Password?</h3>
 					<p>Please enter your registered email address. We will email you with a link to reset your password</p>
 					<form name="forgotPasswordForm">
 						<div class="form-group">
-							<input v-model="formData.email" type="email" class="form-control" placeholder="Email Address" />
+							<input v-model="formData.email" type="email" class="form-control mb16" placeholder="Email Address" />
 							<button :disabled="checkEmail" @click="forgotPasswordRequest" class="btn btn-primary btn-full" type="button">Submit</button>
 							<div class="alert alert-danger text-center" v-if="errMessage">
 								<small>{{errMessage}}</small>
@@ -18,7 +18,7 @@
 				</div>
 			</div>
 		</div>
-	</v-dialog>
+	</b-modal>
 </template>
 
 
@@ -118,7 +118,7 @@
 		.content {
 			position: relative;
 			background-color: #fff;
-			padding: 32px 64px;
+			padding: 32px;
 
 			.overlay {
 				position: absolute;
