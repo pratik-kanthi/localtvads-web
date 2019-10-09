@@ -31,7 +31,7 @@
 			<div class="container">
 				<h4 class="section-title-2 text-center mb56">How it works</h4>
 				<div class="row works-wrapper">
-					<div class="col-sm-3 text-center" v-for="work in workflow" :key="work.Id">
+					<div class="col-md-3 text-center" v-for="work in workflow" :key="work.Id">
 						<div class="work">
 							<div class="counter mb-2">
 								<h6>{{work.Id}}</h6>
@@ -65,9 +65,22 @@
 		<section class="testimonial bg--grey">
 			<div class="container">
 				<h2 class="section-title-1 text-center mb56">Happy Customers, Happy Businesses</h2>
-				<p class="text-center mb-5">Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has been the industry's standard dummy text ever since. Corporate social responsibility policymaker inclusion, resist; compassion mass incarceration correlation white paper. Program area energize optimism radical shared value policymaker.</p>
+				<p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has been the industry's standard dummy text ever since. Corporate social responsibility policymaker inclusion, resist; compassion mass incarceration correlation white paper. Program area energize optimism radical shared value policymaker.</p>
+			</div>
+			<div class="contianer-fluid mt40">
 				<div class="testimonial-slider">
-
+					<agile :options="sliderOptions">
+						<div class="slide" v-for="t in testimonials" :key="t.id">
+							<div class="content">
+								<div class="profile-photo">
+									<img :src="getProfileImageUrl(t.LogoUrl)" alt="">
+								</div>
+								<h6 class="name">{{t.Manager}}</h6>
+								<h6 class="company">{{t.Company}}</h6>
+								<p class="desc">{{t.Desc}}</p>
+							</div>
+						</div>
+					</agile>
 				</div>
 			</div>
 		</section>
@@ -92,7 +105,7 @@
 						</div>
 						<div class="form-group">
 							<label for="" class="ml0">Subject</label>
-							<input v-model="enquiryForm.Subject" type="text" class="form-control" placeholder="Your email address">
+							<input v-model="enquiryForm.Subject" type="text" class="form-control" placeholder="What can we help you with..">
 						</div>
 						<div class="form-group">
 							<label for="" class="ml0">Message</label>
@@ -123,6 +136,7 @@
 	import ResetPassword from "@/webapp/common/modals/ResetPassword.vue";
 	import ForgotPassword from "@/webapp/common/modals/ForgotPassword.vue";
 	import instance from "@/api";
+	import testimonials from '@/assets/data/testimonials.json';
 
 	export default {
 		name: "Home",
@@ -135,6 +149,30 @@
 		data() {
 			return {
 				activeTab: "bookad",
+				testimonials: testimonials,
+				sliderOptions: {
+					autoplay: true,
+					infinite: true,
+					autoplaySpeed: 5000,
+					slidesToShow: 3,
+					navButtons: false,
+					responsive: [{
+						breakpoint: 1199,
+						settings: {
+							slidesToShow: 3
+						}
+					}, {
+						breakpoint: 768,
+						settings: {
+							slidesToShow: 2
+						}
+					}, {
+						breakpoint: 300,
+						settings: {
+							slidesToShow: 1
+						}
+					}]
+				},
 				workflow: [{
 					Id: 1,
 					Name: 'Select Your Slot',
@@ -173,23 +211,10 @@
 				emailRegex: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 			};
 		},
-		computed: {
-			isSubscriberEmailValid() {
-				let flag = true;
-				if (!this.subscriberEmail || !this.emailRegex.test(this.subscriberEmail)) {
-					flag = false;
-				}
-				return flag;
-			},
-			isEnquiryFormValid() {
-				let flag = true;
-				if (!this.enquiryForm.Email || !this.enquiryForm.Name || !this.enquiryForm.Subject || !this.enquiryForm.Message || !this.emailRegex.test(this.enquiryForm.Email)) {
-					flag = false;
-				}
-				return flag;
-			}
-		},
 		methods: {
+			getProfileImageUrl(url) {
+				return require('@/' + url);
+			},
 			goToComponent(name) {
 				this.activeTab = name;
 			},
@@ -236,6 +261,22 @@
 					});
 					throw (err);
 				}
+			}
+		},
+		computed: {
+			isSubscriberEmailValid() {
+				let flag = true;
+				if (!this.subscriberEmail || !this.emailRegex.test(this.subscriberEmail)) {
+					flag = false;
+				}
+				return flag;
+			},
+			isEnquiryFormValid() {
+				let flag = true;
+				if (!this.enquiryForm.Email || !this.enquiryForm.Name || !this.enquiryForm.Subject || !this.enquiryForm.Message || !this.emailRegex.test(this.enquiryForm.Email)) {
+					flag = false;
+				}
+				return flag;
 			}
 		},
 		created() {
@@ -401,6 +442,7 @@
 			.offers {
 				display: flex;
 				flex-direction: row;
+				flex-wrap: wrap;
 				justify-content: space-between;
 
 				.offer {
@@ -464,6 +506,67 @@
 		.testimonial {
 			p {
 				line-height: 32px;
+			}
+			.testimonial-slider {
+				padding: 0 40px;
+				position: relative;
+				.slide {
+					.content {
+						margin: 80px 24px 40px;
+						background: $white;
+						text-align: center;
+						padding: 72px 48px 32px;
+						border-radius: 18px;
+						position: relative;
+						.profile-photo {
+							position: absolute;
+							top: -60px;
+							left: 50%;
+							transform: translateX(-50%);
+							img {
+								width: 110px;
+								height: 110px;
+								border-radius: 50%;
+								box-shadow: 0 2px 24px 0 rgba(161, 161, 161, 0.5);
+							}
+						}
+						.name {
+							font-size: 18px;
+							font-weight: 500;
+							color: #212121;
+						}
+						.company {
+							font-size: 18px;
+							font-weight: normal;
+							color: #212121;
+						}
+						.desc {
+							margin-top: 24px;
+							position: relative;
+							&:before {
+								content: '“';
+								position: absolute;
+								top: -24px;
+								left: -24px;
+								color: $brand-primary;
+								font-size: 50px;
+								font-weight: 500;
+								letter-spacing: -3.7px;
+								-webkit-transform: scaleY(-1);
+  								transform: scaleY(-1);
+							}
+						}
+					}
+				}
+				@media(max-width: 678px) {
+					padding: 0;
+					.slide {
+						.content {
+							padding: 72px 16px 32px;
+						}
+					}
+					
+				}
 			}
 		}
 
