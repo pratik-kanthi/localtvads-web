@@ -1,13 +1,19 @@
-const path = require('path');
 module.exports = {
 	publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
-	pluginOptions: {
-		'style-resources-loader': {
-			preProcessor: 'less',
-			patterns: [ path.resolve(__dirname, './src/less/styles.less') ]
-		}
-	},
 	configureWebpack: {
 		devtool: 'eval'
-	}
+	},
+	css: {
+		loaderOptions: {
+			scss: {
+				prependData: `
+				@import "~bootstrap/scss/_functions.scss";
+				@import "~bootstrap/scss/_variables.scss";
+				@import "~@/scss/variables.scss";
+				@import "~@/scss/mixins/mixins.scss";
+				`
+			}
+		}
+	},
+	lintOnSave: true
 };

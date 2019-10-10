@@ -12,24 +12,19 @@
             <div class="form-group">
                 <label for="" class="text-white">Ad Length</label>
                 <select class="form-control" v-model="adLength" @change="loadScheduleAvailability">
-                    <option disabled selected hidden value="">Select Ad length</option>
+                    <option disabled selected hidden value="">Select Ad Length</option>
                     <option v-for="(sec,key) in seconds" :key="key" :value="sec">{{sec}} Seconds</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="" class="text-white">Start Date</label>
-                <flat-pickr v-model="startDate" :config="{ ...config, disable: disabledDates}"
-                            class="form-control datepicker" placeholder="DD/MM/YYY"
-                            :disabled="!broadcastLocation || !adLength" ref="calendar"></flat-pickr>
+                <flat-pickr v-model="startDate" :config="{ ...config, disable: disabledDates}" class="form-control datepicker no-border" placeholder="Select starting date" :disabled="!broadcastLocation || !adLength" ref="calendar"></flat-pickr>
             </div>
             <div class="action">
-                <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()"
-                        :disabled="isProceedable">Lets Go!
-                </button>
+                <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Lets Go!</button>
             </div>
         </div>
-        <div class="ad-views" v-if="broadcastLocation && adLength"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated
-            Views<span>{{getMaximumViewCount() || 0 | formatValue(0)}}</span></div>
+        <div class="ad-views" v-if="broadcastLocation && adLength"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated Views<span>{{getMaximumViewCount() || 0 | formatValue(0)}}</span></div>
     </div>
 </template>
 
@@ -121,7 +116,7 @@
                         text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                         type: "error"
                     });
-                    throw err;
+                    console.error(err);
                 }
             },
             getMaximumViewCount() {
@@ -170,7 +165,7 @@
                     text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                     type: "error"
                 });
-                throw err;
+                console.error(err);
             }
         },
         computed: {
@@ -181,7 +176,7 @@
     }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
     .book-ads {
         padding: 40px;
         color: #FFF !important;
@@ -208,37 +203,67 @@
         }
 
         .action {
-            width: calc(~'100% - 888px');
+            width: calc(100% - 3*(280px + 16px));
             display: inline-block;
             vertical-align: bottom;
             margin-bottom: 1px;
 
             .btn {
+                height: 48px;
                 &:hover,
                 &:visited {
-                    background-color: mix(#000, @brand-primary, 10%) !important;
-                    .box-shadow(1px 1px 8px 0 rgba(0, 0, 0, 0.3));
+                    background-color: mix(#000, $brand-primary, 10%) !important;
+                    box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
                 }
             }
         }
 
         .ad-views {
-            background-color: @brand-secondary;
+            background-color: $brand-secondary;
             width: 300px;
+            font-family: $font-family-heading;
             text-align: center;
-            border-top-left-radius: 6px;
-            border-top-right-radius: 6px;
-            padding: 16px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            padding: 12px;
             margin: 40px auto -40px;
-
+            line-height: 16px;
+            font-weight: 100;
             img {
                 margin-bottom: 6px;
+                margin-right: 8px;
             }
 
             span {
                 font-size: 20px;
-                font-weight: 700;
+                font-weight: 500;
                 padding-left: 8px;
+            }
+        }
+        @media(max-width: 767px) {
+            padding: 20px;
+            .form-group {
+                width: 100%;
+                margin-bottom: 16px;
+            }
+            .action {
+                width: 100%;
+                display: block;
+                margin: 16px 0 16px;
+            }
+            .ad-views {
+                margin: 20px auto -20px;
+            }
+        }
+        /* iPhone x Landscape */
+        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) { 
+            .form-group {
+                width: 100%;
+                margin-bottom: 16px;
+            }.action {
+                width: 100%;
+                display: block;
+                margin: 16px 0 16px;
             }
         }
     }

@@ -1,29 +1,43 @@
 <template>
-    <div class="container" v-if="$parent.clientAdPlan">
-        <div class="upload-box">
-            <div v-if="progress === 0 && !$parent.clientAdPlan.ClientAd">
-                <h4 class="bold">You can Upload Video</h4>
-                <p class="text-muted mb0">Click on the upload button or drag and drop your upload file here.</p>
-                <p class="brand-primary">(less than {{config.maxSize}}MB and within {{$parent.clientAdPlan.ChannelPlan.Plan.Seconds}} seconds) </p>
-                <input id="fileUpload" class="hidden" type="file" @change="fileUploaded" accept="video/mp4,video/x-m4v,video/*" ref="fileUpload" />
-                <button class="btn btn-primary upload" @click="chooseFile" :disabled="isLoading"><img src="@/assets/images/upload.svg"> <span class="button-text">Upload Video</span></button>
+    <section>
+        <div class="container" v-if="$parent.clientAdPlan">
+            <div class="upload-wrapper">
+                <div v-if="progress === 0 && !$parent.clientAdPlan.ClientAd && !upload.chosen" class="upload-box">
+                    <h4 class="bold">You can Upload Video</h4>
+                    <p class="text-muted mb0">Click on the upload button or drag and drop your upload file here.</p>
+                    <p class="brand-primary">(less than {{config.maxSize}}MB and within {{$parent.clientAdPlan.ChannelPlan.Plan.Seconds}} seconds) </p>
+                    <input id="fileUpload" class="hidden" type="file" @change="fileUploaded" accept="video/mp4,video/x-m4v,video/*" ref="fileUpload" />
+                    <button class="btn btn-primary upload mt16" @click="chooseFile" :disabled="isLoading"><img src="@/assets/images/upload.svg"> <span class="button-text">Upload Video</span></button>
+                </div>
+                <div class="video-wrapper" v-if="progress === 0 && upload.chosen">
+                    <video controls class="mb24">
+                        <source :src="videoUrl" type="video/mp4">
+                    </video>
+                    <div class="action text-center">
+                        <button class="btn btn-white btn-bordered mr16" @click="cancelUpload">Cancel</button>
+                        <button class="btn btn-white" @click="uploadVideo">Submit</button>
+                    </div>
+                </div>
+                <div class="upload-progress" v-else-if="progress > 0">
+                    <div class="details">
+                        <div class="pull-left">
+                            <strong class="t-l" v-text="upload.chosen.name"></strong>&nbsp;<span class="text-muted">is uploading...</span>
+                        </div>
+                        <div class="pull-right">
+                            <strong v-text="progress + ' %'"></strong>
+                        </div>
+                        <br class="clearfix">
+                        <div class="loader">
+                            <div class="value" :style="{'width': progress + '%'}"></div>
+                        </div>
+                        <br class="clearfix">
+                    </div>
+                </div>
+
             </div>
-            <div v-else-if="progress > 0" class="details">
-                <div class="pull-left">
-                    <strong class="t-l" v-text="upload.chosen.name"></strong>&nbsp;<span class="text-muted">is uploading...</span>
-                </div>
-                <div class="pull-right">
-                    <strong v-text="progress + ' %'"></strong>
-                </div>
-                <br class="clearfix">
-                <div class="loader">
-                    <div class="value" :style="{'width': progress + '%'}"></div>
-                </div>
-                <br class="clearfix">
-            </div>
+            <LoaderModal :showloader="progress === 100 && processing" message="Upload successful, please wait while we process the video..."></LoaderModal>
         </div>
-        <LoaderModal :showloader="progress === 100 && processing" message="Upload successful, please wait while we process the video..."></LoaderModal>
-    </div>
+    </section>
 </template>
 
 <script>
@@ -43,10 +57,14 @@
                     chosen: null
                 },
                 socket: null,
-                processing: false
+                processing: false,
+                videoUrl: ''
             }
         },
         methods: {
+            cancelUpload() {
+                this.upload.chosen = null;
+            },
             chooseFile() {
                 $('#fileUpload').click();
             },
@@ -72,9 +90,13 @@
                         return;
                     }
                     this.isValid = true;
-                    this.uploadFile();
                 };
-                video.src = URL.createObjectURL(this.upload.chosen);
+                this.videoUrl = URL.createObjectURL(this.upload.chosen);
+            },
+            preventNav(event) {
+                if (!this.processing && !this.progress) return;
+                event.preventDefault();
+                event.returnValue = "";
             },
             sendSocket(chunk, counter, chunkSize) {
                 this.socket.emit('UPLOAD_CHUNK', {
@@ -135,30 +157,53 @@
                     },1000);
                 });
             },
-
+            uploadVideo() {
+                this.$swal({
+                    title: 'Are you sure?',
+                    text: 'Video will be uploaded and submitted for review.',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirm',
+                    closeOnConfirm: false
+                }).then(isConfirm => {
+                    if(isConfirm.value) {
+                        this.uploadFile();
+                    }
+                });
+            }
+        },
+        beforeMount() {
+            window.addEventListener('beforeunload', this.preventNav);
+        },
+        beforeDestroy() {
+            window.removeEventListener("beforeunload", this.preventNav);
         }
     }
 </script>
 
-<style scoped lang="less">
-    .container{
+<style scoped lang="scss">
+    .upload-wrapper{
+        margin: 0 80px;
         background-image: url('../../../assets/images/pattern.svg');
-        background-color: @brand-primary;
+        background-color: $brand-primary;
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center center;
-        padding: 108px;
+        padding: 64px 108px;
         border-radius: 8px;
         .upload-box {
-            background: #FFF;
-            .box-shadow(1px 1px 8px 0 rgba(0, 0, 0, 0.3));
+            background: $white;
+            box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
             border-radius: 10px;
-            padding: 40px;
+            padding: 64px;
             text-align: center;
+            .hidden {
+                display: none;
+            }
             .upload {
                 padding-left: 8px !important;
                 height: 48px;
-                .box-shadow(1px 1px 8px 0 rgba(0, 0, 0, 0.3));
+                box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
                 &:focus {
                     border: none;
                     outline: 0;
@@ -169,7 +214,7 @@
                     padding-right: 8px;
                 }
                 .button-text{
-                    border-left: 1px solid @light-grey;
+                    border-left: 1px solid $light-grey;
                     padding-top: 2px;
                     padding-bottom: 2px;
                     padding-left: 20px;
@@ -178,25 +223,44 @@
                     font-weight: 500;
                 }
             }
+        }
+        .video-wrapper {
+            video {
+                width: 100%;
+                border-radius: 8px;
+            }
+            .action {
+                button {
+                    min-width: 240px;
+                }
+            }
+        }
+        .upload-progress {
+            background: $white;
+            box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 64px;
+            text-align: center;
             .details {
                 margin-top: 32px;
-                border: 1px solid @lighter-grey;
+                border: 1px solid $lighter-grey;
                 border-radius: 5px;
                 padding: 8px 16px;
                 .loader {
                     height: 10px;
                     width: 100%;
-                    background-color: @lighter-grey;
+                    background-color: $lighter-grey;
                     position:relative;
                     border-radius: 6px;
                     .value {
                         height: inherit;
                         position: absolute;
                         left: 0;
-                        background-color: @brand-primary;
+                        background-color: $brand-primary;
                     }
                 }
             }
         }
+
     }
 </style>

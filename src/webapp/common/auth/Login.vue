@@ -1,12 +1,11 @@
 <template>
     <div>
         <div v-if="!isEmailConfirmed">
-            <Google :api="api" :type="'Login'"></Google>
-        </div>
-        <div v-if="!isEmailConfirmed">
             <Facebook :api="api" :type="'Login'"></Facebook>
         </div>
-        <br class="clearfix" />
+        <div v-if="!isEmailConfirmed">
+            <Google :api="api" :type="'Login'"></Google>
+        </div>
         <div v-if="!isEmailConfirmed" class="separater text-center">
             <span class="content">or log in with email address</span>
         </div>
@@ -20,12 +19,12 @@
             <div class="form-group">
                 <input type="password" v-model="user.password" class="form-control" placeholder="Password" />
             </div>
-            <div class="mt16 mb16">
-                <p class="pointer underline" @click="displayForgotPasswordForm">Forgot Password?</p>
+            <div class="mb16 lh16">
+                <a class="pointer underline" @click="displayForgotPasswordForm">Forgot Password?</a>
             </div>
             <button class="btn btn-primary btn-full" @click="login" :disabled="!isValid || isAuthLoader">Login</button>
             <LoaderModal :showloader="isAuthLoader" message="Please stand by while we authenticate..."></LoaderModal>
-            <div class="alert alert-danger text-center mt24" v-if="errMessage">
+            <div class="alert alert-danger text-center mt16" v-if="errMessage">
                 {{errMessage}}
             </div>
         </form>
@@ -35,12 +34,13 @@
 <script>
     import Google from "@/webapp/common/auth/Google";
     import Facebook from "@/webapp/common/auth/Facebook";
+    import LoaderModal from  '@/webapp/common/modals/LoaderModal';
     import instance from "@/api";
     import { mapGetters } from "vuex";
 
     export default {
         name: "Login",
-        components: { Facebook, Google },
+        components: { Facebook, Google, LoaderModal},
         props: ["isEmailConfirmed"],
         data() {
             return {
@@ -97,7 +97,7 @@
     };
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
     .separater {
         border-top: 1px solid #ddd;
         margin: 16px 0;

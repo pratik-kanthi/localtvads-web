@@ -1,8 +1,8 @@
 <template>
     <div>
-        <Google :api="api" :type="'Register'"></Google>
         <Facebook :api="api" :type="'Register'"></Facebook>
-        <br class="clearfix">
+        <Google :api="api" :type="'Register'"></Google>
+        <!-- <br class="clearfix"> -->
         <div class="separater text-center">
             <span class="content">or sign up with email address</span>
         </div>
@@ -19,7 +19,7 @@
             <div class="form-group">
                 <input type="password" class="form-control" v-model="user.ConfirmPassword" placeholder="Confirm Password">
             </div>
-            <small>Password must contain at least 8 characters with at least 1 capital letter, 1 small letter and 1 number</small>
+            <p class="mt16 mb16 t-s">Password must contain at least 8 characters with at least 1 capital letter, 1 small letter and 1 number</p>
             <button class="btn btn-primary btn-full" @click="register" :disabled="!isValid || isAuthLoader">Register</button>
             <div class="alert alert-danger text-center mt24" v-if="errMessage">
                 {{errMessage}}
@@ -56,7 +56,7 @@
             async register(){
                 try {
                     this.$store.commit('LOGIN_LOADER', true);
-                    let result = await instance.post('api/auth/clientregister', this.user);
+                    await instance.post('api/auth/clientregister', this.user);
                     this.$store.commit('LOGIN_LOADER', false);
                     this.$store.commit('DIALOG', false);
                     this.$swal({
@@ -100,10 +100,10 @@
     }
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
     .separater {
         border-top: 1px solid #DDD;
-        margin: 16px 0;
+        margin: 20px 0;
         line-height: 20px;
         .content {
             background: #fff;
@@ -113,9 +113,5 @@
             position: relative;
             top: -12px;
         }
-    }
-    small {
-        position: relative;
-        top: -16px;
     }
 </style>

@@ -29,7 +29,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
     .create-ad {
         padding: 40px;
         text-align: center;
@@ -41,7 +41,7 @@ export default {
             border-top: 1px solid #DDD;
             margin: 40px 0;
             .text {
-                background: @brand-primary;
+                background: $brand-primary;
                 padding: 0 12px;
                 font-size: 18px;
                 color: #FFF !important;

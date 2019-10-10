@@ -1,17 +1,7 @@
 <template>
     <div>
-        <v-stepper alt-labels :value="currentStep">
-            <v-stepper-header>
-                <v-stepper-step step="1">Book Your Ad</v-stepper-step>
-                <v-divider :class="{'completed': currentStep > 1}"></v-divider>
-                <v-stepper-step step="2">Payment</v-stepper-step>
-                <v-divider :class="{'completed': currentStep > 2}"></v-divider>
-                <v-stepper-step step="3">Upload Your Ad</v-stepper-step>
-                <v-divider :class="{'completed': currentStep > 3}"></v-divider>
-                <v-stepper-step step="3">Verification</v-stepper-step>
-            </v-stepper-header>
-        </v-stepper>
-        <div v-show="!isLoading">
+        <Stepper :steps="steps" :current="currentStep"></Stepper>
+        <div>
             <component :is="currentStage" @advanceToPayment="goToPayment"></component>
         </div>
         <LoaderModal :showloader="isLoading" :message="loaderMessage + '...'"></LoaderModal>
@@ -24,9 +14,13 @@
     import ChoosePlan from './ChoosePlan';
     import Review from './Review';
     import Payment from './Payment';
+    import Stepper from "@/e9_components/components/Stepper";
 
     export default {
         name: "BookingFlow",
+        components: {
+            Stepper
+        },
         data() {
             return {
                 currentStage: UploadAd,
@@ -35,6 +29,24 @@
                 isLoading: false,
                 loaderMessage: 'Please stand by while we fetch data',
                 selectedPlan: {},
+                steps: [
+                    {
+                        name: 'Book Your Ad',
+                        index: 1
+                    },
+                    {
+                        name: 'Payment',
+                        index: 2
+                    },
+                    {
+                        name: 'Upload Your Ad',
+                        index: 3
+                    },
+                    {
+                        name: 'Verification',
+                        index: 4
+                    }
+                ]
             }
         },
         methods: {
@@ -63,7 +75,7 @@
                             text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                             type: 'error'
                         });
-                        throw err;
+                        console.error(err);
                     }
                 }
                 else {
@@ -83,6 +95,6 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 </style>

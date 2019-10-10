@@ -144,7 +144,7 @@
                                             type: 'warning',
                                             confirmButtonColor: "#ff6500",
                                         });
-                                        throw err;
+                                        console.error(err);
                                     }
                                 }
                             });
@@ -152,7 +152,7 @@
                         this.isError = true;
                         this.errMessage = err && err.data && err.data.message ? err.data.message : "Some error occurred";
                         this.$store.commit('LOGIN_LOADER', false);
-                        throw err;
+                        console.error(err);
                     }
                 } else {
                     this.gapi.auth2.getAuthInstance().signIn();
@@ -162,7 +162,7 @@
     };
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
     .btn-google {
         width: 100%;
         background-color: #4285f4;
@@ -171,7 +171,8 @@
         text-transform: capitalize;
         position: relative;
         font-weight: 500 !important;
-
+        height: 42px;
+        margin-bottom: 20px;
         &:hover {
             background: #4285f4;
             color: #fff;

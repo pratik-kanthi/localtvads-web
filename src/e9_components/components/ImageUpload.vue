@@ -121,7 +121,7 @@
                 this.isValid = false;
                 this.extractImage();
             },
-            onChange({coordinates, canvas}) {
+            onChange({coordinates}) {
                 this.position = coordinates;
             },
             async uploadFull() {
@@ -185,7 +185,7 @@
     }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
     input[type="file"] {
         &:before {
             border-radius: 6px !important;

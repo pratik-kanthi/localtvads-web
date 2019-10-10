@@ -1,8 +1,7 @@
 import Home from '@/webapp/views/home/Home';
-import CreateVideoAd from '@/webapp/views/create-ad/CreateVideoAd';
-import { store } from '@/store';
-import BookingFlow from "../webapp/views/booking-flow/BookingFlow";
-
+import Profile from '@/webapp/views/profile/Profile';
+import ForgotPassword from '@/webapp/common/modals/ForgotPassword';
+import ResetPassword from '@/webapp/common/modals/ResetPassword';
 export const routes = [
 	{
 		path: '',
@@ -10,32 +9,31 @@ export const routes = [
 		component: Home
 	},
 	{
-		path: '/booking-flow',
-		name: 'BookingFlow',
-		component: BookingFlow
+		path: '/profile',
+		name: 'Profile',
+		component: Profile
 	},
 	{
-		path: '/create-ad',
-		name: 'CreateVideoAd',
-		component: CreateVideoAd,
-		beforeEnter: (to, from, next) => {
-			if (store.getters.isLoggedIn) {
-				next();
-			} else {
-				store.commit('DIALOG', true);
-				next(false);
-			}
+		path: '/booking-flow',
+		name: 'BookingFlow',
+		component: (resolve) => {
+			require.ensure(
+				[ '@/webapp/views/booking-flow/BookingFlow' ],
+				() => {
+					resolve(require('@/webapp/views/booking-flow/BookingFlow'));
+				},
+				'booking-flow'
+			);
 		}
 	},
 	{
 		path: '/resetpassword',
 		name: 'ResetPassword',
-		component: Home,
+		component: ResetPassword,
 		beforeEnter: (to, from, next) => {
 			if (to.query.token) {
 				next();
 			} else {
-
 				next(false);
 			}
 		}
@@ -43,7 +41,7 @@ export const routes = [
 	{
 		path: '/forgotpassword',
 		name: 'ForgotPassword',
-		component: Home
+		component: ForgotPassword
 	},
 	{
 		path: '*',
