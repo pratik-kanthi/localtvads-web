@@ -25,8 +25,8 @@
 				<CreateAd v-if="activeTab === 'createad'"></CreateAd>
 			</div>
 		</div>
-		<ResetPassword v-if="$route.name=='ResetPassword'"></ResetPassword>
-		<ForgotPassword v-if="$route.name=='ForgotPassword'"></ForgotPassword>
+		<ResetPassword v-if="$route.name === 'ResetPassword'"></ResetPassword>
+		<ForgotPassword v-if="$route.name ==='ForgotPassword'"></ForgotPassword>
 		<section id="how-it-works" class="how-it-works">
 			<div class="container">
 				<h4 class="section-title-2 text-center mb56">How it works</h4>
@@ -213,7 +213,7 @@
 		},
 		methods: {
 			getProfileImageUrl(url) {
-				return require('@/' + url);
+				return require("../../../assets/images/testimonials/" + url);
 			},
 			goToComponent(name) {
 				this.activeTab = name;
@@ -244,7 +244,7 @@
 						Email: this.enquiryForm.Email,
 						Subject: this.enquiryForm.Subject,
 						Message: this.enquiryForm.Message
-					}
+					};
 					let result = await instance.post('/api/contact/enquiry', requestObj);
 					this.$swal({
 						title: "Successful",
