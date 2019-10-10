@@ -240,5 +240,31 @@
                 padding-left: 8px;
             }
         }
+        @media(max-width: 767px) {
+            padding: 20px;
+            .form-group {
+                width: 100%;
+                margin-bottom: 16px;
+            }
+            .action {
+                width: 100%;
+                display: block;
+                margin: 16px 0 16px;
+            }
+            .ad-views {
+                margin: 20px auto -20px;
+            }
+        }
+        /* iPhone x Landscape */
+        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) { 
+            .form-group {
+                width: 100%;
+                margin-bottom: 16px;
+            }.action {
+                width: 100%;
+                display: block;
+                margin: 16px 0 16px;
+            }
+        }
     }
 </style>

@@ -32,7 +32,7 @@
 				<h3 class="section-title-2 text-center mb16">How it works</h3>
 				<div class="underlined"></div>
 				<div class="row works-wrapper mt48">
-					<div class="col-md-3 text-center" v-for="work in workflow" :key="work.Id">
+					<div class="col-md-6 col-lg-3 text-center" v-for="work in workflow" :key="work.Id">
 						<div class="work">
 							<div class="counter mb-2">
 								<h6>{{work.Id}}</h6>
@@ -115,7 +115,7 @@
 							<label for="" class="ml0">Message</label>
 							<textarea v-model="enquiryForm.Message" name="" id="" cols="30" rows="4" class="form-control" placeholder="Gives us more details.."></textarea>
 						</div>
-						<button @click="submitEnquiry" :disabled="!isEnquiryFormValid" class="btn btn-primary btn-full mt24">Send a Message</button>
+						<button @click="submitEnquiry" :disabled="!isEnquiryFormValid" class="btn btn-primary btn-full mt16">Send a Message</button>
 					</div>
 				</div>
 			</div>
@@ -310,23 +310,39 @@
 			.tagline {
 				position: relative;
 				padding: 88px 120px;
-
 				h1 {
 					color: $white;
 					font-weight: 600;
 					margin-bottom: 24px;
 					font-size: 40px;
-
 					span {
 						color: $brand-primary;
 					}
 				}
-
 				h3 {
 					color: $white;
 					font-weight: 400;
 					font-size: 24px;
 					line-height: normal
+				}
+			}
+			@media(max-width: 767px) {
+				height: 50vh;
+				.tagline {
+					padding: 16px 0;
+					h1 {
+						font-size: 32px;
+						line-height: 40px;
+					}
+					h3 {
+						font-size: 18px;
+						line-height: 28px;
+					}
+				}
+			}
+			@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) { 
+				.tagline {
+					padding: 24px 0;
 				}
 			}
 		}
@@ -394,6 +410,21 @@
 				border-bottom-left-radius: 6px;
 				border-bottom-right-radius: 6px;
 			}
+			@media(max-width: 767px) {
+				// margin-top: -230px;
+				margin-top: -14%;
+				.content {
+					margin-top: -1px;
+				}
+			}
+			/* Portrait */
+			@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) { 
+				margin-top: -45%;
+			}
+			/* Landscape */
+			@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) { 
+				margin-top: -25%;
+			}
 		}
 
 		.how-it-works {
@@ -445,13 +476,11 @@
 				flex-direction: row;
 				flex-wrap: wrap;
 				justify-content: space-between;
-
 				.offer {
 					background: $white;
 					border-radius: 10px;
 					max-width: 320px;
 					display: inline-block;
-
 					.offer-image {
 						position: relative;
 						border-top-left-radius: 10px;
@@ -461,7 +490,6 @@
 						background-size: cover;
 						background-repeat: no-repeat;
 					}
-
 					.offer-content {
 						padding: 24px 16px;
 						text-align: center;
@@ -469,6 +497,27 @@
 						p {
 							font-size: 16px;
 							color: #4a4a4a;
+						}
+					}
+				}
+			}
+			@media(max-width: 767px) {
+				.offers {
+					.offer {
+						max-width: 100%;
+						margin-bottom: 24px;
+						&:last-child {
+							margin-bottom: 0;
+						}
+					}
+				}
+			}
+			@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+				.offers {
+					.offer {
+						margin-bottom: 24px;
+						&:last-child {
+							margin-bottom: 0;
 						}
 					}
 				}
@@ -487,7 +536,8 @@
 
 			.play-button {
 				position: relative;
-				top: calc(50% - 64px);
+				top: 50%;
+				transform: translateY(-50%);
 				max-width: 50%;
 				background-color: #fff;
 				border-radius: 50%;
@@ -500,6 +550,27 @@
 				img {
 					width: 30px;
 					height: 30px;
+				}
+			}
+			@media(max-width: 767px) {
+				min-height: 150px;
+				.video-bg {
+					background-position-x: 50%;
+				}
+				.play-button {
+					width: 60px;
+					height: 60px;
+					padding: 9px 14px;
+					img {
+						width: 20px;
+						height: 20px;
+					}
+				}
+			}
+			@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+				min-height: 350px;
+				.video-bg {
+					background-position-x: 55%;
 				}
 			}
 		}
@@ -556,11 +627,15 @@
 							letter-spacing: -3.7px;
 							-webkit-transform: scaleY(-1);
 							transform: scaleY(-1);
+							@media(max-width: 767px) {
+								top: -30px;
+								left: -16px;
+							}
 							}
 						}
 					}
 				}
-				@media(max-width: 678px) {
+				@media(max-width: 767px) {
 					padding: 0;
 					.slide {
 						.content {
@@ -608,6 +683,28 @@
 					color: #2c3241;
 				}
 			}
+			@media(max-width: 767px) {
+				.info {
+					padding: 40px;
+					img {
+						width: 200px;
+					}
+				}
+				.contact-form {
+					padding: 40px 30px;
+				}
+			}
+			@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+				.info {
+					padding: 40px;
+					img {
+						width: 200px;
+					}
+				}
+				.contact-form {
+					padding: 40px 30px;
+				}
+			}
 		}
 
 		.subscription {
@@ -636,6 +733,15 @@
 					right: 0;
 					padding: 6px 24px;
 					font-size: 20px;
+				}
+			}
+			@media(max-width: 767px) {
+				.email-wrapper {
+					.subscribe {
+						position: inherit;
+						margin-top: 32px;
+						width: 100%;
+					}
 				}
 			}
 		}
