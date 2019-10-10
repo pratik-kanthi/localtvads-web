@@ -6,7 +6,7 @@
                     <div class="col-sm-4">
                         <div class="broadcast-location">
                             <label>Broadcast Location</label>
-                            <select v-model="channelSelected" @change="getAvailableSlotsByChannel(true)">
+                            <select v-model="channelSelected" @change="getAvailableSlotsByChannel(false)">
                                 <option :value="channel._id" v-for="channel in channels" :key="channel._id">{{channel.Name}}</option>
                             </select>
                         </div>
@@ -20,7 +20,7 @@
                     <div class="col-sm-2">
                         <div class="ad-length">
                             <label>Ad Length</label>
-                            <select v-model="secondSelected" @change="getAvailableSlotsByChannel(true)">
+                            <select v-model="secondSelected" @change="getAvailableSlotsByChannel(false)">
                                 <option v-for="(sec,key) in seconds" :key="key" :value="sec">{{sec}} Seconds</option>
                             </select>
                         </div>
@@ -346,6 +346,9 @@
                 font-size: 18px;
                 font-family: $font-family-heading;
                 color: $brand-secondary;
+                &:focus {
+                    outline: none;
+                }
                 background-image: url('../../../assets/images/select.png');
                 background-repeat: no-repeat;
                 background-size: 16px;

@@ -46,13 +46,19 @@
 	"eslintConfig": {
 		"root": true,
 		"env": {
-			"node": true
+			"node": true,
+			"browser": true
 		},
-		"extends": [
-			"plugin:vue/essential",
-			"eslint:recommended"
-		],
-		"rules": {},
+		"globals": {
+			"Stripe": false,
+			"$": false,
+			"FB": false
+		},
+		"extends": [ "plugin:vue/essential", "eslint:recommended" ],
+		"rules": {
+			"no-console": "off",
+			"no-useless-escape": "off"
+		},
 		"parserOptions": {
 			"parser": "babel-eslint"
 		}
@@ -62,8 +68,5 @@
 			"autoprefixer": {}
 		}
 	},
-	"browserslist": [
-		"> 1%",
-		"last 2 versions"
-	]
+	"browserslist": [ "> 1%", "last 2 versions" ]
 }

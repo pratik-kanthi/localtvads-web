@@ -188,8 +188,7 @@ export default {
                 text: 'Your card will be deleted permanently',
                 type: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Confirm',
-                closeOnConfirm: false
+                confirmButtonText: 'Confirm'
             }).then(async(isConfirm) => {
                 if(isConfirm.value) {
                     try {
