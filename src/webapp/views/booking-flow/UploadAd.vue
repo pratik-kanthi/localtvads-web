@@ -33,7 +33,7 @@
                         <br class="clearfix">
                     </div>
                 </div>
-                
+
             </div>
             <LoaderModal :showloader="progress === 100 && processing" message="Upload successful, please wait while we process the video..."></LoaderModal>
         </div>
@@ -64,8 +64,6 @@
         methods: {
             cancelUpload() {
                 this.upload.chosen = null;
-                // let elem = document.getElementsByTagName('video')[0];
-                // elem.parentNode.removeChild(elem);
             },
             chooseFile() {
                 $('#fileUpload').click();
@@ -94,6 +92,11 @@
                     this.isValid = true;
                 };
                 this.videoUrl = URL.createObjectURL(this.upload.chosen);
+            },
+            preventNav(event) {
+                if (!this.processing && !this.progress) return;
+                event.preventDefault();
+                event.returnValue = "";
             },
             sendSocket(chunk, counter, chunkSize) {
                 this.socket.emit('UPLOAD_CHUNK', {
@@ -168,6 +171,12 @@
                     }
                 });
             }
+        },
+        beforeMount() {
+            window.addEventListener('beforeunload', this.preventNav);
+        },
+        beforeDestroy() {
+            window.removeEventListener("beforeunload", this.preventNav);
         }
     }
 </script>
@@ -252,6 +261,6 @@
                 }
             }
         }
-        
+
     }
 </style>

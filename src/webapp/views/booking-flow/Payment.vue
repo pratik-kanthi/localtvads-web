@@ -3,170 +3,176 @@
         <div v-if="showCoupons">
             <CoupnsModal :show-coupons = "showCoupons" :options = "{channel: $route.query.channel, adSchedule:$parent.selectedPlan.adSchedule, startDate: $parent.selectedPlan.broadcastStartDate}" @discountChosen="setDiscount"></CoupnsModal>
         </div>
-        <div class="container">
-            <div class="payment-wrapper">
-                <h3 class="section-title-2 mb24">Payment Method</h3>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="booking-details">
-                            <img class="" src="@/assets/images/logo-dark.svg" alt="">
-                            <div class="header">
-                                <h6>Booking Receipt</h6>
-                            </div>
-                            <hr class="mb24">
-                            <div class="content">
-                                <div class="booking-items">
-                                    <label>Broadcast Location</label>
-                                    <h6 class="hero-text">
-                                        {{$parent.selectedPlan.broadcastLocation.Name}}
-                                        <span v-if="$parent.selectedPlan.broadcastLocation.Description">({{$parent.selectedPlan.broadcastLocation.Description}})</span>
-                                    </h6>
+        <div v-if="!paymentLoading">
+            <div class="container">
+                <div class="payment-wrapper">
+                    <h3 class="section-title-2 mb24">Payment Method</h3>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="booking-details">
+                                <img class="" src="@/assets/images/logo-dark.svg" alt="">
+                                <div class="header">
+                                    <h6>Booking Receipt</h6>
                                 </div>
-                                <div class="booking-items">
-                                    <label>Broadcast Slot</label>
-                                    <h6 class="hero-text">{{$parent.selectedPlan.broadcastSlot}} ({{$parent.selectedPlan.adStartTime}} to {{$parent.selectedPlan.adEndTime}})</h6>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="booking-items">
-                                            <label>Broadcast Start</label>
-                                            <h6 class="hero-text">{{moment($parent.selectedPlan.broadcastStartDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</h6>
-                                        </div>
+                                <hr class="mb24">
+                                <div class="content">
+                                    <div class="booking-items">
+                                        <label>Broadcast Location</label>
+                                        <h6 class="hero-text">
+                                            {{$parent.selectedPlan.broadcastLocation.Name}}
+                                            <span v-if="$parent.selectedPlan.broadcastLocation.Description">({{$parent.selectedPlan.broadcastLocation.Description}})</span>
+                                        </h6>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <div class="booking-items">
-                                            <label>Broadcast End</label>
-                                            <h6 class="hero-text">{{moment($parent.selectedPlan.broadcastEndDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="booking-items">
-                                            <label>Ad Length</label>
-                                            <h6 class="hero-text">{{$parent.selectedPlan.adLength}} Seconds</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="booking-items">
-                                            <label>Broadcast Duration</label>
-                                            <h6 class="hero-text">6 months</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="recurring mb40" v-if="$parent.selectedPlan.isRenewal">
-                                    <h6 class="hero-text">
-                                        <i class="material-icons">done</i> Recurring Broadcast
-                                    </h6>
-                                </div>
-                            </div>
-                            <div class="dashed-line">
-                                <div class="line"></div>
-                            </div>
-                            <div class="total mt32 mb32">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <p>Subscription Amount</p>
-                                        <p v-if="discount">Discount {{discount.AmountType === 'PERCENTAGE' ? '(' + discount.Amount + '%' + ')' : ''}}</p>
-                                        <p>Taxes</p>
-                                        <h5>Total Amount</h5>
-                                    </div>
-                                    <div class="col-sm-6 text-right">
-                                        <p>
-                                            {{$parent.selectedPlan.baseAmount | currency}}
-                                        </p>
-                                        <p class="green" v-if="discount">- {{discountAmount | currency}}</p>
-                                        <p>{{taxAmount | currency}}</p>
-                                        <h5 class="amount pull-right"> {{getTotalAmount | currency}}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="dashed-line">
-                                <div class="line"></div>
-                            </div>
-                            <p class="mt32">
-                                <small>*All tax inclusive</small>
-                            </p>
-                        </div>
-                    </div>
-                    <div v-if="isLoggedIn()" class="col-sm-6">
-                        <div class="cards-wrapper">
-                            <div class="saved-cards" v-if="savedCards.length > 0">
-                                <div class="cards">
-                                    <h6 class="hero-text mb24" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}">
-                                        <input type="radio" class="mr8" v-model="activeToggle" value="SavedCards"><span>Your saved credit and debit cards</span>
-                                    </h6>
-                                    <div v-for="(card,key) in savedCards" :key="key" class="card-info" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
-                                        <input type="radio" class="mr16" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'">
-                                        <img :src="getImageUrl(card.Card.Vendor)" alt />
-                                        <span>xxxx xxxx xxxx {{card.Card.LastFour}}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="new-card">
-                                <form ref="form" class="p0">
-                                    <h6 class="hero-text mb16" @click="togglePaymentOptions('NewCard')">
-                                        <input type="radio" class="mr8" v-model="activeToggle" value="NewCard" ><span :class="{'active':activeToggle === 'NewCard'}">Credit and debit card</span>
-                                    </h6>
-                                    <div class="hidden-container"></div>
-                                    <div class="form-group">
-                                        <label class="mb8">Card Number</label>
-                                        <div class="input-card-number">
-                                            <input name="number" type="tel" class="form-control" v-model="cardNumber" :disabled="activeToggle !== 'NewCard'"/>
-                                            <img :src="getCardType" alt class="pull-right"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for class="mb8">Cardholder Name</label>
-                                        <input name="name" type="text" class="form-control" v-model="name" autocomplete="off" :disabled="activeToggle !== 'NewCard'"/>
+                                    <div class="booking-items">
+                                        <label>Broadcast Slot</label>
+                                        <h6 class="hero-text">{{$parent.selectedPlan.broadcastSlot}} ({{$parent.selectedPlan.adStartTime}} to {{$parent.selectedPlan.adEndTime}})</h6>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="mb8">Expiry Date</label>
-                                                <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••" :disabled="activeToggle !== 'NewCard'"/>
+                                            <div class="booking-items">
+                                                <label>Broadcast Start</label>
+                                                <h6 class="hero-text">{{moment($parent.selectedPlan.broadcastStartDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</h6>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="mb8">CVV</label>
-                                                <input name="cvc" type="password" class="form-control" v-model="cvv" :disabled="activeToggle !== 'NewCard'"/>
+                                            <div class="booking-items">
+                                                <label>Broadcast End</label>
+                                                <h6 class="hero-text">{{moment($parent.selectedPlan.broadcastEndDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</h6>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="consents">
-                                        <input type="checkbox" id="save" class="check" v-model="save" :disabled="(savedCards.length === 0 && $parent.selectedPlan.isRenewal) || activeToggle !== 'NewCard'"/>
-                                        <label for="save" class="check-label box mt8 mr8">
-                                            <span></span>
-                                        </label>
-                                        <span class="brand-primary medium">Save Card</span>
-                                        <i class="material-icons" v-if="savedCards.length === 0 && $parent.selectedPlan.isRenewal" @mouseover="showInfo(true)" @mouseout="showInfo(false)">info</i>
-                                        <span v-show="tooltip" class="tooltip-info">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="booking-items">
+                                                <label>Ad Length</label>
+                                                <h6 class="hero-text">{{$parent.selectedPlan.adLength}} Seconds</h6>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="booking-items">
+                                                <label>Broadcast Duration</label>
+                                                <h6 class="hero-text">6 months</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="recurring mb40" v-if="$parent.selectedPlan.isRenewal">
+                                        <h6 class="hero-text">
+                                            <i class="material-icons">done</i> Recurring Broadcast
+                                        </h6>
+                                    </div>
+                                </div>
+                                <div class="dashed-line">
+                                    <div class="line"></div>
+                                </div>
+                                <div class="total mt32 mb32">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <p>Subscription Amount</p>
+                                            <p v-if="discount">Discount {{discount.AmountType === 'PERCENTAGE' ? '(' + discount.Amount + '%' + ')' : ''}}</p>
+                                            <p>Taxes</p>
+                                            <h5>Total Amount</h5>
+                                        </div>
+                                        <div class="col-sm-6 text-right">
+                                            <p>
+                                                {{$parent.selectedPlan.baseAmount | currency}}
+                                            </p>
+                                            <p class="green" v-if="discount">- {{discountAmount | currency}}</p>
+                                            <p>{{taxAmount | currency}}</p>
+                                            <h5 class="amount pull-right"> {{getTotalAmount | currency}}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashed-line">
+                                    <div class="line"></div>
+                                </div>
+                                <p class="mt32">
+                                    <small>*All tax inclusive</small>
+                                </p>
+                            </div>
+                        </div>
+                        <div v-if="isLoggedIn()" class="col-sm-6">
+                            <div class="cards-wrapper">
+                                <div class="saved-cards" v-if="savedCards.length > 0">
+                                    <div class="cards">
+                                        <h6 class="hero-text mb24" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}">
+                                            <input type="radio" class="mr8" v-model="activeToggle" value="SavedCards"><span>Your saved credit and debit cards</span>
+                                        </h6>
+                                        <div v-for="(card,key) in savedCards" :key="key" class="card-info" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
+                                            <input type="radio" class="mr16" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'">
+                                            <img :src="getImageUrl(card.Card.Vendor)" alt />
+                                            <span>xxxx xxxx xxxx {{card.Card.LastFour}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="new-card">
+                                    <form ref="form" class="p0">
+                                        <h6 class="hero-text mb16" @click="togglePaymentOptions('NewCard')">
+                                            <input type="radio" class="mr8" v-model="activeToggle" value="NewCard" ><span :class="{'active':activeToggle === 'NewCard'}">Credit and debit card</span>
+                                        </h6>
+                                        <div class="hidden-container"></div>
+                                        <div class="form-group">
+                                            <label class="mb8">Card Number</label>
+                                            <div class="input-card-number">
+                                                <input name="number" type="tel" class="form-control" v-model="cardNumber" :disabled="activeToggle !== 'NewCard'"/>
+                                                <img :src="getCardType" alt class="pull-right"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for class="mb8">Cardholder Name</label>
+                                            <input name="name" type="text" class="form-control" v-model="name" autocomplete="off" :disabled="activeToggle !== 'NewCard'"/>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="mb8">Expiry Date</label>
+                                                    <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••" :disabled="activeToggle !== 'NewCard'"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="mb8">CVV</label>
+                                                    <input name="cvc" type="password" class="form-control" v-model="cvv" :disabled="activeToggle !== 'NewCard'"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="consents">
+                                            <input type="checkbox" id="save" class="check" v-model="save" :disabled="(savedCards.length === 0 && $parent.selectedPlan.isRenewal) || activeToggle !== 'NewCard'"/>
+                                            <label for="save" class="check-label box mt8 mr8">
+                                                <span></span>
+                                            </label>
+                                            <span class="brand-primary medium">Save Card</span>
+                                            <i class="material-icons" v-if="savedCards.length === 0 && $parent.selectedPlan.isRenewal" @mouseover="showInfo(true)" @mouseout="showInfo(false)">info</i>
+                                            <span v-show="tooltip" class="tooltip-info">
                                             Your current plan is a recurring one and you don't have any saved cards. Saving a card is mandatory in this case.
                                         </span>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="coupon">
+                                    <div class="coupon-area">
+                                        <div v-if="!discount">APPLY COUPON</div>
+                                        <div class="bold t-l" v-else>{{discount.CouponCode}}</div>
                                     </div>
-                                </form>
-                            </div>
-                            <div class="coupon">
-                                <div class="coupon-area">
-                                    <div v-if="!discount">APPLY COUPON</div>
-                                    <div class="bold t-l" v-else>{{discount.CouponCode}}</div>
-                                </div>
-                                <div class="action">
-                                    <a @click="openCouponsModal" v-if="!discount"><i class="material-icons brand-primary">keyboard_arrow_right</i></a>
-                                    <a @click="setDiscount(undefined)" v-else><i class="material-icons brand-primary">close</i></a>
-                                </div>
+                                    <div class="action">
+                                        <a @click="openCouponsModal" v-if="!discount"><i class="material-icons brand-primary">keyboard_arrow_right</i></a>
+                                        <a @click="setDiscount(undefined)" v-else><i class="material-icons brand-primary">close</i></a>
+                                    </div>
 
+                                </div>
+                                <p class="mt16 mb16">I have read and accept the terms of use,rules of Local TV Ads  and privacy policy</p>
+                                <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now</button>
                             </div>
-                            <p class="mt16 mb16">I have read and accept the terms of use,rules of Local TV Ads  and privacy policy</p>
-                            <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now</button>
                         </div>
-                    </div>
-                    <div v-else class="col-sm-6">
-                        <h5 class="mb8">Please login to continue with your booking.</h5>
+                        <div v-else class="col-sm-6">
+                            <h5 class="mb8">Please login to continue with your booking.</h5>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="mt16 transaction-message" v-else>
+            <p>Your transaction is being processed...</p>
+            <p class="bold">Please do not click back or refresh</p>
         </div>
     </div>
 </template>
@@ -194,6 +200,7 @@
                 expiry: null,
                 existingCard: null,
                 name: "",
+                paymentLoading: false,
                 savedCards: [],
                 save: false,
                 showCoupons: false,
@@ -218,7 +225,8 @@
                     closeOnConfirm: true
                 }).then(isConfirm => {
                     if (isConfirm.value) {
-                        this.$parent.isLoading = true;
+                        this.paymentLoading = true;
+                        window.scrollTo(0,0);
                         let user = this.getUser();
                         if (this.existingCard) {
                             this.payNow(null, user.Owner._id);
@@ -236,7 +244,7 @@
                                     if (code === 200) {
                                         this.payNow(result.id, user.Owner._id);
                                     } else {
-                                        this.$parent.isLoading = false;
+                                        this.paymentLoading = false;
                                         this.$swal({
                                             title: "Error",
                                             text: result && result.error && result.error.message ? result.error.message : "Some error occurred",
@@ -319,7 +327,7 @@
                     addons: [],
                     token: token,
                     client: client,
-                    coupon: this.discount.CouponCode
+                    coupon: this.discount ? this.discount.CouponCode: ''
                 };
                 let result;
                 try {
@@ -338,7 +346,7 @@
                     });
                     await this.$parent.fetchClientAdPlan(result.data._id);
                 } catch (err) {
-                    this.$parent.isLoading = false;
+                    this.paymentLoading = false;
                     this.$swal({
                         title: "Error",
                         text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
@@ -445,6 +453,7 @@
             }
         },
         async created() {
+            window.scrollTo(0,0);
             if (!this.isLoggedIn()) {
                 this.$store.commit("DIALOG_CHOSEN", "login");
             } else this.getCards();
@@ -464,23 +473,20 @@
             background-color: $white;
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
             &:after {
-                background: linear-gradient(-45deg, #ffffff 16px, transparent 0), linear-gradient(45deg, #ffffff 16px, transparent 0);
-                background-position: left-bottom;
-                background-repeat: repeat-x;
+                background: linear-gradient(-45deg, #ffffff 16px, transparent 0) linear-gradient(45deg, #ffffff 16px, transparent 0) repeat-x left bottom;
                 background-size: 32px 32px;
                 content: " ";
                 display: block;
                 position: absolute;
-                bottom: 0px;
-                left: 0px;
+                bottom: 0;
+                left: 0;
                 width: 100%;
                 height: 32px;
             }
             img {
                 display: block;
-                margin: 0 auto;
                 max-width: 120px;
-                margin-bottom: 32px
+                margin: 0 auto 32px;
             }
             .header {
                 h6 {
@@ -539,7 +545,6 @@
             .total {
                 h5 {
                     font-weight: 500;
-
                     .amount {
                         text-align: right !important;
                     }
@@ -621,11 +626,6 @@
                             box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
                         }
                     }
-                    .button {
-                        span {
-                            font-weight: 8px;
-                        }
-                    }
                 }
                 .input-card-number {
                     width: 100%;
@@ -679,6 +679,18 @@
                 }
             }
         }
-
+    }
+    .transaction-message {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        justify-items: center;
+        justify-content: center;
+        font-size: 20px;
+        letter-spacing: 0.75px;
+        background-color: #fff;
+        height: 500px;
+        width: 100%;
+        color: $brand-secondary;
     }
 </style>

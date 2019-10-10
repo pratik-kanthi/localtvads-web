@@ -255,7 +255,7 @@
                         title: 'Warning',
                         text: 'Ad length has changed according to the channel. Please select your desired Ad length',
                         type: 'warning',
-                        confirmButtonColor: 'ButtonColor'
+                        confirmButtonColor: '#ff6500'
                     });
                     this.secondSelected = this.seconds[0];
                 }
