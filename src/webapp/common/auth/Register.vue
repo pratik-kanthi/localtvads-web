@@ -56,7 +56,7 @@
             async register(){
                 try {
                     this.$store.commit('LOGIN_LOADER', true);
-                    let result = await instance.post('api/auth/clientregister', this.user);
+                    await instance.post('api/auth/clientregister', this.user);
                     this.$store.commit('LOGIN_LOADER', false);
                     this.$store.commit('DIALOG', false);
                     this.$swal({

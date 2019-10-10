@@ -29,7 +29,7 @@ export const routes = [
 	{
 		path: '/resetpassword',
 		name: 'ResetPassword',
-		component: Home,
+		component: ResetPassword,
 		beforeEnter: (to, from, next) => {
 			if (to.query.token) {
 				next();

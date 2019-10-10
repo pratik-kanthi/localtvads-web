@@ -1,8 +1,0 @@
-{
-	"plugins": [ "@vue" ],
-	"extends": [ "plugin:vue/essential" ],
-	"parserOptions": {
-		"parser": "babel-eslint",
-		"ecmaVersion": 6
-	}
-}

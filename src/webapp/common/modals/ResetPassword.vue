@@ -46,7 +46,7 @@
 			},
 			async resetPasswordRequest() {
 				try {
-					let result = await instance.post("api/auth/resetpassword/" + this.token, { password: this.formData.password2 });
+					await instance.post("api/auth/resetpassword/" + this.token, { password: this.formData.password2 });
 					this.$router.push({ name: "Home" }, () => { });
 					this.$store.commit("DIALOG", true);
 					this.$swal({

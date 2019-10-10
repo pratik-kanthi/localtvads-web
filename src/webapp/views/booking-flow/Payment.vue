@@ -655,8 +655,8 @@
                         background-color: transparent;
                         border: 0;
                         height: 20px;
+                        color: $base;
                         -webkit-appearance: none;
-		                color: $base;
                         &:focus {
                             outline: none;
                         }

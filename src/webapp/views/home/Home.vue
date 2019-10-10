@@ -29,8 +29,9 @@
 		<ForgotPassword v-if="$route.name ==='ForgotPassword'"></ForgotPassword>
 		<section id="how-it-works" class="how-it-works">
 			<div class="container">
-				<h4 class="section-title-2 text-center mb56">How it works</h4>
-				<div class="row works-wrapper">
+				<h3 class="section-title-2 text-center mb16">How it works</h3>
+				<div class="underlined"></div>
+				<div class="row works-wrapper mt48">
 					<div class="col-md-3 text-center" v-for="work in workflow" :key="work.Id">
 						<div class="work">
 							<div class="counter mb-2">
@@ -45,8 +46,9 @@
 		</section>
 		<section class="latest-offers bg--grey" id="offers">
 			<div class="container">
-				<h4 class="section-title-2 text-center mb56">Latest Offers</h4>
-				<div class="offers">
+				<h3 class="section-title-2 text-center mb16">Latest Offers</h3>
+				<div class="underlined"></div>
+				<div class="offers mt48">
 					<div class="offer" v-for="offer in offers" :key="offer.Id">
 						<div class="offer-image" :style="{'background-image': 'url(' + offer.ImageUrl + ')'}"></div>
 						<div class="offer-content">
@@ -73,7 +75,9 @@
 						<div class="slide" v-for="t in testimonials" :key="t.id">
 							<div class="content">
 								<div class="profile-photo">
-									<img :src="getProfileImageUrl(t.LogoUrl)" alt="">
+									<div class="profile-photo">
+										<div class="background-image-holder image" :style="{'background-image': 'url('+ require('../../../assets/images/testimonials/' + t.LogoUrl) + ')'}"></div>
+									</div>
 								</div>
 								<h6 class="name">{{t.Manager}}</h6>
 								<h6 class="company">{{t.Company}}</h6>
@@ -212,15 +216,12 @@
 			};
 		},
 		methods: {
-			getProfileImageUrl(url) {
-				return require("../../../assets/images/testimonials/" + url);
-			},
 			goToComponent(name) {
 				this.activeTab = name;
 			},
 			async subscribeUser() {
 				try {
-					let result = await instance.post('api/contact/subscribe', { subscriberEmail: this.subscriberEmail });
+					await instance.post('api/contact/subscribe', { subscriberEmail: this.subscriberEmail });
 					this.$swal({
 						title: "Successful",
 						text: 'You have subscribed sucessfully.',
@@ -245,7 +246,7 @@
 						Subject: this.enquiryForm.Subject,
 						Message: this.enquiryForm.Message
 					};
-					let result = await instance.post('/api/contact/enquiry', requestObj);
+					await instance.post('/api/contact/enquiry', requestObj);
 					this.$swal({
 						title: "Successful",
 						text: 'Your message was received. Our team will get back to you shortly.',
@@ -515,17 +516,18 @@
 						margin: 80px 24px 40px;
 						background: $white;
 						text-align: center;
-						padding: 72px 48px 32px;
+						padding: 80px 48px 24px;
 						border-radius: 18px;
 						position: relative;
 						.profile-photo {
-							position: absolute;
-							top: -60px;
-							left: 50%;
-							transform: translateX(-50%);
-							img {
+							position: relative;
+							top: -24px;
+							.background-image-holder {
 								width: 110px;
 								height: 110px;
+								left: 50%;
+								transform: translateX(-50%);
+								top: -88px;
 								border-radius: 50%;
 								box-shadow: 0 2px 24px 0 rgba(161, 161, 161, 0.5);
 							}
@@ -544,16 +546,16 @@
 							margin-top: 24px;
 							position: relative;
 							&:before {
-								content: '“';
-								position: absolute;
-								top: -24px;
-								left: -24px;
-								color: $brand-primary;
-								font-size: 50px;
-								font-weight: 500;
-								letter-spacing: -3.7px;
-								-webkit-transform: scaleY(-1);
-  								transform: scaleY(-1);
+							content: '“';
+							position: absolute;
+							top: -24px;
+							left: -24px;
+							color: $brand-primary;
+							font-size: 50px;
+							font-weight: 500;
+							letter-spacing: -3.7px;
+							-webkit-transform: scaleY(-1);
+							transform: scaleY(-1);
 							}
 						}
 					}

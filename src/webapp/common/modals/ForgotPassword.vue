@@ -45,7 +45,7 @@
 			},
 			async forgotPasswordRequest() {
 				try {
-					let result = await instance.get(this.api + this.formData.email);
+					await instance.get(this.api + this.formData.email);
 					this.$router.push({ name: "Home" }, () => { });
 					this.$swal({
 						title: "Check Your Email",

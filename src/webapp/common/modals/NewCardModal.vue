@@ -95,7 +95,7 @@ export default {
         },
         async saveCard(owner, token) {
             try {
-                let result = await instance.post("api/client/addcard",{client: owner, token: token});
+                await instance.post("api/client/addcard",{client: owner, token: token});
                 this.$swal({
                     title: "Card saved",
                     text: "Your card has been saved successfully.",

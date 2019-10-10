@@ -121,7 +121,7 @@
                 this.isValid = false;
                 this.extractImage();
             },
-            onChange({coordinates, canvas}) {
+            onChange({coordinates}) {
                 this.position = coordinates;
             },
             async uploadFull() {
