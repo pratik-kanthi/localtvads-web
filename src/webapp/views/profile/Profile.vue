@@ -363,15 +363,15 @@ export default {
                         background-image: url('../../../assets/images/ad-video-bg.jpg');
                     }
                     .action {
+                        position: absolute;
+                        left: 50%;
+                        top: 50%;
+                        transform: translate(-50%, -50%);
                         .play {
                             width: 56px;
-                            display: block;
-                            margin: 96px auto;
                         }
                         .btn {
                             max-width: 150px;
-                            display: block;
-                            margin: 96px auto;
                         }
                     }
                 }

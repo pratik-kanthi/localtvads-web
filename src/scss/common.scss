@@ -75,6 +75,14 @@ h3.section-title-2 {
 	}
 }
 
+.underlined {
+	height: 6px;
+	width: 88px;
+	background: $brand-primary;
+	display: block;
+	margin: 0 auto;
+}
+
 h6.hero-text {
 	font-weight: 500;
 	color: $brand-secondary;
