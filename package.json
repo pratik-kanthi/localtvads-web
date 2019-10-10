@@ -5,7 +5,9 @@
 	"scripts": {
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build",
-		"lint": "vue-cli-service lint"
+		"lint": "./node_modules/.bin/eslint --ext .vue .",
+		"lint-fix": "vue-cli-service lint",
+		"lint-style": "stylelint ."
 	},
 	"dependencies": {
 		"axios": "^0.19.0",
@@ -31,17 +33,22 @@
 		"vuex": "^3.1.1"
 	},
 	"devDependencies": {
+		"@e9ine/eslint-config-vue": "0.0.9",
+		"@e9ine/eslint-config-vue-style": "0.0.9-a",
 		"@vue/cli-plugin-babel": "^3.11.0",
 		"@vue/cli-plugin-eslint": "^3.11.0",
 		"@vue/cli-service": "^3.11.0",
 		"@vue/eslint-plugin": "^4.2.0",
 		"babel-eslint": "^10.0.1",
+		"chalk": "^2.4.2",
 		"eslint": "^5.16.0",
 		"eslint-plugin-vue": "^5.0.0",
+		"lint-staged": "^9.4.2",
 		"node-sass": "^4.12.0",
 		"path": "^0.12.7",
 		"sass-loader": "^8.0.0",
-		"vue-template-compiler": "^2.6.10"
+		"vue-template-compiler": "^2.6.10",
+		"yorkie": "^2.0.0"
 	},
 	"eslintConfig": {
 		"root": true,
@@ -54,19 +61,40 @@
 			"$": false,
 			"FB": false
 		},
-		"extends": [ "plugin:vue/essential", "eslint:recommended" ],
-		"rules": {
-			"no-console": "off",
-			"no-useless-escape": "off"
-		},
+		"extends": [
+			"@e9ine/eslint-config-vue"
+		],
 		"parserOptions": {
 			"parser": "babel-eslint"
 		}
+	},
+	"stylelint": {
+		"extends": "@e9ine/eslint-config-vue-style"
+	},
+	"gitHooks": {
+		"pre-commit": "lint-staged",
+		"commit-msg": "node scripts/verifyCommit.js"
+	},
+	"lint-staged": {
+		"*.js": [
+			"vue-cli-service lint",
+			"git add"
+		],
+		"*.vue": [
+			"vue-cli-service lint",
+			"git add"
+		],
+		"config.js": [
+			"node scripts/verifyUntrackable.js"
+		]
 	},
 	"postcss": {
 		"plugins": {
 			"autoprefixer": {}
 		}
 	},
-	"browserslist": [ "> 1%", "last 2 versions" ]
+	"browserslist": [
+		"> 1%",
+		"last 2 versions"
+	]
 }

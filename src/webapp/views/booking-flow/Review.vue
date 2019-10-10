@@ -13,7 +13,7 @@
                     Our Team usually takes 24-36 working hours to review your content, meanwhile please checkout our campaigns page to know more about us!
                 </p>
                 <p class="t-l text-center" v-if="$parent.clientAdPlan.ClientAd.Status === 'APPROVED'">
-                    Greetings! Your content has been approved by our team and will be telecast from <b>{{moment($parent.clientAdPlan.StartDate).format('DD-MM-YYYY')}}</b> till <b>{{moment($parent.clientAdPlan.EndDate).format('DD-MM-YYYY')}}</b>, every <b>{{days[$parent.clientAdPlan.DayOfWeek]}}</b>
+                    Greetings! Your content has been approved by our team and will be telecast from <b>{{ moment($parent.clientAdPlan.StartDate).format('DD-MM-YYYY') }}</b> till <b>{{ moment($parent.clientAdPlan.EndDate).format('DD-MM-YYYY') }}</b>, every <b>{{ days[$parent.clientAdPlan.DayOfWeek] }}</b>
                 </p>
                 <div class="action text-center">
                     <router-link to="/">
@@ -26,14 +26,14 @@
 </template>
 
 <script>
-    export default {
-        name: "Review",
-        data() {
-            return {
-                days: ['','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-            }
-        }
+export default {
+    name: 'Review',
+    data() {
+        return {
+            days: ['','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+        };
     }
+};
 </script>
 
 <style scoped lang="scss">

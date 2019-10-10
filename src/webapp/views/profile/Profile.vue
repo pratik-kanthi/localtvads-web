@@ -14,7 +14,7 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div v-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl" class="profile-image" :style="{'background-image': 'url(' + getProfileImageUrl + ')'}"></div>
-                                    <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="profile-text">{{$store.state.user.Owner.Title[0]}}</div>
+                                    <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="profile-text">{{ $store.state.user.Owner.Title[0] }}</div>
                                 </div>
                                 <div class="col-sm-6 content-column-center">
                                     <p class="text-right"><a class="btn btn-link alert mb0">Change profile picture</a></p>
@@ -60,7 +60,7 @@
                                         <div class="saved-card">
                                             <input type="radio" class="mr16" v-model="preferredCard" :value="card._id" @click="setPreferredCard(preferredCard)">
                                             <img :src="getImageUrl(card.Card.Vendor)" alt />
-                                            <span>xxxx xxxx xxxx {{card.Card.LastFour}}</span>
+                                            <span>xxxx xxxx xxxx {{ card.Card.LastFour }}</span>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
@@ -97,23 +97,23 @@
                             <div class="plan-details">
                                 <div class="plan-info">
                                     <p class="info-label">Broadcast Location</p>
-                                    <h6 class="info-desc">{{ad.ChannelPlan.Plan.Channel.Name}}</h6>
+                                    <h6 class="info-desc">{{ ad.ChannelPlan.Plan.Channel.Name }}</h6>
                                 </div>
                                 <div class="plan-info">
                                     <p class="info-label">Broadcast Slot</p>
-                                    <h6 class="info-desc">{{ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.Name}} ({{ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.StartTime}} to {{ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.EndTime}})</h6>
+                                    <h6 class="info-desc">{{ ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.Name }} ({{ ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.StartTime }} to {{ ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.EndTime }})</h6>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="plan-info">
                                             <p class="info-label">Broadcast Start</p>
-                                            <h6 class="info-desc">{{moment(ad.StartDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</h6>
+                                            <h6 class="info-desc">{{ moment(ad.StartDate, 'YYYY-MM-DD').format('Do MMMM YYYY') }}</h6>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="plan-info">
                                             <p class="info-label">Broadcast End</p>
-                                            <h6 class="info-desc">{{moment(ad.EndDate, 'YYYY-MM-DD').format('Do MMMM YYYY')}}</h6>
+                                            <h6 class="info-desc">{{ moment(ad.EndDate, 'YYYY-MM-DD').format('Do MMMM YYYY') }}</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -121,7 +121,7 @@
                                     <div class="col-sm-6">
                                         <div class="plan-info mb0">
                                             <p class="info-label">Ad Length</p>
-                                            <h6 class="info-desc">{{ad.ChannelPlan.Plan.Seconds}} sec</h6>
+                                            <h6 class="info-desc">{{ ad.ChannelPlan.Plan.Seconds }} sec</h6>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -141,11 +141,11 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import instance from "@/api";
-import NewCardModal from "@/webapp/common/modals/NewCardModal";
+import { mapGetters } from 'vuex';
+import instance from '@/api';
+import NewCardModal from '@/webapp/common/modals/NewCardModal';
 export default {
-    name: "Profile",
+    name: 'Profile',
     components: {
         NewCardModal
     },
@@ -157,7 +157,7 @@ export default {
             newPassword: '',
             showNewCard: false,
             clientAds: []
-        }
+        };
     },
     methods: {
         close(val) {
@@ -168,16 +168,16 @@ export default {
         },
         async getSavedCards() {
             try {
-                let result = await instance.get("api/client/cards?client=" + this.getUser().Owner._id);
+                let result = await instance.get('api/client/cards?client=' + this.getUser().Owner._id);
                 this.savedCards = result.data;
                 if(this.savedCards.length > 0) {
                     this.preferredCard = this.savedCards.find(card => card.IsPreferred)._id;
                 }
             } catch (err) {
                 this.$swal({
-                    title: "Error",
-                    text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
-                    type: "error"
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
                 });
                 console.error(err);
             }
@@ -200,9 +200,9 @@ export default {
                         });
                     } catch (err) {
                         this.$swal({
-                            title: "Error",
-                            text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
-                            type: "error"
+                            title: 'Error',
+                            text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                            type: 'error'
                         });
                         console.error(err);
                     }
@@ -210,7 +210,7 @@ export default {
             });
         },
         getImageUrl(vendor) {
-            return require("@/assets/images/cards/" + vendor + ".svg");
+            return require('@/assets/images/cards/' + vendor + '.svg');
         },
         goToVideoUpload(id) {
             this.$router.push({
@@ -222,44 +222,44 @@ export default {
         },
         setPreferredCard(oldCard) {
             this.$swal({
-                    title: 'Are you sure?',
-                    text: 'Your preferred card will be updated',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Confirm'
-                }).then(async(isConfirm)=> {
-                    if (isConfirm.value) {
-                        try {
-                            await instance.post('api/client/preferredcard', {client: this.getUser().Owner._id, card: this.preferredCard})
-                            this.$swal({
-                                title: 'Updated',
-                                text: 'Preferred card has been updated',
-                                type: 'success'
-                            });
-                        } catch (err) {
-                            this.$swal({
-                                title: "Error",
-                                text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
-                                type: "error"
-                            });
-                            console.error(err);
-                        }
-                    } else {
-                        this.preferredCard = oldCard;
+                title: 'Are you sure?',
+                text: 'Your preferred card will be updated',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Confirm'
+            }).then(async(isConfirm)=> {
+                if (isConfirm.value) {
+                    try {
+                        await instance.post('api/client/preferredcard', {client: this.getUser().Owner._id, card: this.preferredCard});
+                        this.$swal({
+                            title: 'Updated',
+                            text: 'Preferred card has been updated',
+                            type: 'success'
+                        });
+                    } catch (err) {
+                        this.$swal({
+                            title: 'Error',
+                            text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                            type: 'error'
+                        });
+                        console.error(err);
                     }
-                });
+                } else {
+                    this.preferredCard = oldCard;
+                }
+            });
         },
-         openNewCardModal() {
+        openNewCardModal() {
             this.showNewCard = true;
         },
-        ...mapGetters(["getUser"]),
+        ...mapGetters(['getUser']),
         getVideoUrl(url) {
             return this.GOOGLE_BUCKET_ENDPOINT + url;
         }
     },
     computed: {
         getProfileImageUrl() {
-            return this.GOOGLE_BUCKET_ENDPOINT + this.getUser().Owner.ImageUrl
+            return this.GOOGLE_BUCKET_ENDPOINT + this.getUser().Owner.ImageUrl;
         }
     },
     async created() {
@@ -269,14 +269,14 @@ export default {
             this.clientAds = result.data;
         } catch (err) {
             this.$swal({
-                title: "Error",
-                text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
-                type: "error"
+                title: 'Error',
+                text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                type: 'error'
             });
             console.error(err);
         }
     }
-}
+};
 </script>
 
 <style lang="scss" scoped>

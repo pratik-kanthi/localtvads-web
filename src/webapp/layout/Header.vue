@@ -24,7 +24,7 @@
                         <li v-if="!isLoggedIn"><a class="btn btn-white btn-sm" @click="chooseAuth('register')">Register</a></li>
                         <li v-if="isLoggedIn" class="profile-wrapper">
                             <a class="profile" @click="toggleProfile(undefined)" v-click-outside="closeProfile">
-                                <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="text">{{$store.state.user.Owner.Title[0]}}</div>
+                                <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="text">{{ $store.state.user.Owner.Title[0] }}</div>
                                 <img v-else-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl" class="picture" :src="getImageUrl" :alt="$store.state.user.Owner.Title" />
                             </a>
                             <ul class="" :class="{'profile-menu': showProfile}">
@@ -46,29 +46,29 @@
 </template>
 
 <script>
-    import AuthModal from "@/webapp/common/modals/AuthModal";
-    import {mapGetters} from "vuex";
+import AuthModal from '@/webapp/common/modals/AuthModal';
+import {mapGetters} from 'vuex';
 
-    export default {
-    name: "Header",
+export default {
+    name: 'Header',
     components: {
         AuthModal
     },
     data() {
         return {
             showProfile: false
-        }
+        };
     },
     methods: {
         closeProfile() {
             this.showProfile = false;
         },
         chooseAuth(name) {
-            this.$store.commit("DIALOG_CHOSEN", name);
+            this.$store.commit('DIALOG_CHOSEN', name);
         },
         logout() {
-            this.$store.dispatch("logout");
-            this.$router.push("/", () => {});
+            this.$store.dispatch('logout');
+            this.$router.push('/', () => {});
             this.showProfile = false;
         },
         toggleProfile() {
@@ -76,14 +76,14 @@
         }
     },
     computed: {
-        ...mapGetters(["isLoggedIn", "getUser"]),
+        ...mapGetters(['isLoggedIn', 'getUser']),
         getImageUrl() {
             return (
                 this.GOOGLE_BUCKET_ENDPOINT + this.$store.state.user.Owner.ImageUrl
             );
         }
     }
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -12,11 +12,11 @@
                 <div class="row">
                     <div class="col-sm-5">
                         <h3 class="section-title mt0 mb8">Choose File</h3>
-                        <input type="file" @change="fileUploaded" accept="audio/mp3" ref="fileUpload"/>
+                        <input type="file" @change="fileUploaded" accept="audio/mp3" ref="fileUpload" />
                     </div>
                 </div>
                 <button v-if="upload.chosen" class="btn btn-secondary btn-filled" :disabled="loading || !isValid" @click="uploadFile">
-                        <i class="material-icons">crop</i> <span class="ml16">Upload</span>
+                    <i class="material-icons">crop</i> <span class="ml16">Upload</span>
                 </button>
             </div>
         </v-dialog>
@@ -24,10 +24,11 @@
 </template>
 
 <script>
-import LoaderModal from  '@/webapp/common/modals/LoaderModal.vue'
+import LoaderModal from '@/webapp/common/modals/LoaderModal.vue';
 
 export default {
     name: 'FileUpload',
+    props: ['config','show','data'],
     components: {
         LoaderModal
     },
@@ -39,22 +40,21 @@ export default {
                 src: null,
             },
             isValid: false
-        }
+        };
     },
-    props: ['config','show','data'],
     methods: {
         callAPI(formData) {
             return new Promise(async (resolve, reject) => {
                 let xhr = new XMLHttpRequest();
                 xhr.open('POST', window.endpoint + this.config.api, true);
-                xhr.setRequestHeader("Accept-Type", "application/json");
+                xhr.setRequestHeader('Accept-Type', 'application/json');
                 xhr.setRequestHeader('Authorization', 'bearer ' + this.$cookies.get('token'));
                 xhr.onload = () => {
                     if (xhr.status !== 200) {
                         return reject({
                             code: xhr.status,
                             data: xhr.statusText
-                        })
+                        });
                     } else {
                         resolve(xhr.response);
                     }
@@ -72,7 +72,7 @@ export default {
             this.isValid = false;
             this.upload.chosen = this.$refs.fileUpload.files[0];
             if (this.config.maxSize && this.upload.chosen.size > 1024 * 1024 * this.config.maxSize) {
-                this.$swal("Warning", "File exceeds the minimum size of " + this.config.maxSize + " MB", "warning");
+                this.$swal('Warning', 'File exceeds the minimum size of ' + this.config.maxSize + ' MB', 'warning');
                 return;
             }
             this.isValid = true;
@@ -96,14 +96,14 @@ export default {
             } catch (err) {
                 this.loading = false;
                 this.$swal({
-                    title: "Error",
+                    title: 'Error',
                     text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: "error"
+                    type: 'error'
                 });
             }
         }
     },
-}
+};
 </script>
 
 <style>

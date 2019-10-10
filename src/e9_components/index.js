@@ -1,2 +1,2 @@
 import './filters';
-import './directives'
+import './directives';

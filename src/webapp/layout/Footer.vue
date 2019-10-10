@@ -5,7 +5,7 @@
                 <div class="col-sm-3">
                     <div class="logo">
                         <router-link tag="a" to="/">
-                        <img src="@/assets/images/logo-dark.svg" alt="">
+                            <img src="@/assets/images/logo-dark.svg" alt="">
                         </router-link>
                     </div>
                 </div>
@@ -32,8 +32,8 @@
 
 <script>
 export default {
-    name: "Footer"
-}
+    name: 'Footer'
+};
 </script>
 
 <style lang="scss" scoped>

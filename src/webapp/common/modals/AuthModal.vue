@@ -1,63 +1,63 @@
 <template>
-	<b-modal v-model="$store.state.auth.showDialog" centered hide-header hide-footer no-close-on-esc no-close-on-backdrop id="auth-modal">
-		<div class="user-login">
-			<div class="tabs">
-				<ul>
-					<li :class="{'active' : getDefaultChosen === 'register'}" @click="goToComponent('register')" v-show="!isEmailConfirmed">Register</li>
-					<li :class="{'active' : getDefaultChosen === 'login', 'full-width' : isEmailConfirmed }" @click="goToComponent('login')">Login</li>
-				</ul>
-			</div>
-			<div class="content" :class="{'pt0': isEmailConfirmed}">
-				<div class="content-area">
-					<div v-if="getDefaultChosen === 'login'">
-						<Login :isEmailConfirmed="isEmailConfirmed" @close="close"></Login>
-					</div>
-					<div v-else-if="!isEmailConfirmed">
-						<Register></Register>
-					</div>
-					<div class="lh16 text-center mt16">
-						<a @click="close" class="brand-primary">Continue as guest</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</b-modal>
+    <b-modal v-model="$store.state.auth.showDialog" centered hide-header hide-footer no-close-on-esc no-close-on-backdrop id="auth-modal">
+        <div class="user-login">
+            <div class="tabs">
+                <ul>
+                    <li :class="{'active' : getDefaultChosen === 'register'}" @click="goToComponent('register')" v-show="!isEmailConfirmed">Register</li>
+                    <li :class="{'active' : getDefaultChosen === 'login', 'full-width' : isEmailConfirmed }" @click="goToComponent('login')">Login</li>
+                </ul>
+            </div>
+            <div class="content" :class="{'pt0': isEmailConfirmed}">
+                <div class="content-area">
+                    <div v-if="getDefaultChosen === 'login'">
+                        <Login :is-email-confirmed="isEmailConfirmed" @close="close"></Login>
+                    </div>
+                    <div v-else-if="!isEmailConfirmed">
+                        <Register></Register>
+                    </div>
+                    <div class="lh16 text-center mt16">
+                        <a @click="close" class="brand-primary">Continue as guest</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </b-modal>
 </template>
 
 <script>
-	import { mapGetters } from "vuex";
-	import Login from "@/webapp/common/auth/Login";
-	import Register from "@/webapp/common/auth/Register";
+import { mapGetters } from 'vuex';
+import Login from '@/webapp/common/auth/Login';
+import Register from '@/webapp/common/auth/Register';
 
-	export default {
-		name: "AuthModal",
-		components: {
-			Login,
-			Register,
-		},
-		data() {
-			return {
-				isEmailConfirmed: undefined
-			};
-		},
-		methods: {
-			close() {
-				this.$store.commit("DIALOG", false);
-				this.$emit("closed", true);
-			},
-			goToComponent(name) {
-				this.$store.state.auth.defaultChosen = name;
-			}
-		},
-		computed: {
-			...mapGetters(["getDefaultChosen"])
-		},
-		created() {
-			if (this.$route.query && this.$route.query.emailconfirmed) {
-				this.isEmailConfirmed = true;
-			}
-		}
-	};
+export default {
+    name: 'AuthModal',
+    components: {
+        Login,
+        Register,
+    },
+    data() {
+        return {
+            isEmailConfirmed: undefined
+        };
+    },
+    methods: {
+        close() {
+            this.$store.commit('DIALOG', false);
+            this.$emit('closed', true);
+        },
+        goToComponent(name) {
+            this.$store.state.auth.defaultChosen = name;
+        }
+    },
+    computed: {
+        ...mapGetters(['getDefaultChosen'])
+    },
+    created() {
+        if (this.$route.query && this.$route.query.emailconfirmed) {
+            this.isEmailConfirmed = true;
+        }
+    }
+};
 </script>
 
 <style lang="scss">

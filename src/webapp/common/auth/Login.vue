@@ -25,76 +25,76 @@
             <button class="btn btn-primary btn-full" @click="login" :disabled="!isValid || isAuthLoader">Login</button>
             <LoaderModal :showloader="isAuthLoader" message="Please stand by while we authenticate..."></LoaderModal>
             <div class="alert alert-danger text-center mt16" v-if="errMessage">
-                {{errMessage}}
+                {{ errMessage }}
             </div>
         </form>
     </div>
 </template>
 
 <script>
-    import Google from "@/webapp/common/auth/Google";
-    import Facebook from "@/webapp/common/auth/Facebook";
-    import LoaderModal from  '@/webapp/common/modals/LoaderModal';
-    import instance from "@/api";
-    import { mapGetters } from "vuex";
+import Google from '@/webapp/common/auth/Google';
+import Facebook from '@/webapp/common/auth/Facebook';
+import LoaderModal from '@/webapp/common/modals/LoaderModal';
+import instance from '@/api';
+import { mapGetters } from 'vuex';
 
-    export default {
-        name: "Login",
-        components: { Facebook, Google, LoaderModal},
-        props: ["isEmailConfirmed"],
-        data() {
-            return {
-                api: "api/auth/clientsociallogin",
-                errMessage: "",
-                show: false,
-                user: {
-                    email: "",
-                    password: ""
-                }
-            };
-        },
-        methods: {
-            displayForgotPasswordForm() {
-                this.$store.commit("DIALOG", false);
-                this.$router.push({ name: "ForgotPassword" }, () => { });
-            },
-            async login() {
-                this.errMessage = "";
-                this.$store.commit('LOGIN_LOADER', true);
-                try {
-                    let result = await instance.post("api/auth/clientlogin", this.user);
-                    this.$cookies.set(
-                        "token",
-                        result.data.TokenString,
-                        result.data.iat - Math.floor(Date.now() / 1000) + "s"
-                    );
-                    delete result.data.TokenString;
-                    localStorage.setItem("user", JSON.stringify(result.data));
-                    this.$store.dispatch("loginSuccess");
-                    this.$emit("close");
-                } catch (err) {
-                    this.$store.commit('LOGIN_LOADER', false);
-                    this.errMessage = err && err.data ? err.data.message : "";
-                }
+export default {
+    name: 'Login',
+    props: ['isEmailConfirmed'],
+    components: { Facebook, Google, LoaderModal},
+    data() {
+        return {
+            api: 'api/auth/clientsociallogin',
+            errMessage: '',
+            show: false,
+            user: {
+                email: '',
+                password: ''
             }
+        };
+    },
+    methods: {
+        displayForgotPasswordForm() {
+            this.$store.commit('DIALOG', false);
+            this.$router.push({ name: 'ForgotPassword' }, () => { });
         },
-        computed: {
-            isValid() {
-                let flag = true;
-                if (!this.user.email) {
-                    flag = false;
-                }
-                if (!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.user.email)) {
-                    flag = false;
-                }
-                if (!this.user.password) {
-                    flag = false;
-                }
-                return flag;
-            },
-            ...mapGetters(['isAuthLoader'])
+        async login() {
+            this.errMessage = '';
+            this.$store.commit('LOGIN_LOADER', true);
+            try {
+                let result = await instance.post('api/auth/clientlogin', this.user);
+                this.$cookies.set(
+                    'token',
+                    result.data.TokenString,
+                    result.data.iat - Math.floor(Date.now() / 1000) + 's'
+                );
+                delete result.data.TokenString;
+                localStorage.setItem('user', JSON.stringify(result.data));
+                this.$store.dispatch('loginSuccess');
+                this.$emit('close');
+            } catch (err) {
+                this.$store.commit('LOGIN_LOADER', false);
+                this.errMessage = err && err.data ? err.data.message : '';
+            }
         }
-    };
+    },
+    computed: {
+        isValid() {
+            let flag = true;
+            if (!this.user.email) {
+                flag = false;
+            }
+            if (!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.user.email)) {
+                flag = false;
+            }
+            if (!this.user.password) {
+                flag = false;
+            }
+            return flag;
+        },
+        ...mapGetters(['isAuthLoader'])
+    }
+};
 </script>
 
 <style scoped lang="scss">

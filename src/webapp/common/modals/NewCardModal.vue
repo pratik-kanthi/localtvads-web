@@ -6,25 +6,25 @@
             <div class="form-group">
                 <label class="mb8">Card Number</label>
                 <div class="input-card-number">
-                    <input name="number" type="tel" class="form-control" v-model="cardNumber"/>
-                    <img :src="getCardType" alt class="pull-right"/>
+                    <input name="number" type="tel" class="form-control" v-model="cardNumber" />
+                    <img :src="getCardType" alt class="pull-right" />
                 </div>
             </div>
             <div class="form-group">
                 <label for class="mb8">Cardholder Name</label>
-                <input name="name" type="text" class="form-control" v-model="name" autocomplete="off"/>
+                <input name="name" type="text" class="form-control" v-model="name" autocomplete="off" />
             </div>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label class="mb8">Expiry Date</label>
-                        <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••"/>
+                        <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••" />
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label class="mb8">CVV</label>
-                        <input name="cvc" type="password" class="form-control" v-model="cvv"/>
+                        <input name="cvc" type="password" class="form-control" v-model="cvv" />
                     </div>
                 </div>
             </div>
@@ -34,27 +34,27 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
-import instance from "@/api";
-import Card from "card";
+import {mapGetters} from 'vuex';
+import instance from '@/api';
+import Card from 'card';
 export default {
-    name: "NewCardModal",
+    name: 'NewCardModal',
     props: ['showNewCard'],
     data() {
         return {
             cardNumber: null,
             cardObj: null,
-            name: "",
+            name: '',
             cvv: null,
             expiry: null
-        }
+        };
     },
     methods: {
         closeModal() {
-            this.$emit("close", false);
+            this.$emit('close', false);
         },
         getImageUrl(vendor) {
-            return require("@/assets/images/cards/" + vendor + ".svg");
+            return require('@/assets/images/cards/' + vendor + '.svg');
         },
         generateToken() {
             this.$parent.isLoading = true;
@@ -63,7 +63,7 @@ export default {
                 cvc: this.cvv,
                 exp_month: this.expiry.substring(0, 2),
                 exp_year: parseInt(
-                    this.expiry.substring(this.expiry.indexOf("/") + 1)
+                    this.expiry.substring(this.expiry.indexOf('/') + 1)
                 ),
                 name: this.name
             }, (code, result) => {
@@ -73,11 +73,11 @@ export default {
                 } else {
                     this.$parent.isLoading = false;
                     this.$swal({
-                        title: "Error",
-                        text: result && result.error && result.error.message ? result.error.message : "Some error occurred",
-                        type: "error"
+                        title: 'Error',
+                        text: result && result.error && result.error.message ? result.error.message : 'Some error occurred',
+                        type: 'error'
                     });
-                    console.err(result);
+                    console.error(result);
                 }
             });
         },
@@ -85,79 +85,79 @@ export default {
             setTimeout(() => {
                 this.cardObj = new Card({
                     form: this.$refs.form,
-                    container: ".hidden-container",
+                    container: '.hidden-container',
                     placeholders: {
-                        expiry: "••/••••",
-                        number: "•••• •••• •••• ••••"
+                        expiry: '••/••••',
+                        number: '•••• •••• •••• ••••'
                     }
                 });
             }, 100);
         },
         async saveCard(owner, token) {
             try {
-                await instance.post("api/client/addcard",{client: owner, token: token});
+                await instance.post('api/client/addcard',{client: owner, token: token});
                 this.$swal({
-                    title: "Card saved",
-                    text: "Your card has been saved successfully.",
-                    type: "success"
+                    title: 'Card saved',
+                    text: 'Your card has been saved successfully.',
+                    type: 'success'
                 });
-                this.$emit("close", true);
+                this.$emit('close', true);
             } catch (err) {
                 this.$parent.isLoading = false;
                 this.$swal({
-                    title: "Error",
-                    text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
-                    type: "error"
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
                 });
                 console.error(err);
             }
         },
-        ...mapGetters(["getUser"])
+        ...mapGetters(['getUser'])
     },
     computed: {
         getCardType() {
             if (this.cardNumber) {
-                let re = new RegExp("^4");
+                let re = new RegExp('^4');
                 if (this.cardNumber.match(re) != null)
-                    return require("@/assets/images/cards/VISA.svg");
+                    return require('@/assets/images/cards/VISA.svg');
 
                 // Mastercard
                 // Updated for Mastercard 2017 BINs expansion
                 if (/^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/.test(this.cardNumber))
-                    return require("@/assets/images/cards/MASTERCARD.svg");
+                    return require('@/assets/images/cards/MASTERCARD.svg');
 
                 // AMEX
-                re = new RegExp("^3[47]");
+                re = new RegExp('^3[47]');
                 if (this.cardNumber.match(re) != null)
-                    return require("@/assets/images/cards/AMERICANEXPRESS.svg");
+                    return require('@/assets/images/cards/AMERICANEXPRESS.svg');
 
                 // Discover
-                re = new RegExp("^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)"
+                re = new RegExp('^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)'
                 );
                 if (this.cardNumber.match(re) != null)
-                    return require("@/assets/images/cards/DISCOVER.svg");
+                    return require('@/assets/images/cards/DISCOVER.svg');
 
                 // Diners
-                re = new RegExp("^36");
+                re = new RegExp('^36');
                 if (this.cardNumber.match(re) != null)
-                    return require("@/assets/images/cards/DINERSCLUB.svg");
+                    return require('@/assets/images/cards/DINERSCLUB.svg');
 
                 // Diners - Carte Blanche
-                re = new RegExp("^30[0-5]");
+                re = new RegExp('^30[0-5]');
                 if (this.cardNumber.match(re) != null)
-                    return require("@/assets/images/cards/DINERSCLUB.svg");
+                    return require('@/assets/images/cards/DINERSCLUB.svg');
 
                 // JCB
-                re = new RegExp("^35(2[89]|[3-8][0-9])");
+                re = new RegExp('^35(2[89]|[3-8][0-9])');
                 if (this.cardNumber.match(re) != null)
-                    return require("@/assets/images/cards/JCB.svg");
+                    return require('@/assets/images/cards/JCB.svg');
 
                 // Visa Electron
-                re = new RegExp("^(4026|417500|4508|4844|491(3|7))");
+                re = new RegExp('^(4026|417500|4508|4844|491(3|7))');
                 if (this.cardNumber.match(re) != null)
-                    return require("@/assets/images/cards/VISA.svg");
+                    return require('@/assets/images/cards/VISA.svg');
             }
-            return "";
+            return '';
         },
         isProceedable() {
             return (
@@ -167,15 +167,15 @@ export default {
                 this.cardNumber.length > 12 &&
                 this.cardNumber.length <= 19 &&
                 this.expiry &&
-                new Date(this.expiry.substring(this.expiry.indexOf("/") + 1), this.expiry.substring(0, 2))
+                new Date(this.expiry.substring(this.expiry.indexOf('/') + 1), this.expiry.substring(0, 2))
             );
         }
     },
     created() {
         this.loadCardJS();
     }
-        
-}
+
+};
 </script>
 
 <style lang="scss" scoped>

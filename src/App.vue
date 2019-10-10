@@ -9,16 +9,16 @@
 </template>
 
 <script>
-    import Header from './webapp/layout/Header';
-    import Footer from './webapp/layout/Footer';
+import Header from './webapp/layout/Header';
+import Footer from './webapp/layout/Footer';
 
-    export default {
-        name: 'app',
-        components: {
-            webHeader: Header,
-            webFooter: Footer
-        }
+export default {
+    name: 'App',
+    components: {
+        webHeader: Header,
+        webFooter: Footer
     }
+};
 </script>
 
 <style lang="scss">

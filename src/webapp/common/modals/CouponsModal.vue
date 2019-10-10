@@ -8,12 +8,12 @@
             </div>
             <div class="coupons" v-for="coupon in coupons" :key="coupon._id">
                 <div class="coupon-code mb16">
-                    <p class="mb0">{{coupon.CouponCode}}</p>
+                    <p class="mb0">{{ coupon.CouponCode }}</p>
                 </div>
-                <h6 class="hero-text mb8">{{coupon.Name}}</h6>
+                <h6 class="hero-text mb8">{{ coupon.Name }}</h6>
                 
-                <p class="lead t-s mb0">{{coupon.Description}}</p>
-                <p class="t-xs  text-muted mb16">Use code {{coupon.CouponCode}} & get 60% discount on the base subscription amount.</p>
+                <p class="lead t-s mb0">{{ coupon.Description }}</p>
+                <p class="t-xs  text-muted mb16">Use code {{ coupon.CouponCode }} & get 60% discount on the base subscription amount.</p>
                 <button class="btn btn-primary btn-bordered" @click="applyCoupon(coupon.CouponCode)" :disabled="isLoading">Apply Coupon</button>
             </div>
         </div>
@@ -21,17 +21,17 @@
 </template>
 
 <script>
-import instance from "@/api";
+import instance from '@/api';
 import {mapGetters} from 'vuex';
 export default {
-    name: "CouponsModal",
+    name: 'CouponsModal',
     props: ['showCoupons', 'options'],
     data() {
         return {
             coupons: [],
             couponCode: '',
             isLoading: false
-        }
+        };
     },
     methods: {
         async applyCoupon(couponCode) {
@@ -46,9 +46,9 @@ export default {
             } catch (err) {
                 this.isLoading = false;
                 this.$swal({
-                    title: "Error",
-                    text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
-                    type: "error"
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
                 });
                 console.error(err);
             }
@@ -63,18 +63,18 @@ export default {
     },
     async created() {
         try {
-            let result = await instance.get('api/clientad/coupons?clientid=' + this.getUser().Owner._id + '&channel=' +  this.options.channel + '&adschedule=' + this.options.adSchedule + '&startdate=' + this.options.startDate);
+            let result = await instance.get('api/clientad/coupons?clientid=' + this.getUser().Owner._id + '&channel=' + this.options.channel + '&adschedule=' + this.options.adSchedule + '&startdate=' + this.options.startDate);
             this.coupons = result.data;
         } catch (err) {
             this.$swal({
-                title: "Error",
-                text: err && err.data && err.data.message ? err.data.message : "Some error occurred",
-                type: "error"
+                title: 'Error',
+                text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                type: 'error'
             });
             console.error(err);
         }
     }
-}
+};
 </script>
 
 <style lang="scss" scoped>

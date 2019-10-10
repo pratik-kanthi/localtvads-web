@@ -18,7 +18,7 @@ Vue.prototype.moment = moment;
 Vue.component('LoaderModal', LoaderModal);
 
 new Vue({
-	render: (h) => h(App),
-	router: router,
-	store
+    render: (h) => h(App),
+    router: router,
+    store
 }).$mount('#app');

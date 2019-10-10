@@ -19,14 +19,14 @@
 
 <script>
 export default {
-    name: "CreateAd",
+    name: 'CreateAd',
     data() {
         return {
 
-        }
+        };
     }
 
-}
+};
 </script>
 
 <style lang="scss">
