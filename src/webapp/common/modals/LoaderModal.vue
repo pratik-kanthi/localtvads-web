@@ -34,7 +34,7 @@
         right: 0;
         z-index:10;
         .overlay {
-            opacity: 0.8;
+            opacity: 0.95;
             position: absolute;
             left: 0;
             right: 0;
