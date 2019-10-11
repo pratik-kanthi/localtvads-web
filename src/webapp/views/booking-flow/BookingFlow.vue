@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
 import instance from '@/api';
 import UploadAd from './UploadAd';
 import ChoosePlan from './ChoosePlan';
@@ -87,10 +88,36 @@ export default {
             this.currentStep = 2;
             this.currentStage = Payment;
         },
+        preventNav(e) {
+            if (!this.getIsVideoBeingUploaded()) return;
+            if (e) {
+                e.returnValue = 'Sure?';
+            }
+            return 'Sure?';
+        },
+        ...mapGetters(['getIsVideoBeingUploaded'])
     },
     async created() {
         setTimeout(() => $('.v-stepper__step__step').text(''));
         this.fetchClientAdPlan();
+    },
+    beforeMount() {
+        window.addEventListener('beforeunload', this.preventNav);
+    },
+    beforeDestroy() {
+        window.removeEventListener('beforeunload', this.preventNav);
+    },
+    beforeRouteLeave: function(to, from, next) {
+        if (this.getIsVideoBeingUploaded()) {
+            this.$swal({
+                title: 'Upload pending',
+                text: 'You have a pending upload, hence you will not be allowed to leave until upload finishes',
+                type: 'warning'
+            });
+            next(false);
+        } else {
+            next();
+        }
     }
 };
 </script>

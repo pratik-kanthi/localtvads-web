@@ -64,6 +64,7 @@ export default {
     methods: {
         cancelUpload() {
             this.upload.chosen = null;
+            this.$store.commit('VIDEO_BEING_UPLOADED', false);
         },
         chooseFile() {
             $('#fileUpload').click();
@@ -93,11 +94,7 @@ export default {
             };
             this.videoUrl = URL.createObjectURL(this.upload.chosen);
         },
-        preventNav(event) {
-            if (!this.processing && !this.progress) return;
-            event.preventDefault();
-            event.returnValue = '';
-        },
+
         sendSocket(chunk, counter, chunkSize) {
             this.socket.emit('UPLOAD_CHUNK', {
                 data: chunk,
@@ -110,6 +107,7 @@ export default {
         },
         async uploadFile() {
             this.isLoading = true;
+            this.$store.commit('VIDEO_BEING_UPLOADED', true);
             let counter = 1;
             let chunkSize = 100000;
             this.socket = this.io(window.socketendpoint, {
@@ -141,6 +139,8 @@ export default {
                     type: 'error'
                 });
                 this.socket.disconnect();
+                this.isLoading = false;
+                this.$store.commit('VIDEO_BEING_UPLOADED', false);
             });
             this.socket.on('PROCESS_FINISHED', () => {
                 setTimeout(() => {
@@ -152,6 +152,7 @@ export default {
                     });
                     this.progress = 0;
                     this.processing = false;
+                    this.$store.commit('VIDEO_BEING_UPLOADED', false);
                     this.socket.disconnect();
                     this.$parent.fetchClientAdPlan();
                 },1000);
@@ -171,12 +172,6 @@ export default {
                 }
             });
         }
-    },
-    beforeMount() {
-        window.addEventListener('beforeunload', this.preventNav);
-    },
-    beforeDestroy() {
-        window.removeEventListener('beforeunload', this.preventNav);
     }
 };
 </script>
