@@ -59,5 +59,27 @@ export default {
                 min-width: 240px;
             }
         }
+        @media(max-width: 768px) {
+            margin: 0;
+            padding: 40px 16px;
+            .checked {
+                img {
+                    width: 120px;
+                }
+            }
+        }
+        /* iPhone x Landscape */
+        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+            margin: 0;
+            padding: 40px;
+        }
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            padding: 40px;
+        }
+        /* iPad Pro Portrait */
+        @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            padding: 40px;
+        }
     }
 </style>

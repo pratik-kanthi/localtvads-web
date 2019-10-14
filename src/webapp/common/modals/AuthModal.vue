@@ -140,5 +140,16 @@ export default {
 				z-index: 2;
 			}
 		}
+		@media(max-width: 768px) {
+			.content {
+				padding: 32px 24px;
+			}
+		}
+		/* iPad Portrait */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+			.content {
+				padding: 32px 40px;
+			}
+		}
 	}
 </style>

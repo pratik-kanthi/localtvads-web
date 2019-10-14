@@ -260,10 +260,41 @@ export default {
             .form-group {
                 width: 100%;
                 margin-bottom: 16px;
-            }.action {
+            }
+            .action {
                 width: 100%;
                 display: block;
                 margin: 16px 0 16px;
+            }
+        }
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            .form-group {
+                width: 288px;
+                margin-bottom: 16px;
+            }
+            .action {
+                width: 288px;
+                margin: 16px 0 16px;
+            }
+        }
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            padding: 40px 24px;
+            .form-group {
+                width: 240px;
+            }
+            .action {
+                width: calc(100% - 3*(240px + 16px));
+            }
+        }
+        /* iPad Pro Landscape */
+        @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            padding: 40px 24px;
+            .form-group {
+                width: 240px;
+            }
+            .action {
+                width: calc(100% - 3*(240px + 16px));
             }
         }
     }

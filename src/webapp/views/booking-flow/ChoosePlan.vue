@@ -3,7 +3,7 @@
         <div class="selected-broadcast-location">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-md-4 col-lg-3">
                         <div class="broadcast-location">
                             <label>Broadcast Location</label>
                             <select v-model="channelSelected" @change="getAvailableSlotsByChannel(false)">
@@ -11,13 +11,13 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-md-4 col-lg-2">
                         <div class="broadcast-start">
                             <label>Broadcast Start</label>
-                            <h5>{{ moment(slotStartDate, 'YYYY-MM-DD').format('LL') }}</h5>
+                            <h5>{{ moment(slotStartDate, 'YYYY-MM-DD').format('MMM D, YYYY') }}</h5>
                         </div>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-md-4 col-lg-2">
                         <div class="ad-length">
                             <label>Ad Length</label>
                             <select v-model="secondSelected" @change="getAvailableSlotsByChannel(false)">
@@ -25,13 +25,13 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-md-4 col-lg-2">
                         <div class="broadcast-duration">
                             <label>Broadcast Duration</label>
                             <h5>6 months</h5>
                         </div>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-md-4 col-lg-1">
                         <div class="recurring form-group mb0">
                             <label for="recurring" class="control-label">Recurring</label>
                             <input class="check" type="checkbox" name="recurring" id="recurring" v-model="isRenewal" />
@@ -39,7 +39,7 @@
                             <br class="clearfix">
                         </div>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-md-4 col-lg-2">
                         <div class="tolatcost">
                             <label>Total Cost</label>
                             <h5 class="bold" v-if="selectedPlan">{{ selectedPlan.TotalAmount | currency }}</h5>
@@ -87,7 +87,7 @@
                     <div class="broadcast-slots" v-if="selectedSlot">
                         <h5 class="label">Choose Your Plan</h5>
                         <div class="row" v-if="Object.keys(selectedSlot).length > 0">
-                            <div class="col-sm-4 plan-wrapper" v-for="plan in selectedSlot" :key="plan.Plan">
+                            <div class="col-sm-6 col-lg-4 plan-wrapper" v-for="plan in selectedSlot" :key="plan.Plan">
                                 <div class="plan" :class="{'active-slot': selectedPlan.Plan === plan.Plan}">
                                     <div class="plan-name">
                                         <h5>{{ plan.AdSchedule.Name }}</h5>
@@ -200,16 +200,16 @@ export default {
         },
         getNextSlots() {
             this.sliderStartDate = this.moment(this.sliderEndDate, 'YYYY-MM-DD').add(1, 'days').format('YYYY-MM-DD');
-            this.sliderEndDate = this.moment(this.sliderEndDate, 'YYYY-MM-DD').add(5, 'days').format('YYYY-MM-DD');
+            this.sliderEndDate = this.moment(this.sliderEndDate, 'YYYY-MM-DD').add(4, 'days').format('YYYY-MM-DD');
             this.getAvailableSlots();
         },
         getPrevSlots() {
-            if (this.moment() > this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(5, 'days')) {
-                this.sliderEndDate = this.moment().add(4, 'days').format('YYYY-MM-DD');
+            if (this.moment() > this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(4, 'days')) {
+                this.sliderEndDate = this.moment().add(3, 'days').format('YYYY-MM-DD');
                 this.sliderStartDate = this.moment().format('YYYY-MM-DD');
             } else {
                 this.sliderEndDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(1, 'days').format('YYYY-MM-DD');
-                this.sliderStartDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(5, 'days').format('YYYY-MM-DD');
+                this.sliderStartDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(4, 'days').format('YYYY-MM-DD');
             }
             this.getAvailableSlots();
         },
@@ -289,7 +289,7 @@ export default {
 
             this.$parent.isLoading = true;
             this.sliderStartDate = this.$route.query.startdate;
-            this.sliderEndDate = this.moment(this.$route.query.startdate, 'YYYY-MM-DD').add(4, 'days').format('YYYY-MM-DD');
+            this.sliderEndDate = this.moment(this.$route.query.startdate, 'YYYY-MM-DD').add(3, 'days').format('YYYY-MM-DD');
             this.getAllChannels();
             this.getAvailableSlotsByChannel(true);
         }
@@ -380,7 +380,7 @@ export default {
                             margin: 0;
                             li {
                                 display: inline-block;
-                                width: 20%;
+                                width: 25%;
                                 text-align: center;
                                 padding: 20px;
                                 border-right: 1px solid #cecece;
@@ -598,6 +598,133 @@ export default {
                         }
                     }
                 }
+            }
+        }
+
+        @media(max-width: 768px) {
+            .selected-broadcast-location {
+                padding: 16px 0;
+                .broadcast-location, .broadcast-start, .ad-length, .broadcast-duration, .recurring, .tolatcost{
+                    margin-bottom: 16px;
+                    label {
+                        margin: 0;
+                    }
+                }
+                .recurring {
+                    label {
+                        margin-bottom: 8px!important;
+                    }
+                }
+                .tolatcost {
+                    margin-top: 16px;
+                }
+            }
+            .channels-wrapper {
+                padding: 24px 0;
+                .channel-wrapper {
+                    .available-slots {
+                        .slots {
+                            padding: 16px 40px 0;
+                            .prev {
+                                left: 4px;
+                                top: 50%;
+                                transform: translateY(-50%);
+                            }
+                            .next {
+                                right: 4px;
+                                top: 50%;
+                                transform: translateY(-50%);
+                            }
+                            ul {
+                                li {
+                                    width: 50%;
+                                    margin-bottom: 16px;
+                                    padding: 16px;
+                                    border: none;
+                                    &:nth-child(odd) {
+                                        border-right: 1px solid #cecece;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .broadcast-slots {
+                        .plan-wrapper {
+                            margin-bottom: 16px;
+                        }
+                    }
+                    .action {
+                        padding: 0;
+                        margin: 0;
+                        .btn {
+                            min-width: 100% !important;
+                            margin-bottom: 16px;
+                        }
+                    }
+                }
+            }
+        }
+
+        /* iPad Portrait */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            .selected-broadcast-location {
+                padding: 24px;
+                .tolatcost {
+                    margin-top: 0;
+                }
+            }
+            .channels-wrapper {
+                padding: 24px 0;
+                .channel-wrapper {
+                    .available-slots {
+                        .slots {
+                            padding: 0 56px;
+                            .prev {
+                                left: 12px;
+                                top: 50%;
+                                transform: translateY(-50%);
+                            }
+                            .next {
+                                right: 12px;
+                                top: 50%;
+                                transform: translateY(-50%);
+                            }
+                            ul {
+                                li {
+                                    width: 25%;
+                                    padding: 16px;
+                                    margin-bottom: 0;
+                                    border: none;
+                                    &:nth-child(odd) {
+                                        border-right: 1px solid #cecece;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .broadcast-details {
+                        .details {
+                            padding: 16px;
+                            h4 {
+                                font-size: 18px;
+                            }
+                        }
+                    }
+                    .action {
+                        padding: 40px;
+                        margin-bottom: 56px;
+                        .btn {
+                            min-width: 250px !important;
+                            margin-right: 20px;
+                        }
+                    }
+                }
+            }
+        }
+
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            .channels-wrapper {
+                padding: 24px 0;
             }
         }
     }

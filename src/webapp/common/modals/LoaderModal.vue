@@ -10,7 +10,7 @@
 
 <script>
 import lottie from 'lottie-web';
-import animationData from '@/assets/data.json';
+import animationData from '@/assets/data/loader.json';
 export default {
     name: 'LoaderModal',
     props: ['showloader','message'],

@@ -8,7 +8,7 @@
                 <div class="payment-wrapper">
                     <h3 class="section-title-2 mb24">Payment Method</h3>
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-lg-6">
                             <div class="booking-details">
                                 <img class="" src="@/assets/images/logo-dark.svg" alt="">
                                 <div class="header">
@@ -66,18 +66,36 @@
                                 </div>
                                 <div class="total mt32 mb32">
                                     <div class="row">
-                                        <div class="col-sm-6">
+                                        <div class="col-6 col-sm-6">
                                             <p>Subscription Amount</p>
-                                            <p v-if="discount">Discount {{ discount.AmountType === 'PERCENTAGE' ? '(' + discount.Amount + '%' + ')' : '' }}</p>
-                                            <p>Taxes</p>
-                                            <h5>Total Amount</h5>
                                         </div>
-                                        <div class="col-sm-6 text-right">
+                                        <div class="col-6 col-sm-6 text-right">
                                             <p>
                                                 {{ $parent.selectedPlan.baseAmount | currency }}
                                             </p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6 col-sm-6">
+                                            <p v-if="discount">Discount {{ discount.AmountType === 'PERCENTAGE' ? '(' + discount.Amount + '%' + ')' : '' }}</p>
+                                        </div>
+                                        <div class="col-6 col-sm-6 text-right">
                                             <p class="green" v-if="discount">- {{ discountAmount | currency }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6 col-sm-6">
+                                            <p>Taxes</p>
+                                        </div>
+                                        <div class="col-6 col-sm-6 text-right">
                                             <p>{{ taxAmount | currency }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6 col-sm-6">
+                                            <h5>Total Amount</h5>
+                                        </div>
+                                        <div class="col-6 col-sm-6 text-right">
                                             <h5 class="amount pull-right"> {{ getTotalAmount | currency }}</h5>
                                         </div>
                                     </div>
@@ -90,15 +108,15 @@
                                 </p>
                             </div>
                         </div>
-                        <div v-if="isLoggedIn()" class="col-sm-6">
+                        <div v-if="isLoggedIn()" class="col-lg-6 mt-xs16">
                             <div class="cards-wrapper">
                                 <div class="saved-cards" v-if="savedCards.length > 0">
                                     <div class="cards">
                                         <h6 class="hero-text mb24" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}">
-                                            <input type="radio" class="mr8" v-model="activeToggle" value="SavedCards"><span>Your saved credit and debit cards</span>
+                                            <input type="radio" class="mr8" v-model="activeToggle" value="SavedCards"><span>Your saved cards</span>
                                         </h6>
                                         <div v-for="(card,key) in savedCards" :key="key" class="card-info" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
-                                            <input type="radio" class="mr16" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'">
+                                            <input type="radio" class="mr8" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'">
                                             <img :src="getImageUrl(card.Card.Vendor)" alt />
                                             <span>xxxx xxxx xxxx {{ card.Card.LastFour }}</span>
                                         </div>
@@ -107,7 +125,7 @@
                                 <div class="new-card">
                                     <form ref="form" class="p0">
                                         <h6 class="hero-text mb16" @click="togglePaymentOptions('NewCard')">
-                                            <input type="radio" class="mr8" v-model="activeToggle" value="NewCard"><span :class="{'active':activeToggle === 'NewCard'}">Credit and debit card</span>
+                                            <input type="radio" class="mr8" v-model="activeToggle" value="NewCard"><span :class="{'active':activeToggle === 'NewCard'}">New credit and debit card</span>
                                         </h6>
                                         <div class="hidden-container"></div>
                                         <div class="form-group">
@@ -545,6 +563,7 @@ export default {
             .total {
                 h5 {
                     font-weight: 500;
+                    line-height: 32px;
                     .amount {
                         text-align: right !important;
                     }
@@ -692,5 +711,63 @@ export default {
         height: 500px;
         width: 100%;
         color: $brand-secondary;
+    }
+    @media(max-width: 767px) {
+        .payment-wrapper {
+            padding: 24px 0;
+            .cards-wrapper {
+                background: transparent;
+                border-radius: 0;
+                padding: 0;
+                border: none;
+                .saved-cards {
+                    .cards {
+                        max-height: 175px;
+                    }
+                }
+                .coupon {
+                    .coupon-area {
+                        width: 80%;
+                    }
+                }
+            }
+        }
+    }
+    @media only screen and (max-device-width: 320px) and (-webkit-min-device-pixel-ratio: 2) {
+        .payment-wrapper {
+            .cards-wrapper {
+                .saved-cards {
+                    .cards {
+                        .card-info {
+                            img {
+                                width: 40px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /* iPad Portrait */
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+        .payment-wrapper {
+            .cards-wrapper {
+                margin-top: 24px;
+            }
+        }
+    }
+    /* iPad Landscape */
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+        .payment-wrapper {
+            padding: 24px 0;
+        }
+    }
+    /* iPad Pro Portrait */
+    @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+        .payment-wrapper {
+            .cards-wrapper {
+                margin-top: 0;
+            }
+        }
     }
 </style>

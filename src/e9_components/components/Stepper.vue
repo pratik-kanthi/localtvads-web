@@ -73,6 +73,9 @@ export default {
                 font-weight: 500;
                 position: relative;
                 top: 8px;
+                @media(max-width: 768px) {
+                    font-size: 11px;
+                }
             }
         }
     }

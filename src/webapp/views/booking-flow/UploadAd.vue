@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section class="p-xs0">
         <div class="container" v-if="$parent.clientAdPlan">
             <div class="upload-wrapper">
                 <div v-if="progress === 0 && !$parent.clientAdPlan.ClientAd && !upload.chosen" class="upload-box">
@@ -14,7 +14,7 @@
                         <source :src="videoUrl" type="video/mp4">
                     </video>
                     <div class="action text-center">
-                        <button class="btn btn-white btn-bordered mr16" @click="cancelUpload">Cancel</button>
+                        <button class="btn btn-white btn-bordered m-xs0 mr16" @click="cancelUpload">Cancel</button>
                         <button class="btn btn-white" @click="uploadVideo">Submit</button>
                     </div>
                 </div>
@@ -261,6 +261,42 @@ export default {
                 }
             }
         }
-
+    }
+    @media(max-width: 767px) {
+        .upload-wrapper {
+            margin: 0 !important;
+            padding: 16px !important;
+            .upload-box {
+                padding: 32px 16px;
+            }
+            .video-wrapper {
+                .action {
+                    button {
+                        min-width: 120px;
+                    }
+                }
+            }
+        }
+    }
+    /* iPhone x Landscape */
+    @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+        .upload-wrapper {
+            margin: 0 !important;
+            padding: 40px !important;
+        }
+    }
+    /* iPad Portrait */
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+        .upload-wrapper {
+            margin: 0 !important;
+            padding: 40px !important;
+        }
+    }
+    /* iPad Landscape */
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+        .upload-wrapper {
+            margin: 0 !important;
+            padding: 64px !important;
+        }
     }
 </style>

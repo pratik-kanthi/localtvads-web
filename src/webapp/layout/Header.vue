@@ -2,14 +2,14 @@
     <div>
         <div class="container-fluid">
             <div class="nav row">
-                <div class="col-sm-2">
+                <div class="col-md-2 col-lg-3">
                     <div class="logo-wrapper">
                         <router-link tag="a" to="/">
                             <img src="@/assets/images/logo.svg" alt="logo" class="logo">
                         </router-link>
                     </div>
                 </div>
-                <div class="col-sm-8">
+                <div class="col-sm-8 col-lg-6">
                     <ul class="menu">
                         <li><router-link tag="a" to="#/book-now">Book Now</router-link></li>
                         <li><router-link tag="a" to="/#how-it-works">How it works</router-link></li>
@@ -18,7 +18,7 @@
                         <li><router-link tag="a" to="/#contact">Contact us</router-link></li>
                     </ul>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 col-lg-3">
                     <ul class="auth-wrapper">
                         <li v-if="!isLoggedIn"><a @click="chooseAuth('login')">Login</a></li>
                         <li v-if="!isLoggedIn"><a class="btn btn-white btn-sm" @click="chooseAuth('register')">Register</a></li>
@@ -131,7 +131,7 @@ export default {
             li {
                 float: left;
                 margin-right: 40px;
-                line-height: 72px;
+                line-height: 78px;
                 color: $white;
                 font-family: $font-family-heading;
                 font-weight: 400;
@@ -199,6 +199,24 @@ export default {
                 }
 
             }
+        }
+        @media(max-width: 768px) {
+            height: 55px;
+            padding: 0;
+            .logo-wrapper {
+                width: 100%;
+                height: 40px;
+                line-height: 50px;
+            }
+            ul.menu {
+                display: none;
+            }
+            ul.auth-wrapper {
+                display: none;
+            }
+        }
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            padding: 0;
         }
     }
 </style>
