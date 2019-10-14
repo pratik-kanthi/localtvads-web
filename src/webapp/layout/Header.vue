@@ -1,27 +1,41 @@
 <template>
-    <div>
+    <nav>
         <div class="container-fluid">
-            <div class="nav row">
-                <div class="col-md-2 col-lg-3">
+            <div class="nav-bar row">
+                <div class="col-lg-2">
                     <div class="logo-wrapper">
                         <router-link tag="a" to="/">
                             <img src="@/assets/images/logo.svg" alt="logo" class="logo">
                         </router-link>
                     </div>
                 </div>
-                <div class="col-sm-8 col-lg-6">
-                    <ul class="menu">
-                        <li><router-link tag="a" to="#/book-now">Book Now</router-link></li>
-                        <li><router-link tag="a" to="/#how-it-works">How it works</router-link></li>
-                        <li><router-link tag="a" to="/#offers">Offers</router-link></li>
-                        <li><router-link tag="a" to="/#about">About</router-link></li>
-                        <li><router-link tag="a" to="/#contact">Contact us</router-link></li>
+                <div class="col-lg-7">
+                    <ul class="menu" :class="{'nav-menu': showMenu}">
+                        <li>
+                            <router-link tag="a" to="#/book-now">Book Now</router-link>
+                        </li>
+                        <li>
+                            <router-link tag="a" to="/#how-it-works">How it works</router-link>
+                        </li>
+                        <li>
+                            <router-link tag="a" to="/#offers">Offers</router-link>
+                        </li>
+                        <li>
+                            <router-link tag="a" to="/#about">About</router-link>
+                        </li>
+                        <li>
+                            <router-link tag="a" to="/#contact">Contact us</router-link>
+                        </li>
                     </ul>
                 </div>
-                <div class="col-sm-2 col-lg-3">
-                    <ul class="auth-wrapper">
-                        <li v-if="!isLoggedIn"><a @click="chooseAuth('login')">Login</a></li>
-                        <li v-if="!isLoggedIn"><a class="btn btn-white btn-sm" @click="chooseAuth('register')">Register</a></li>
+                <div class="col-lg-3">
+                    <ul class="auth-wrapper" :class="{'nav-menu': showMenu}">
+                        <li v-if="!isLoggedIn">
+                            <a @click="chooseAuth('login')">Login</a>
+                        </li>
+                        <li v-if="!isLoggedIn">
+                            <a class="btn btn-white btn-sm" @click="chooseAuth('register')">Register</a>
+                        </li>
                         <li v-if="isLoggedIn" class="profile-wrapper">
                             <a class="profile" @click="toggleProfile(undefined)" v-click-outside="closeProfile">
                                 <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="text">{{ $store.state.user.Owner.Title[0] }}</div>
@@ -36,18 +50,23 @@
                         </li>
                     </ul>
                 </div>
+                <div class="navbar-toggle d-sm-block d-lg-none" @click="toggleMenu">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </div>
             </div>
         </div>
         <div v-if="$store.state.auth.defaultChosen">
             <AuthModal @closed="$store.state.auth.defaultChosen=null"></AuthModal>
         </div>
-    </div>
+    </nav>
 
 </template>
 
 <script>
 import AuthModal from '@/webapp/common/modals/AuthModal';
-import {mapGetters} from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'Header',
@@ -56,6 +75,7 @@ export default {
     },
     data() {
         return {
+            showMenu: false,
             showProfile: false
         };
     },
@@ -68,8 +88,11 @@ export default {
         },
         logout() {
             this.$store.dispatch('logout');
-            this.$router.push('/', () => {});
+            this.$router.push('/', () => { });
             this.showProfile = false;
+        },
+        toggleMenu() {
+            this.showMenu = !this.showMenu;
         },
         toggleProfile() {
             this.showProfile = !this.showProfile;
@@ -87,136 +110,185 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .container-fluid {
-        background-color: $brand-primary;
-        border-bottom: 3px solid $white;
+nav {
+    min-height: 80px;
+    @media (max-width: 990px) {
+        min-height: 56px;
     }
-    .nav {
-        height: 80px;
-        padding: 0 35px;
-        .logo-wrapper {
-            width: 100px;
-            height: 56px;
-            line-height: 74px;
-            .logo {
-                max-width: 100%;
-                max-height: 100%
+}
+.container-fluid {
+    background-color: $brand-primary;
+    border-bottom: 3px solid $white;
+    position: fixed;
+    z-index: 1;
+}
+.nav-bar {
+    min-height: 80px;
+    padding: 0 35px;
+    .logo-wrapper {
+        width: 88px;
+        line-height: 78px;
+        .logo {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    }
+    ul.menu {
+        @include list-unstyled();
+        margin: 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        li {
+            float: left;
+            margin-right: 40px;
+            line-height: 80px;
+            color: $white;
+            font-size: 16px;
+            font-family: $font-family-heading;
+            font-weight: 400;
+            &:last-child {
+                margin-right: 0;
+            }
+            a {
+                color: $white;
             }
         }
-        ul.menu {
-            @include list-unstyled();
-            margin: 0;
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            li {
-                float: left;
-                margin-right: 40px;
-                line-height: 80px;
-                color: $white;
-                font-size: 16px;
-                font-family: $font-family-heading;
-                font-weight: 400;
-                &:last-child {
-                    margin-right: 0;
-                }
-                a {
-                    color: $white;
-                }
+    }
+    ul.auth-wrapper {
+        @include list-unstyled();
+        margin: 0;
+        float: right;
+        li {
+            float: left;
+            margin-right: 40px;
+            line-height: 78px;
+            color: $white;
+            font-family: $font-family-heading;
+            font-weight: 400;
+            font-size: 16px;
+            &:last-child {
+                margin-right: 0;
             }
-        }
-        ul.auth-wrapper {
-            @include list-unstyled();
-            float: right;
-            li {
-                float: left;
-                margin-right: 40px;
-                line-height: 78px;
-                color: $white;
-                font-family: $font-family-heading;
-                font-weight: 400;
-                font-size: 16px;
-                &:last-child {
-                    margin-right: 0;
-                }
-                &.profile-wrapper {
-                    text-align: right;
-                    position: relative;
-                    .profile {
-                        cursor: pointer !important;
-                        display: inline-block;
-                        vertical-align: middle;
-                        .text {
-                            background-color: #fff;
-                            width: 48px;
-                            height: 48px;
-                            text-align: center;
-                            line-height: 45px;
-                            color: $brand-primary;
-                            font-size: 24px;
-                            font-weight: 400;
-                            border-radius: 50%;
-                            border: 2px solid $white;
-                        }
-                        .picture {
-                            width: 48px;
-                            height: 48px;
-                            border-radius: 50%;
-                            border: 2px solid $white;
-                        }
+            &.profile-wrapper {
+                text-align: right;
+                position: relative;
+                .profile {
+                    cursor: pointer !important;
+                    display: inline-block;
+                    vertical-align: middle;
+                    .text {
+                        background-color: #fff;
+                        width: 48px;
+                        height: 48px;
+                        text-align: center;
+                        line-height: 45px;
+                        color: $brand-primary;
+                        font-size: 24px;
+                        font-weight: 400;
+                        border-radius: 50%;
+                        border: 2px solid $white;
                     }
-                    ul {
-                        display: none;
-                        &.profile-menu {
-                            position: inherit;
-                            z-index: 1;
-                            display: block;
-                            @include list-unstyled();
+                    .picture {
+                        width: 48px;
+                        height: 48px;
+                        border-radius: 50%;
+                        border: 2px solid $white;
+                    }
+                }
+                ul {
+                    display: none;
+                    &.profile-menu {
+                        position: absolute;
+                        right: 0;
+                        z-index: 1;
+                        display: block;
+                        @include list-unstyled();
+                        background-color: $white;
+                        color: $brand-primary;
+                        margin-top: -8px;
+                        padding: 0;
+                        width: 162px;
+                        border-radius: 6px;
+                        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+                        height: 100%;
+                        overflow: auto;
+                        li {
+                            color: $base;
                             background-color: $white;
-                            color: $brand-primary;
-                            margin-top: -8px;
-                            padding: 0;
-                            width: 162px;
-                            border-radius: 6px;
-                            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-                            height: 100%;
-                            overflow: auto;
-                            li {
-                                color: $base;
-                                background-color: $white;
-                                line-height: initial;
-                                width: 100%;
-                                text-align: left;
-                                padding: 10px;
-                                cursor: pointer;
-                                &:hover {
-                                    background-color: $brand-primary;
-                                    color: $white;
-                                }
+                            line-height: initial;
+                            width: 100%;
+                            text-align: left;
+                            padding: 10px;
+                            cursor: pointer;
+                            &:hover {
+                                background-color: $brand-primary;
+                                color: $white;
                             }
                         }
                     }
                 }
-
             }
-        }
-        @media(max-width: 768px) {
-            height: 55px;
-            padding: 0;
-            .logo-wrapper {
-                width: 100%;
-                height: 40px;
-                line-height: 50px;
-            }
-            ul.menu {
-                display: none;
-            }
-            ul.auth-wrapper {
-                display: none;
-            }
-        }
-        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-            padding: 0;
         }
     }
+    .navbar-toggle {
+        position: absolute;
+        right: 16px;
+        top: 22px;
+        cursor: pointer;
+        .icon-bar {
+            background-color: #fff !important;
+            display: block;
+            width: 22px;
+            height: 2px;
+            border-radius: 1px;
+            margin-bottom: 4px;
+        }
+    }
+    @media (max-width: 990px) {
+        min-height: 56px;
+        padding: 0;
+        .logo-wrapper {
+            width: 100%;
+            height: 40px;
+            line-height: 50px;
+        }
+        ul.menu {
+            display: none;
+            &.nav-menu {
+                display: block;
+                margin-top: 24px;
+                li {
+                    float: none !important;
+                    line-height: 40px;
+                }
+            }
+        }
+        ul.auth-wrapper {
+            display: none;
+            margin-bottom: 10px;
+            &.nav-menu {
+                display: block;
+                float: none;
+                li {
+                    float: none;
+                    line-height: 48px;
+                    &.profile-wrapper {
+                        text-align: left;
+                        .profile {
+                            display: block;
+                        }
+                        .profile-menu {
+                            margin-top: 14px;
+                            position: initial;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+        padding: 0;
+    }
+}
 </style>
