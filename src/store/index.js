@@ -11,6 +11,7 @@ const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGOUT = 'LOGOUT';
 const DIALOG = 'DIALOG';
 const DIALOG_CHOSEN = 'DIALOG_CHOSEN';
+const VIDEO_BEING_UPLOADED = 'VIDEO_BEING_UPLOADED';
 
 export const store = new Vuex.Store({
     state: {
@@ -20,6 +21,9 @@ export const store = new Vuex.Store({
             showDialog: false,
             loader: false,
             defaultChosen: ''
+        },
+        bookingFlow: {
+            videoBeingUploaded: false
         }
     },
     mutations: {
@@ -43,7 +47,10 @@ export const store = new Vuex.Store({
         [DIALOG_CHOSEN](state, val) {
             state.auth.showDialog = true;
             state.auth.defaultChosen = val;
-        }
+        },
+        [VIDEO_BEING_UPLOADED](state, val) {
+            state.bookingFlow.videoBeingUploaded = val;
+        },
     },
     actions: {
         loginSuccess({ commit }) {
@@ -68,6 +75,9 @@ export const store = new Vuex.Store({
         },
         getDefaultChosen: (state) => {
             return state.auth.defaultChosen;
+        },
+        getIsVideoBeingUploaded: (state) => {
+            return state.bookingFlow.videoBeingUploaded;
         }
     }
 });
