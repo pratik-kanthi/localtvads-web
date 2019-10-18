@@ -1,47 +1,35 @@
 <template>
-    <div class="bg-white">
-        <LoaderModal :showloader="loading" message="Adding image file..."></LoaderModal>
-        <v-dialog v-model="show" width="700" persistent data-app>
-            <div class="modal-header">
-                <h3>Upload Picture</h3>
-                <a class="close" @click="close()">
-                    <i class="material-icons">close</i>
-                </a>
+    <b-modal v-model="showCropper" width="700" persistent no-close-on-esc no-close-on-backdrop hide-footer data-app title="Upload your Profile Picture">
+        <button slot="modal-header-close" @click="cancel" class="close">×</button>
+        <div class="modal-body">
+            <div class="row">
+                <h5 class="section-title mt0 mb8">1. Choose File</h5>
+                <input type="file" @change="fileUploaded" accept="image/*" ref="fileUpload" />
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-5">
-                        <h3 class="section-title mt0 mb8">Choose File</h3>
-                        <input type="file" @change="fileUploaded" accept="image/*" ref="fileUpload" />
-                    </div>
-                </div>
-                <div v-if="upload.src">
-                    <h3 class="section-title mb0">2. Crop Image</h3>
-                    <cropper classname="cropper" :src="upload.src" :stencil-props="stencilProps" @change="onChange"></cropper>
-                </div>
-                <div v-if="upload.src" class="mt8">
-                    <h3 class="section-title mb0">3. Confirm</h3>
-                    <button class="btn btn-primary btn-filled" :disabled="loading || !isValid" @click="uploadFull">
-                        <i class="material-icons">crop_free</i> <span class="ml16">Upload Uncropped</span>
-                    </button>
-                    <button class="btn btn-secondary btn-filled" :disabled="loading || !isValid" @click="uploadCropped">
-                        <i class="material-icons">crop</i> <span class="ml16">Upload Cropped</span>
-                    </button>
-                </div>
+            <div v-if="upload.src">
+                <h5 class="section-title mb0">2. Crop Image</h5>
+                <cropper classname="cropper" :src="upload.src" :stencil-props="stencilProps" @change="onChange"></cropper>
             </div>
-        </v-dialog>
-    </div>
+            <div v-if="upload.src" class="mt8">
+                <h5 class="section-title mb0">3. Confirm</h5>
+                <button class="btn btn-primary btn-filled" :disabled="loading || !isValid" @click="uploadFull">
+                    <i class="material-icons">crop_free</i> <span class="ml16">Upload Uncropped</span>
+                </button>
+                <button class="btn btn-secondary btn-filled" :disabled="loading || !isValid" @click="uploadCropped">
+                    <i class="material-icons">crop</i> <span class="ml16">Upload Cropped</span>
+                </button>
+            </div>
+        </div>
+    </b-modal>
 </template>
 
 <script>
-import {Cropper} from 'vue-advanced-cropper';
-import LoaderModal from '@/webapp/common/modals/LoaderModal.vue';
+import { Cropper } from 'vue-advanced-cropper';
 export default {
     name: 'ImageUpload',
     props: ['show', 'config', 'data'],
     components: {
         Cropper,
-        LoaderModal
     },
     data() {
         return {
@@ -62,7 +50,8 @@ export default {
             options: {
                 minWidth: this.config.minWidth
             },
-            isValid: false
+            isValid: false,
+            showCropper: true
         };
     },
     methods: {
@@ -88,8 +77,11 @@ export default {
                 xhr.send(formData);
             });
         },
-        close(image){
+        close(image) {
             this.$emit('close', image);
+        },
+        cancel() {
+            this.$emit('cancel');
         },
         extractImage() {
             let img = new Image();
@@ -121,7 +113,7 @@ export default {
             this.isValid = false;
             this.extractImage();
         },
-        onChange({coordinates}) {
+        onChange({ coordinates }) {
             this.position = coordinates;
         },
         async uploadFull() {
