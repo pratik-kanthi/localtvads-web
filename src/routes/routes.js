@@ -1,6 +1,5 @@
 import Home from '@/webapp/views/home/Home';
 import Profile from '@/webapp/views/profile/Profile';
-import ForgotPassword from '@/webapp/common/modals/ForgotPassword';
 import ResetPassword from '@/webapp/common/modals/ResetPassword';
 import Transactions from '@/webapp/views/profile/Transactions.vue';
 import CreateAd from '@/webapp/views/create-ad/CreateAd.vue';
@@ -20,7 +19,7 @@ export const routes = [
         name: 'BookingFlow',
         component: (resolve) => {
             require.ensure(
-                [ '@/webapp/views/booking-flow/BookingFlow' ],
+                ['@/webapp/views/booking-flow/BookingFlow'],
                 () => {
                     resolve(require('@/webapp/views/booking-flow/BookingFlow'));
                 },
@@ -49,11 +48,6 @@ export const routes = [
                 next(false);
             }
         }
-    },
-    {
-        path: '/forgotpassword',
-        name: 'ForgotPassword',
-        component: ForgotPassword
     },
     {
         path: '*',

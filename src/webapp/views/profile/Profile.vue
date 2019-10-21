@@ -17,34 +17,59 @@
                                     <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="profile-text">{{ $store.state.user.Owner.Title[0] }}</div>
                                 </div>
                                 <div class="col-sm-6 content-column-center">
-                                    <p class="text-right">
-                                        <a class="btn btn-link alert mb0">Change profile picture</a>
-                                    </p>
+                                    <p class="text-right"><a @click="showProfileImageModal" class="alert mb0">Change profile picture</a></p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group mb16">
+                                        <label class="ml0">Name</label>
+                                        <div v-if="mode==='VIEW'">
+                                            <div class="bold">{{ getUser().Owner.Title }}</div>
+                                        </div>
+                                        <div v-else>
+                                            <input type="text" class="form-control" v-model="getUser().Owner.Title">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb16">
                                         <label class="ml0">Account Email</label>
-                                        <input type="text" class="form-control" v-model="getUser().Owner.Email">
+                                        <div v-if="mode==='VIEW'">
+                                            <div class="bold">{{ getUser().Owner.Email }}</div>
+                                        </div>
+                                        <div v-else>
+                                            <input type="text" :disabled="isSocialAccount" class="form-control" v-model="getUser().Owner.Email">
+                                        </div>
                                     </div>
-                                    <div class="form-group mb16">
-                                        <label class="ml0">Current Password</label>
-                                        <input type="password" class="form-control" v-model="currentPassword" placeholder="Enter current password">
-                                    </div>
-                                    <div class="form-group mb16">
-                                        <label class="ml0">New Password</label>
-                                        <input type="password" class="form-control" v-model="newPassword" placeholder="Enter new password">
-                                    </div>
+
+
                                     <div class="form-group">
                                         <label class="ml0">Phone number</label>
-                                        <input type="text" class="form-control" v-model="getUser().Owner.Phone">
+                                        <div v-if="mode==='VIEW'">
+                                            <div v-if="getUser().Owner.Phone" class="bold">{{ getUser().Owner.Phone }}</div>
+                                            <div v-else>--</div>
+                                        </div>
+                                        <div v-else>
+                                            <input type="number" class="form-control" v-model="getUser().Owner.Phone">
+                                        </div>
+                                    </div>
+
+
+                                    <div v-if="mode==='EDIT' && !isSocialAccount">
+                                        <div class="form-group mb16">
+                                            <label class="ml0">Current Password</label>
+                                            <input type="password" class="form-control" v-model="currentPassword" placeholder="Enter current password">
+                                        </div>
+                                        <div class="form-group mb16">
+                                            <label class="ml0">New Password</label>
+                                            <input type="password" class="form-control" v-model="newPassword" placeholder="Enter new password">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <p class="text-right">
-                                        <a class="btn btn-link alert mb0">Edit profile details</a>
-                                    </p>
+                                    <p v-if="mode==='VIEW'" class="text-right"><a @click="openEditMode()" class="alert mb0">Edit Profile</a></p>
+                                    <p v-if="mode==='EDIT'" class="text-right"><a @click="closeEditMode()" class="alert mb0">Cancel</a></p>
+                                    <p v-if="mode==='EDIT'" class="text-right"><a @click="updateProfile()" class="alert mb0">Save</a></p>
                                 </div>
                             </div>
                         </div>
@@ -81,16 +106,7 @@
                     </div>
                 </div>
                 <div class="profile-ads">
-                    <div class="row b-b mb24 pb8">
-                        <div class="col-sm-6">
-                            <h4 class="section-subtitle mb0 lh40">My Ads</h4>
-                        </div>
-                        <div class="col-sm-6">
-                            <router-link to="my-transactions">
-                                <button class="btn btn-link pull-right">My Transactions</button>
-                            </router-link>
-                        </div>
-                    </div>
+                    <h4 class="section-subtitle b-b pb16 mb24">My Ads</h4>
                     <div class="row ads-wrapper" v-for="ad in clientAds" :key="ad._id">
                         <div class="col-sm-6">
                             <div class="ad-video">
@@ -103,6 +119,10 @@
                             </div>
                         </div>
                         <div class="col-sm-6">
+                            <!-- <div class="row mb16">
+                                <div class="col-sm-6"><h4 class="section-subtitle lh40">Booking ID #123456</h4></div>
+                                <div class="col-sm-6"><button class="btn btn-primary btn-sm pull-right">Renew Plan</button></div>
+                            </div> -->
                             <div class="plan-details">
                                 <div class="plan-info">
                                     <p class="info-label">Broadcast Location</p>
@@ -143,24 +163,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-center" v-if="showLoadMore">
-                        <button class="btn btn-primary" @click="getClientAds" v-if="!isLoading">Load More</button>
-                        <img class="loading" src="@/assets/images/loader.svg" v-if="isLoading" alt="spinner" />
-                    </div>
                 </div>
             </div>
         </div>
+        <ImageUpload v-if="uploadImageModal" @cancel="cancelModal" @close="hideProfileImageModal" :show="true" :config="config" :data="user"></ImageUpload>
     </section>
-</template>
 
+
+</template>
 <script>
 import { mapGetters } from 'vuex';
 import instance from '@/api';
 import NewCardModal from '@/webapp/common/modals/NewCardModal';
+import ImageUpload from '@/e9_components/components/ImageUpload';
+
 export default {
     name: 'Profile',
     components: {
-        NewCardModal
+        NewCardModal,
+        ImageUpload
     },
     data() {
         return {
@@ -170,11 +191,17 @@ export default {
             newPassword: '',
             showNewCard: false,
             clientAds: [],
-            pagination: {
-                count: 5
+            mode: 'VIEW',
+            config: {
+                aspectRatio: 1,
+                minWidth: 64,
+                api: 'api/image?owner=' + this.getUser().Owner.Type + '&ownerid=' + this.getUser().Owner._id + '&attribute=ImageUrl',
+                maxSize: 5
             },
-            showLoadMore: true,
-            isLoading: false
+            user: {
+                name: 'profile_image'
+            },
+            uploadImageModal: false
         };
     },
     methods: {
@@ -227,25 +254,6 @@ export default {
                 }
             });
         },
-        async getClientAds() {
-            try {
-                this.isLoading = true;
-                let result = await instance.get('api/clientad/getall?clientid=' + this.getUser().Owner._id + '&top=' + this.pagination.count + '&skip=' + this.clientAds.length);
-                if (!result.data.length || result.data.length < this.pagination.count) {
-                    this.showLoadMore = false;
-                }
-                this.clientAds = [...this.clientAds, ...result.data];
-                this.isLoading = false;
-            } catch (err) {
-                this.isLoading = false;
-                this.$swal({
-                    title: 'Error',
-                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error'
-                });
-                console.error(err);
-            }
-        },
         getImageUrl(vendor) {
             return require('@/assets/images/cards/' + vendor + '.svg');
         },
@@ -289,142 +297,252 @@ export default {
         openNewCardModal() {
             this.showNewCard = true;
         },
-        ...mapGetters(['getUser']),
         getVideoUrl(url) {
             return this.GOOGLE_BUCKET_ENDPOINT + url;
-        }
+        },
+        openEditMode() {
+            let user = this.getUser();
+            if (user.AuthorisationScheme !== 'Standard') {
+                this.isSocialAccount = true;
+            } else {
+                this.isSocialAccount = false;
+            }
+            this.mode = 'EDIT';
+
+        },
+        closeEditMode() {
+            this.mode = 'VIEW';
+        },
+        async updateProfile() {
+            let user = this.getUser();
+
+            let requestObj = {
+                AuthorisationScheme: user.AuthorisationScheme,
+                UserId: user.UserId,
+                Title: user.Owner.Title,
+                Phone: user.Owner.Phone,
+                Email: user.Owner.Email,
+                CurrentPassword: this.currentPassword,
+                NewPassword: this.newPassword
+            };
+            try {
+                let result = await instance.put('api/client/profile', requestObj);
+
+                if (result.status == 200) {
+                    localStorage.setItem('user', JSON.stringify(result.data));
+                    this.closeEditMode();
+                    this.$swal({
+                        title: 'Profile Updated',
+                        text: 'Your profile was successfully updated',
+                        type: 'success'
+                    });
+                } else if (result.status == 205) {
+                    this.$swal({
+                        title: 'Profile Updated',
+                        text: 'Your profile was successfully updated. Your email address has changed. Please verify your updated email address',
+                        type: 'success'
+                    }).then(async isConfirm => {
+                        if (isConfirm.value) {
+                            this.logout();
+                        }
+                    });
+                }
+
+
+            } catch (err) {
+                this.$swal({
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
+                });
+            }
+        },
+        showProfileImageModal() {
+            this.uploadImageModal = true;
+        },
+        hideProfileImageModal(event) {
+            let user = this.getUser();
+            user.Owner.ImageUrl = event.ImageUrl;
+            localStorage.setItem('user', JSON.stringify(user));
+            this.uploadImageModal = false;
+        },
+        cancelModal() {
+            this.uploadImageModal = false;
+        },
+        logout() {
+            this.$store.dispatch('logout');
+            this.$router.push('/', () => { });
+            this.showProfile = false;
+        },
+
+        ...mapGetters(['getUser']),
     },
     computed: {
         getProfileImageUrl() {
             return this.GOOGLE_BUCKET_ENDPOINT + this.getUser().Owner.ImageUrl;
         }
     },
-    created() {
+    events: {
+        close: () => {
+
+        }
+    },
+    async created() {
         this.getSavedCards();
-        this.getClientAds();
+        try {
+            let result = await instance.get('api/clientad/getall?clientid=' + this.getUser().Owner._id + '&top=5&skip=0');
+            this.clientAds = result.data;
+        } catch (err) {
+            this.$swal({
+                title: 'Error',
+                text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                type: 'error'
+            });
+            console.error(err);
+        }
     }
 };
 </script>
 
 <style lang="scss" scoped>
-.profile-wrapper {
-    background-color: $white;
-    padding: 40px 64px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
-    .profile-info {
-        .profile-details {
-            padding: 24px 0;
-            .profile-image {
-                width: 108px;
-                height: 108px;
-                border-radius: 50%;
-                background-size: cover;
-                background-repeat: no-repeat;
-                margin-bottom: 24px;
-                border: 2px solid $brand-primary;
-            }
-            .profile-text {
-                width: 108px;
-                height: 108px;
-                padding: 0 30px;
-                line-height: 104px;
-                border: 1px solid $brand-primary;
-                border-radius: 50%;
-                font-size: 80px;
-                color: $brand-primary;
-                margin-bottom: 24px;
-            }
-            ul.edit-options {
-                @include list-unstyled();
-                li {
-                    margin-bottom: 66px;
-                    display: block;
-                    text-align: right;
-                    font-size: 16px;
+    .profile-wrapper {
+        background-color: $white;
+        padding: 40px 64px;
+        border-radius: 8px;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
+
+        .profile-info {
+            .profile-details {
+                padding: 24px 0;
+
+                .profile-image {
+                    width: 108px;
+                    height: 108px;
+                    border-radius: 50%;
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    margin-bottom: 24px;
+                    border: 2px solid $brand-primary;
+                }
+
+                .profile-text {
+                    width: 108px;
+                    height: 108px;
+                    padding: 0 30px;
+                    line-height: 104px;
+                    border: 1px solid $brand-primary;
+                    border-radius: 50%;
+                    font-size: 80px;
                     color: $brand-primary;
-                    &:first-child {
-                        margin: 50px 0 88px;
+                    margin-bottom: 24px;
+                }
+
+                ul.edit-options {
+                    @include list-unstyled();
+
+                    li {
+                        margin-bottom: 66px;
+                        display: block;
+                        text-align: right;
+                        font-size: 16px;
+                        color: $brand-primary;
+
+                        &:first-child {
+                            margin: 50px 0 88px;
+                        }
                     }
                 }
             }
         }
-    }
-    .profile-cards {
-        .cards-details {
-            padding: 24px 0 40px;
-            .cards-wrapper {
-                max-height: 158px;
-                overflow-y: auto;
-                overflow-x: hidden;
-                .saved-card {
-                    input[type='radio'] {
-                        margin-left: 1px;
+
+        .profile-cards {
+            .cards-details {
+                padding: 24px 0 40px;
+
+                .cards-wrapper {
+                    max-height: 158px;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+
+                    .saved-card {
+                        input[type="radio"] {
+                            margin-left: 1px;
+                        }
+
+                        width: 100%;
+                        padding: 8px 0;
+
+                        span {
+                            letter-spacing: 3px;
+                        }
+
+                        img {
+                            width: 56px;
+                            margin-right: 16px;
+                        }
                     }
+                }
+
+            }
+        }
+
+        .profile-ads {
+            .ads-wrapper {
+                margin-bottom: 24px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+
+                .ad-video {
                     width: 100%;
-                    padding: 8px 0;
-                    span {
-                        letter-spacing: 3px;
+                    height: 240px;
+                    position: relative;
+
+                    .ad-bg {
+                        background-image: url('../../../assets/images/ad-video-bg.jpg');
                     }
-                    img {
-                        width: 56px;
-                        margin-right: 16px;
+
+                    .action {
+                        position: absolute;
+                        left: 50%;
+                        top: 50%;
+                        transform: translate(-50%, -50%);
+
+                        .play {
+                            width: 56px;
+                        }
+
+                        .btn {
+                            max-width: 150px;
+                        }
+                    }
+                }
+
+                .plan-details {
+                    .plan-info {
+                        margin-bottom: 20px;
+
+                        .info-label {
+                            margin-bottom: 4px;
+                            font-size: 12px;
+                            color: #acacac;
+                            font-weight: 500;
+                            font-family: $font-family-heading;
+                        }
+
+                        .info-desc {
+                            font-size: 14px;
+                            font-weight: 500;
+                            font-style: normal;
+                            font-stretch: normal;
+                            line-height: normal;
+                            letter-spacing: normal;
+                            color: #4c4c4c;
+                        }
                     }
                 }
             }
         }
     }
-    .profile-ads {
-        .ads-wrapper {
-            margin-bottom: 24px;
-            &:last-child {
-                margin-bottom: 0;
-            }
-            .ad-video {
-                width: 100%;
-                height: 240px;
-                position: relative;
-                .ad-bg {
-                    background-image: url('../../../assets/images/ad-video-bg.jpg');
-                }
-                .action {
-                    position: absolute;
-                    left: 50%;
-                    top: 50%;
-                    transform: translate(-50%, -50%);
-                    .play {
-                        width: 56px;
-                    }
-                    .btn {
-                        max-width: 150px;
-                    }
-                }
-            }
-            .plan-details {
-                .plan-info {
-                    margin-bottom: 20px;
-                    .info-label {
-                        margin-bottom: 4px;
-                        font-size: 12px;
-                        color: #acacac;
-                        font-weight: 500;
-                        font-family: $font-family-heading;
-                    }
-                    .info-desc {
-                        font-size: 14px;
-                        font-weight: 500;
-                        font-style: normal;
-                        font-stretch: normal;
-                        line-height: normal;
-                        letter-spacing: normal;
-                        color: #4c4c4c;
-                    }
-                }
-            }
-        }
-        .loading {
-            width: 100px;
-        }
-    }
-}
 </style>
