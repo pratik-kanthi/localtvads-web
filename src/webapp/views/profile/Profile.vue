@@ -17,30 +17,59 @@
                                     <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="profile-text">{{ $store.state.user.Owner.Title[0] }}</div>
                                 </div>
                                 <div class="col-sm-6 content-column-center">
-                                    <p class="text-right"><a class="btn btn-link alert mb0">Change profile picture</a></p>
+                                    <p class="text-right"><a @click="showProfileImageModal" class="alert mb0">Change profile picture</a></p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group mb16">
+                                        <label class="ml0">Name</label>
+                                        <div v-if="mode==='VIEW'">
+                                            <div class="bold">{{ getUser().Owner.Title }}</div>
+                                        </div>
+                                        <div v-else>
+                                            <input type="text" class="form-control" v-model="getUser().Owner.Title">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb16">
                                         <label class="ml0">Account Email</label>
-                                        <input type="text" class="form-control" v-model="getUser().Owner.Email">
+                                        <div v-if="mode==='VIEW'">
+                                            <div class="bold">{{ getUser().Owner.Email }}</div>
+                                        </div>
+                                        <div v-else>
+                                            <input type="text" :disabled="isSocialAccount" class="form-control" v-model="getUser().Owner.Email">
+                                        </div>
                                     </div>
-                                    <div class="form-group mb16">
-                                        <label class="ml0">Current Password</label>
-                                        <input type="password" class="form-control" v-model="currentPassword" placeholder="Enter current password">
-                                    </div>
-                                    <div class="form-group mb16">
-                                        <label class="ml0">New Password</label>
-                                        <input type="password" class="form-control" v-model="newPassword" placeholder="Enter new password">
-                                    </div>
+
+
                                     <div class="form-group">
                                         <label class="ml0">Phone number</label>
-                                        <input type="text" class="form-control" v-model="getUser().Owner.Phone">
+                                        <div v-if="mode==='VIEW'">
+                                            <div v-if="getUser().Owner.Phone" class="bold">{{ getUser().Owner.Phone }}</div>
+                                            <div v-else>--</div>
+                                        </div>
+                                        <div v-else>
+                                            <input type="number" class="form-control" v-model="getUser().Owner.Phone">
+                                        </div>
+                                    </div>
+
+
+                                    <div v-if="mode==='EDIT' && !isSocialAccount">
+                                        <div class="form-group mb16">
+                                            <label class="ml0">Current Password</label>
+                                            <input type="password" class="form-control" v-model="currentPassword" placeholder="Enter current password">
+                                        </div>
+                                        <div class="form-group mb16">
+                                            <label class="ml0">New Password</label>
+                                            <input type="password" class="form-control" v-model="newPassword" placeholder="Enter new password">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <p class="text-right"><a class="btn btn-link alert mb0">Edit profile details</a></p>
+                                    <p v-if="mode==='VIEW'" class="text-right"><a @click="openEditMode()" class="alert mb0">Edit Profile</a></p>
+                                    <p v-if="mode==='EDIT'" class="text-right"><a @click="closeEditMode()" class="alert mb0">Cancel</a></p>
+                                    <p v-if="mode==='EDIT'" class="text-right"><a @click="updateProfile()" class="alert mb0">Save</a></p>
                                 </div>
                             </div>
                         </div>
@@ -137,17 +166,22 @@
                 </div>
             </div>
         </div>
+        <ImageUpload v-if="uploadImageModal" @cancel="cancelModal" @close="hideProfileImageModal" :show="true" :config="config" :data="user"></ImageUpload>
     </section>
-</template>
 
+
+</template>
 <script>
 import { mapGetters } from 'vuex';
 import instance from '@/api';
 import NewCardModal from '@/webapp/common/modals/NewCardModal';
+import ImageUpload from '@/e9_components/components/ImageUpload';
+
 export default {
     name: 'Profile',
     components: {
-        NewCardModal
+        NewCardModal,
+        ImageUpload
     },
     data() {
         return {
@@ -156,13 +190,24 @@ export default {
             currentPassword: '',
             newPassword: '',
             showNewCard: false,
-            clientAds: []
+            clientAds: [],
+            mode: 'VIEW',
+            config: {
+                aspectRatio: 1,
+                minWidth: 64,
+                api: 'api/image?owner=' + this.getUser().Owner.Type + '&ownerid=' + this.getUser().Owner._id + '&attribute=ImageUrl',
+                maxSize: 5
+            },
+            user: {
+                name: 'profile_image'
+            },
+            uploadImageModal: false
         };
     },
     methods: {
         close(val) {
             this.showNewCard = false;
-            if(val) {
+            if (val) {
                 this.getSavedCards();
             }
         },
@@ -170,7 +215,7 @@ export default {
             try {
                 let result = await instance.get('api/client/cards?client=' + this.getUser().Owner._id);
                 this.savedCards = result.data;
-                if(this.savedCards.length > 0) {
+                if (this.savedCards.length > 0) {
                     this.preferredCard = this.savedCards.find(card => card.IsPreferred)._id;
                 }
             } catch (err) {
@@ -189,8 +234,8 @@ export default {
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Confirm'
-            }).then(async(isConfirm) => {
-                if(isConfirm.value) {
+            }).then(async (isConfirm) => {
+                if (isConfirm.value) {
                     try {
                         await instance.delete('api/client/deletecard?client=' + this.getUser().Owner._id + '&card=' + card);
                         this.$swal({
@@ -227,10 +272,10 @@ export default {
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Confirm'
-            }).then(async(isConfirm)=> {
+            }).then(async (isConfirm) => {
                 if (isConfirm.value) {
                     try {
-                        await instance.post('api/client/preferredcard', {client: this.getUser().Owner._id, card: this.preferredCard});
+                        await instance.post('api/client/preferredcard', { client: this.getUser().Owner._id, card: this.preferredCard });
                         this.$swal({
                             title: 'Updated',
                             text: 'Preferred card has been updated',
@@ -252,14 +297,94 @@ export default {
         openNewCardModal() {
             this.showNewCard = true;
         },
-        ...mapGetters(['getUser']),
         getVideoUrl(url) {
             return this.GOOGLE_BUCKET_ENDPOINT + url;
-        }
+        },
+        openEditMode() {
+            let user = this.getUser();
+            if (user.AuthorisationScheme !== 'Standard') {
+                this.isSocialAccount = true;
+            } else {
+                this.isSocialAccount = false;
+            }
+            this.mode = 'EDIT';
+
+        },
+        closeEditMode() {
+            this.mode = 'VIEW';
+        },
+        async updateProfile() {
+            let user = this.getUser();
+
+            let requestObj = {
+                AuthorisationScheme: user.AuthorisationScheme,
+                UserId: user.UserId,
+                Title: user.Owner.Title,
+                Phone: user.Owner.Phone,
+                Email: user.Owner.Email,
+                CurrentPassword: this.currentPassword,
+                NewPassword: this.newPassword
+            };
+            try {
+                let result = await instance.put('api/client/profile', requestObj);
+
+                if (result.status == 200) {
+                    localStorage.setItem('user', JSON.stringify(result.data));
+                    this.closeEditMode();
+                    this.$swal({
+                        title: 'Profile Updated',
+                        text: 'Your profile was successfully updated',
+                        type: 'success'
+                    });
+                } else if (result.status == 205) {
+                    this.$swal({
+                        title: 'Profile Updated',
+                        text: 'Your profile was successfully updated. Your email address has changed. Please verify your updated email address',
+                        type: 'success'
+                    }).then(async isConfirm => {
+                        if (isConfirm.value) {
+                            this.logout();
+                        }
+                    });
+                }
+
+
+            } catch (err) {
+                this.$swal({
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
+                });
+            }
+        },
+        showProfileImageModal() {
+            this.uploadImageModal = true;
+        },
+        hideProfileImageModal(event) {
+            let user = this.getUser();
+            user.Owner.ImageUrl = event.ImageUrl;
+            localStorage.setItem('user', JSON.stringify(user));
+            this.uploadImageModal = false;
+        },
+        cancelModal() {
+            this.uploadImageModal = false;
+        },
+        logout() {
+            this.$store.dispatch('logout');
+            this.$router.push('/', () => { });
+            this.showProfile = false;
+        },
+
+        ...mapGetters(['getUser']),
     },
     computed: {
         getProfileImageUrl() {
             return this.GOOGLE_BUCKET_ENDPOINT + this.getUser().Owner.ImageUrl;
+        }
+    },
+    events: {
+        close: () => {
+
         }
     },
     async created() {
@@ -285,9 +410,11 @@ export default {
         padding: 40px 64px;
         border-radius: 8px;
         box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
+
         .profile-info {
             .profile-details {
                 padding: 24px 0;
+
                 .profile-image {
                     width: 108px;
                     height: 108px;
@@ -297,6 +424,7 @@ export default {
                     margin-bottom: 24px;
                     border: 2px solid $brand-primary;
                 }
+
                 .profile-text {
                     width: 108px;
                     height: 108px;
@@ -308,14 +436,17 @@ export default {
                     color: $brand-primary;
                     margin-bottom: 24px;
                 }
+
                 ul.edit-options {
                     @include list-unstyled();
+
                     li {
                         margin-bottom: 66px;
                         display: block;
                         text-align: right;
                         font-size: 16px;
                         color: $brand-primary;
+
                         &:first-child {
                             margin: 50px 0 88px;
                         }
@@ -323,60 +454,75 @@ export default {
                 }
             }
         }
+
         .profile-cards {
             .cards-details {
                 padding: 24px 0 40px;
+
                 .cards-wrapper {
                     max-height: 158px;
                     overflow-y: auto;
                     overflow-x: hidden;
+
                     .saved-card {
                         input[type="radio"] {
                             margin-left: 1px;
                         }
+
                         width: 100%;
                         padding: 8px 0;
+
                         span {
                             letter-spacing: 3px;
                         }
+
                         img {
                             width: 56px;
                             margin-right: 16px;
                         }
                     }
                 }
-                
+
             }
         }
+
         .profile-ads {
             .ads-wrapper {
                 margin-bottom: 24px;
+
                 &:last-child {
                     margin-bottom: 0;
                 }
+
                 .ad-video {
                     width: 100%;
                     height: 240px;
                     position: relative;
+
                     .ad-bg {
                         background-image: url('../../../assets/images/ad-video-bg.jpg');
                     }
+
                     .action {
                         position: absolute;
                         left: 50%;
                         top: 50%;
                         transform: translate(-50%, -50%);
+
                         .play {
                             width: 56px;
                         }
+
                         .btn {
                             max-width: 150px;
                         }
                     }
                 }
+
                 .plan-details {
                     .plan-info {
                         margin-bottom: 20px;
+
                         .info-label {
                             margin-bottom: 4px;
                             font-size: 12px;
@@ -384,6 +530,7 @@ export default {
                             font-weight: 500;
                             font-family: $font-family-heading;
                         }
+
                         .info-desc {
                             font-size: 14px;
                             font-weight: 500;
@@ -398,5 +545,4 @@ export default {
             }
         }
     }
-
 </style>

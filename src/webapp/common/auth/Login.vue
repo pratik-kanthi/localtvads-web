@@ -28,6 +28,7 @@
                 {{ errMessage }}
             </div>
         </form>
+        <ForgotPassword @cancel="hideForgotPasswordForm" v-if="showForgotPasswordModal"></ForgotPassword>
     </div>
 </template>
 
@@ -35,13 +36,15 @@
 import Google from '@/webapp/common/auth/Google';
 import Facebook from '@/webapp/common/auth/Facebook';
 import LoaderModal from '@/webapp/common/modals/LoaderModal';
+import ForgotPassword from '@/webapp/common/modals/ForgotPassword.vue';
+
 import instance from '@/api';
 import { mapGetters } from 'vuex';
 
 export default {
     name: 'Login',
     props: ['isEmailConfirmed'],
-    components: { Facebook, Google, LoaderModal},
+    components: { Facebook, Google, LoaderModal, ForgotPassword },
     data() {
         return {
             api: 'api/auth/clientsociallogin',
@@ -50,13 +53,16 @@ export default {
             user: {
                 email: '',
                 password: ''
-            }
+            },
+            showForgotPasswordModal: false
         };
     },
     methods: {
         displayForgotPasswordForm() {
-            this.$store.commit('DIALOG', false);
-            this.$router.push({ name: 'ForgotPassword' }, () => { });
+            this.showForgotPasswordModal = true;
+        },
+        hideForgotPasswordForm() {
+            this.showForgotPasswordModal = false;
         },
         async login() {
             this.errMessage = '';
