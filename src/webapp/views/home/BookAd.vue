@@ -24,7 +24,9 @@
                 <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Lets Go!</button>
             </div>
         </div>
-        <div class="ad-views" v-if="broadcastLocation && adLength"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated Views<span>{{ getMaximumViewCount() || 0 | formatValue(0) }}</span></div>
+        <div class="ad-views" v-if="broadcastLocation && adLength"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated Views
+            <span>{{ getMaximumViewCount() || 0 | formatValue(0) }}</span>
+        </div>
     </div>
 </template>
 
@@ -74,13 +76,13 @@ export default {
                     startdate: this.moment(this.startDate, 'DD/MM/YYYY').format('YYYY-MM-DD')
                     // startdate: this.startDate.replace(/\//g, '-')
                 }
-            }, () => {});
+            }, () => { });
         },
         async loadScheduleAvailability() {
             this._switchShimmer(true);
             try {
                 let result = await instance.get('/api/channel/availability?channel=' + this.broadcastLocation + '&seconds='
-                        + this.adLength + '&startdate=' + this.sDate.format('YYYY-MM-DD') + '&enddate=' + this.sDate.endOf('month').format('YYYY-MM-DD'));
+                    + this.adLength + '&startdate=' + this.sDate.format('YYYY-MM-DD') + '&enddate=' + this.sDate.endOf('month').format('YYYY-MM-DD'));
                 let totalActiveSchedules = result.data.totalActiveSchedules;
                 for (let key in result.data.dates) {
                     if (result.data.dates.hasOwnProperty(key) && result.data.dates[key].length === totalActiveSchedules) {
@@ -103,7 +105,7 @@ export default {
                     text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                     type: 'error'
                 });
-                throw(err);
+                throw (err);
             }
         },
         async loadSecondsbyChannel() {
@@ -137,15 +139,15 @@ export default {
             str += '<div class=\'animated-background calendar-box-title\'></div>';
             for (let i = 0; i < 5; i++) {
                 str +=
-                        '<div>' +
-                            '<div class=\'animated-background calendar-box\'></div>' +
-                            '<div class=\'animated-background calendar-box\'></div>' +
-                            '<div class=\'animated-background calendar-box\'></div>' +
-                            '<div class=\'animated-background calendar-box\'></div>' +
-                            '<div class=\'animated-background calendar-box\'></div>' +
-                            '<div class=\'animated-background calendar-box\'></div>' +
-                            '<div class=\'animated-background calendar-box\'></div>' +
-                        '</div>';
+                    '<div>' +
+                    '<div class=\'animated-background calendar-box\'></div>' +
+                    '<div class=\'animated-background calendar-box\'></div>' +
+                    '<div class=\'animated-background calendar-box\'></div>' +
+                    '<div class=\'animated-background calendar-box\'></div>' +
+                    '<div class=\'animated-background calendar-box\'></div>' +
+                    '<div class=\'animated-background calendar-box\'></div>' +
+                    '<div class=\'animated-background calendar-box\'></div>' +
+                    '</div>';
             }
             str += '</div></div>';
 
@@ -177,125 +179,123 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .book-ads {
-        padding: 40px;
-        color: #FFF !important;
-        position: relative;
+.book-ads {
+    color: #fff !important;
+    position: relative;
 
-        .plan-type {
-            margin-bottom: 16px;
+    .plan-type {
+        margin-bottom: 16px;
+    }
 
-        }
+    .form-group {
+        width: 280px;
+        margin-right: 16px;
+        display: inline-block;
+        margin-bottom: 0;
 
-        .form-group {
-            width: 280px;
-            margin-right: 16px;
-            display: inline-block;
+        .form-control {
             margin-bottom: 0;
-
-            .form-control {
-                margin-bottom: 0;
-            }
-
-            .datepicker {
-                background-color: #fff;
-            }
         }
 
-        .action {
-            width: calc(100% - 3*(280px + 16px));
-            display: inline-block;
-            vertical-align: bottom;
-            margin-bottom: 1px;
+        .datepicker {
+            background-color: #fff;
+        }
+    }
 
-            .btn {
-                height: 48px;
-                &:hover,
-                &:visited {
-                    background-color: mix(#000, $brand-primary, 10%) !important;
-                    box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
-                }
-            }
-        }
+    .action {
+        width: calc(100% - 3 * (280px + 16px));
+        display: inline-block;
+        vertical-align: bottom;
+        margin-bottom: 1px;
 
-        .ad-views {
-            background-color: $brand-secondary;
-            width: 300px;
-            font-family: $font-family-heading;
-            text-align: center;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            padding: 12px;
-            margin: 40px auto -40px;
-            line-height: 16px;
-            font-weight: 100;
-            img {
-                margin-bottom: 6px;
-                margin-right: 8px;
-            }
-
-            span {
-                font-size: 20px;
-                font-weight: 500;
-                padding-left: 8px;
-            }
-        }
-        @media(max-width: 767px) {
-            padding: 20px;
-            .form-group {
-                width: 100%;
-                margin-bottom: 16px;
-            }
-            .action {
-                width: 100%;
-                display: block;
-                margin: 16px 0 16px;
-            }
-            .ad-views {
-                margin: 20px auto -20px;
-            }
-        }
-        /* iPhone x Landscape */
-        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) { 
-            .form-group {
-                width: 100%;
-                margin-bottom: 16px;
-            }
-            .action {
-                width: 100%;
-                display: block;
-                margin: 16px 0 16px;
-            }
-        }
-        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-            .form-group {
-                width: 288px;
-                margin-bottom: 16px;
-            }
-            .action {
-                width: 288px;
-                margin: 16px 0 16px;
-            }
-        }
-        /* iPad Landscape */
-        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-            padding: 40px 24px;
-            .form-group {
-                width: 240px;
-            }
-            .action {
-                width: calc(100% - 3*(240px + 16px));
-            }
-        }
-        /* iPad Pro Landscape */
-        @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-            padding: 40px 24px;
-            .form-group {
-                width: 240px;
-            }
-            .action {
-                width: calc(100% - 3*(240px + 16px));
+        .btn {
+            height: 48px;
+            &:hover,
+            &:visited {
+                background-color: mix(#000, $brand-primary, 10%) !important;
+                box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
             }
         }
     }
+
+    .ad-views {
+        background-color: $brand-secondary;
+        width: 300px;
+        font-family: $font-family-heading;
+        text-align: center;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        padding: 12px;
+        margin: 40px auto -40px;
+        line-height: 16px;
+        font-weight: 100;
+        img {
+            margin-bottom: 6px;
+            margin-right: 8px;
+        }
+
+        span {
+            font-size: 20px;
+            font-weight: 500;
+            padding-left: 8px;
+        }
+    }
+    @media (max-width: 767px) {
+        padding: 20px;
+        .form-group {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+        .action {
+            width: 100%;
+            display: block;
+            margin: 16px 0 16px;
+        }
+        .ad-views {
+            margin: 20px auto -20px;
+        }
+    }
+    /* iPhone x Landscape */
+    @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+        .form-group {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+        .action {
+            width: 100%;
+            display: block;
+            margin: 16px 0 16px;
+        }
+    }
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+        .form-group {
+            width: 288px;
+            margin-bottom: 16px;
+        }
+        .action {
+            width: 288px;
+            margin: 16px 0 16px;
+        }
+    }
+    /* iPad Landscape */
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+        padding: 40px 24px;
+        .form-group {
+            width: 240px;
+        }
+        .action {
+            width: calc(100% - 3 * (240px + 16px));
+        }
+    }
+    /* iPad Pro Landscape */
+    @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+        padding: 40px 24px;
+        .form-group {
+            width: 240px;
+        }
+        .action {
+            width: calc(100% - 3 * (240px + 16px));
+        }
+    }
+}
 </style>

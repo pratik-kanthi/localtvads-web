@@ -16,13 +16,25 @@
             </div>
         </div>
         <div class="container content-area">
-            <ul class="tabs">
-                <li :class="{'active' : activeTab === 'bookad'}" @click="goToComponent('bookad')">Book Your Ad</li>
-                <li :class="{'active' : activeTab === 'createad'}" @click="goToComponent('createad')">Create Your Ad</li>
-            </ul>
             <div class="content">
-                <BookAd v-if="activeTab === 'bookad'"></BookAd>
-                <CreateAd v-if="activeTab === 'createad'"></CreateAd>
+                <div class="header mb24 row">
+                    <div class="col-md-6">
+                        <h3 class="section-title-2 text-white pos-relative">
+                            <img class="icon" src="@/assets/images/tv.svg" alt="tv" />
+                            <span class="pl48">Book your ad</span>
+                        </h3>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-right">
+                            <span class="mr16">Don't have an Ad?</span>
+                            <router-link to="create-ad">
+                                <button class="btn btn-white btn-sm">Create your ad</button>
+                            </router-link>
+                        </div>
+
+                    </div>
+                </div>
+                <BookAd></BookAd>
             </div>
         </div>
         <ResetPassword v-if="$route.name === 'ResetPassword'"></ResetPassword>
@@ -136,7 +148,6 @@
 
 <script>
 import BookAd from '@/webapp/views/home/BookAd.vue';
-import CreateAd from '@/webapp/views/home/CreateAd.vue';
 import ResetPassword from '@/webapp/common/modals/ResetPassword.vue';
 import ForgotPassword from '@/webapp/common/modals/ForgotPassword.vue';
 import instance from '@/api';
@@ -146,13 +157,11 @@ export default {
     name: 'Home',
     components: {
         BookAd,
-        CreateAd,
         ResetPassword,
         ForgotPassword
     },
     data() {
         return {
-            activeTab: 'bookad',
             testimonials: testimonials,
             sliderOptions: {
                 autoplay: true,
@@ -216,9 +225,6 @@ export default {
         };
     },
     methods: {
-        goToComponent(name) {
-            this.activeTab = name;
-        },
         async subscribeUser() {
             try {
                 await instance.post('api/contact/subscribe', { subscriberEmail: this.subscriberEmail });
@@ -381,62 +387,19 @@ export default {
     .content-area {
         margin-top: -110px;
         position: relative;
-        ul.tabs {
-            list-style: none;
-            padding: 0;
-            margin-bottom: 0;
-            height: 64px;
-            li {
-                display: inline-block;
-                background-color: #f56100;
-                width: 50%;
-                text-align: center;
-                padding: 12px;
-                border-top-left-radius: 6px;
-                border-top-right-radius: 6px;
-                height: 56px;
-                line-height: 24px;
-                vertical-align: text-bottom;
-                color: rgba(256, 256, 256, 0.6);
-                font-weight: 400;
-                font-size: 16px;
-                font-family: $font-family-heading;
-                cursor: pointer;
-
-                a {
-                    text-decoration: none;
-                    color: #fff !important;
-                    font-weight: bold;
-                }
-
-                &.active {
-                    background-color: $brand-primary;
-                    color: $white;
-                    border-bottom: none;
-                    height: 64px;
-                    font-size: 20px !important;
-                    margin-top: 0;
-                    line-height: 40px;
-                    width: calc(50% - 2px);
-
-                    &:first-child {
-                        margin-right: 2px;
-                    }
-
-                    &:last-child {
-                        margin-left: 2px;
-                    }
-                }
-            }
-        }
         .content {
+            padding: 24px 40px 40px;
             background-image: url('../../../assets/images/pattern.svg');
             background-size: cover;
             background-position: center center;
             color: #fff;
             background-color: $brand-primary;
-            border-bottom-left-radius: 6px;
-            border-bottom-right-radius: 6px;
+            .header {
+                .icon {
+                    position: absolute;
+                    top: -9px;
+                }
+            }
         }
         @media (max-width: 767px) {
             margin-top: -14%;

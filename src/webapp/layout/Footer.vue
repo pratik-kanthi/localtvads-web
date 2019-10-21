@@ -11,17 +11,31 @@
                 </div>
                 <div class="col-lg-7">
                     <ul class="menu">
-                        <li><router-link tag="a" to="/#book-now">Book Now</router-link></li>
-                        <li><router-link tag="a" to="/#how-it-works">How it works</router-link></li>
-                        <li><router-link tag="a" to="/#offers">Offers</router-link></li>
-                        <li><router-link tag="a" to="/#about">About</router-link></li>
-                        <li><router-link tag="a" to="/#contact">Contact us</router-link></li>
+                        <li>
+                            <router-link tag="a" to="/#book-now">Book Now</router-link>
+                        </li>
+                        <li>
+                            <router-link tag="a" to="/#how-it-works">How it works</router-link>
+                        </li>
+                        <li>
+                            <router-link tag="a" to="/#offers">Offers</router-link>
+                        </li>
+                        <li>
+                            <router-link tag="a" to="/#about">About</router-link>
+                        </li>
+                        <li>
+                            <router-link tag="a" to="/#contact">Contact us</router-link>
+                        </li>
                     </ul>
                 </div>
                 <div class="col-lg-3">
                     <ul class="social">
-                        <li><a><img src="@/assets/images/facebook.svg" alt=""></a></li>
-                        <li><a><img src="@/assets/images/twitter.svg" alt=""></a></li>
+                        <li>
+                            <a><img src="@/assets/images/facebook.svg" alt=""></a>
+                        </li>
+                        <li>
+                            <a><img src="@/assets/images/twitter.svg" alt=""></a>
+                        </li>
                         <li>© 2019 localtvads.com</li>
                     </ul>
                 </div>
@@ -37,84 +51,85 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    footer {
-        padding: 0 50px;
-        .logo {
-            width: 120px;
-            img {
-                max-width: 100%;
-                max-height: 100%
-            }
+footer {
+    padding: 40px 45px;
+    .logo {
+        width: 120px;
+        img {
+            max-width: 100%;
+            max-height: 100%;
         }
-        ul.menu {
-            @include list-unstyled();
-            margin: 0;
-            display: flex;
-            flex-flow: row wrap;
-            justify-content: center;
-            li {
-                float: left;
-                margin-right: 40px;
-                line-height: 80px;
-                font-size: 16px;
-                font-family: $font-family-heading;
-                font-weight: 400;
-                &:last-child {
-                    margin-right: 0;
-                }
-                a {color: $brand-primary}
+    }
+    ul.menu {
+        @include list-unstyled();
+        margin: 0;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        li {
+            float: left;
+            margin-right: 40px;
+            line-height: 80px;
+            font-size: 16px;
+            font-family: $font-family-heading;
+            font-weight: 400;
+            &:last-child {
+                margin-right: 0;
             }
-        }
-        ul.social {
-            @include list-unstyled();
-            li {
-                float: left;
-                margin-right: 40px;
-                line-height: 80px;
-                font-size: 14px;
-                font-family: $font-family-body;
-                &:last-child {
-                    margin-right: 0;
-                }
-            }
-        }
-        /* Mobile */
-        @media(max-width: 767px) {
-            padding: 0;
-            ul.menu {
-                justify-content: flex-start;
-                li {
-                    line-height: 48px;
-                }
-            }
-        }
-        /* iPad Portrait */
-        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-            padding: 0 24px;
-            ul.menu {
-                justify-content: space-between;
-            }
-        }
-        /* iPad Landscape */
-        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-            padding: 24px;
-            ul.social {
-                li {
-                    margin-right: 24px;
-                    font-size: 11px;
-                }
-            }
-        }
-        /* iPad Pro Portrait */
-        @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-            padding: 24px;
-            ul.social {
-                li {
-                    margin-right: 24px;
-                    font-size: 11px;
-                }
+            a {
+                color: $brand-primary;
             }
         }
     }
-
+    ul.social {
+        @include list-unstyled();
+        li {
+            float: left;
+            margin-right: 40px;
+            line-height: 80px;
+            font-size: 14px;
+            font-family: $font-family-body;
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+    /* Mobile */
+    @media (max-width: 767px) {
+        padding: 0;
+        ul.menu {
+            justify-content: flex-start;
+            li {
+                line-height: 48px;
+            }
+        }
+    }
+    /* iPad Portrait */
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+        padding: 0 24px;
+        ul.menu {
+            justify-content: space-between;
+        }
+    }
+    /* iPad Landscape */
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+        padding: 24px;
+        ul.social {
+            li {
+                margin-right: 24px;
+                font-size: 11px;
+            }
+        }
+    }
+    /* iPad Pro Portrait */
+    @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+        padding: 24px;
+        ul.social {
+            li {
+                margin-right: 24px;
+                font-size: 11px;
+            }
+        }
+    }
+}
 </style>

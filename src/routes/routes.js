@@ -2,6 +2,8 @@ import Home from '@/webapp/views/home/Home';
 import Profile from '@/webapp/views/profile/Profile';
 import ForgotPassword from '@/webapp/common/modals/ForgotPassword';
 import ResetPassword from '@/webapp/common/modals/ResetPassword';
+import Transactions from '@/webapp/views/profile/Transactions.vue';
+import CreateAd from '@/webapp/views/create-ad/CreateAd.vue';
 export const routes = [
     {
         path: '',
@@ -25,6 +27,16 @@ export const routes = [
                 'booking-flow'
             );
         }
+    },
+    {
+        path: '/create-ad',
+        name: 'CreateAd',
+        component: CreateAd
+    },
+    {
+        path: '/my-transactions',
+        name: 'Transactions',
+        component: Transactions
     },
     {
         path: '/resetpassword',
