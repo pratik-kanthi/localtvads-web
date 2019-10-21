@@ -2,7 +2,7 @@ import Home from '@/webapp/views/home/Home';
 import Profile from '@/webapp/views/profile/Profile';
 import ResetPassword from '@/webapp/common/modals/ResetPassword';
 import Transactions from '@/webapp/views/profile/Transactions.vue';
-import CreateAd from '@/webapp/views/create-ad/CreateAd.vue';
+import Addons from '@/webapp/views/addons/Addons.vue';
 export const routes = [
     {
         path: '',
@@ -28,12 +28,12 @@ export const routes = [
         }
     },
     {
-        path: '/create-ad',
-        name: 'CreateAd',
-        component: CreateAd
+        path: '/addons',
+        name: 'Addons',
+        component: Addons
     },
     {
-        path: '/my-transactions',
+        path: '/transactions',
         name: 'Transactions',
         component: Transactions
     },

@@ -27,7 +27,7 @@
                     <div class="col-md-6">
                         <div class="text-right">
                             <span class="mr16">Don't have an Ad?</span>
-                            <router-link to="create-ad">
+                            <router-link to="addons">
                                 <button class="btn btn-white btn-sm">Create your ad</button>
                             </router-link>
                         </div>

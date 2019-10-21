@@ -1,23 +1,29 @@
 <template>
     <b-modal v-model="showCropper" width="700" persistent no-close-on-esc no-close-on-backdrop hide-footer data-app title="Upload your Profile Picture">
         <button slot="modal-header-close" @click="cancel" class="close">×</button>
-        <div class="modal-body">
+        <div>
+            <h4 class="section-subtitle mt0 mb8">1. Choose File</h4>
+            <input type="file" @change="fileUploaded" accept="image/*" ref="fileUpload" />
+        </div>
+        <div v-if="upload.src">
+            <h4 class="section-subtitle mb16">2. Crop Image</h4>
+            <cropper classname="cropper" :src="upload.src" :stencil-props="stencilProps" @change="onChange"></cropper>
+        </div>
+        <div v-if="upload.src" class="upload-actions mt16">
+            <h4 class="section-subtitle mb16">3. Confirm</h4>
             <div class="row">
-                <h5 class="section-title mt0 mb8">1. Choose File</h5>
-                <input type="file" @change="fileUploaded" accept="image/*" ref="fileUpload" />
-            </div>
-            <div v-if="upload.src">
-                <h5 class="section-title mb0">2. Crop Image</h5>
-                <cropper classname="cropper" :src="upload.src" :stencil-props="stencilProps" @change="onChange"></cropper>
-            </div>
-            <div v-if="upload.src" class="mt8">
-                <h5 class="section-title mb0">3. Confirm</h5>
-                <button class="btn btn-primary btn-filled" :disabled="loading || !isValid" @click="uploadFull">
-                    <i class="material-icons">crop_free</i> <span class="ml16">Upload Uncropped</span>
-                </button>
-                <button class="btn btn-secondary btn-filled" :disabled="loading || !isValid" @click="uploadCropped">
-                    <i class="material-icons">crop</i> <span class="ml16">Upload Cropped</span>
-                </button>
+                <div class="col-md-6">
+                    <button class="btn btn-primary btn-full" :disabled="loading || !isValid" @click="uploadFull">
+                        <i class="material-icons">crop_free</i>
+                        <span class="ml16">Upload Uncropped</span>
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-secondary btn-full" :disabled="loading || !isValid" @click="uploadCropped">
+                        <i class="material-icons">crop</i>
+                        <span class="ml16">Upload Cropped</span>
+                    </button>
+                </div>
             </div>
         </div>
     </b-modal>
@@ -178,10 +184,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    input[type="file"] {
-        &:before {
-            border-radius: 6px !important;
-            padding: 0 16px;
+input[type='file'] {
+    &:before {
+        border-radius: 6px !important;
+        padding: 0 16px;
+    }
+}
+.upload-actions {
+    button {
+        position: relative;
+        i {
+            position: absolute;
+            left: 13px;
         }
     }
+}
 </style>
