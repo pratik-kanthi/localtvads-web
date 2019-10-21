@@ -94,7 +94,7 @@
                                         <p class="timing">{{ plan.AdSchedule.StartTime }} to {{ plan.AdSchedule.EndTime }}</p>
                                     </div>
                                     <div class="plan-amount">
-                                        <h4 class="amount">{{ plan.TotalAmount | currency }}</h4>
+                                        <h4 class="amount">{{ plan.TotalAmount | currency }} <span v-if="plan.TotalAmountWithoutDiscount !== plan.TotalAmount" class="t-s brand-primary strike-through">{{ plan.TotalAmountWithoutDiscount | currency }}</span></h4>
                                         <p class="weeks">for {{ getTotalSlotDuration / 7 }} weeks</p>
                                     </div>
                                     <div class="features">
@@ -226,9 +226,10 @@ export default {
                 adLength: this.secondSelected,
                 broadcastDuration: '6 months',
                 totalAmount: this.selectedPlan ? this.selectedPlan.TotalAmount : '',
+                offerDiscount: this.selectedPlan ? this.selectedPlan.OfferDiscount : '',
                 plan: this.selectedPlan ? this.selectedPlan.Plan : '',
                 isRenewal: this.isRenewal,
-                baseAmount: this.selectedPlan ? this.selectedPlan.BaseAmount : '',
+                baseAmount: this.selectedPlan ? this.selectedPlan.BaseAmount - this.selectedPlan.OfferDiscount : '',
                 taxes: this.taxes
             };
             this.$emit('advanceToPayment');
@@ -524,12 +525,20 @@ export default {
                             .plan-amount {
                                 padding: 12px 16px;
                                 border-bottom: 1px solid #ddd;
-
+                                position: relative;
                                 .amount {
                                     font-weight: 500;
                                     font-size: 36px;
                                     margin-bottom: 4px;
                                     color: $brand-secondary;
+                                    span {
+                                        position: absolute;
+                                        right: 16px;
+                                        &.strike-through {
+                                            text-decoration: line-through;
+                                            color: $brand-secondary;
+                                        }
+                                    }
                                 }
                                 .weeks {
                                     font-size: 18px;
