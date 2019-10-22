@@ -1,7 +1,7 @@
 <template>
     <section>
         <div class="container" v-if="!paymentLoading">
-            <div v-if="isLoggedIn()" class="payment-wrapper">
+            <div v-if="isLoggedIn" class="payment-wrapper">
                 <h3 class="section-title-2 mb24">Payment Method</h3>
                 <div class="row">
                     <div class="col-lg-6">
@@ -15,7 +15,7 @@
                                 <div class="booking-items">
                                     <label>Benefits</label>
                                     <ul class="benefits">
-                                        <li v-for="benefit in this.$parent.selectedAddon.Benefits" :key="benefit">{{ benefit }}</li>
+                                        <li v-for="benefit in this.$parent.serviceAddOn.Benefits" :key="benefit">{{ benefit }}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -29,7 +29,7 @@
                                     </div>
                                     <div class="col-6 col-sm-6 text-right">
                                         <p>
-                                            {{ $parent.selectedAddon.Amount | currency }}
+                                            {{ $parent.serviceAddOn.Amount | currency }}
                                         </p>
                                     </div>
                                 </div>
@@ -38,7 +38,7 @@
                                         <p>Taxes</p>
                                     </div>
                                     <div class="col-6 col-sm-6 text-right">
-                                        <p>{{ $parent.selectedAddon.TaxAmount | currency }}</p>
+                                        <p>{{ $parent.clientServiceAddOn.TaxAmount | currency }}</p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -46,7 +46,7 @@
                                         <h5>Total Amount</h5>
                                     </div>
                                     <div class="col-6 col-sm-6 text-right">
-                                        <h5 class="amount pull-right"> {{ $parent.selectedAddon.TotalAmount | currency }}</h5>
+                                        <h5 class="amount pull-right"> {{ $parent.serviceAddOn.TotalAmount | currency }}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -144,6 +144,8 @@
 import { mapGetters, mapState } from 'vuex';
 import instance from '@/api';
 import Card from 'card';
+import Review from './Review';
+import SelectMedia from './SelectMedia';
 export default {
     name: 'Payment',
     data() {
@@ -246,34 +248,33 @@ export default {
         async payNow(token, client) {
             let obj = {
                 save: this.save,
-                addon: this.$parent.selectedAddon,
+                addon: this.$parent.serviceAddOn,
                 cardid: this.existingCard,
                 token: token,
                 client: client
             };
             try {
                 let result = await instance.post('api/serviceaddons/save', obj);
-                if (this.$parent.selectedAddon.IsUploadRequired) {
-                    this.$router.push({
-                        name: 'Addons',
-                        query: {
-                            clientaddon: result.data._id
-                        }
-                    }, () => {
-                    });
-                    this.$swal({
-                        title: 'Successful',
-                        text: 'Payment has been successful. You are now being redirected to upload',
-                        type: 'success'
-                    });
-                } else {
-                    this.$swal({
-                        title: 'Successful',
-                        text: 'Payment has been successful.',
-                        type: 'success'
-                    });
-                }
-                // await this.$parent.fetchClientAdPlan(result.data._id);
+                this.$parent.clientServiceAddOn = result.data;
+                this.paymentLoading = false;
+                this.$swal({
+                    title: 'Successful',
+                    text: 'Payment has been successful. You are now being redirected to upload',
+                    type: 'success'
+                }).then(() => {
+                    if (this.$parent.serviceAddOn.IsUploadRequired) {
+                        this.$parent.currentStage = SelectMedia;
+                        this.$router.push({
+                            name: 'Addons',
+                            query: {
+                                clientaddon: result.data._id
+                            }
+                        }, () => {
+                        });
+                    } else {
+                        this.$parent.currentStage = Review;
+                    }
+                });
             } catch (err) {
                 this.paymentLoading = false;
                 this.$swal({

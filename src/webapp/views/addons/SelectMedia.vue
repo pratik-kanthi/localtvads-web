@@ -19,11 +19,9 @@
                     :data="{ownerid: getUser().Owner._id}"></ImageUpload>
                 <div class="row">
                     <div class="col-sm-4" v-for="(img, key) in images" :key="key">
-                        <div class="image"
-                            :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + img.ResourceUrl + ')'}"
-                            @click="selectImage(img)">
-                            <input :id="img._id" type="checkbox" class="check" v-model="imagesSelected" :value="img._id"
-                                :disabled="true" />
+                        <div class="image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + img.ResourceUrl + ')'}" @click="selectImage(img)">
+                            <div :class="{'overlay': imagesSelected.indexOf(img._id) > -1}"></div>
+                            <input :id="img._id" type="checkbox" class="check" v-model="imagesSelected" :value="img._id" :disabled="true" />
                             <label :for="img._id" class="check-label box mb8 mr8">
                                 <span></span>
                             </label>
@@ -101,6 +99,7 @@ import instance from '@/api';
 import {uploadMixin} from '@/mixins/upload';
 import ImageUpload from '@/e9_components/components/ImageUpload';
 import {mapGetters} from 'vuex';
+import Review from './Review';
 
 export default {
     name: 'SelectMedia',
@@ -113,7 +112,7 @@ export default {
             clientServiceAddOn: '',
             images: [],
             imagesSelected: [],
-            imageToggle: false,
+            imageToggle: true,
             showUploadImageModal: false,
             videos: [],
             videosSelected: [],
@@ -164,27 +163,13 @@ export default {
                 }
             });
         },
-        async getClientServiceAddOn() {
-            this.$parent.isLoading = true;
-            try {
-                let result = await instance.get('api/serviceaddons/getone?serviceaddon=' + this.$route.query.clientaddon);
-                this.clientServiceAddOn = result.data;
-                this.videosSelected = this.clientServiceAddOn.Videos.map(v => v._id);
-                this.imagesSelected = this.clientServiceAddOn.Images.map(i => i._id);
-                this.$parent.isLoading = false;
-            } catch (err){
-                this.$parent.isLoading = false;
-                this.$swal({
-                    title: 'Error',
-                    text: err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error'
-                });
-                console.error(err);
-            }
-        },
         getVideoUrl(video) {
             return this.GOOGLE_BUCKET_ENDPOINT + video.ResourceUrl;
         } ,
+        initialiseResources() {
+            this.videosSelected = this.$parent.clientServiceAddOn.Videos.map(v => v);
+            this.imagesSelected = this.$parent.clientServiceAddOn.Images.map(i => i);
+        },
         selectImage(img) {
             let index = this.imagesSelected.indexOf(img._id);
             if (index > -1)
@@ -215,20 +200,23 @@ export default {
                 closeOnConfirm: false
             }).then(async (isConfirm) => {
                 if (isConfirm.value) {
+                    this.$parent.isLoading = true;
                     try {
                         await instance.put('api/serviceaddons/update', {
                             serviceaddon: this.$route.query.clientaddon,
                             images: this.imagesSelected,
                             videos: this.videosSelected
                         });
+                        this.$parent.isLoading = false;
                         this.$swal({
                             title: 'Sent',
                             text: 'Your request has been sent to the specialist team',
                             type: 'success'
                         }).then(() => {
-                            this.$router.push('/', () => {});
+                            this.$parent.currentStage = Review;
                         });
                     } catch (err) {
+                        this.$parent.isLoading = false;
                         this.$swal({
                             title: 'Error',
                             text: err.data && err.data.message ? err.data.message : 'Some error occurred',
@@ -251,14 +239,14 @@ export default {
             });
             let start = 0;
             let chunk = this.upload.chosen.slice(start, chunkSize);
-            this.sendSocket(chunk, counter, chunkSize, this.clientServiceAddOn, 'UPLOAD_RESOURCE_CHUNK');
+            this.sendSocket(chunk, counter, chunkSize, this.$parent.clientServiceAddOn, 'UPLOAD_RESOURCE_CHUNK');
             this.socket.on('UPLOAD_CHUNK_FINISHED', (data) => {
                 this.progress = (((data * 100000) / this.upload.chosen.size) * 100).toFixed(0);
                 ++counter;
                 start = start + chunkSize;
                 if (start - chunkSize < this.upload.chosen.size) {
                     chunk = this.upload.chosen.slice(start, start + chunkSize);
-                    this.sendSocket(chunk, counter, chunkSize, this.clientServiceAddOn, 'UPLOAD_RESOURCE_CHUNK');
+                    this.sendSocket(chunk, counter, chunkSize, this.$parent.clientServiceAddOn, 'UPLOAD_RESOURCE_CHUNK');
                 }
             });
 
@@ -301,7 +289,7 @@ export default {
             this.$router.push('/', () => {});
         } else {
             this.getAllMedia().then(() => {
-                this.getClientServiceAddOn();
+                this.initialiseResources();
             });
         }
     }
@@ -341,6 +329,15 @@ export default {
         border-radius: 6px;
         cursor: pointer;
         position: relative;
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            background-color: rgba(256,256,256,0.5);
+        }
 
         &:hover {
             box-shadow: 0 0 8px 0 rgba(104, 104, 104, 0.98);

@@ -19,8 +19,8 @@
                                 </ul>
                             </div>
                             <div class="selectaddon">
-                                <button class="btn btn-primary btn-full" @click="selectAddon(addon)" :class="{ 'btn-selected': selectedAddon._id === addon._id }">
-                                    <span v-if="selectedAddon._id === addon._id">Selected</span>
+                                <button class="btn btn-primary btn-full" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.serviceAddOn._id === addon._id }">
+                                    <span v-if="$parent.serviceAddOn._id === addon._id">Selected</span>
                                     <span v-else>Choose this Addon</span>
                                 </button>
                             </div>
@@ -46,8 +46,7 @@ export default {
     name: 'ChooseAddons',
     data() {
         return {
-            addons: [],
-            selectedAddon: {}
+            addons: []
         };
     },
     methods: {
@@ -55,11 +54,10 @@ export default {
             this.$router.push('/', () => { });
         },
         goToPayment() {
-            this.$parent.selectedAddon = this.selectedAddon;
             this.$emit('advanceToPayment');
         },
         selectAddon(addon) {
-            this.selectedAddon = addon;
+            this.$parent.serviceAddOn = addon;
         }
     },
     async created() {
@@ -67,7 +65,7 @@ export default {
         try {
             let result = await instance.get('api/serviceaddons/all');
             this.addons = result.data;
-            this.selectedAddon = this.addons[0];
+            this.$parent.serviceAddOn = this.addons[0];
             this.$parent.isLoading = false;
         } catch (err) {
             this.$parent.isLoading = false;

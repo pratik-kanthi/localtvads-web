@@ -2,22 +2,20 @@
     <section class="bg--grey pt0">
         <div class="container">
             <div class="ad-video-wrapper">
-                <h3 class="section-title-2 text-white text-center mt0">Your Video Has Been Submitted</h3>
+                <h3 class="section-title-2 text-white text-center mt0">Your request for '{{ this.$parent.clientServiceAddOn.ServiceAddOn.Name }}' has been submitted</h3>
                 <div class="checked">
                     <img src="@/assets/images/checked.svg" alt="">
                 </div>
                 <p class="t-l text-center">
                     Thank you for choosing Local TV Ads. We appreciate your business and welcome you to our long list of satisfied and much valued customers. Our success comes from the continuous faith in the excellence of our services to make your content reach millions of views, something we are committed to and would never sacrifice.
                     <br />
-                    <br /> Our Team usually takes 24-36 working hours to review your content, meanwhile please checkout our campaigns page to know more about us!
+                    <br /> Our Team will get reach out to you via email or phone very soon, meanwhile please checkout our campaigns page to know more about us!
                 </p>
-                <!-- <p class="t-l text-center" v-if="$parent.clientAdPlan.ClientAd.Status === 'APPROVED'">
-                    Greetings! Your content has been approved by our team and will be telecast from <b>{{ moment($parent.clientAdPlan.StartDate).format('DD-MM-YYYY') }}</b> till <b>{{ moment($parent.clientAdPlan.EndDate).format('DD-MM-YYYY') }}</b>, every <b>{{ days[$parent.clientAdPlan.DayOfWeek] }}</b>
-                </p> -->
                 <div class="action text-center">
                     <router-link to="/">
                         <button class="btn btn-white">Go to home page</button>
                     </router-link>
+                    <button class="btn btn-white ml16" v-if="$parent.clientServiceAddOn.ServiceAddOn.IsUploadRequired" @click="goToSelectMedia">Edit resources</button>
                 </div>
             </div>
         </div>
@@ -25,12 +23,25 @@
 </template>
 
 <script>
+import ChooseAddon from './ChooseAddon';
+import SelectMedia from './SelectMedia';
+
 export default {
     name: 'Review',
     data() {
         return {
             days: ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
         };
+    },
+    methods: {
+        goToSelectMedia() {
+            this.$parent.currentStage = SelectMedia;
+        }
+    },
+    created() {
+        if (!this.$parent.clientServiceAddOn) {
+            this.$parent.currentStage = ChooseAddon;
+        }
     }
 };
 </script>
