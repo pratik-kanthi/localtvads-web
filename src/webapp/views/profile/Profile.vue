@@ -1,10 +1,10 @@
 <template>
-    <section class="bg--grey pt56">
+    <section class="bg--grey pt-xs16">
         <div v-if="showNewCard">
             <NewCardModal :show-new-card="showNewCard" @close="close"></NewCardModal>
         </div>
         <div class="container">
-            <div class="profile-wrapper ml40 mr40">
+            <div class="profile-wrapper">
                 <h3 class="section-title-2 brand-secondary medium mb40">My Account</h3>
                 <div class="profile-info mb32">
                     <h4 class="section-subtitle b-b pb16">My Info</h4>
@@ -113,12 +113,12 @@
                 </div>
                 <div class="profile-ads">
                     <div class="row b-b mb24 pb8">
-                        <div class="col-sm-6">
-                            <h4 class="section-subtitle mb0 lh40">My Ads</h4>
+                        <div class="col-6 col-sm-6">
+                            <h4 class="section-subtitle mb0 lh40 text-left">My Ads</h4>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-6 col-sm-6">
                             <router-link to="my-transactions">
-                                <button class="btn btn-link float-right">My Transactions</button>
+                                <button class="btn btn-link float-right text-right">My Transactions</button>
                             </router-link>
                         </div>
                     </div>
@@ -572,6 +572,26 @@ export default {
         }
         .loading {
             width: 100px;
+        }
+    }
+    @media (max-width: 767px) {
+        background-color: transparent;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        text-align: center;
+        .profile-info {
+            .profile-details {
+                padding: 16px 0;
+                .profile-image {
+                    margin-top: 16px;
+                    margin-right: auto;
+                    margin-left: auto;
+                }
+                p {
+                    text-align: center !important;
+                }
+            }
         }
     }
 }

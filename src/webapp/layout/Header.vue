@@ -12,7 +12,7 @@
                 <div class="col-lg-7">
                     <ul class="menu" :class="{'nav-menu': showMenu}">
                         <li>
-                            <router-link tag="a" to="#/book-now">Book Now</router-link>
+                            <router-link tag="a" to="/#book-now">Book Now</router-link>
                         </li>
                         <li>
                             <router-link tag="a" to="/#how-it-works">How it works</router-link>

@@ -43,7 +43,7 @@
 <script>
 import instance from '@/api';
 export default {
-    name: 'CreateAd',
+    name: 'ChooseAddons',
     data() {
         return {
             addons: [],
@@ -55,17 +55,22 @@ export default {
             this.$router.push('/', () => { });
         },
         goToPayment() {
-
+            this.$parent.selectedAddon = this.selectedAddon;
+            this.$emit('advanceToPayment');
         },
         selectAddon(addon) {
             this.selectedAddon = addon;
         }
     },
     async created() {
+        this.$parent.isLoading = true;
         try {
             let result = await instance.get('api/serviceaddons/all');
             this.addons = result.data;
+            this.selectedAddon = this.addons[0];
+            this.$parent.isLoading = false;
         } catch (err) {
+            this.$parent.isLoading = false;
             this.$swal({
                 title: 'Error',
                 text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',

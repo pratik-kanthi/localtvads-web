@@ -199,4 +199,11 @@ input[type='file'] {
         }
     }
 }
+@media (max-width: 767px) {
+    .upload-actions {
+        button {
+            margin-bottom: 16px;
+        }
+    }
+}
 </style>
