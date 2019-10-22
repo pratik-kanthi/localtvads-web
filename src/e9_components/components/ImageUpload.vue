@@ -158,7 +158,8 @@ export default {
                 cropw: this.position.width,
                 croph: this.position.height
             };
-
+            let t = new URLSearchParams(bodyObj).toString();
+            this.config.api = this.config.api + '&' + t;
             formData.append('document', JSON.stringify(bodyObj));
             try {
                 let result = await this.callAPI(formData);
@@ -184,26 +185,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-input[type='file'] {
-    &:before {
-        border-radius: 6px !important;
-        padding: 0 16px;
-    }
-}
-.upload-actions {
-    button {
-        position: relative;
-        i {
-            position: absolute;
-            left: 13px;
+    input[type='file'] {
+        &:before {
+            border-radius: 6px !important;
+            padding: 0 16px;
         }
     }
-}
-@media (max-width: 767px) {
+
     .upload-actions {
         button {
-            margin-bottom: 16px;
+            position: relative;
+
+            i {
+                position: absolute;
+                left: 13px;
+            }
         }
     }
-}
 </style>
