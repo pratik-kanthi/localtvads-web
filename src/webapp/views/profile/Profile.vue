@@ -92,8 +92,11 @@
                             <div class="cards-wrapper" v-if="savedCards && savedCards.length > 0">
                                 <div class="row" v-for="(card,key) in savedCards" :key="key">
                                     <div class="col-sm-8">
-                                        <div class="saved-card">
-                                            <input type="radio" class="mr16" v-model="preferredCard" :value="card._id" @click="setPreferredCard(preferredCard)">
+                                        <div class="saved-card" @click="setPreferredCard(preferredCard)">
+                                            <div class="radio-btn-tick mr16">
+                                                <input type="radio" v-model="preferredCard" :value="card._id">
+                                                <label></label>
+                                            </div>
                                             <img :src="getImageUrl(card.Card.Vendor)" alt />
                                             <span>xxxx xxxx xxxx {{ card.Card.LastFour }}</span>
                                         </div>
@@ -117,7 +120,7 @@
                             <h4 class="section-subtitle mb0 lh40 text-left">My Ads</h4>
                         </div>
                         <div class="col-6 col-sm-6">
-                            <router-link to="my-transactions">
+                            <router-link to="transactions">
                                 <button class="btn btn-link float-right text-right">My Transactions</button>
                             </router-link>
                         </div>
@@ -493,10 +496,13 @@ export default {
                 overflow-x: hidden;
 
                 .saved-card {
+                    cursor: pointer;
                     input[type='radio'] {
                         margin-left: 1px;
                     }
-
+                    .radio-btn-tick {
+                        top: 4px;
+                    }
                     width: 100%;
                     padding: 8px 0;
 

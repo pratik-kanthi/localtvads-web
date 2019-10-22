@@ -62,12 +62,18 @@
                         <div class="cards-wrapper">
                             <div class="saved-cards" v-if="savedCards.length > 0">
                                 <div class="cards">
-                                    <h6 class="hero-text mb24" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}">
-                                        <input type="radio" class="mr8" v-model="activeToggle" value="SavedCards">
+                                    <div class="card-title" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}">
+                                        <div class="radio-btn-dot mr8">
+                                            <input type="radio" v-model="activeToggle" value="SavedCards">
+                                            <label></label>
+                                        </div>
                                         <span>Your saved cards</span>
-                                    </h6>
+                                    </div>
                                     <div v-for="(card,key) in savedCards" :key="key" class="card-info" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
-                                        <input type="radio" class="mr8" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'">
+                                        <div class="radio-btn-tick mr8">
+                                            <input type="radio" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'">
+                                            <label></label>
+                                        </div>
                                         <img :src="getImageUrl(card.Card.Vendor)" alt />
                                         <span>xxxx xxxx xxxx {{ card.Card.LastFour }}</span>
                                     </div>
@@ -75,10 +81,13 @@
                             </div>
                             <div class="new-card">
                                 <form ref="form" class="p0">
-                                    <h6 class="hero-text mb16" @click="togglePaymentOptions('NewCard')">
-                                        <input type="radio" class="mr8" v-model="activeToggle" value="NewCard">
-                                        <span :class="{'active':activeToggle === 'NewCard'}">New credit and debit card</span>
-                                    </h6>
+                                    <div class="card-title" @click="togglePaymentOptions('NewCard')" :class="{'active':activeToggle === 'NewCard'}">
+                                        <div class="radio-btn-dot mr8">
+                                            <input type="radio" v-model="activeToggle" value="NewCard">
+                                            <label></label>
+                                        </div>
+                                        <span>New credit and debit card</span>
+                                    </div>
                                     <div class="hidden-container"></div>
                                     <div class="form-group">
                                         <label class="mb8">Card Number</label>
@@ -104,6 +113,13 @@
                                                 <input name="cvc" type="password" class="form-control" v-model="cvv" :disabled="activeToggle !== 'NewCard'" />
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="consents">
+                                        <input type="checkbox" id="save" class="check" v-model="save" :disabled="activeToggle !== 'NewCard'" />
+                                        <label for="save" class="check-label box mt8 mr8">
+                                            <span></span>
+                                        </label>
+                                        <span class="brand-primary medium">Save Card</span>
                                     </div>
                                 </form>
                             </div>
@@ -237,18 +253,26 @@ export default {
             };
             try {
                 let result = await instance.post('api/serviceaddons/save', obj);
-                this.$router.push({
-                    name: 'Addons',
-                    query: {
-                        clientaddon: result.data._id
-                    }
-                }, () => {
-                });
-                this.$swal({
-                    title: 'Successful',
-                    text: 'Payment has been successful. You are now being redirected to upload',
-                    type: 'success'
-                });
+                if (this.$parent.selectedAddon.IsUploadRequired) {
+                    this.$router.push({
+                        name: 'Addons',
+                        query: {
+                            clientaddon: result.data._id
+                        }
+                    }, () => {
+                    });
+                    this.$swal({
+                        title: 'Successful',
+                        text: 'Payment has been successful. You are now being redirected to upload',
+                        type: 'success'
+                    });
+                } else {
+                    this.$swal({
+                        title: 'Successful',
+                        text: 'Payment has been successful.',
+                        type: 'success'
+                    });
+                }
                 // await this.$parent.fetchClientAdPlan(result.data._id);
             } catch (err) {
                 this.paymentLoading = false;
@@ -260,16 +284,19 @@ export default {
                 console.error(err);
             }
         },
-        selectExistingCard(card) {
-            if (this.activeToggle === 'SavedCards')
-                this.existingCard = card;
-        }, async togglePaymentOptions(option) {
+        togglePaymentOptions(option) {
             if (option === 'SavedCards' && this.savedCards.length > 0) {
+                this.activeToggle = option;
                 this.existingCard = this.savedCards.find(s => s.IsPreferred)._id;
             } else {
                 this.existingCard = null;
+                this.activeToggle = option;
                 this.loadCardJS();
             }
+        },
+        selectExistingCard(card) {
+            if (this.activeToggle === 'SavedCards')
+                this.existingCard = card;
         },
         ...mapGetters(['isLoggedIn', 'getUser'])
     },
@@ -441,12 +468,28 @@ export default {
                 input[type='radio'] {
                     margin-left: 1px;
                 }
+                .card-title {
+                    margin-bottom: 20px;
+                    cursor: pointer;
+                    .radio-btn-dot {
+                        top: 2px;
+                    }
+                    span {
+                        font-family: $font-family-heading;
+                        font-size: 16px;
+                        font-weight: 500;
+                        color: rgba(0, 0, 0, 0.87);
+                    }
+                }
                 .card-info {
                     margin-bottom: 24px;
                     opacity: 0.5;
                     border-radius: 6px;
                     cursor: pointer;
-
+                    z-index: 100;
+                    .radio-btn-tick {
+                        top: 4px;
+                    }
                     span {
                         letter-spacing: 2px;
                     }
@@ -471,6 +514,19 @@ export default {
             margin-bottom: 8px;
             form {
                 padding: 16px 0;
+                .card-title {
+                    margin-bottom: 20px;
+                    cursor: pointer;
+                    .radio-btn-dot {
+                        top: 2px;
+                    }
+                    span {
+                        font-family: $font-family-heading;
+                        font-size: 16px;
+                        font-weight: 500;
+                        color: rgba(0, 0, 0, 0.87);
+                    }
+                }
 
                 label {
                     font-size: 14px;
