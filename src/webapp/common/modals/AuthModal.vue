@@ -16,7 +16,7 @@
                         <Register></Register>
                     </div>
                     <div class="lh16 text-center mt16">
-                        <a @click="close" class="brand-primary">Continue as guest</a>
+                        <a @click="close" class="brand-primary" v-if="$route.name !== 'BookingFlow'">Continue as guest</a>
                     </div>
                 </div>
             </div>

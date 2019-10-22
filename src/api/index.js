@@ -1,6 +1,5 @@
 import axios from 'axios';
 import VueCookies from 'vue-cookies';
-import router from '@/routes';
 
 const instance = axios.create({
     baseURL: window.endpoint
@@ -32,9 +31,9 @@ instance.interceptors.response.use(
     (error) => {
         if (error.response && error.response.status) {
             switch (error.response.status) {
-            case 403: {
-                this.$store.dispatch('logout');
-                router.go('/login');
+            case 401: {
+                localStorage.removeItem('user');
+                VueCookies.remove('token');
                 break;
             }
             }
