@@ -33,7 +33,6 @@
                         <br class="clearfix">
                     </div>
                 </div>
-
             </div>
             <LoaderModal :showloader="progress === 100 && processing" message="Upload successful, please wait while we process the video..."></LoaderModal>
         </div>
@@ -42,69 +41,16 @@
 
 <script>
 import '@/plugins/socket.io';
+import {uploadMixin} from '@/mixins/upload';
 export default {
     name: 'UploadAd',
+    mixins: [uploadMixin],
     data() {
         return {
-            isLoading: false,
-            isValid: false,
-            progress: 0,
-            config: {
-                maxSize: 250,
-                allowedExtensions: ['mp4','webm','avi', 'mpv', 'mpg', 'flv']
-            },
-            upload: {
-                chosen: null
-            },
-            socket: null,
             processing: false,
-            videoUrl: ''
         };
     },
     methods: {
-        cancelUpload() {
-            this.upload.chosen = null;
-            this.$store.commit('VIDEO_BEING_UPLOADED', false);
-        },
-        chooseFile() {
-            $('#fileUpload').click();
-        },
-        fileUploaded() {
-            this.isValid = false;
-            this.upload.chosen = this.$refs.fileUpload.files[0];
-            window.URL = window.URL || window.webkitURL;
-            let duration, video = document.createElement('video');
-            video.preload = 'metadata';
-            video.onloadedmetadata = () => {
-                window.URL.revokeObjectURL(video.src);
-                duration = video.duration;
-                if (duration > this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds) {
-                    this.$swal('Warning', 'Video duration exceeds ' + this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds + ' seconds. Please keep it within allowed duration', 'warning');
-                    return;
-                }
-                if (this.config.maxSize && this.upload.chosen.size > 1024 * 1024 * this.config.maxSize) {
-                    this.$swal('Warning', 'File exceeds the minimum size of ' + this.config.maxSize + ' MB', 'warning');
-                    return;
-                }
-                if (this.config.allowedExtensions && this.config.allowedExtensions.indexOf(this.upload.chosen.name.substr(this.upload.chosen.name.lastIndexOf('.') + 1)) === -1) {
-                    this.$swal('Warning', 'We accept only following file types : ' + this.config.allowedExtensions.join(', '), 'warning');
-                    return;
-                }
-                this.isValid = true;
-            };
-            this.videoUrl = URL.createObjectURL(this.upload.chosen);
-        },
-
-        sendSocket(chunk, counter, chunkSize) {
-            this.socket.emit('UPLOAD_CHUNK', {
-                data: chunk,
-                sequence: counter,
-                isLast: chunk.size < chunkSize,
-                client: this.$parent.clientAdPlan.Client,
-                clientAdPlan: this.$parent.clientAdPlan._id,
-                name: this.upload.chosen.name
-            });
-        },
         async uploadFile() {
             this.isLoading = true;
             this.$store.commit('VIDEO_BEING_UPLOADED', true);
@@ -117,14 +63,14 @@ export default {
             });
             let start = 0;
             let chunk = this.upload.chosen.slice(start, chunkSize);
-            this.sendSocket(chunk, counter, chunkSize);
+            this.sendSocket(chunk, counter, chunkSize, this.$parent.clientAdPlan, 'UPLOAD_CHUNK');
             this.socket.on('UPLOAD_CHUNK_FINISHED', (data) => {
                 this.progress = (((data * 100000) / this.upload.chosen.size) * 100).toFixed(0);
                 ++counter;
                 start = start + chunkSize;
                 if (start - chunkSize < this.upload.chosen.size) {
                     chunk = this.upload.chosen.slice(start, start + chunkSize);
-                    this.sendSocket(chunk, counter, chunkSize);
+                    this.sendSocket(chunk, counter, chunkSize, this.$parent.clientAdPlan, 'UPLOAD_CHUNK');
                 }
             });
 
@@ -157,20 +103,6 @@ export default {
                     this.$parent.fetchClientAdPlan();
                 },1000);
             });
-        },
-        uploadVideo() {
-            this.$swal({
-                title: 'Are you sure?',
-                text: 'Video will be uploaded and submitted for review.',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Confirm',
-                closeOnConfirm: false
-            }).then(isConfirm => {
-                if(isConfirm.value) {
-                    this.uploadFile();
-                }
-            });
         }
     }
 };
@@ -192,9 +124,6 @@ export default {
             border-radius: 10px;
             padding: 64px;
             text-align: center;
-            .hidden {
-                display: none;
-            }
             .upload {
                 padding-left: 8px !important;
                 height: 48px;
@@ -218,80 +147,6 @@ export default {
                     font-weight: 500;
                 }
             }
-        }
-        .video-wrapper {
-            video {
-                width: 100%;
-                border-radius: 8px;
-            }
-            .action {
-                button {
-                    min-width: 240px;
-                }
-            }
-        }
-        .upload-progress {
-            background: $white;
-            box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 64px;
-            text-align: center;
-            .details {
-                margin-top: 32px;
-                border: 1px solid $lighter-grey;
-                border-radius: 5px;
-                padding: 8px 16px;
-                .loader {
-                    height: 10px;
-                    width: 100%;
-                    background-color: $lighter-grey;
-                    position:relative;
-                    border-radius: 6px;
-                    .value {
-                        height: inherit;
-                        position: absolute;
-                        left: 0;
-                        background-color: $brand-primary;
-                    }
-                }
-            }
-        }
-    }
-    @media(max-width: 767px) {
-        .upload-wrapper {
-            margin: 0 !important;
-            padding: 16px !important;
-            .upload-box {
-                padding: 32px 16px;
-            }
-            .video-wrapper {
-                .action {
-                    button {
-                        min-width: 120px;
-                    }
-                }
-            }
-        }
-    }
-    /* iPhone x Landscape */
-    @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
-        .upload-wrapper {
-            margin: 0 !important;
-            padding: 40px !important;
-        }
-    }
-    /* iPad Portrait */
-    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-        .upload-wrapper {
-            margin: 0 !important;
-            padding: 40px !important;
-        }
-    }
-    /* iPad Landscape */
-    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-        .upload-wrapper {
-            margin: 0 !important;
-            padding: 64px !important;
         }
     }
 </style>

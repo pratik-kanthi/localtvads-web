@@ -16,7 +16,7 @@ a {
 }
 
 .white {
-	color: $white;
+	color: $white !important;
 }
 
 section {
@@ -549,6 +549,10 @@ footer {
 	background-color: $green;
 }
 
+.black-bg {
+	background-color: $black;
+}
+
 .brand-primary-bd {
 	border-color: $brand-primary;
 }
@@ -604,4 +608,8 @@ footer {
 .flex-break {
 	flex-basis: 100%;
 	width: 0;
+}
+
+.hidden {
+	display: none;
 }

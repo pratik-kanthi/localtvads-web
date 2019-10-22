@@ -34,6 +34,7 @@ instance.interceptors.response.use(
             case 401: {
                 localStorage.removeItem('user');
                 VueCookies.remove('token');
+                window.location.href = '/';
                 break;
             }
             }
