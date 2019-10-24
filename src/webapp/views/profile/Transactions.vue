@@ -8,28 +8,8 @@
                     <p class="lead">No transactions has been added</p>
                 </div>
                 <div class="transaction-table" v-else>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Reference ID</th>
-                                <th>Channel</th>
-                                <th>Ad Schedule</th>
-                                <th>Status</th>
-                                <th class="text-right">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="tr in transactions" :key="tr._id">
-                                <td>{{ tr.DateTime | formatDate('DD/MM/YYYY') }}</td>
-                                <td>{{ tr.ReferenceId }}</td>
-                                <td v-text="(tr.ChannelPlan && tr.ChannelPlan.Channel) ? tr.ChannelPlan.Channel.Name : '-'"></td>
-                                <td v-text="(tr.ChannelPlan && tr.ChannelPlan.AdSchedule) ? tr.ChannelPlan.AdSchedule.Name : '-'"></td>
-                                <td>{{ tr.Status }}</td>
-                                <td class="text-right">{{ tr.TotalAmount | currency }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <b-table striped hover :items="transactions" :fields="fields" :per-page="perPage" :current-page="currentPage" id="transaction-table"></b-table>
+                    <b-pagination v-model="currentPage" :total-rows="transactions.length" :per-page="perPage" first-text="First" prev-text="Prev" next-text="Next" last-text="Last" aria-controls="transaction-table" align="right" class="pt0 pb16 pr16"></b-pagination>
                 </div>
             </div>
         </div>
@@ -44,7 +24,10 @@ export default {
     data() {
         return {
             isLoading: false,
-            transactions: []
+            fields: ['Date', 'ReferenceID', 'Details', 'Status', 'Total'],
+            transactions: [],
+            perPage: 15,
+            currentPage: 1
         };
     },
     methods: {
@@ -54,7 +37,15 @@ export default {
         this.isLoading = true;
         try {
             let result = await instance.get('api/client/transactions?client=' + this.getUser().Owner._id);
-            this.transactions = result.data;
+            this.transactions = result.data.map((item) => {
+                return {
+                    Date: this.moment(item.DateTime).format('DD/MM/YYYY HH:mm'),
+                    ReferenceID: item.ReferenceId,
+                    Details: item.ChannelPlan && item.ChannelPlan.Channel ? (item.ChannelPlan.Channel.Name + ', ' + item.ChannelPlan.AdSchedule.Name) : ('Add On - ' + item.ServiceAddOn.Name),
+                    Status: item.Status.substring(0, 1).toUpperCase() + item.Status.substring(1),
+                    Total: '£' + item.TotalAmount.toFixed(2)
+                };
+            });
             this.isLoading = false;
         } catch (err) {
             this.isLoading = false;

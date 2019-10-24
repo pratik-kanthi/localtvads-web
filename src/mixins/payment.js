@@ -1,4 +1,5 @@
 import Card from 'card';
+import { mapGetters, mapState } from 'vuex';
 export const paymentMixin = {
     data() {
         return {
@@ -75,6 +76,7 @@ export const paymentMixin = {
             if (this.activeToggle === 'SavedCards')
                 this.existingCard = card;
         },
+        ...mapGetters(['isLoggedIn', 'getUser'])
     },
     computed: {
         getCardType() {
@@ -131,6 +133,14 @@ export const paymentMixin = {
                 this.expiry &&
                 new Date(this.expiry.substring(this.expiry.indexOf('/') + 1), this.expiry.substring(0, 2))
             );
+        },
+        ...mapState(['isAuth'])
+    },
+    watch: {
+        isAuth(newValue) {
+            if (newValue) {
+                this.getCards();
+            }
         }
     },
 };

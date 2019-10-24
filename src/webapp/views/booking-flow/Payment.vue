@@ -225,7 +225,6 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
 import instance from '@/api';
 import { paymentMixin } from '@/mixins/payment';
 import CoupnsModal from '@/webapp/common/modals/CouponsModal';
@@ -364,20 +363,11 @@ export default {
                 }
                 this.loadCardJS();
             }
-        },
-        ...mapGetters(['isLoggedIn', 'getUser'])
+        }
     },
     computed: {
         getTotalAmount() {
             return this.$parent.selectedPlan.baseAmount - this.discountAmount + this.taxAmount;
-        },
-        ...mapState(['isAuth'])
-    },
-    watch: {
-        isAuth(newValue) {
-            if (newValue) {
-                this.getCards();
-            }
         }
     },
     created() {

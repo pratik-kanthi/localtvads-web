@@ -384,7 +384,7 @@ export default {
         margin-top: -110px;
         position: relative;
         .content {
-            border-right: 6px;
+            border-radius: 6px;
             padding: 24px 40px 40px;
             background-image: url('../../../assets/images/pattern.svg');
             background-size: cover;

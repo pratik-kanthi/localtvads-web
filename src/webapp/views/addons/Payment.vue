@@ -157,7 +157,6 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
 import instance from '@/api';
 import { paymentMixin } from '@/mixins/payment';
 import Review from './Review';
@@ -247,11 +246,7 @@ export default {
                 this.activeToggle = option;
                 this.loadCardJS();
             }
-        },
-        ...mapGetters(['isLoggedIn', 'getUser'])
-    },
-    computed: {
-        ...mapState(['isAuth'])
+        }
     },
     created() {
         window.scrollTo(0, 0);
