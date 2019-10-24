@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VueCookies from 'vue-cookies';
-// import VueRouter from 'vue-router';
-// import { stat } from 'fs';
 
 Vue.use(Vuex);
 

@@ -1,9 +1,8 @@
+import { store } from '@/store';
+
 import Home from '@/webapp/views/home/Home';
-import Profile from '@/webapp/views/profile/Profile';
-import MyAds from '@/webapp/views/profile/MyAds';
 import ResetPassword from '@/webapp/common/modals/ResetPassword';
-import Transactions from '@/webapp/views/profile/Transactions.vue';
-import Addons from '@/webapp/views/addons/Addons.vue';
+
 export const routes = [
     {
         path: '',
@@ -13,35 +12,73 @@ export const routes = [
     {
         path: '/profile',
         name: 'Profile',
-        component: Profile
+        component: () => {
+            import (/* webpackChunkName: "post-login" */'@/webapp/views/profile/Profile');
+        },
+        beforeEnter: (to, from, next) => {
+            if (store.getters.isLoggedIn) {
+                next();
+            } else {
+                next({
+                    name: 'Home'
+                });
+            }
+        }
     },
     {
         path: '/ads',
         name: 'MyAds',
-        component: MyAds
+        component: () => {
+            import (/* webpackChunkName: "post-login" */'@/webapp/views/profile/MyAds');
+        },
+        beforeEnter: (to, from, next) => {
+            if (store.getters.isLoggedIn) {
+                next();
+            } else {
+                next({
+                    name: 'Home'
+                });
+            }
+        }
     },
     {
         path: '/booking-flow',
         name: 'BookingFlow',
-        component: (resolve) => {
-            require.ensure(
-                ['@/webapp/views/booking-flow/BookingFlow'],
-                () => {
-                    resolve(require('@/webapp/views/booking-flow/BookingFlow'));
-                },
-                'booking-flow'
-            );
+        component: () => {
+            import (/* webpackChunkName: "booking-flow" */'@/webapp/views/booking-flow/BookingFlow');
         }
     },
     {
         path: '/addons',
         name: 'Addons',
-        component: Addons
+        component: () => {
+            import (/* webpackChunkName: "post-login" */'@/webapp/views/addons/Addons.vue');
+        },
+        beforeEnter: (to, from, next) => {
+            if (store.getters.isLoggedIn) {
+                next();
+            } else {
+                next({
+                    name: 'Home'
+                });
+            }
+        }
     },
     {
         path: '/transactions',
         name: 'Transactions',
-        component: Transactions
+        component: () => {
+            import (/* webpackChunkName: "post-login" */'@/webapp/views/profile/Transactions.vue');
+        },
+        beforeEnter: (to, from, next) => {
+            if (store.getters.isLoggedIn) {
+                next();
+            } else {
+                next({
+                    name: 'Home'
+                });
+            }
+        }
     },
     {
         path: '/resetpassword',
@@ -51,7 +88,9 @@ export const routes = [
             if (to.query.token) {
                 next();
             } else {
-                next(false);
+                next({
+                    name: 'Home'
+                });
             }
         }
     },

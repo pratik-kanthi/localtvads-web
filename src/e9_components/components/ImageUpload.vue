@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showCropper" width="700" persistent no-close-on-esc no-close-on-backdrop hide-footer data-app title="Upload your Profile Picture">
+    <b-modal v-model="showCropper" width="700" persistent no-close-on-esc no-close-on-backdrop hide-footer data-app>
         <button slot="modal-header-close" @click="cancel" class="close">×</button>
         <div>
             <h4 class="section-subtitle mt0 mb8">1. Choose File</h4>
