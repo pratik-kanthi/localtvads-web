@@ -1,7 +1,9 @@
 <template>
     <div id="app">
         <web-header></web-header>
-        <router-view></router-view>
+        <div class="content-wrapper">
+            <router-view></router-view>
+        </div>
         <web-footer></web-footer>
     </div>
 </template>
@@ -29,5 +31,8 @@ export default {
     height: 100%;
     background-color: $body-background;
     overflow-x: hidden;
+    .content-wrapper {
+        min-height: calc(100vh - 80px);
+    }
 }
 </style>

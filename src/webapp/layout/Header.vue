@@ -43,6 +43,8 @@
                             </a>
                             <ul class="" :class="{'profile-menu': showProfile}">
                                 <router-link tag="li" to="profile">My Account</router-link>
+                                <router-link tag="li" to="ads">My Ads</router-link>
+                                <router-link tag="li" to="transactions">Transactions</router-link>
                                 <li @click="logout">
                                     <a>Logout</a>
                                 </li>
@@ -211,7 +213,7 @@ nav {
                         width: 162px;
                         border-radius: 6px;
                         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-                        height: 100%;
+                        height: auto;
                         overflow: auto;
                         li {
                             color: $base;

@@ -18,7 +18,8 @@ export default {
             currentStage: '',
             isLoading: false,
             clientServiceAddOn: null,
-            serviceAddOn: {}
+            serviceAddOn: {},
+            taxes: []
         };
     },
     methods: {
@@ -33,7 +34,7 @@ export default {
                 } else {
                     this.currentStage = Review;
                 }
-            } catch (err){
+            } catch (err) {
                 this.$parent.isLoading = false;
                 this.$swal({
                     title: 'Error',

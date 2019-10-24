@@ -7,13 +7,15 @@
                     <div class="col-lg-6">
                         <div class="booking-details">
                             <img class="" src="@/assets/images/logo-dark.svg" alt="">
-                            <div class="header">
-                                <h6>Booking Receipt</h6>
-                            </div>
+                            <h6 class="t-l medium">Booking Receipt</h6>
                             <hr class="mb24">
                             <div class="content">
+                                <h4 class="section-subtitle mb24 lh24 addon-title">
+                                    <span class="brand-primary" v-text="this.$parent.serviceAddOn.Name + ' '"></span>
+                                    <span class="brand-secondary desc" v-text="this.$parent.serviceAddOn.Description"></span>
+                                </h4>
                                 <div class="booking-items">
-                                    <label>Benefits</label>
+                                    <h6 class="t-l medium brand-secondary mb16">Features</h6>
                                     <ul class="benefits">
                                         <li v-for="benefit in this.$parent.serviceAddOn.Benefits" :key="benefit">{{ benefit }}</li>
                                     </ul>
@@ -35,10 +37,24 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-6 col-sm-6">
-                                        <p>Taxes</p>
+                                        <div class="taxes">
+                                            <span>Taxes</span>
+                                            <i class="material-icons" @mouseover="showTaxInfo(true)" @mouseout="showTaxInfo(false)">
+                                                info
+                                            </i>
+                                            <div v-show="taxInfo" class="tooltip-info">
+                                                <div v-for="tax in this.$parent.taxes" :key="tax.Name">
+                                                    <div class="name">{{ tax.Name }}
+                                                        <span>({{ tax.Description }})</span>
+                                                    </div>
+                                                    <div class="value text-right" v-if="tax.Type === 'PERCENTAGE'">{{ tax.Value }}%</div>
+                                                    <div class="value text-right" v-else>{{ tax.Value | currency }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-6 col-sm-6 text-right">
-                                        <p>{{ $parent.clientServiceAddOn.TaxAmount | currency }}</p>
+                                        <p>{{ $parent.serviceAddOn.TaxAmount | currency }}</p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -143,69 +159,18 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 import instance from '@/api';
-import Card from 'card';
+import { paymentMixin } from '@/mixins/payment';
 import Review from './Review';
 import SelectMedia from './SelectMedia';
 export default {
     name: 'Payment',
+    mixins: [paymentMixin],
     data() {
         return {
-            activeToggle: '',
-            cardNumber: null,
-            cvv: null,
-            cardObj: null,
-            paymentLoading: false,
-            expiry: null,
-            existingCard: null,
-            name: '',
-            savedCards: [],
-            save: false,
+            taxInfo: false
         };
     },
     methods: {
-        generateToken() {
-            this.$swal({
-                title: 'Are you sure?',
-                text: 'Payment will be processed',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Confirm',
-                closeOnConfirm: true
-            }).then(isConfirm => {
-                if (isConfirm.value) {
-                    this.paymentLoading = true;
-                    window.scrollTo(0, 0);
-                    let user = this.getUser();
-                    if (this.existingCard) {
-                        this.payNow(null, user.Owner._id);
-                    } else {
-                        Stripe.card.createToken({
-                            number: this.cardNumber,
-                            cvc: this.cvv,
-                            exp_month: this.expiry.substring(0, 2),
-                            exp_year: parseInt(
-                                this.expiry.substring(this.expiry.indexOf('/') + 1)
-                            ),
-                            name: this.name
-                        },
-                        (code, result) => {
-                            if (code === 200) {
-                                this.payNow(result.id, user.Owner._id);
-                            } else {
-                                this.paymentLoading = false;
-                                this.$swal({
-                                    title: 'Error',
-                                    text: result && result.error && result.error.message ? result.error.message : 'Some error occurred',
-                                    type: 'error'
-                                });
-                                throw result;
-                            }
-                        }
-                        );
-                    }
-                }
-            });
-        },
         async getCards() {
             try {
                 this.$parent.isLoading = true;
@@ -230,21 +195,6 @@ export default {
                 console.error(err);
             }
         },
-        getImageUrl(vendor) {
-            return require('@/assets/images/cards/' + vendor + '.svg');
-        },
-        loadCardJS() {
-            setTimeout(() => {
-                this.cardObj = new Card({
-                    form: this.$refs.form,
-                    container: '.hidden-container',
-                    placeholders: {
-                        expiry: '••/••••',
-                        number: '•••• •••• •••• ••••'
-                    }
-                });
-            }, 100);
-        },
         async payNow(token, client) {
             let obj = {
                 save: this.save,
@@ -264,16 +214,16 @@ export default {
                 }).then(() => {
                     if (this.$parent.serviceAddOn.IsUploadRequired) {
                         this.$parent.currentStage = SelectMedia;
-                        this.$router.push({
-                            name: 'Addons',
-                            query: {
-                                clientaddon: result.data._id
-                            }
-                        }, () => {
-                        });
                     } else {
                         this.$parent.currentStage = Review;
                     }
+                    this.$router.push({
+                        name: 'Addons',
+                        query: {
+                            clientaddon: result.data._id
+                        }
+                    }, () => {
+                    });
                 });
             } catch (err) {
                 this.paymentLoading = false;
@@ -285,6 +235,9 @@ export default {
                 console.error(err);
             }
         },
+        showTaxInfo(isDisplay) {
+            this.taxInfo = isDisplay;
+        },
         togglePaymentOptions(option) {
             if (option === 'SavedCards' && this.savedCards.length > 0) {
                 this.activeToggle = option;
@@ -295,68 +248,9 @@ export default {
                 this.loadCardJS();
             }
         },
-        selectExistingCard(card) {
-            if (this.activeToggle === 'SavedCards')
-                this.existingCard = card;
-        },
         ...mapGetters(['isLoggedIn', 'getUser'])
     },
     computed: {
-        getCardType() {
-            if (this.cardNumber) {
-                let re = new RegExp('^4');
-                if (this.cardNumber.match(re) != null)
-                    return require('@/assets/images/cards/VISA.svg');
-
-                // Mastercard
-                // Updated for Mastercard 2017 BINs expansion
-                if (/^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/.test(this.cardNumber))
-                    return require('@/assets/images/cards/MASTERCARD.svg');
-
-                // AMEX
-                re = new RegExp('^3[47]');
-                if (this.cardNumber.match(re) != null)
-                    return require('@/assets/images/cards/AMERICANEXPRESS.svg');
-
-                // Discover
-                re = new RegExp('^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)'
-                );
-                if (this.cardNumber.match(re) != null)
-                    return require('@/assets/images/cards/DISCOVER.svg');
-
-                // Diners
-                re = new RegExp('^36');
-                if (this.cardNumber.match(re) != null)
-                    return require('@/assets/images/cards/DINERSCLUB.svg');
-
-                // Diners - Carte Blanche
-                re = new RegExp('^30[0-5]');
-                if (this.cardNumber.match(re) != null)
-                    return require('@/assets/images/cards/DINERSCLUB.svg');
-
-                // JCB
-                re = new RegExp('^35(2[89]|[3-8][0-9])');
-                if (this.cardNumber.match(re) != null)
-                    return require('@/assets/images/cards/JCB.svg');
-
-                // Visa Electron
-                re = new RegExp('^(4026|417500|4508|4844|491(3|7))');
-                if (this.cardNumber.match(re) != null)
-                    return require('@/assets/images/cards/VISA.svg');
-            }
-            return '';
-        },
-        isProceedable() {
-            return (
-                this.name &&
-                this.cvv &&
-                this.cardNumber &&
-                this.cardNumber.length > 12 &&
-                this.cardNumber.length <= 19 &&
-                this.expiry &&
-                new Date(this.expiry.substring(this.expiry.indexOf('/') + 1), this.expiry.substring(0, 2))
-            );
-        },
         ...mapState(['isAuth'])
     },
     created() {
@@ -398,14 +292,13 @@ export default {
             max-width: 120px;
             margin: 0 auto 32px;
         }
-        .header {
-            h6 {
-                font-size: 16px;
-                font-weight: 500;
-            }
-        }
         .content {
             margin-bottom: 32px;
+            .addon-title {
+                .desc {
+                    text-transform: lowercase;
+                }
+            }
             .booking-items {
                 margin-bottom: 24px;
                 label {
@@ -418,8 +311,21 @@ export default {
                     li {
                         font-size: 16px;
                         font-weight: 500;
-                        color: $brand-secondary;
                         margin-bottom: 8px;
+                        padding-left: 24px;
+                        font-family: $font-family-heading;
+                        position: relative;
+                        &:before {
+                            content: '';
+                            background-image: url('../../../assets/images/tick.svg');
+                            height: 16px;
+                            width: 16px;
+                            left: 0;
+                            top: 6px;
+                            background-size: cover;
+                            position: absolute;
+                            background-repeat: no-repeat;
+                        }
                     }
                 }
             }
@@ -442,6 +348,37 @@ export default {
             }
         }
         .total {
+            .taxes {
+                position: relative;
+                i {
+                    position: relative;
+                    top: 4px;
+                    left: 4px;
+                    font-size: 18px;
+                    color: $brand-primary;
+                    cursor: pointer;
+                }
+                .tooltip-info {
+                    width: 250px;
+                    position: absolute;
+                    left: 64px;
+                    color: $base;
+                    bottom: 6px;
+                    border-radius: 6px;
+                    background: #fff;
+                    padding: 8px 12px;
+                    box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
+                    font-size: 12px;
+                    .name {
+                        display: inline-block;
+                        width: 80%;
+                    }
+                    .value {
+                        display: inline-block;
+                        width: 20%;
+                    }
+                }
+            }
             h5 {
                 font-weight: 500;
                 line-height: 32px;

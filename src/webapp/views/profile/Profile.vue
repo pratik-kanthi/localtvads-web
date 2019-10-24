@@ -114,74 +114,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="profile-ads">
-                    <div class="row b-b mb24 pb8">
-                        <div class="col-6 col-sm-6">
-                            <h4 class="section-subtitle mb0 lh40 text-left">My Ads</h4>
-                        </div>
-                        <div class="col-6 col-sm-6">
-                            <router-link to="transactions">
-                                <button class="btn btn-link float-right text-right">My Transactions</button>
-                            </router-link>
-                        </div>
-                    </div>
-                    <div class="row ads-wrapper" v-for="ad in clientAds" :key="ad._id">
-                        <div class="col-sm-6">
-                            <div class="ad-video">
-                                <div class="background-image-holder ad-bg">
-                                    <div class="action">
-                                        <a v-if="ad.ClientAd && ad.ClientAd.VideoUrl" :href="getVideoUrl(ad.ClientAd.VideoUrl)" target="_blank"><img src="@/assets/images/play.png" alt="" class="play"></a>
-                                        <button v-else class="btn btn-white" @click="goToVideoUpload(ad._id)">Upload Your Ad</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="plan-details">
-                                <div class="plan-info">
-                                    <p class="info-label">Broadcast Location</p>
-                                    <h6 class="info-desc">{{ ad.ChannelPlan.Plan.Channel.Name }}</h6>
-                                </div>
-                                <div class="plan-info">
-                                    <p class="info-label">Broadcast Slot</p>
-                                    <h6 class="info-desc">{{ ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.Name }} ({{ ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.StartTime }} to {{ ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.EndTime }})</h6>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="plan-info">
-                                            <p class="info-label">Broadcast Start</p>
-                                            <h6 class="info-desc">{{ moment(ad.StartDate, 'YYYY-MM-DD').format('Do MMMM YYYY') }}</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="plan-info">
-                                            <p class="info-label">Broadcast End</p>
-                                            <h6 class="info-desc">{{ moment(ad.EndDate, 'YYYY-MM-DD').format('Do MMMM YYYY') }}</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="plan-info mb0">
-                                            <p class="info-label">Ad Length</p>
-                                            <h6 class="info-desc">{{ ad.ChannelPlan.Plan.Seconds }} sec</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="plan-info mb0">
-                                            <p class="info-label">Broadcast Duration</p>
-                                            <h6 class="info-desc">6 months</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-center" v-if="showLoadMore">
-                        <button class="btn btn-primary" @click="getClientAds" v-if="!isLoading">Load More</button>
-                        <img class="loading" src="@/assets/images/loader.svg" v-if="isLoading" alt="spinner" />
-                    </div>
-                </div>
             </div>
         </div>
         <ImageUpload v-if="uploadImageModal" @cancel="cancelModal" @close="hideProfileImageModal" :show="true" :config="config" :data="user"></ImageUpload>
@@ -207,7 +139,6 @@ export default {
             currentPassword: '',
             newPassword: '',
             showNewCard: false,
-            clientAds: [],
             mode: 'VIEW',
             config: {
                 aspectRatio: 1,
@@ -219,10 +150,6 @@ export default {
                 name: 'profile_image'
             },
             uploadImageModal: false,
-            pagination: {
-                count: 5
-            },
-            showLoadMore: true,
             isLoading: false
         };
     },
@@ -276,25 +203,6 @@ export default {
                 }
             });
         },
-        async getClientAds() {
-            try {
-                this.isLoading = true;
-                let result = await instance.get('api/clientad/getall?clientid=' + this.getUser().Owner._id + '&top=' + this.pagination.count + '&skip=' + this.clientAds.length);
-                if (!result.data.length || result.data.length < this.pagination.count) {
-                    this.showLoadMore = false;
-                }
-                this.clientAds = [...this.clientAds, ...result.data];
-                this.isLoading = false;
-            } catch (err) {
-                this.isLoading = false;
-                this.$swal({
-                    title: 'Error',
-                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error'
-                });
-                console.error(err);
-            }
-        },
         getImageUrl(vendor) {
             return require('@/assets/images/cards/' + vendor + '.svg');
         },
@@ -337,9 +245,6 @@ export default {
         },
         openNewCardModal() {
             this.showNewCard = true;
-        },
-        getVideoUrl(url) {
-            return this.GOOGLE_BUCKET_ENDPOINT + url;
         },
         openEditMode() {
             let user = this.getUser();
@@ -388,8 +293,6 @@ export default {
                         }
                     });
                 }
-
-
             } catch (err) {
                 this.$swal({
                     title: 'Error',
@@ -428,9 +331,8 @@ export default {
 
         }
     },
-    async created() {
+    created() {
         this.getSavedCards();
-        this.getClientAds();
     }
 };
 </script>
@@ -519,67 +421,6 @@ export default {
         }
     }
 
-    .profile-ads {
-        .ads-wrapper {
-            margin-bottom: 24px;
-
-            &:last-child {
-                margin-bottom: 0;
-            }
-
-            .ad-video {
-                width: 100%;
-                height: 240px;
-                position: relative;
-
-                .ad-bg {
-                    background-image: url('../../../assets/images/ad-video-bg.jpg');
-                }
-
-                .action {
-                    position: absolute;
-                    left: 50%;
-                    top: 50%;
-                    transform: translate(-50%, -50%);
-
-                    .play {
-                        width: 56px;
-                    }
-
-                    .btn {
-                        max-width: 150px;
-                    }
-                }
-            }
-
-            .plan-details {
-                .plan-info {
-                    margin-bottom: 20px;
-
-                    .info-label {
-                        margin-bottom: 4px;
-                        font-size: 12px;
-                        color: #acacac;
-                        font-weight: 500;
-                        font-family: $font-family-heading;
-                    }
-
-                    .info-desc {
-                        font-size: 14px;
-                        font-weight: 500;
-                        font-style: normal;
-                        font-stretch: normal;
-                        line-height: normal;
-                        letter-spacing: normal;
-                        color: #4c4c4c;
-                    }
-                }
-            }
-        }
-        .loading {
-            width: 100px;
-        }
-    }
     @media (max-width: 767px) {
         background-color: transparent;
         margin: 0;
