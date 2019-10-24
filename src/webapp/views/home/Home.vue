@@ -61,11 +61,11 @@
                 <h3 class="section-title-2 text-center mb16">Latest Offers</h3>
                 <div class="underlined"></div>
                 <div class="offers mt48">
-                    <div class="offer" v-for="offer in offers" :key="offer.Id">
-                        <div class="offer-image" :style="{'background-image': 'url(' + offer.ImageUrl + ')'}"></div>
+                    <div class="offer" v-for="(offer,key) in offers" :key="key">
+                        <div class="offer-image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + offer.ImageUrl + ')'}"></div>
                         <div class="offer-content">
                             <h4 class="section-subtitle mb-3">{{ offer.Name }}</h4>
-                            <p>{{ offer.Desc }}</p>
+                            <p class="text-clamp-2">{{ offer.Description }}</p>
                         </div>
                     </div>
                 </div>
@@ -203,22 +203,7 @@ export default {
                 Name: 'Dont Lorem ipsum',
                 Desc: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aut error optio voluptatibus ab voluptatum esse voluptates? Perspiciatis, maxime similique. Debitis, earum nulla. Molestias soluta sit aspernatur ipsa expedita libero ex!'
             }],
-            offers: [{
-                Id: 1,
-                Name: 'No Ad?',
-                ImageUrl: require('@/assets/images/offers/1.jpg'),
-                Desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut abore et dolore magna ali.'
-            }, {
-                Id: 2,
-                Name: 'Hurry! 50% Off',
-                ImageUrl: require('@/assets/images/offers/2.jpg'),
-                Desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut abore et dolore magna ali.'
-            }, {
-                Id: 3,
-                Name: 'Coffee Slots',
-                ImageUrl: require('@/assets/images/offers/3.jpg'),
-                Desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut abore et dolore magna ali.'
-            }],
+            offers: [],
             subscriberEmail: '',
             enquiryForm: {},
             emailRegex: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -286,9 +271,20 @@ export default {
             return flag;
         }
     },
-    created() {
+    async created() {
         if (this.$route.query && this.$route.query.emailconfirmed) {
             this.$store.commit('DIALOG_CHOSEN', 'login');
+        }
+        try {
+            let result = await instance.get('api/offers/all?startdate=' + this.moment().format('YYYY-MM-DD'));
+            this.offers = result.data;
+        } catch (err) {
+            this.$swal({
+                title: 'Error',
+                text: err.data && err.data.message ? err.data.message : 'Some error occurred',
+                type: 'error'
+            });
+            console.error(err);
         }
     }
 };
@@ -388,6 +384,7 @@ export default {
         margin-top: -110px;
         position: relative;
         .content {
+            border-right: 6px;
             padding: 24px 40px 40px;
             background-image: url('../../../assets/images/pattern.svg');
             background-size: cover;
@@ -470,12 +467,14 @@ export default {
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: space-evenly;
             .offer {
                 background: $white;
                 border-radius: 10px;
-                max-width: 320px;
+                width: 320px;
                 display: inline-block;
+                margin-bottom: 24px;
+                position: relative;
                 .offer-image {
                     position: relative;
                     border-top-left-radius: 10px;
@@ -492,6 +491,11 @@ export default {
                         font-size: 16px;
                         color: #4a4a4a;
                     }
+                }
+                small {
+                    position: absolute;
+                    bottom: 8px;
+                    right: 8px;
                 }
             }
         }
