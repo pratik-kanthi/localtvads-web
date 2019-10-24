@@ -613,3 +613,11 @@ footer {
 .hidden {
 	display: none;
 }
+
+
+@for $i from 0 through 3 {
+	$i: $i + 1;
+	.text-clamp-#{$i} {
+		@include text-clamp($i);
+	}
+}
