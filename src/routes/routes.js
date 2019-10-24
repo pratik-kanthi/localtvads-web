@@ -13,7 +13,7 @@ export const routes = [
         path: '/profile',
         name: 'Profile',
         component: () => {
-            import (/* webpackChunkName: "post-login" */'@/webapp/views/profile/Profile');
+            return import (/* webpackChunkName: "post-login" */'@/webapp/views/profile/Profile');
         },
         beforeEnter: (to, from, next) => {
             if (store.getters.isLoggedIn) {
@@ -29,7 +29,7 @@ export const routes = [
         path: '/ads',
         name: 'MyAds',
         component: () => {
-            import (/* webpackChunkName: "post-login" */'@/webapp/views/profile/MyAds');
+            return import (/* webpackChunkName: "post-login" */'@/webapp/views/profile/MyAds');
         },
         beforeEnter: (to, from, next) => {
             if (store.getters.isLoggedIn) {
@@ -45,14 +45,14 @@ export const routes = [
         path: '/booking-flow',
         name: 'BookingFlow',
         component: () => {
-            import (/* webpackChunkName: "booking-flow" */'@/webapp/views/booking-flow/BookingFlow');
+            return import (/* webpackChunkName: "booking-flow" */'@/webapp/views/booking-flow/BookingFlow');
         }
     },
     {
         path: '/addons',
         name: 'Addons',
         component: () => {
-            import (/* webpackChunkName: "post-login" */'@/webapp/views/addons/Addons.vue');
+            return import (/* webpackChunkName: "post-login" */'@/webapp/views/addons/Addons.vue');
         },
         beforeEnter: (to, from, next) => {
             if (store.getters.isLoggedIn) {
@@ -68,7 +68,7 @@ export const routes = [
         path: '/transactions',
         name: 'Transactions',
         component: () => {
-            import (/* webpackChunkName: "post-login" */'@/webapp/views/profile/Transactions.vue');
+            return import (/* webpackChunkName: "post-login" */'@/webapp/views/profile/Transactions.vue');
         },
         beforeEnter: (to, from, next) => {
             if (store.getters.isLoggedIn) {
