@@ -71,10 +71,10 @@
                                         <a @click="openEditMode()" class="alert mb0">Edit Profile</a>
                                     </p>
                                     <div v-if="mode==='EDIT'" class="text-right mb16">
-                                        <button class="btn btn-secondary" @click="closeEditMode()">Cancel</button>
+                                        <button class="btn btn-secondary" @click="closeEditMode">Cancel</button>
                                     </div>
                                     <div v-if="mode==='EDIT'" class="text-right">
-                                        <button class="btn btn-primary" @click="updateProfile()" :disabled="isProceedable">Save Changes</button>
+                                        <button class="btn btn-primary" @click="updateProfile" :disabled="isProceedable">Save Changes</button>
                                     </div>
                                 </div>
                             </div>
@@ -151,6 +151,7 @@ export default {
             user: {
                 name: 'profile_image'
             },
+            tempUser: JSON.parse(JSON.stringify(this.$store.state.user)),
             uploadImageModal: false,
             isLoading: false,
             isSocialAccount: false
@@ -263,6 +264,7 @@ export default {
 
         },
         closeEditMode() {
+            this.$store.state.user = this.tempUser;
             this.mode = 'VIEW';
         },
         updateProfile() {
