@@ -5,6 +5,20 @@
         <button class="btn btn-primary" :disabled="isNotProceedable" @click="updateResources">Finish & Submit</button>
         <p class="bold t-l mt16">Total <span class="brand-primary">{{ imagesSelected.length }}</span> image(s) and <span class="brand-primary">{{ videosSelected.length }}</span> video(s) selected.</p>
         <div class="mt16">
+            <div class="toggle" :class="{'toggle-inactive': !textToggle}">
+                <h3 class="section-title-2 white mb0">Text
+                    <i class="material-icons" @click="toggleImage">{{ textToggle ? 'keyboard_arrow_up':
+                        'keyboard_arrow_down' }}</i>
+                </h3>
+            </div>
+            <div class="toggle-pane" v-show="textToggle">
+                <div class="form-group">
+                    <label for="" class="control-label"></label>
+                    <textarea class="form-control" v-model="text"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="mt32">
             <div class="toggle" :class="{'toggle-inactive': !imageToggle}">
                 <h3 class="section-title-2 white mb0">Images ({{ images.length }})
                     <i class="material-icons" @click="toggleImage">{{ imageToggle ? 'keyboard_arrow_up':
@@ -112,8 +126,10 @@ export default {
             clientServiceAddOn: '',
             images: [],
             imagesSelected: [],
-            imageToggle: true,
+            imageToggle: false,
             showUploadImageModal: false,
+            textToggle: true,
+            text: '',
             videos: [],
             videosSelected: [],
             videoToggle: false
@@ -169,6 +185,7 @@ export default {
         initialiseResources() {
             this.videosSelected = this.$parent.clientServiceAddOn.Videos.map(v => v);
             this.imagesSelected = this.$parent.clientServiceAddOn.Images.map(i => i);
+            this.text = this.$parent.clientServiceAddOn.Text;
         },
         selectImage(img) {
             let index = this.imagesSelected.indexOf(img._id);
@@ -205,7 +222,8 @@ export default {
                         await instance.put('api/serviceaddons/update', {
                             serviceaddon: this.$route.query.clientaddon,
                             images: this.imagesSelected,
-                            videos: this.videosSelected
+                            videos: this.videosSelected,
+                            text: this.text
                         });
                         this.$parent.isLoading = false;
                         this.$swal({

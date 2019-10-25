@@ -2,10 +2,10 @@
     <section class="transactions bg--grey">
         <LoaderModal :showloader="isLoading" message="Please wait while we fetch the data..."></LoaderModal>
         <div class="container">
-            <h3 class="section-title-2 mb24">Transaction Details</h3>
+            <h3 class="section-title-2 mb24">Transaction History</h3>
             <div class="transactions-wrapper">
                 <div v-if="!isLoading && transactions.length === 0" class="no-data">
-                    <p class="lead">No transactions has been added</p>
+                    <p class="lead">No transactions found.</p>
                 </div>
                 <div class="transaction-table" v-else>
                     <b-table striped hover :items="transactions" :fields="fields" :per-page="perPage" :current-page="currentPage" responsive id="transaction-table"></b-table>

@@ -38,7 +38,7 @@ import Facebook from '@/webapp/common/auth/Facebook';
 import LoaderModal from '@/webapp/common/modals/LoaderModal';
 import ForgotPassword from '@/webapp/common/modals/ForgotPassword.vue';
 
-import instance from '@/api';
+import instance from '@/api/login';
 import { mapGetters } from 'vuex';
 
 export default {
