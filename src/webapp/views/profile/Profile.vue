@@ -158,8 +158,8 @@ export default {
         };
     },
     methods: {
-        checkPhoneValid(val) {
-            this.isPhoneValid = val.isValid;
+        checkPhoneValid(val, obj) {
+            this.isPhoneValid = obj.isValid;
         },
         close(val) {
             this.showNewCard = false;
@@ -286,6 +286,7 @@ export default {
                         CurrentPassword: this.currentPassword,
                         NewPassword: this.newPassword
                     };
+                    this.isLoading = true;
                     try {
                         let result = await instance.put('api/client/profile', requestObj);
 
@@ -295,14 +296,16 @@ export default {
                             user.Owner.Title = result.data.Name;
                             user.UserName = result.data.Email;
                             localStorage.setItem('user', JSON.stringify(user));
-                            this.$store.state.user = user;
-                            this.closeEditMode();
+                            this.$store.state.user = JSON.parse(JSON.stringify(user));
+                            this.mode = 'VIEW';
+                            this.isLoading = false;
                             this.$swal({
                                 title: 'Profile Updated',
                                 text: 'Your profile was successfully updated',
                                 type: 'success'
                             });
                         } else if (result.status === 205) {
+                            this.isLoading = false;
                             this.$swal({
                                 title: 'Profile Updated',
                                 text: 'Your profile was successfully updated. Your email address has changed. Please verify your updated email address',
@@ -314,6 +317,7 @@ export default {
                             });
                         }
                     } catch (err) {
+                        this.isLoading = false;
                         this.$swal({
                             title: 'Error',
                             text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
