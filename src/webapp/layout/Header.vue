@@ -9,7 +9,7 @@
                         </router-link>
                     </div>
                 </div>
-                <div class="col-lg-7">
+                <div class="col-lg-8">
                     <ul class="menu" :class="{'nav-menu': showMenu}">
                         <li>
                             <router-link tag="a" to="/#book-now">Book Now</router-link>
@@ -28,7 +28,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-2 ipad-view">
                     <ul class="auth-wrapper" :class="{'nav-menu': showMenu}">
                         <li v-if="!isLoggedIn">
                             <a @click="chooseAuth('login')">Login</a>
@@ -292,6 +292,19 @@ nav {
     }
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
         padding: 0;
+    }
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+        .ipad-view {
+            padding: 0 15px 0 0;
+            ul.auth-wrapper {
+                li {
+                    margin-right: 23px;
+                    &:last-child {
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
     }
 }
 </style>

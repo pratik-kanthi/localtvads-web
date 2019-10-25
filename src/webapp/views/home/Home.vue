@@ -424,6 +424,12 @@ export default {
         @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
             margin-top: -25%;
         }
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            .content {
+                padding: 24px;
+            }
+        }
     }
     .how-it-works {
         .works-wrapper {
