@@ -42,6 +42,22 @@ export const routes = [
         }
     },
     {
+        path: '/my-addons',
+        name: 'MyAddons',
+        component: () => {
+            return import (/* webpackChunkName: "post-login" */'@/webapp/views/profile/MyAddons');
+        },
+        beforeEnter: (to, from, next) => {
+            if (store.getters.isLoggedIn) {
+                next();
+            } else {
+                next({
+                    name: 'Home'
+                });
+            }
+        }
+    },
+    {
         path: '/booking-flow',
         name: 'BookingFlow',
         component: () => {

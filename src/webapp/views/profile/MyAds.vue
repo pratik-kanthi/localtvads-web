@@ -13,10 +13,15 @@
                     <div class="row ads-wrapper" v-for="ad in clientAds" :key="ad._id">
                         <div class="col-sm-6">
                             <div class="ad-video">
-                                <div class="background-image-holder ad-bg">
+                                <div class="vedio" v-if="ad.ClientAd && ad.ClientAd.VideoUrl">
+                                    <video :id="ad.ClientAd._id" :src="getVideoUrl(ad.ClientAd.VideoUrl)" width="100%" height="100%" @loadedmetadata="forwardVideo(ad.ClientAd._id)"></video>
                                     <div class="action">
-                                        <a v-if="ad.ClientAd && ad.ClientAd.VideoUrl" @click="openVideo(ad.ClientAd.VideoUrl)"><img src="@/assets/images/play.png" alt="" class="play"></a>
-                                        <button v-else class="btn btn-white" @click="goToVideoUpload(ad._id)">Upload Your Ad</button>
+                                        <a @click="openVideo(ad.ClientAd.VideoUrl)"><img src="@/assets/images/play.png" alt="" class="play"></a>
+                                    </div>
+                                </div>
+                                <div class="background-image-holder ad-bg" v-else>
+                                    <div class="action">
+                                        <button class="btn btn-white" @click="goToVideoUpload(ad._id)">Upload Your Ad</button>
                                     </div>
                                 </div>
                             </div>
@@ -97,6 +102,10 @@ export default {
         closeVideo() {
             this.displayAdVideo = false;
         },
+        forwardVideo(id) {
+            let elem = document.getElementById(id);
+            elem.currentTime = 2;
+        },
         async getClientAds() {
             try {
                 this.isLoading = true;
@@ -159,7 +168,10 @@ export default {
                 width: 100%;
                 height: 240px;
                 position: relative;
-
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                background-color: $black;
                 .ad-bg {
                     background-image: url('../../../assets/images/ad-video-bg.jpg');
                 }
@@ -206,6 +218,16 @@ export default {
         }
         .loading {
             width: 100px;
+        }
+    }
+    @media (max-width: 767px) {
+        .profile-ads {
+            margin: 0;
+            padding: 0;
+            box-shadow: none;
+            .plan-details {
+                margin-top: 16px;
+            }
         }
     }
 }

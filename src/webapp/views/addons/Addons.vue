@@ -29,7 +29,7 @@ export default {
                 let result = await instance.get('api/serviceaddons/getone?serviceaddon=' + this.$route.query.clientaddon);
                 this.clientServiceAddOn = result.data;
                 this.$parent.isLoading = false;
-                if (this.clientServiceAddOn && this.clientServiceAddOn.IsUploadRequired && (!this.clientServiceAddOn.Images.length || !this.clientServiceAddOn.Videos.length)) {
+                if (this.clientServiceAddOn && this.clientServiceAddOn.ServiceAddOn.IsUploadRequired && (!this.clientServiceAddOn.Images.length && !this.clientServiceAddOn.Videos.length)) {
                     this.currentStage = SelectMedia;
                 } else {
                     this.currentStage = Review;

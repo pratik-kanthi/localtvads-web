@@ -1,49 +1,69 @@
 <template>
-    <section class="transactions bg--grey">
+    <section class="bg--grey myaddons">
         <LoaderModal :showloader="isLoading" message="Please wait while we fetch the data..."></LoaderModal>
         <div class="container">
-            <h3 class="section-title-2 mb24">Transaction Details</h3>
-            <div class="transactions-wrapper">
-                <div v-if="!isLoading && transactions.length === 0" class="no-data">
-                    <p class="lead">No transactions has been added</p>
+            <h3 class="section-title-2 mb24">My Addons</h3>
+            <div class="addons-wrapper">
+                <div v-if="!isLoading && addons.length === 0" class="no-data">
+                    <p class="lead">No addon has been added</p>
                 </div>
-                <div class="transaction-table" v-else>
-                    <b-table striped hover :items="transactions" :fields="fields" :per-page="perPage" :current-page="currentPage" responsive id="transaction-table"></b-table>
-                    <b-pagination v-model="currentPage" :total-rows="transactions.length" :per-page="perPage" first-text="First" prev-text="Prev" next-text="Next" last-text="Last" aria-controls="transaction-table" align="right" class="pt0 pb16 pr16"></b-pagination>
+                <div class="addons-table" v-else>
+                    <b-table :items="addons" :fields="fields" :per-page="perPage" :current-page="currentPage" :sort-by.sync="sortBy" :sort-desc="true" responsive id="addons-table">
+                        <template v-slot:cell(ClientId)="data">
+                            <button class="btn btn-sm btn-link pl0 pr0" @click="goToContentUpload(data.value)">View Details</button>
+                        </template>
+                    </b-table>
+                    <b-pagination v-model="currentPage" :total-rows="addons.length" :per-page="perPage" first-text="First" prev-text="Prev" next-text="Next" last-text="Last" aria-controls="addons-table" align="right" class="pt0 pb16 pr16"></b-pagination>
                 </div>
             </div>
         </div>
     </section>
 </template>
-
 <script>
 import { mapGetters } from 'vuex';
 import instance from '@/api';
 export default {
-    name: 'Transactions',
+    name: 'MyAddons',
     data() {
         return {
             isLoading: false,
-            fields: ['DateTime', 'ReferenceID', 'Details', 'Status', 'Total'],
-            transactions: [],
+            sortBy: 'Date',
+            fields: [{
+                key: 'Date',
+                sortable: false
+            }, {
+                key: 'Name',
+                sortable: false
+            }, {
+                key: 'ClientId',
+                label: 'Action',
+                sortable: false
+            }],
+            addons: [],
             perPage: 15,
             currentPage: 1
         };
     },
     methods: {
+        goToContentUpload(id) {
+            this.$router.push({
+                name: 'Addons',
+                query: {
+                    clientaddon: id
+                }
+            });
+        },
         ...mapGetters(['getUser'])
     },
     async created() {
         this.isLoading = true;
         try {
-            let result = await instance.get('api/client/transactions?client=' + this.getUser().Owner._id);
-            this.transactions = result.data.map((item) => {
+            let result = await instance.get('api/serviceaddons/client/all?client=' + this.getUser().Owner._id);
+            this.addons = result.data.map((item) => {
                 return {
-                    DateTime: this.moment(item.DateTime).format('DD/MM/YYYY HH:mm'),
-                    ReferenceID: item.ReferenceId,
-                    Details: item.ChannelPlan && item.ChannelPlan.Channel ? (item.ChannelPlan.Channel.Name + ', ' + item.ChannelPlan.AdSchedule.Name) : ('Add On - ' + item.ServiceAddOn.Name),
-                    Status: item.Status.substring(0, 1).toUpperCase() + item.Status.substring(1),
-                    Total: '£' + item.TotalAmount.toFixed(2)
+                    Date: this.moment(item.DateTime).format('DD/MM/YYYY'),
+                    Name: item.ServiceAddOn.Name + ' ' + item.ServiceAddOn.Description,
+                    ClientId: item._id
                 };
             });
             this.isLoading = false;
@@ -60,17 +80,17 @@ export default {
 };
 </script>
 
-<style lang="scss" scopped>
-.transactions {
+<style lang="scss">
+.myaddons {
     min-height: calc(100vh - 80px);
-    .transactions-wrapper {
+    .addons-wrapper {
         background-color: $white;
         border-radius: 8px;
         box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
         .no-data {
             padding: 40px;
         }
-        .transaction-table {
+        .addons-table {
             table {
                 border-collapse: collapse;
                 border-spacing: 0 5px;
@@ -80,7 +100,7 @@ export default {
                         background-color: $brand-primary;
                         color: $white;
                         th {
-                            border: none;
+                            border: none !important;
                             font-size: 16px;
                             font-weight: 500;
                             font-family: $font-family-heading;
