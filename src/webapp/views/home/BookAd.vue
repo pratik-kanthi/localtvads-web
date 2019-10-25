@@ -18,7 +18,7 @@
             </div>
             <div class="form-group">
                 <label for="" class="text-white">Start Date</label>
-                <flat-pickr v-model="startDate" :config="{ ...config, disable: disabledDates}" class="form-control datepicker no-border" placeholder="Select starting date" :disabled="!broadcastLocation || !adLength" ref="calendar"></flat-pickr>
+                <flat-pickr v-model="startDate" :config="config" class="form-control datepicker no-border" placeholder="Select starting date" :disabled="!broadcastLocation || !adLength" ref="calendar"></flat-pickr>
             </div>
             <div class="action">
                 <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Lets Go!</button>
