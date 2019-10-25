@@ -30,7 +30,7 @@
                                             <div class="bold">{{ getUser().Owner.Title }}</div>
                                         </div>
                                         <div v-else>
-                                            <input type="text" class="form-control" v-model="getUser().Owner.Title">
+                                            <input type="text" class="form-control" v-model="$store.state.user.Owner.Title">
                                         </div>
                                     </div>
 
@@ -40,7 +40,7 @@
                                             <div class="bold">{{ getUser().Owner.Email }}</div>
                                         </div>
                                         <div v-else>
-                                            <input type="text" :disabled="isSocialAccount" class="form-control" v-model="getUser().Owner.Email">
+                                            <input type="text" :disabled="isSocialAccount" class="form-control" v-model="$store.state.user.Owner.Email">
                                         </div>
                                     </div>
 
@@ -51,7 +51,7 @@
                                             <div v-else>--</div>
                                         </div>
                                         <div v-else>
-                                            <input type="number" class="form-control" v-model="getUser().Owner.Phone">
+                                            <vue-tel-input v-model="$store.state.user.Owner.Phone" @input="checkPhoneValid" class="form-control"></vue-tel-input>
                                         </div>
                                     </div>
 
@@ -70,12 +70,12 @@
                                     <p v-if="mode==='VIEW'" class="text-right">
                                         <a @click="openEditMode()" class="alert mb0">Edit Profile</a>
                                     </p>
-                                    <p v-if="mode==='EDIT'" class="text-right">
-                                        <a @click="closeEditMode()" class="alert mb0">Cancel</a>
-                                    </p>
-                                    <p v-if="mode==='EDIT'" class="text-right">
-                                        <a @click="updateProfile()" class="alert mb0">Save</a>
-                                    </p>
+                                    <div v-if="mode==='EDIT'" class="text-right mb16">
+                                        <button class="btn btn-secondary" @click="closeEditMode()">Cancel</button>
+                                    </div>
+                                    <div v-if="mode==='EDIT'" class="text-right">
+                                        <button class="btn btn-primary" @click="updateProfile()" :disabled="isProceedable">Save Changes</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -117,20 +117,22 @@
             </div>
         </div>
         <ImageUpload v-if="uploadImageModal" @cancel="cancelModal" @close="hideProfileImageModal" :show="true" :config="config" :data="user"></ImageUpload>
+        <LoaderModal :showloader="isLoading" message="Please wait while we update your profile"></LoaderModal>
     </section>
-
 </template>
 <script>
 import { mapGetters } from 'vuex';
 import instance from '@/api';
 import NewCardModal from '@/webapp/common/modals/NewCardModal';
 import ImageUpload from '@/e9_components/components/ImageUpload';
+import LoaderModal from '@/webapp/common/modals/LoaderModal';
 
 export default {
     name: 'Profile',
     components: {
         NewCardModal,
-        ImageUpload
+        ImageUpload,
+        LoaderModal
     },
     data() {
         return {
@@ -139,9 +141,9 @@ export default {
             currentPassword: '',
             newPassword: '',
             showNewCard: false,
+            isPhoneValid: true,
             mode: 'VIEW',
             config: {
-                aspectRatio: 1,
                 minWidth: 64,
                 api: 'api/image?owner=' + this.getUser().Owner.Type + '&ownerid=' + this.getUser().Owner._id + '&attribute=ImageUrl',
                 maxSize: 5
@@ -150,10 +152,14 @@ export default {
                 name: 'profile_image'
             },
             uploadImageModal: false,
-            isLoading: false
+            isLoading: false,
+            isSocialAccount: false
         };
     },
     methods: {
+        checkPhoneValid(val) {
+            this.isPhoneValid = val.isValid;
+        },
         close(val) {
             this.showNewCard = false;
             if (val) {
@@ -259,47 +265,62 @@ export default {
         closeEditMode() {
             this.mode = 'VIEW';
         },
-        async updateProfile() {
-            let user = this.getUser();
+        updateProfile() {
+            this.$swal({
+                title: 'Are you sure?',
+                text: 'Your profile will be updated',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Confirm',
+            }).then(async (isConfirm) => {
+                if (isConfirm.value) {
+                    let user = this.getUser();
+                    let requestObj = {
+                        AuthorisationScheme: user.AuthorisationScheme,
+                        UserId: user.UserId,
+                        Title: user.Owner.Title,
+                        Phone: user.Owner.Phone,
+                        Email: user.Owner.Email,
+                        CurrentPassword: this.currentPassword,
+                        NewPassword: this.newPassword
+                    };
+                    try {
+                        let result = await instance.put('api/client/profile', requestObj);
 
-            let requestObj = {
-                AuthorisationScheme: user.AuthorisationScheme,
-                UserId: user.UserId,
-                Title: user.Owner.Title,
-                Phone: user.Owner.Phone,
-                Email: user.Owner.Email,
-                CurrentPassword: this.currentPassword,
-                NewPassword: this.newPassword
-            };
-            try {
-                let result = await instance.put('api/client/profile', requestObj);
-
-                if (result.status == 200) {
-                    localStorage.setItem('user', JSON.stringify(result.data));
-                    this.closeEditMode();
-                    this.$swal({
-                        title: 'Profile Updated',
-                        text: 'Your profile was successfully updated',
-                        type: 'success'
-                    });
-                } else if (result.status == 205) {
-                    this.$swal({
-                        title: 'Profile Updated',
-                        text: 'Your profile was successfully updated. Your email address has changed. Please verify your updated email address',
-                        type: 'success'
-                    }).then(async isConfirm => {
-                        if (isConfirm.value) {
-                            this.logout();
+                        if (result.status === 200) {
+                            user.Owner.Email = result.data.Email;
+                            user.Owner.Phone = result.data.Phone;
+                            user.Owner.Title = result.data.Name;
+                            user.UserName = result.data.Email;
+                            localStorage.setItem('user', JSON.stringify(user));
+                            this.$store.state.user = user;
+                            this.closeEditMode();
+                            this.$swal({
+                                title: 'Profile Updated',
+                                text: 'Your profile was successfully updated',
+                                type: 'success'
+                            });
+                        } else if (result.status === 205) {
+                            this.$swal({
+                                title: 'Profile Updated',
+                                text: 'Your profile was successfully updated. Your email address has changed. Please verify your updated email address',
+                                type: 'success'
+                            }).then(async isConfirm => {
+                                if (isConfirm.value) {
+                                    this.logout();
+                                }
+                            });
                         }
-                    });
+                    } catch (err) {
+                        this.$swal({
+                            title: 'Error',
+                            text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                            type: 'error'
+                        });
+                        console.error(err);
+                    }
                 }
-            } catch (err) {
-                this.$swal({
-                    title: 'Error',
-                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error'
-                });
-            }
+            });
         },
         showProfileImageModal() {
             this.uploadImageModal = true;
@@ -324,6 +345,9 @@ export default {
     computed: {
         getProfileImageUrl() {
             return this.GOOGLE_BUCKET_ENDPOINT + this.getUser().Owner.ImageUrl;
+        },
+        isProceedable() {
+            return !this.getUser().Owner.Title || !this.getUser().Owner.Email || (!this.isPhoneValid && this.getUser().Owner.Phone !== '');
         }
     },
     events: {
@@ -442,4 +466,13 @@ export default {
         }
     }
 }
+</style>
+<style lang="scss">
+    .vti{
+        &__dropdown {
+            &:hover {
+                background-color: transparent !important;
+            }
+        }
+    }
 </style>

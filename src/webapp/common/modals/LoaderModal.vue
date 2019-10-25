@@ -32,7 +32,7 @@ export default {
         top: 0;
         left: 0;
         right: 0;
-        z-index:10;
+        z-index:1041;
         .overlay {
             opacity: 0.95;
             position: absolute;

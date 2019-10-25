@@ -7,7 +7,7 @@
             <div class="profile-ads">
                 <h3 class="section-title-2 mb24">My Ad Plans</h3>
                 <div v-if="!isLoading && clientAds.length === 0">
-                    <p class="lead">No ads has been added</p>
+                    <p class="lead">No ads have been added</p>
                 </div>
                 <div v-else>
                     <div class="row ads-wrapper" v-for="ad in clientAds" :key="ad._id">

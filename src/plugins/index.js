@@ -1,5 +1,21 @@
-import './vue-cookies';
-import './bootstrap-vue';
-import './vue-sweetalert';
-import './vue-scroll-lock';
-import './vue-agile';
+import Vue from 'vue';
+import VueCookies from 'vue-cookies';
+import io from 'socket.io-client';
+import VueAgile from 'vue-agile';
+import VueTelInput from 'vue-tel-input';
+import { ModalPlugin } from 'bootstrap-vue';
+import { TablePlugin } from 'bootstrap-vue';
+import { PaginationPlugin } from 'bootstrap-vue';
+import VScrollLock from 'v-scroll-lock';
+import VueSweetalert2 from 'vue-sweetalert2';
+
+Vue.use(VueCookies);
+Vue.prototype.io = io;
+Vue.use(VueAgile);
+Vue.use(ModalPlugin);
+Vue.use(TablePlugin);
+Vue.use(PaginationPlugin);
+Vue.use(VueTelInput);
+Vue.use(VScrollLock);
+Vue.use(VueSweetalert2);
+Vue.use(VueTelInput);

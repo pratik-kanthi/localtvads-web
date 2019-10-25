@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showCropper" width="700" persistent no-close-on-esc no-close-on-backdrop hide-footer data-app>
+    <b-modal v-model="showCropper" width="700" persistent no-close-on-esc no-close-on-backdrop hide-footer data-app size="lg">
         <button slot="modal-header-close" @click="cancel" class="close">×</button>
         <div>
             <h4 class="section-subtitle mt0 mb8">1. Choose File</h4>
@@ -78,7 +78,7 @@ export default {
                     }
                 };
                 xhr.onerror = () => {
-                    this.loading = false;
+                    this.$parent.isLoading = false;
                 };
                 xhr.send(formData);
             });
@@ -123,14 +123,14 @@ export default {
             this.position = coordinates;
         },
         async uploadFull() {
-            this.loading = true;
+            this.$parent.isLoading = true;
             this.data.name = this.$refs.fileUpload.files[0].name;
             let formData = new window.FormData();
             formData.append('file', this.upload.chosen);
             formData.append('document', JSON.stringify(this.data));
             try {
                 let result = await this.callAPI(formData);
-                this.loading = false;
+                this.$parent.isLoading = false;
                 this.close(JSON.parse(result));
                 this.$swal({
                     title: 'Uploaded',
@@ -138,7 +138,7 @@ export default {
                     type: 'success',
                 });
             } catch (err) {
-                this.loading = false;
+                this.$parent.isLoading = false;
                 this.$swal({
                     title: 'Error',
                     text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
@@ -147,7 +147,7 @@ export default {
             }
         },
         async uploadCropped() {
-            this.loading = true;
+            this.$parent.isLoading = true;
             this.data.name = this.$refs.fileUpload.files[0].name;
             let formData = new window.FormData();
             formData.append('file', this.upload.chosen);
@@ -163,7 +163,7 @@ export default {
             formData.append('document', JSON.stringify(bodyObj));
             try {
                 let result = await this.callAPI(formData);
-                this.loading = false;
+                this.$parent.isLoading = false;
                 this.close(JSON.parse(result));
                 this.$swal({
                     title: 'Uploaded',
@@ -172,7 +172,7 @@ export default {
                     confirmButtonColor: '#ff6500'
                 });
             } catch (err) {
-                this.loading = false;
+                this.$parent.isLoading = false;
                 this.$swal({
                     title: 'Error',
                     text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',

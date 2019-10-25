@@ -9,7 +9,7 @@ export default new Router({
     mode: 'history',
     scrollBehavior(to, from, savedPosition) {
         if (to.hash) {
-            return { selector: to.hash };
+            return window.scrollTo({ top: document.querySelector(to.hash).offsetTop, behavior: 'smooth' });
         } else if (savedPosition) {
             return savedPosition;
         } else {
