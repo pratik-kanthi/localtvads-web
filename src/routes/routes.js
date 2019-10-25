@@ -53,15 +53,6 @@ export const routes = [
         name: 'Addons',
         component: () => {
             return import (/* webpackChunkName: "post-login" */'@/webapp/views/addons/Addons.vue');
-        },
-        beforeEnter: (to, from, next) => {
-            if (store.getters.isLoggedIn) {
-                next();
-            } else {
-                next({
-                    name: 'Home'
-                });
-            }
         }
     },
     {
