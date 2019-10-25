@@ -279,7 +279,7 @@ export default {
     }
     /* iPad Landscape */
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-        padding: 40px 24px;
+        padding: 40px 0;
         .form-group {
             width: 240px;
         }

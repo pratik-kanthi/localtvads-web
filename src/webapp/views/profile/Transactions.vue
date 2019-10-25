@@ -8,7 +8,11 @@
                     <p class="lead">No transactions found.</p>
                 </div>
                 <div class="transaction-table" v-else>
-                    <b-table striped hover :items="transactions" :fields="fields" :per-page="perPage" :current-page="currentPage" responsive id="transaction-table"></b-table>
+                    <b-table striped hover :items="transactions" :fields="fields" :per-page="perPage" :current-page="currentPage" responsive id="transaction-table">
+                        <template v-slot:cell(Action)="data">
+                            <button class="btn btn-sm btn-link pl0 pt0 pr0 t-m">Download</button>
+                        </template>
+                    </b-table>
                     <b-pagination v-model="currentPage" :total-rows="transactions.length" :per-page="perPage" first-text="First" prev-text="Prev" next-text="Next" last-text="Last" aria-controls="transaction-table" align="right" class="pt0 pb16 pr16"></b-pagination>
                 </div>
             </div>
@@ -24,7 +28,7 @@ export default {
     data() {
         return {
             isLoading: false,
-            fields: ['DateTime', 'ReferenceID', 'Details', 'Status', 'Total'],
+            fields: ['DateTime', 'ReferenceID', 'Details', 'Status', 'Total', 'Action'],
             transactions: [],
             perPage: 15,
             currentPage: 1

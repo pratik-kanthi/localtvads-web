@@ -5,7 +5,7 @@
                 <div class="addons">
                     <h4 class="brand-secondary mb32">Choose Your Addon</h4>
                     <div class="row addons-wrapper mb24">
-                        <div class="col-lg-6" v-for="addon in addons" :key="addon._key">
+                        <div class="col-lg-6 mb16" v-for="addon in addons" :key="addon._key">
                             <div class="addon" :class="{ 'active-addon': $parent.serviceAddOn._id === addon._id }">
                                 <div class="name">
                                     <h5>{{ addon.Name }}</h5>
@@ -177,6 +177,29 @@ export default {
                     background: transparent;
                     border: 1px solid $error !important;
                     color: $error;
+                }
+            }
+        }
+    }
+    @media (max-width: 767px) {
+        .addons {
+            margin: 0;
+            .action {
+                .btn {
+                    margin-bottom: 16px;
+                    min-width: 100% !important;
+                }
+            }
+        }
+    }
+    /* iPad Portrait */
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+        .addons {
+            .action {
+                padding: 24px 24px 20px;
+                .btn {
+                    margin-bottom: 16px;
+                    min-width: 100% !important;
                 }
             }
         }
