@@ -16,7 +16,7 @@
                 </div>
                 <h6 class="hero-text mb8">{{ coupon.Name }}</h6>
 
-                <p class="lead t-s mb0">{{ coupon.Description }}</p>
+                <p class="lead t-s mb8 lh24">{{ coupon.Description }}</p>
                 <p class="t-xs  text-muted mb16">Use code {{ coupon.CouponCode }} & get discount on the base subscription amount.</p>
                 <button class="btn btn-primary btn-bordered" @click="applyCoupon(coupon.CouponCode)" :disabled="isLoading">Apply Coupon</button>
             </div>
