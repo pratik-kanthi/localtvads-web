@@ -53,7 +53,8 @@ export default {
                 onMonthChange: () => {
                     this.sDate = new this.moment().year(this.$refs.calendar.fp.currentYear).month(this.$refs.calendar.fp.currentMonth).date(1);
                     this.loadScheduleAvailability();
-                }
+                },
+                disable: []
             },
             dateValidations: [],
             channels: [],
@@ -84,6 +85,7 @@ export default {
                 let result = await instance.get('/api/channel/availability?channel=' + this.broadcastLocation + '&seconds='
                     + this.adLength + '&startdate=' + this.sDate.format('YYYY-MM-DD') + '&enddate=' + this.sDate.endOf('month').format('YYYY-MM-DD'));
                 let totalActiveSchedules = result.data.totalActiveSchedules;
+                let disableDates = [];
                 for (let key in result.data.dates) {
                     if (result.data.dates.hasOwnProperty(key) && result.data.dates[key].length === totalActiveSchedules) {
                         let counter = 0;
@@ -93,10 +95,12 @@ export default {
                             }
                             counter++;
                         }
-                        if (counter === totalActiveSchedules)
-                            this.disabledDates.push(this.moment(key, 'YYYY-MM-DD').format('DD/MM/YYYY'));
+                        if (counter === totalActiveSchedules) {
+                            disableDates.push(this.moment(key, 'YYYY-MM-DD').format('DD/MM/YYYY'));
+                        }
                     }
                 }
+                this.$refs.calendar.fp.set('disable', disableDates);
                 this._switchShimmer(false);
             } catch (err) {
                 this._switchShimmer(false);
