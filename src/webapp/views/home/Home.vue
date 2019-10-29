@@ -24,17 +24,22 @@
                             <span class="pl48">Book your ad</span>
                         </h3>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 d-none d-sm-block d-md-block d-lg-block">
                         <div class="text-right">
                             <span class="mr16">Don't have an Ad?</span>
                             <router-link to="addons">
                                 <button class="btn btn-white btn-sm">Create your ad</button>
                             </router-link>
                         </div>
-
                     </div>
                 </div>
                 <BookAd></BookAd>
+                <div class="text-center d-block d-sm-none d-md-none d-lg-none">
+                    <div class="mb8">Don't have an Ad?</div>
+                    <router-link to="addons">
+                        <button class="btn btn-white btn-sm">Create your ad</button>
+                    </router-link>
+                </div>
             </div>
         </div>
         <ResetPassword v-if="$route.name === 'ResetPassword'"></ResetPassword>
@@ -402,6 +407,7 @@ export default {
             margin-top: -14%;
             .content {
                 margin-top: -1px;
+                padding: 24px;
             }
         }
         /* iPhone 6, 6S, 7 and 8 Portrait */

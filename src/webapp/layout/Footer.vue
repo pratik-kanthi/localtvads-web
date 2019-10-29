@@ -96,7 +96,7 @@ footer {
     }
     /* Mobile */
     @media (max-width: 767px) {
-        padding: 0;
+        padding: 16px 0;
         ul.menu {
             justify-content: flex-start;
             li {
@@ -106,7 +106,7 @@ footer {
     }
     /* iPad Portrait */
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-        padding: 0 24px;
+        padding: 24px;
         ul.menu {
             justify-content: space-between;
         }
