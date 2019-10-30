@@ -245,7 +245,7 @@ export default {
         }
     }
     @media (max-width: 767px) {
-        padding: 20px;
+        padding: 20px 0;
         .form-group {
             width: 100%;
             margin-bottom: 16px;
