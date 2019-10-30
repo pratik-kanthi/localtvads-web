@@ -386,7 +386,7 @@ export default {
         }
     }
     .content-area {
-        margin-top: -110px;
+        margin-top: -104px;
         position: relative;
         .content {
             border-radius: 6px;
