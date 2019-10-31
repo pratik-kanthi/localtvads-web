@@ -7,14 +7,14 @@
                         <div class="broadcast-location">
                             <label>Broadcast Location</label>
                             <select v-model="channelSelected" @change="getAvailableSlotsByChannel(false)">
-                                <option :value="channel._id" v-for="channel in channels" :key="channel._id">{{ channel.Name }}</option>
+                                <option :value="channel._id" v-for="channel in channels" :key="channel._id" :disabled="channel.Status !== 'LIVE'">{{ channel.Name + ((channel.Status !== 'LIVE') ? ' (Coming Soon)' : '') }}</option>
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4 col-lg-2">
+                    <div class="col-md-4 col-lg-3">
                         <div class="broadcast-start">
                             <label>Broadcast Start</label>
-                            <h5>{{ moment(slotStartDate, 'YYYY-MM-DD').format('MMM D, YYYY') }}</h5>
+                            <h5>{{ moment(slotStartDate, 'YYYY-MM-DD').format('MMMM D, YYYY') }}</h5>
                         </div>
                     </div>
                     <div class="col-md-4 col-lg-2">
@@ -31,14 +31,14 @@
                             <h5>6 months</h5>
                         </div>
                     </div>
-                    <div class="col-md-4 col-lg-1">
+                    <!-- <div class="col-md-4 col-lg-1">
                         <div class="recurring form-group mb0">
                             <label for="recurring" class="control-label">Recurring</label>
                             <input class="check" type="checkbox" name="recurring" id="recurring" v-model="isRenewal" />
                             <label class="check-label" for="recurring"></label>
                             <br class="clearfix">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-md-4 col-lg-2">
                         <div class="tolatcost">
                             <label>Total Cost</label>
@@ -60,7 +60,7 @@
                             <ul>
                                 <li v-for="(slot,key) in availableSlots" :key="key" @click="selectSlot(key, slot)" :class="{'active': slotStartDate === key}">
                                     <h5 class="date">{{ moment(key, 'YYYY-MM-DD').format('DD-MMM ddd') }}</h5>
-                                    <h4 class="amount" v-if="Object.keys(slot).length > 0">{{ slot[Object.keys(slot)[0]].TotalAmount | currency }}</h4>
+                                    <h4 class="amount" v-if="Object.keys(slot).length > 0">{{ slot[Object.keys(slot)[0]].TotalAmount/(getTotalSlotDuration/7) | currency }}<span class="t-s"> / week</span></h4>
                                     <h4 class="amount" v-else>-</h4>
                                 </li>
                             </ul>
@@ -98,10 +98,10 @@
                                         <p class="timing">{{ plan.AdSchedule.StartTime }} to {{ plan.AdSchedule.EndTime }}</p>
                                     </div>
                                     <div class="plan-amount">
-                                        <h4 class="amount">{{ plan.TotalAmount | currency }}
-                                            <span v-if="plan.TotalAmountWithoutDiscount !== plan.TotalAmount" class="t-s brand-primary strike-through">{{ plan.TotalAmountWithoutDiscount | currency }}</span>
+                                        <h4 class="amount">{{ plan.TotalAmount/(getTotalSlotDuration/7) | currency }}<span class="duration t-m thin">/ week</span>
+                                            <span v-if="plan.TotalAmountWithoutDiscount !== plan.TotalAmount" class="without-discount t-s brand-primary strike-through">{{ plan.TotalAmountWithoutDiscount/(getTotalSlotDuration/7) | currency }}</span>
                                         </h4>
-                                        <p class="weeks">for {{ getTotalSlotDuration / 7 }} weeks</p>
+                                        <p class="weeks"><span class="brand-primary">{{ plan.TotalAmount | currency }}</span> for {{ getTotalSlotDuration / 7 }} weeks</p>
                                     </div>
                                     <div class="features">
                                         <ul class="mb8">
@@ -155,7 +155,7 @@ export default {
             availableSlots: {},
             channels: [],
             channelSelected: this.$route.query.channel,
-            isRenewal: true,
+            isRenewal: false,
             seconds: [],
             secondSelected: this.$route.query.seconds,
             selectedSlot: {},
@@ -548,7 +548,22 @@ export default {
                                 font-size: 36px;
                                 margin-bottom: 4px;
                                 color: $brand-secondary;
-                                span {
+                                .duration {
+                                    position: absolute;
+                                    right: 30px;
+                                    top: 32px;
+                                    @media (max-width: 767px) {
+                                        position: relative;
+                                        right: inherit;
+                                        top: inherit;
+                                    }
+                                    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
+                                        position: relative;
+                                        right: inherit;
+                                        top: inherit;
+                                    }
+                                }
+                                .without-discount {
                                     position: absolute;
                                     right: 16px;
                                     &.strike-through {
@@ -558,7 +573,7 @@ export default {
                                 }
                             }
                             .weeks {
-                                font-size: 18px;
+                                font-size: 14px;
                                 margin-bottom: 0;
                             }
                         }

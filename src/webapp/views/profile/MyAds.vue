@@ -176,6 +176,14 @@ export default {
                     background-image: url('../../../assets/images/ad-video-bg.jpg');
                 }
 
+                .vedio {
+                    height: 100%;
+                    video {
+                        height: 240px;
+                        object-fit: cover;
+                    }
+                }
+
                 .action {
                     @include center(both);
                     .play {

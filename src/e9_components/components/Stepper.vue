@@ -22,7 +22,8 @@ export default {
         justify-content: space-around;
         align-items: center;
         width: 100%;
-        height: 100px;
+        height: 140px;
+        padding-top: 20px;
         &-item {
             position: relative;
             width: 100%;

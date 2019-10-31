@@ -5,8 +5,7 @@
                 <label for="" class="text-white">Broadcast location</label>
                 <select class="form-control" v-model="broadcastLocation" @change="loadSecondsbyChannel">
                     <option disabled selected hidden value="">Select Broadcast Location</option>
-                    <option :value="channel._id" v-for="channel in channels" :key="channel._id">{{ channel.Name }}
-                    </option>
+                    <option :value="channel._id" v-for="channel in channels" :key="channel._id" :disabled="channel.Status !== 'LIVE'">{{ channel.Name + ((channel.Status !== 'LIVE') ? ' (Coming Soon)' : '') }}</option>
                 </select>
             </div>
             <div class="form-group">
@@ -85,7 +84,7 @@ export default {
                 let result = await instance.get('/api/channel/availability?channel=' + this.broadcastLocation + '&seconds='
                     + this.adLength + '&startdate=' + this.sDate.format('YYYY-MM-DD') + '&enddate=' + this.sDate.endOf('month').format('YYYY-MM-DD'));
                 let totalActiveSchedules = result.data.totalActiveSchedules;
-                let disableDates = [];
+                let disableDates = [new Date];
                 for (let key in result.data.dates) {
                     if (result.data.dates.hasOwnProperty(key) && result.data.dates[key].length === totalActiveSchedules) {
                         let counter = 0;

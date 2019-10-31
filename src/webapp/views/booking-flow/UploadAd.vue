@@ -148,5 +148,13 @@ export default {
                 }
             }
         }
+        .video-wrapper {
+            height: 400px;
+            video {
+                height: 400px;
+                object-fit: contain;
+                background: #000;
+            }
+        }
     }
 </style>
