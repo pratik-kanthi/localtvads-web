@@ -65,14 +65,20 @@
             <div class="container">
                 <h3 class="section-title-2 text-center mb16">Latest Offers</h3>
                 <div class="underlined"></div>
-                <div class="offers mt48">
-                    <div class="offer" v-for="(offer,key) in offers" :key="key">
-                        <div class="offer-image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + offer.ImageUrl + ')'}"></div>
-                        <div class="offer-content">
-                            <h4 class="section-subtitle mb-3">{{ offer.Name }}</h4>
-                            <p class="text-clamp-2">{{ offer.Description }}</p>
+                <div class="offers-slider mt48">
+                    <agile :options="offersSliderOptions" v-if="offers.length > 0">
+                        <div class="slide" v-for="(offer,key) in offers" :key="key">
+                            <div class="offer">
+                                <div class="offer-image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + offer.ImageUrl + ')'}"></div>
+                                <div class="offer-content">
+                                    <h4 class="section-subtitle mb-3">{{ offer.Name }}</h4>
+                                    <p class="text-clamp-2">{{ offer.Description }}</p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                        <template slot="prevButton"><i class="material-icons">keyboard_arrow_left</i></template>
+                        <template slot="nextButton"><i class="material-icons">keyboard_arrow_right</i></template>
+                    </agile>
                 </div>
             </div>
         </section>
@@ -168,6 +174,30 @@ export default {
     data() {
         return {
             testimonials: testimonials,
+            offersSliderOptions: {
+                autoplay: true,
+                infinite: true,
+                autoplaySpeed: 5000,
+                slidesToShow: 3,
+                pauseOnHover: true,
+                dots: false,
+                responsive: [{
+                    breakpoint: 1199,
+                    settings: {
+                        slidesToShow: 3
+                    }
+                }, {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 2
+                    }
+                }, {
+                    breakpoint: 300,
+                    settings: {
+                        slidesToShow: 1
+                    }
+                }]
+            },
             sliderOptions: {
                 autoplay: true,
                 infinite: true,
@@ -300,7 +330,7 @@ export default {
     .page-header {
         background-image: url('../../../assets/images/home-cover.jpg');
         background-size: cover;
-        height: 400px;
+        height: 600px;
         background-repeat: no-repeat;
         background-position: center center;
         position: relative;
@@ -475,39 +505,37 @@ export default {
         }
     }
     .latest-offers {
-        .offers {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: space-evenly;
-            .offer {
-                background: $white;
-                border-radius: 10px;
-                width: 320px;
-                display: inline-block;
-                margin-bottom: 24px;
-                position: relative;
-                .offer-image {
-                    position: relative;
-                    border-top-left-radius: 10px;
-                    border-top-right-radius: 10px;
-                    height: 250px;
-                    width: 100%;
-                    background-size: cover;
-                    background-repeat: no-repeat;
-                }
-                .offer-content {
-                    padding: 24px 16px;
-                    text-align: center;
-                    p {
-                        font-size: 16px;
-                        color: #4a4a4a;
+        .offers-slider {
+            position: relative;
+            .slide {
+                .offer {
+                    background: $white;
+                    border-radius: 10px;
+                    width: 320px;
+                    margin: 80px 24px 40px;
+                    .offer-image {
+                        position: relative;
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px;
+                        height: 250px;
+                        width: 100%;
+                        background-size: cover;
+                        background-repeat: no-repeat;
                     }
-                }
-                small {
-                    position: absolute;
-                    bottom: 8px;
-                    right: 8px;
+                    .offer-content {
+                        padding: 24px 16px;
+                        text-align: center;
+                        height: 140px;
+                        p {
+                            font-size: 16px;
+                            color: #4a4a4a;
+                        }
+                    }
+                    small {
+                        position: absolute;
+                        bottom: 8px;
+                        right: 8px;
+                    }
                 }
             }
         }
