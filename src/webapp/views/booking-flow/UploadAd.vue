@@ -149,7 +149,7 @@ export default {
             }
         }
         .video-wrapper {
-            height: 400px;
+            height: auto;
             video {
                 height: 400px;
                 object-fit: contain;

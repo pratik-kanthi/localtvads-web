@@ -27,19 +27,23 @@ export const uploadMixin = {
                 duration = video.duration;
                 if (this.$parent.clientAdPlan && duration > this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds) {
                     this.$swal('Warning', 'Video duration exceeds ' + this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds + ' seconds. Please keep it within allowed duration', 'warning');
+                    this.upload.chosen = null;
                     return;
                 }
                 if (this.config.maxSize && this.upload.chosen.size > 1024 * 1024 * this.config.maxSize) {
                     this.$swal('Warning', 'File exceeds the minimum size of ' + this.config.maxSize + ' MB', 'warning');
+                    this.upload.chosen = null;
                     return;
                 }
                 if (this.config.allowedExtensions && this.config.allowedExtensions.indexOf(this.upload.chosen.name.substr(this.upload.chosen.name.lastIndexOf('.') + 1)) === -1) {
                     this.$swal('Warning', 'We accept only following file types : ' + this.config.allowedExtensions.join(', '), 'warning');
+                    this.upload.chosen = null;
                     return;
                 }
                 this.isValid = true;
+                this.videoUrl = video.src;
             };
-            this.videoUrl = URL.createObjectURL(this.upload.chosen);
+            video.src = URL.createObjectURL(this.upload.chosen);
         },
         cancelUpload() {
             this.upload.chosen = null;
