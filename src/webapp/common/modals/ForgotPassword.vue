@@ -41,18 +41,22 @@ export default {
     },
     methods: {
         cancel() {
-            this.$emit('cancel');
+            this.$store.commit('FORGOT_PASSWORD', false);
         },
         async forgotPasswordRequest() {
             try {
                 await instance.get(this.api + this.formData.email);
                 this.$router.push({ name: 'Home' }, () => { });
+                this.cancel();
                 this.$swal({
                     title: 'Check Your Email',
                     text: 'A reset link has been emailed to your address',
                     type: 'success',
-                    confirmButtonColor: '#ff6500'
+                    timer: 2000,
+                    showCancelButton: false,
+                    showConfirmButton: false
                 });
+
             } catch (err) {
                 this.$swal({
                     title: 'Error',

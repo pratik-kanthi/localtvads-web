@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import { mapGetters } from 'vuex';
 import instance from '@/api';
 import Card from 'card';
 export default {
@@ -95,7 +95,7 @@ export default {
         },
         async saveCard(owner, token) {
             try {
-                await instance.post('api/client/addcard',{client: owner, token: token});
+                await instance.post('api/client/addcard', { client: owner, token: token });
                 this.$swal({
                     title: 'Card saved',
                     text: 'Your card has been saved successfully.',
@@ -162,12 +162,12 @@ export default {
         isProceedable() {
             return (
                 this.name &&
-                this.cvv &&
-                this.cardNumber &&
-                this.cardNumber.length > 12 &&
-                this.cardNumber.length <= 19 &&
-                this.expiry &&
-                new Date(this.expiry.substring(this.expiry.indexOf('/') + 1), this.expiry.substring(0, 2))
+                    this.cvv &&
+                    this.cardNumber &&
+                    this.cardNumber.length > 12 &&
+                    this.cardNumber.length <= 19 &&
+                    this.expiry &&
+                    new Date(this.expiry.substring(this.expiry.indexOf('/') + 1), this.expiry.substring(0, 2))
             );
         }
     },

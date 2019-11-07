@@ -4,7 +4,7 @@
             <div class="heroslider">
 
                 <agile :options="herosliderOptions" v-if="heroslider.length > 0">
-                    <div class="slide" :v-for="hero in heroslider">
+                    <div class="slide" v-for="(hero,key) in heroslider" :key="key">
                         <div class="hero-wrapper pos-relative">
                             <div class="hero-image" :style="{'background-image': 'url(' + hero.ImageUrl + ')', 'height':'70vh','background-size':'cover'}"></div>
                             <div class="overlay-layer"></div>
@@ -49,7 +49,6 @@
             </div>
         </div>
         <ResetPassword v-if="$route.name === 'ResetPassword'"></ResetPassword>
-        <ForgotPassword v-if="$route.name ==='ForgotPassword'"></ForgotPassword>
         <section id="how-it-works" class="how-it-works">
             <div class="container">
                 <h3 class="section-title-2 text-center mb16">How it works</h3>
@@ -166,7 +165,6 @@
 <script>
 import BookAd from '@/webapp/views/home/BookAd.vue';
 import ResetPassword from '@/webapp/common/modals/ResetPassword.vue';
-import ForgotPassword from '@/webapp/common/modals/ForgotPassword.vue';
 import instance from '@/api';
 import testimonials from '@/assets/data/testimonials.json';
 import heroslider from '@/assets/data/slider.json';
@@ -175,8 +173,7 @@ export default {
     name: 'Home',
     components: {
         BookAd,
-        ResetPassword,
-        ForgotPassword
+        ResetPassword
     },
     data() {
         return {
@@ -439,7 +436,7 @@ export default {
         .content-area {
             margin-top: -104px;
             position: relative;
-            z-index: 2;
+            z-index: 0;
 
             .content {
                 border-radius: 6px;
