@@ -11,19 +11,19 @@
                 </div>
                 <div class="col-lg-8">
                     <ul class="menu" :class="{'nav-menu': showMenu}">
-                        <li>
+                        <li @click="toggleMenu">
                             <router-link tag="a" to="/#book-now">Book Now</router-link>
                         </li>
-                        <li>
+                        <li @click="toggleMenu">
                             <router-link tag="a" to="/#how-it-works">How it works</router-link>
                         </li>
-                        <li>
+                        <li @click="toggleMenu">
                             <router-link tag="a" to="/#offers">Offers</router-link>
                         </li>
-                        <li>
+                        <li @click="toggleMenu">
                             <router-link tag="a" to="/#about">About</router-link>
                         </li>
-                        <li>
+                        <li @click="toggleMenu">
                             <router-link tag="a" to="/#contact">Contact us</router-link>
                         </li>
                     </ul>
@@ -130,7 +130,6 @@ export default {
 
     .container-fluid {
         background-color: $brand-primary;
-        border-bottom: 3px solid $white;
         position: fixed;
         z-index: 1;
     }

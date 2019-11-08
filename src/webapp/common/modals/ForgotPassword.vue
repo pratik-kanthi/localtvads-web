@@ -52,16 +52,17 @@ export default {
                     title: 'Check Your Email',
                     text: 'A reset link has been emailed to your address',
                     type: 'success',
-                    timer: 2000,
                     showCancelButton: false,
-                    showConfirmButton: false
+                    showConfirmButton: true
                 });
 
             } catch (err) {
                 this.$swal({
                     title: 'Error',
                     text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error'
+                    type: 'error',
+                    showConfirmButton: false,
+                    timeout: 3000
                 });
                 console.error(err);
             }

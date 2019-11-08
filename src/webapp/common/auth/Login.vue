@@ -10,7 +10,7 @@
             <span class="content">or log in with email address</span>
         </div>
         <div v-else class="text-center mb16">
-            <span class="content">Your email address has been verified. Please login to continue.</span>
+            <span class="content p0">Your email address has been verified. Please login to continue.</span>
         </div>
         <form name="loginform">
             <div class="form-group">

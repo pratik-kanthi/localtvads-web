@@ -6,13 +6,13 @@
                 <agile :options="herosliderOptions" v-if="heroslider.length > 0">
                     <div class="slide" v-for="(hero,key) in heroslider" :key="key">
                         <div class="hero-wrapper pos-relative">
-                            <div class="hero-image" :style="{'background-image': 'url(' + hero.ImageUrl + ')', 'height':'70vh','background-size':'cover'}"></div>
+                            <div class="hero-image" :style="{'background-image': 'url(' + hero.ImageUrl + ')', 'height':'100%','background-size':'cover'}"></div>
                             <div class="overlay-layer"></div>
-                        </div>
-                        <div class="hero-content">
-                            <div class="container">
-                                <h2 class="hero-header">{{ hero.Header }}</h2>
-                                <p class="hero-desc">{{ hero.Desc }}</p>
+                            <div class="hero-content">
+                                <div class="container">
+                                    <h2 class="hero-header">{{ hero.Header }}</h2>
+                                    <p class="hero-desc">{{ hero.Desc }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -481,7 +481,7 @@ export default {
 
             /* iPhone x Portrait */
             @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
-                margin-top: -45%;
+                margin-top: -20%;
             }
 
             /* iPhone x Landscape */
@@ -544,39 +544,48 @@ export default {
             padding: 0;
 
             .heroslider {
-                .slide {
-                    .hero-wrapper {
-                        .overlay-layer {
-                            position: absolute;
-                            background-color: rgba(0, 0, 0, 0.7);
-                            top: 0;
-                            bottom: 0;
-                            left: 0;
-                            right: 0;
-                            z-index: 1;
-                        }
-                    }
+                .agile {
+                    .slide {
+                        .hero-wrapper {
+                            height: 70vh;
 
-                    .hero-content {
-                        width: 100%;
-                        @include center('vertical');
-                        color: $white;
-                        font-size: 24px;
-                        z-index: 3;
+                            .overlay-layer {
+                                position: absolute;
+                                background-color: rgba(0, 0, 0, 0.7);
+                                top: 0;
+                                bottom: 0;
+                                left: 0;
+                                right: 0;
+                                z-index: 1;
+                            }
 
-                        .hero-header {
-                            color: $brand-primary;
-
-
+                            /* iPhone x Portrait */
+                            @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
+                                height: 200px;
+                            }
                         }
 
-                        .hero-desc {
-                            @include text-clamp(3);
+                        .hero-content {
+                            width: 100%;
+                            @include center('vertical');
+                            color: $white;
+                            font-size: 24px;
+                            z-index: 3;
+
+                            .hero-header {
+                                color: $brand-primary;
+
+
+                            }
+
+                            .hero-desc {
+                                @include text-clamp(3);
+
+
+                            }
 
 
                         }
-
-
                     }
                 }
             }

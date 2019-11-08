@@ -23,6 +23,10 @@
 <script>
 import { mapGetters } from 'vuex';
 import instance from '@/api';
+import axios from 'axios';
+
+import VueCookies from 'vue-cookies';
+
 export default {
     name: 'Transactions',
     data() {
@@ -35,7 +39,24 @@ export default {
         };
     },
     methods: {
-        async downloadReceipt() {
+        async downloadReceipt(transaction) {
+            this.isLoading = true;
+            let result = await axios.get('http://localhost:8080/api/client/transaction/' + transaction, {
+                responseType: 'arraybuffer',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/pdf',
+                    'Authorization': 'bearer ' + VueCookies.get('token')
+                }
+            });
+
+            const url = window.URL.createObjectURL(new Blob([result.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'invoice_' + transaction + '.pdf'); //or any other extension
+            document.body.appendChild(link);
+            link.click();
+            this.isLoading = false;
 
         },
         ...mapGetters(['getUser'])

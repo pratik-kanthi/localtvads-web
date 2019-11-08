@@ -64,6 +64,7 @@
                                             <label class="ml0">New Password</label>
                                             <input type="password" class="form-control" v-model="newPassword" placeholder="Enter new password">
                                         </div>
+                                        <p class="mt16 mb16 t-s">Password must contain at least 8 characters with at least 1 capital letter, 1 small letter and 1 number</p>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -93,7 +94,7 @@
                                 <div class="row" v-for="(card,key) in savedCards" :key="key">
                                     <div class="col-sm-8">
                                         <div class="saved-card" @click="setPreferredCard(preferredCard)">
-                                            <div class="mr16">
+                                            <div class="radio-btn-tick mr16">
                                                 <input type="radio" v-model="preferredCard" :value="card._id">
                                                 <label></label>
                                             </div>
@@ -359,7 +360,17 @@ export default {
             return this.GOOGLE_BUCKET_ENDPOINT + this.getUser().Owner.ImageUrl;
         },
         isProceedable() {
-            return !this.getUser().Owner.Title || !this.getUser().Owner.Email || (!this.isPhoneValid && this.getUser().Owner.Phone !== '');
+            let flag = true;
+            if (this.currentPassword) {
+                if (!this.newPassword) {
+                    flag = false;
+                } else {
+                    if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/.test(this.newPassword))) {
+                        flag = false;
+                    }
+                }
+            }
+            return !this.getUser().Owner.Title || !this.getUser().Owner.Email || (!this.isPhoneValid && this.getUser().Owner.Phone !== '') || !flag;
         }
     },
     events: {

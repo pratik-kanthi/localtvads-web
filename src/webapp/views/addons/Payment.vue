@@ -261,274 +261,374 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.payment-wrapper {
-    padding: 24px 64px;
-    .booking-details {
-        height: 100%;
-        padding: 24px;
-        position: relative;
-        background-color: $white;
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-        &:after {
-            background: linear-gradient(-45deg, #ffffff 16px, transparent 0)
-                linear-gradient(45deg, #ffffff 16px, transparent 0) repeat-x
-                left bottom;
-            background-size: 32px 32px;
-            content: ' ';
-            display: block;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 32px;
-        }
-        img {
-            display: block;
-            max-width: 120px;
-            margin: 0 auto 32px;
-        }
-        .content {
-            margin-bottom: 32px;
-            .addon-title {
-                .desc {
-                    text-transform: lowercase;
-                }
-            }
-            .booking-items {
-                margin-bottom: 24px;
-                label {
-                    font-size: 14px !important;
-                    margin-bottom: 8px;
-                    color: #acacac;
-                }
-                ul.benefits {
-                    @include list-unstyled();
-                    li {
-                        font-size: 16px;
-                        font-weight: 500;
-                        margin-bottom: 8px;
-                        padding-left: 24px;
-                        font-family: $font-family-heading;
-                        position: relative;
-                        &:before {
-                            content: '';
-                            background-image: url('../../../assets/images/tick.svg');
-                            height: 16px;
-                            width: 16px;
-                            left: 0;
-                            top: 6px;
-                            background-size: cover;
-                            position: absolute;
-                            background-repeat: no-repeat;
-                        }
-                    }
-                }
-            }
-        }
-        .dashed-line {
+    .payment-wrapper {
+        padding: 24px 64px;
+
+        .booking-details {
+            height: 100%;
+            padding: 24px;
             position: relative;
-            height: 1px;
-            .line {
+            background-color: $white;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+
+            &:after {
+                background: linear-gradient(-45deg, #ffffff 16px, transparent 0) linear-gradient(45deg, #ffffff 16px, transparent 0) repeat-x left bottom;
+                background-size: 32px 32px;
+                content: ' ';
+                display: block;
                 position: absolute;
-                top: 0;
+                bottom: 0;
                 left: 0;
                 width: 100%;
-                height: 100%;
-                background-image: linear-gradient(
-                    to right,
-                    #223049 50%,
-                    transparent 50%
-                );
-                background-size: 32px 100%;
+                height: 32px;
             }
-        }
-        .total {
-            .taxes {
-                position: relative;
-                i {
-                    position: relative;
-                    top: 4px;
-                    left: 4px;
-                    font-size: 18px;
-                    color: $brand-primary;
-                    cursor: pointer;
-                }
-                .tooltip-info {
-                    width: 250px;
-                    position: absolute;
-                    left: 64px;
-                    color: $base;
-                    bottom: 6px;
-                    border-radius: 6px;
-                    background: #fff;
-                    padding: 8px 12px;
-                    box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
-                    font-size: 12px;
-                    .name {
-                        display: inline-block;
-                        width: 80%;
-                    }
-                    .value {
-                        display: inline-block;
-                        width: 20%;
-                    }
-                }
+
+            img {
+                display: block;
+                max-width: 120px;
+                margin: 0 auto 32px;
             }
-            h5 {
-                font-weight: 500;
-                line-height: 32px;
-                .amount {
-                    text-align: right !important;
-                }
-            }
-        }
-    }
-    .cards-wrapper {
-        background-color: $white;
-        border-radius: 8px;
-        padding: 24px;
-        height: 100%;
-        border: solid 1.4px #cecece;
-        .saved-cards {
-            border: 1px solid #4a90e2;
-            border-radius: 6px;
-            padding: 16px;
-            margin-bottom: 8px;
-            .cards {
-                max-height: 158px;
-                overflow-y: auto;
-                overflow-x: hidden;
-                input[type='radio'] {
-                    margin-left: 1px;
-                }
-                .card-title {
-                    margin-bottom: 20px;
-                    cursor: pointer;
-                    .radio-btn-dot {
-                        top: 2px;
-                    }
-                    span {
-                        font-family: $font-family-heading;
-                        font-size: 16px;
-                        font-weight: 500;
-                        color: rgba(0, 0, 0, 0.87);
+
+            .content {
+                margin-bottom: 32px;
+
+                .addon-title {
+                    .desc {
+                        text-transform: lowercase;
                     }
                 }
-                .card-info {
+
+                .booking-items {
                     margin-bottom: 24px;
-                    opacity: 0.5;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    z-index: 100;
-                    .radio-btn-tick {
-                        top: 4px;
-                    }
-                    span {
-                        letter-spacing: 2px;
+
+                    label {
+                        font-size: 14px !important;
+                        margin-bottom: 8px;
+                        color: #acacac;
                     }
 
-                    img {
-                        width: 56px;
-                        margin-right: 16px;
-                    }
-                    &.active {
-                        opacity: 1;
-                        span {
-                            font-weight: 600;
+                    ul.benefits {
+                        @include list-unstyled();
+
+                        li {
+                            font-size: 16px;
+                            font-weight: 500;
+                            margin-bottom: 8px;
+                            padding-left: 24px;
+                            font-family: $font-family-heading;
+                            position: relative;
+
+                            &:before {
+                                content: '';
+                                background-image: url('../../../assets/images/tick.svg');
+                                height: 16px;
+                                width: 16px;
+                                left: 0;
+                                top: 6px;
+                                background-size: cover;
+                                position: absolute;
+                                background-repeat: no-repeat;
+                            }
                         }
                     }
                 }
             }
-        }
-        .new-card {
-            border: 1px solid #4a90e2;
-            padding: 16px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            form {
-                padding: 16px 0;
-                .card-title {
-                    margin-bottom: 20px;
-                    cursor: pointer;
-                    .radio-btn-dot {
-                        top: 2px;
-                    }
-                    span {
-                        font-family: $font-family-heading;
-                        font-size: 16px;
-                        font-weight: 500;
-                        color: rgba(0, 0, 0, 0.87);
-                    }
-                }
 
-                label {
-                    font-size: 14px;
-                    font-weight: 300;
-                }
+            .dashed-line {
+                position: relative;
+                height: 1px;
 
-                .consents {
+                .line {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-image: linear-gradient(to right,
+                            #223049 50%,
+                            transparent 50%);
+                    background-size: 32px 100%;
+                }
+            }
+
+            .total {
+                .taxes {
                     position: relative;
+
                     i {
                         position: relative;
-                        top: 3px;
-                        left: 6px;
+                        top: 4px;
+                        left: 4px;
                         font-size: 18px;
                         color: $brand-primary;
                         cursor: pointer;
                     }
+
                     .tooltip-info {
                         width: 250px;
                         position: absolute;
-                        left: 126px;
-                        top: -80px;
+                        left: 64px;
+                        color: $base;
+                        bottom: 6px;
                         border-radius: 6px;
                         background: #fff;
                         padding: 8px 12px;
                         box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
+                        font-size: 12px;
+
+                        .name {
+                            display: inline-block;
+                            width: 80%;
+                        }
+
+                        .value {
+                            display: inline-block;
+                            width: 20%;
+                        }
                     }
                 }
-            }
-            .input-card-number {
-                width: 100%;
-                position: relative;
-                img {
-                    position: absolute;
-                    right: 10px;
-                    width: 40px;
-                    top: 36px;
-                    overflow: auto;
-                    z-index: 2 !important;
-                }
-            }
-            .hidden-container {
-                display: none;
-            }
-        }
-    }
-    @media (max-width: 767px) {
-        .payment-wrapper {
-            padding: 24px 0;
-            .cards-wrapper {
-                background: transparent;
-                border-radius: 0;
-                padding: 0;
-                border: none;
-                .saved-cards {
-                    .cards {
-                        max-height: 175px;
+
+                h5 {
+                    font-weight: 500;
+                    line-height: 32px;
+
+                    .amount {
+                        text-align: right !important;
                     }
                 }
             }
         }
+
+        .cards-wrapper {
+            background-color: $white;
+            border-radius: 8px;
+            padding: 24px;
+            height: 100%;
+            border: solid 1.4px #cecece;
+
+            .saved-cards {
+                border: 1px solid #4a90e2;
+                border-radius: 6px;
+                padding: 16px;
+                margin-bottom: 8px;
+
+                .cards {
+                    max-height: 158px;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+
+                    input[type='radio'] {
+                        margin-left: 1px;
+                    }
+
+                    .card-title {
+                        margin-bottom: 20px;
+                        cursor: pointer;
+
+                        .radio-btn-dot {
+                            top: 2px;
+                        }
+
+                        span {
+                            font-family: $font-family-heading;
+                            font-size: 16px;
+                            font-weight: 500;
+                            color: rgba(0, 0, 0, 0.87);
+                        }
+                    }
+
+                    .card-info {
+                        margin-bottom: 24px;
+                        opacity: 0.5;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        z-index: 100;
+
+                        .radio-btn-tick {
+                            top: 4px;
+                        }
+
+                        span {
+                            letter-spacing: 2px;
+                        }
+
+                        img {
+                            width: 56px;
+                            margin-right: 16px;
+                        }
+
+                        &.active {
+                            opacity: 1;
+
+                            span {
+                                font-weight: 600;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .new-card {
+                border: 1px solid #4a90e2;
+                padding: 16px;
+                border-radius: 6px;
+                margin-bottom: 8px;
+
+                form {
+                    padding: 16px 0;
+
+                    .card-title {
+                        margin-bottom: 20px;
+                        cursor: pointer;
+
+                        .radio-btn-dot {
+                            top: 2px;
+                        }
+
+                        span {
+                            font-family: $font-family-heading;
+                            font-size: 16px;
+                            font-weight: 500;
+                            color: rgba(0, 0, 0, 0.87);
+                        }
+                    }
+
+                    label {
+                        font-size: 14px;
+                        font-weight: 300;
+                    }
+
+                    .consents {
+                        position: relative;
+
+                        i {
+                            position: relative;
+                            top: 3px;
+                            left: 6px;
+                            font-size: 18px;
+                            color: $brand-primary;
+                            cursor: pointer;
+                        }
+
+                        .tooltip-info {
+                            width: 250px;
+                            position: absolute;
+                            left: 126px;
+                            top: -80px;
+                            border-radius: 6px;
+                            background: #fff;
+                            padding: 8px 12px;
+                            box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
+                        }
+                    }
+                }
+
+                .input-card-number {
+                    width: 100%;
+                    position: relative;
+
+                    img {
+                        position: absolute;
+                        right: 10px;
+                        width: 40px;
+                        top: 36px;
+                        overflow: auto;
+                        z-index: 2 !important;
+                    }
+                }
+
+                .hidden-container {
+                    display: none;
+                }
+            }
+        }
+
+        @media (max-width: 767px) {
+            .payment-wrapper {
+                padding: 24px 0;
+
+                .cards-wrapper {
+                    background: transparent;
+                    border-radius: 0;
+                    padding: 0;
+                    border: none;
+
+                    .saved-cards {
+                        .cards {
+                            max-height: 175px;
+                        }
+                    }
+                }
+            }
+        }
+
+        @media only screen and (max-device-width: 320px) and (-webkit-min-device-pixel-ratio: 2) {
+            .payment-wrapper {
+                .cards-wrapper {
+                    .saved-cards {
+                        .cards {
+                            .card-info {
+                                img {
+                                    width: 40px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /* iPad Portrait */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            .payment-wrapper {
+                .cards-wrapper {
+                    margin-top: 24px;
+                }
+            }
+        }
+
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            .payment-wrapper {
+                padding: 24px 0;
+            }
+        }
+
+        /* iPad Pro Portrait */
+        @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            .payment-wrapper {
+                .cards-wrapper {
+                    margin-top: 0;
+                }
+            }
+        }
     }
-    @media only screen and (max-device-width: 320px) and (-webkit-min-device-pixel-ratio: 2) {
+
+    /* iPhone 5/SE Portrait */
+    @media only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
         .payment-wrapper {
+            padding: 0;
+        }
+    }
+
+    /* iPhone 6, 6S, 7 and 8 Portrait */
+    @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+        .payment-wrapper {
+            padding: 0;
+        }
+    }
+
+    /* iPhone X Portrait */
+    @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
+        .payment-wrapper {
+            padding: 0;
+
             .cards-wrapper {
                 .saved-cards {
                     .cards {
                         .card-info {
                             img {
-                                width: 40px;
+                                width: 32px;
                             }
                         }
                     }
@@ -536,40 +636,18 @@ export default {
             }
         }
     }
-    /* iPad Portrait */
-    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-        .payment-wrapper {
-            .cards-wrapper {
-                margin-top: 24px;
-            }
-        }
+
+    .transaction-message {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        justify-items: center;
+        justify-content: center;
+        font-size: 20px;
+        letter-spacing: 0.75px;
+        background-color: #fff;
+        height: 500px;
+        width: 100%;
+        color: $brand-secondary;
     }
-    /* iPad Landscape */
-    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-        .payment-wrapper {
-            padding: 24px 0;
-        }
-    }
-    /* iPad Pro Portrait */
-    @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-        .payment-wrapper {
-            .cards-wrapper {
-                margin-top: 0;
-            }
-        }
-    }
-}
-.transaction-message {
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    justify-items: center;
-    justify-content: center;
-    font-size: 20px;
-    letter-spacing: 0.75px;
-    background-color: #fff;
-    height: 500px;
-    width: 100%;
-    color: $brand-secondary;
-}
 </style>
