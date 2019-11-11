@@ -22,17 +22,18 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-    color: $body-text;
-    font-family: $font-family-body;
-    font-size: $base-font-size;
-    line-height: $line-height-base;
-    font-weight: 400;
-    height: 100%;
-    background-color: $body-background;
-    overflow-x: hidden;
-    .content-wrapper {
-        min-height: calc(100vh - 80px);
+    #app {
+        color: $body-text;
+        font-family: $font-family-body;
+        font-size: $base-font-size;
+        line-height: $line-height-base;
+        font-weight: 400;
+        height: 100%;
+        background-color: $body-background;
+        overflow-x: hidden;
+
+        .content-wrapper {
+            min-height: calc(100vh - 80px);
+        }
     }
-}
 </style>

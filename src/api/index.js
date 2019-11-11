@@ -7,8 +7,8 @@ const instance = axios.create({
 
 let token = VueCookies.get('token');
 let user = localStorage.getItem('user');
-instance.defaults.headers.common['Content-Type'] = 'application/json';
-instance.defaults.headers.get['Accepts'] = 'application/json';
+instance.defaults.headers.common['Content-Type'] = '*/*';
+instance.defaults.headers.get['Accepts'] = '*/*';
 
 if (!token && user) {
     localStorage.removeItem('user');

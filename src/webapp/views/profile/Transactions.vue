@@ -10,7 +10,7 @@
                 <div class="transaction-table" v-else>
                     <b-table striped hover :items="transactions" :fields="fields" :per-page="perPage" :current-page="currentPage" responsive id="transaction-table">
                         <template v-slot:cell(Action)="data">
-                            <button class="btn btn-sm btn-link pl0 pt0 pr0 t-m">Download</button>
+                            <button @click="downloadReceipt(data.item.ReferenceID)" class="btn btn-sm btn-link pl0 pt0 pr0 t-m">Download</button>
                         </template>
                     </b-table>
                     <b-pagination v-model="currentPage" :total-rows="transactions.length" :per-page="perPage" first-text="First" prev-text="Prev" next-text="Next" last-text="Last" aria-controls="transaction-table" align="right" class="pt0 pb16 pr16"></b-pagination>
@@ -23,6 +23,10 @@
 <script>
 import { mapGetters } from 'vuex';
 import instance from '@/api';
+import axios from 'axios';
+
+import VueCookies from 'vue-cookies';
+
 export default {
     name: 'Transactions',
     data() {
@@ -35,6 +39,26 @@ export default {
         };
     },
     methods: {
+        async downloadReceipt(transaction) {
+            this.isLoading = true;
+            let result = await axios.get('http://localhost:8080/api/client/transaction/' + transaction, {
+                responseType: 'arraybuffer',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/pdf',
+                    'Authorization': 'bearer ' + VueCookies.get('token')
+                }
+            });
+
+            const url = window.URL.createObjectURL(new Blob([result.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'invoice_' + transaction + '.pdf'); //or any other extension
+            document.body.appendChild(link);
+            link.click();
+            this.isLoading = false;
+
+        },
         ...mapGetters(['getUser'])
     },
     async created() {
@@ -65,46 +89,54 @@ export default {
 </script>
 
 <style lang="scss" scopped>
-.transactions {
-    min-height: calc(100vh - 80px);
-    .transactions-wrapper {
-        background-color: $white;
-        border-radius: 8px;
-        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
-        .no-data {
-            padding: 40px;
-        }
-        .transaction-table {
-            table {
-                border-collapse: collapse;
-                border-spacing: 0 5px;
-                width: 100%;
-                thead {
-                    tr {
-                        background-color: $brand-primary;
-                        color: $white;
-                        th {
-                            border: none;
-                            font-size: 16px;
-                            font-weight: 500;
-                            font-family: $font-family-heading;
-                            &:first-child {
-                                border-top-left-radius: 6px;
-                            }
-                            &:last-child {
-                                border-top-right-radius: 6px;
+    .transactions {
+        min-height: calc(100vh - 80px);
+
+        .transactions-wrapper {
+            background-color: $white;
+            border-radius: 8px;
+            box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
+
+            .no-data {
+                padding: 40px;
+            }
+
+            .transaction-table {
+                table {
+                    border-collapse: collapse;
+                    border-spacing: 0 5px;
+                    width: 100%;
+
+                    thead {
+                        tr {
+                            background-color: $brand-primary;
+                            color: $white;
+
+                            th {
+                                border: none;
+                                font-size: 16px;
+                                font-weight: 500;
+                                font-family: $font-family-heading;
+
+                                &:first-child {
+                                    border-top-left-radius: 6px;
+                                }
+
+                                &:last-child {
+                                    border-top-right-radius: 6px;
+                                }
                             }
                         }
                     }
-                }
-                tbody {
-                    tr {
-                        color: $base;
-                        background-color: $white;
+
+                    tbody {
+                        tr {
+                            color: $base;
+                            background-color: $white;
+                        }
                     }
                 }
             }
         }
     }
-}
 </style>

@@ -51,7 +51,7 @@
                                             <div v-else>--</div>
                                         </div>
                                         <div v-else>
-                                            <vue-tel-input v-model="$store.state.user.Owner.Phone" @input="checkPhoneValid" class="form-control"></vue-tel-input>
+                                            <vue-tel-input disabled-fetching-country="true" v-model="$store.state.user.Owner.Phone" @input="checkPhoneValid" class="form-control"></vue-tel-input>
                                         </div>
                                     </div>
 
@@ -64,6 +64,7 @@
                                             <label class="ml0">New Password</label>
                                             <input type="password" class="form-control" v-model="newPassword" placeholder="Enter new password">
                                         </div>
+                                        <p class="mt16 mb16 t-s">Password must contain at least 8 characters with at least 1 capital letter, 1 small letter and 1 number</p>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -144,9 +145,9 @@ export default {
             isPhoneValid: true,
             mode: 'VIEW',
             config: {
-                minWidth: 64,
                 api: 'api/image?owner=' + this.getUser().Owner.Type + '&ownerid=' + this.getUser().Owner._id + '&attribute=ImageUrl',
-                maxSize: 5
+                maxSize: 5,
+                aspectRatio: 1
             },
             user: {
                 name: 'profile_image'
@@ -154,7 +155,8 @@ export default {
             tempUser: JSON.parse(JSON.stringify(this.$store.state.user)),
             uploadImageModal: false,
             isLoading: false,
-            isSocialAccount: false
+            isSocialAccount: false,
+            fetchCountry: true
         };
     },
     methods: {
@@ -163,6 +165,7 @@ export default {
         },
         close(val) {
             this.showNewCard = false;
+            this.isLoading = false;
             if (val) {
                 this.getSavedCards();
             }
@@ -194,6 +197,9 @@ export default {
                 if (isConfirm.value) {
                     try {
                         await instance.delete('api/client/deletecard?client=' + this.getUser().Owner._id + '&card=' + card);
+                        this.savedCards = this.savedCards.filter((c) => {
+                            return c._id != card;
+                        });
                         this.$swal({
                             title: 'Deleted',
                             text: 'Your card has been deleted',
@@ -231,19 +237,20 @@ export default {
             }).then(async (isConfirm) => {
                 if (isConfirm.value) {
                     try {
+                        this.isLoading = true;
                         await instance.post('api/client/preferredcard', { client: this.getUser().Owner._id, card: this.preferredCard });
                         this.$swal({
                             title: 'Updated',
                             text: 'Preferred card has been updated',
                             type: 'success'
                         });
+                        this.isLoading = false;
                     } catch (err) {
                         this.$swal({
                             title: 'Error',
                             text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                             type: 'error'
                         });
-                        console.error(err);
                     }
                 } else {
                     this.preferredCard = oldCard;
@@ -353,7 +360,17 @@ export default {
             return this.GOOGLE_BUCKET_ENDPOINT + this.getUser().Owner.ImageUrl;
         },
         isProceedable() {
-            return !this.getUser().Owner.Title || !this.getUser().Owner.Email || (!this.isPhoneValid && this.getUser().Owner.Phone !== '');
+            let flag = true;
+            if (this.currentPassword) {
+                if (!this.newPassword) {
+                    flag = false;
+                } else {
+                    if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/.test(this.newPassword))) {
+                        flag = false;
+                    }
+                }
+            }
+            return !this.getUser().Owner.Title || !this.getUser().Owner.Email || (!this.isPhoneValid && this.getUser().Owner.Phone !== '') || !flag;
         }
     },
     events: {
@@ -368,113 +385,120 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.profile-wrapper {
-    background-color: $white;
-    padding: 40px 64px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
-    margin: 0 40px;
-    .profile-info {
-        .profile-details {
-            padding: 24px 0;
+    .profile-wrapper {
+        background-color: $white;
+        padding: 40px 64px;
+        border-radius: 8px;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
+        margin: 0 40px;
 
-            .profile-image {
-                width: 108px;
-                height: 108px;
-                border-radius: 50%;
-                background-size: cover;
-                background-repeat: no-repeat;
-                margin-bottom: 24px;
-                border: 2px solid $brand-primary;
-            }
-
-            .profile-text {
-                width: 108px;
-                height: 108px;
-                padding: 0 30px;
-                line-height: 104px;
-                border: 1px solid $brand-primary;
-                border-radius: 50%;
-                font-size: 80px;
-                color: $brand-primary;
-                margin-bottom: 24px;
-            }
-
-            ul.edit-options {
-                @include list-unstyled();
-
-                li {
-                    margin-bottom: 66px;
-                    display: block;
-                    text-align: right;
-                    font-size: 16px;
-                    color: $brand-primary;
-
-                    &:first-child {
-                        margin: 50px 0 88px;
-                    }
-                }
-            }
-        }
-    }
-
-    .profile-cards {
-        .cards-details {
-            padding: 24px 0 40px;
-
-            .cards-wrapper {
-                max-height: 158px;
-                overflow-y: auto;
-                overflow-x: hidden;
-
-                .saved-card {
-                    cursor: pointer;
-                    input[type='radio'] {
-                        margin-left: 1px;
-                    }
-                    .radio-btn-tick {
-                        top: 4px;
-                    }
-                    width: 100%;
-                    padding: 8px 0;
-
-                    span {
-                        letter-spacing: 3px;
-                    }
-
-                    img {
-                        width: 56px;
-                        margin-right: 16px;
-                    }
-                }
-            }
-        }
-    }
-
-    @media (max-width: 767px) {
-        background-color: transparent;
-        margin: 0;
-        padding: 0;
-        box-shadow: none;
-        text-align: center;
         .profile-info {
             .profile-details {
-                padding: 16px 0;
+                padding: 24px 0;
+
                 .profile-image {
-                    margin-top: 16px;
-                    margin-right: auto;
-                    margin-left: auto;
+                    width: 108px;
+                    height: 108px;
+                    border-radius: 50%;
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    margin-bottom: 24px;
+                    border: 2px solid $brand-primary;
                 }
-                p {
-                    text-align: center !important;
+
+                .profile-text {
+                    width: 108px;
+                    height: 108px;
+                    padding: 0 30px;
+                    line-height: 104px;
+                    border: 1px solid $brand-primary;
+                    border-radius: 50%;
+                    font-size: 80px;
+                    color: $brand-primary;
+                    margin-bottom: 24px;
+                }
+
+                ul.edit-options {
+                    @include list-unstyled();
+
+                    li {
+                        margin-bottom: 66px;
+                        display: block;
+                        text-align: right;
+                        font-size: 16px;
+                        color: $brand-primary;
+
+                        &:first-child {
+                            margin: 50px 0 88px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .profile-cards {
+            .cards-details {
+                padding: 24px 0 40px;
+
+                .cards-wrapper {
+                    max-height: 158px;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+
+                    .saved-card {
+                        cursor: pointer;
+
+                        input[type='radio'] {
+                            margin-left: 1px;
+                        }
+
+                        .radio-btn-tick {
+                            top: 4px;
+                        }
+
+                        width: 100%;
+                        padding: 8px 0;
+
+                        span {
+                            letter-spacing: 3px;
+                        }
+
+                        img {
+                            width: 56px;
+                            margin-right: 16px;
+                        }
+                    }
+                }
+            }
+        }
+
+        @media (max-width: 767px) {
+            background-color: transparent;
+            margin: 0;
+            padding: 0;
+            box-shadow: none;
+            text-align: center;
+
+            .profile-info {
+                .profile-details {
+                    padding: 16px 0;
+
+                    .profile-image {
+                        margin-top: 16px;
+                        margin-right: auto;
+                        margin-left: auto;
+                    }
+
+                    p {
+                        text-align: center !important;
+                    }
                 }
             }
         }
     }
-}
 </style>
 <style lang="scss">
-    .vti{
+    .vti {
         &__dropdown {
             &:hover {
                 background-color: transparent !important;

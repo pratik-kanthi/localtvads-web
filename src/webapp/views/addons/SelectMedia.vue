@@ -7,7 +7,7 @@
         <div class="mt16">
             <div class="toggle" :class="{'toggle-inactive': !textToggle}">
                 <h3 class="section-title-2 white mb0">Text
-                    <i class="material-icons" @click="toggleImage">{{ textToggle ? 'keyboard_arrow_up':
+                    <i class="material-icons" @click="toggleText">{{ textToggle ? 'keyboard_arrow_up':
                         'keyboard_arrow_down' }}</i>
                 </h3>
             </div>
@@ -28,9 +28,7 @@
             <div class="toggle-pane" v-show="imageToggle">
                 <p v-if="images.length === 0">There are no images uploaded.</p>
                 <button class="btn btn-secondary mb16" @click="addImage">Add Image</button>
-                <ImageUpload v-if="showUploadImageModal" @cancel="cancelImageUploadModal" @close="closeImageUploadModal"
-                    :show="true" :config="{...config, api: 'api/clientresource/image'}"
-                    :data="{ownerid: getUser().Owner._id}"></ImageUpload>
+                <ImageUpload v-if="showUploadImageModal" @cancel="cancelImageUploadModal" @close="closeImageUploadModal" :show="true" :config="{...config, api: 'api/clientresource/image'}" :data="{ownerid: getUser().Owner._id}"></ImageUpload>
                 <div class="row">
                     <div class="col-sm-4" v-for="(img, key) in images" :key="key">
                         <div class="image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + img.ResourceUrl + ')'}" @click="selectImage(img)">
@@ -54,8 +52,7 @@
             </div>
             <div class="toggle-pane" v-show="videoToggle">
                 <p v-if="videos.length === 0 && !progress">There are no videos uploaded.</p>
-                <input id="fileUpload" class="hidden" type="file" @change="fileUploaded"
-                    accept="video/mp4,video/x-m4v,video/*" ref="fileUpload" />
+                <input id="fileUpload" class="hidden" type="file" @change="fileUploaded" accept="video/mp4,video/x-m4v,video/*" ref="fileUpload" />
                 <button class="btn btn-secondary mb8" @click="chooseFile" :disabled="isLoading" v-if="!upload.chosen">
                     Add Video
                 </button>
@@ -110,9 +107,9 @@
 <script>
 import '@/plugins/socket.io';
 import instance from '@/api';
-import {uploadMixin} from '@/mixins/upload';
+import { uploadMixin } from '@/mixins/upload';
 import ImageUpload from '@/e9_components/components/ImageUpload';
-import {mapGetters} from 'vuex';
+import { mapGetters } from 'vuex';
 import Review from './Review';
 
 export default {
@@ -181,7 +178,7 @@ export default {
         },
         getVideoUrl(video) {
             return this.GOOGLE_BUCKET_ENDPOINT + video.ResourceUrl;
-        } ,
+        },
         initialiseResources() {
             this.videosSelected = this.$parent.clientServiceAddOn.Videos.map(v => v);
             this.imagesSelected = this.$parent.clientServiceAddOn.Images.map(i => i);
@@ -200,6 +197,9 @@ export default {
                 this.videosSelected.splice(index, 1);
             else
                 this.videosSelected.push(img._id);
+        },
+        toggleText() {
+            this.textToggle = !this.textToggle;
         },
         toggleImage() {
             this.imageToggle = !this.imageToggle;
@@ -304,7 +304,7 @@ export default {
     },
     created() {
         if (!this.$route.query.clientaddon) {
-            this.$router.push('/', () => {});
+            this.$router.push('/', () => { });
         } else {
             this.getAllMedia().then(() => {
                 this.initialiseResources();
@@ -354,7 +354,7 @@ export default {
             bottom: 0;
             right: 0;
             left: 0;
-            background-color: rgba(256,256,256,0.5);
+            background-color: rgba(256, 256, 256, 0.5);
         }
 
         &:hover {
@@ -367,7 +367,7 @@ export default {
             right: 4px;
         }
 
-        .check:disabled + label {
+        .check:disabled+label {
             opacity: 1 !important;
         }
     }
@@ -397,7 +397,7 @@ export default {
             right: 4px;
         }
 
-        .check:disabled + label {
+        .check:disabled+label {
             opacity: 1 !important;
         }
     }

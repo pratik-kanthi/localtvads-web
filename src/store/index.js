@@ -10,6 +10,7 @@ const LOGOUT = 'LOGOUT';
 const DIALOG = 'DIALOG';
 const DIALOG_CHOSEN = 'DIALOG_CHOSEN';
 const VIDEO_BEING_UPLOADED = 'VIDEO_BEING_UPLOADED';
+const FORGOT_PASSWORD = 'FORGOT_PASSWORD';
 
 export const store = new Vuex.Store({
     state: {
@@ -22,7 +23,8 @@ export const store = new Vuex.Store({
         },
         bookingFlow: {
             videoBeingUploaded: false
-        }
+        },
+        forgotPassword: false
     },
     mutations: {
         [LOGIN_LOADER](state, val) {
@@ -49,6 +51,9 @@ export const store = new Vuex.Store({
         [VIDEO_BEING_UPLOADED](state, val) {
             state.bookingFlow.videoBeingUploaded = val;
         },
+        [FORGOT_PASSWORD](state, val) {
+            state.forgotPassword = val;
+        }
     },
     actions: {
         loginSuccess({ commit }) {
