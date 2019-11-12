@@ -41,7 +41,7 @@ export default {
     methods: {
         async downloadReceipt(transaction) {
             this.isLoading = true;
-            let result = await axios.get('http://localhost:8080/api/client/transaction/' + transaction, {
+            let result = await axios.get(window.endpoint + 'api/client/transaction/' + transaction, {
                 responseType: 'arraybuffer',
                 headers: {
                     'Content-Type': 'application/json',
