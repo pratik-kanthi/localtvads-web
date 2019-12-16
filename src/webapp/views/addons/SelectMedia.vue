@@ -155,6 +155,7 @@ export default {
                     let result = await instance.get('api/clientresource/all?id=' + this.getUser().Owner._id);
                     this.images = [];
                     this.videos = [];
+
                     result.data.forEach(resource => {
                         if (resource.Type === 'IMAGE')
                             this.images.push(resource);
@@ -208,16 +209,20 @@ export default {
             this.videoToggle = !this.videoToggle;
         },
         updateResources() {
+
             this.$swal({
+
                 title: 'Are you sure?',
                 text: 'Images and Videos will be sent to the content specialist team',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Confirm',
                 closeOnConfirm: false
+
             }).then(async (isConfirm) => {
                 if (isConfirm.value) {
                     this.$parent.isLoading = true;
+
                     try {
                         await instance.put('api/serviceaddons/update', {
                             serviceaddon: this.$route.query.clientaddon,
@@ -230,9 +235,10 @@ export default {
                             title: 'Sent',
                             text: 'Your request has been sent to the specialist team',
                             type: 'success'
-                        }).then(() => {
-                            this.$parent.currentStage = Review;
                         });
+                        this.$parent.currentStage = Review;
+
+
                     } catch (err) {
                         this.$parent.isLoading = false;
                         this.$swal({
@@ -302,13 +308,15 @@ export default {
             return this.imagesSelected.length + this.videosSelected.length < 1;
         }
     },
-    created() {
+    async created() {
         if (!this.$route.query.clientaddon) {
             this.$router.push('/', () => { });
         } else {
-            this.getAllMedia().then(() => {
-                this.initialiseResources();
-            });
+            await this.getAllMedia();
+            await this.initialiseResources();
+
+
+
         }
     }
 };
