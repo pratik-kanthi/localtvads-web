@@ -93,13 +93,13 @@
                             <div class="cards-wrapper" v-if="savedCards && savedCards.length > 0">
                                 <div class="row" v-for="(card,key) in savedCards" :key="key">
                                     <div class="col-sm-8">
-                                        <div class="saved-card" @click="setPreferredCard(preferredCard)">
-                                            <div class="radio-btn-tick mr16">
+                                        <div class="saved-card" @click="setPreferredCard(card)">
+                                            <div :class="{ 'radio-btn-tick' : card.IsPreferred, 'radio-btn-untick' : !card.IsPreferred}" class="mr16">
                                                 <input type="radio" v-model="preferredCard" :value="card._id">
                                                 <label></label>
                                             </div>
                                             <img :src="getImageUrl(card.Card.Vendor)" alt />
-                                            <span>xxxx xxxx xxxx {{ card.Card.LastFour }}</span>
+                                            <span :class="{ 'brand-primary' : card.IsPreferred, '' : !card.IsPreferred}">xxxx xxxx xxxx {{ card.Card.LastFour }}</span>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
@@ -227,7 +227,7 @@ export default {
                 }
             });
         },
-        setPreferredCard(oldCard) {
+        setPreferredCard(preferredCard) {
             this.$swal({
                 title: 'Are you sure?',
                 text: 'Your preferred card will be updated',
@@ -238,12 +238,22 @@ export default {
                 if (isConfirm.value) {
                     try {
                         this.isLoading = true;
-                        await instance.post('api/client/preferredcard', { client: this.getUser().Owner._id, card: this.preferredCard });
+                        await instance.post('api/client/preferredcard', { client: this.getUser().Owner._id, card: preferredCard._id });
+
                         this.$swal({
                             title: 'Updated',
                             text: 'Preferred card has been updated',
                             type: 'success'
                         });
+                        this.savedCards = this.savedCards.map(card => {
+                            if (card._id == preferredCard._id) {
+                                card.IsPreferred = true;
+                            } else {
+                                card.IsPreferred = false;
+                            }
+                            return card;
+                        });
+                        this.preferredCard = preferredCard._id;
                         this.isLoading = false;
                     } catch (err) {
                         this.$swal({
@@ -252,8 +262,6 @@ export default {
                             type: 'error'
                         });
                     }
-                } else {
-                    this.preferredCard = oldCard;
                 }
             });
         },
