@@ -280,7 +280,8 @@ export default {
         @media (max-width: 990px) {
             min-height: 56px;
             padding: 0;
-
+            overflow-y: scroll;
+            max-height: 100vh;
             .logo-wrapper {
                 width: 100%;
                 height: 40px;

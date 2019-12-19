@@ -12,7 +12,7 @@
         <div v-if="upload.src" class="upload-actions mt16">
             <h4 class="section-subtitle mb16">3. Confirm</h4>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 mb16">
                     <button class="btn btn-primary btn-full" :disabled="loading || !isValid" @click="uploadFull">
                         <i class="material-icons">crop_free</i>
                         <span class="ml16">Upload Uncropped</span>
