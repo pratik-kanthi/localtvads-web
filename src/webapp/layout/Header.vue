@@ -42,10 +42,18 @@
                                 <img v-else-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl" class="picture" :src="getImageUrl" :alt="$store.state.user.Owner.Title" />
                             </a>
                             <ul class="" :class="{'profile-menu': showProfile}">
-                                <router-link tag="li" to="profile">My Account</router-link>
-                                <router-link tag="li" to="ads">My Ads</router-link>
-                                <router-link tag="li" to="my-addons">My Addons</router-link>
-                                <router-link tag="li" to="transactions">Transactions</router-link>
+                                <span @click="toggleSubMenu">
+                                    <router-link tag="li" to="profile">My Account</router-link>
+                                </span>
+                                <span @click="toggleSubMenu">
+                                    <router-link tag="li" to="ads">My Ads</router-link>
+                                </span>
+                                <span @click="toggleSubMenu">
+                                    <router-link tag="li" to="my-addons">My Addons</router-link>
+                                </span>
+                                <span @click="toggleSubMenu">
+                                    <router-link tag="li" to="transactions">Transactions</router-link>
+                                </span>
                                 <li @click="logout">
                                     <a>Logout</a>
                                 </li>
@@ -102,6 +110,10 @@ export default {
         },
         toggleMenu() {
             this.showMenu = !this.showMenu;
+        },
+        toggleSubMenu() {
+            this.toggleMenu();
+            this.toggleProfile();
         },
         toggleProfile() {
             this.showProfile = !this.showProfile;
@@ -280,8 +292,7 @@ export default {
         @media (max-width: 990px) {
             min-height: 56px;
             padding: 0;
-            overflow-y: scroll;
-            max-height: 100vh;
+
             .logo-wrapper {
                 width: 100%;
                 height: 40px;
