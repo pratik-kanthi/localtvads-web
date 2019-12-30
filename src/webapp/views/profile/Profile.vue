@@ -9,8 +9,8 @@
                 <div class="profile-info mb32">
                     <h4 class="section-subtitle b-b pb16">My Info</h4>
                     <div class="row profile-details">
-                        <div class="col-sm-4">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nisi voluptatibus ab quod ex fugiat dicta delectus. Sunt pariatur culpa quam adipisci velit cupiditate eos quas. Officiis error dolor labore quasi?</div>
-                        <div class="col-sm-8">
+                        <div class="col-lg-4 mb24">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nisi voluptatibus ab quod ex fugiat dicta delectus. Sunt pariatur culpa quam adipisci velit cupiditate eos quas. Officiis error dolor labore quasi?</div>
+                        <div class="col-lg-8">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div v-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl" class="profile-image" :style="{'background-image': 'url(' + getProfileImageUrl + ')'}"></div>
@@ -72,10 +72,10 @@
                                         <a @click="openEditMode()" class="alert mb0">Edit Profile</a>
                                     </p>
                                     <div v-if="mode==='EDIT'" class="text-right mb16">
-                                        <button class="btn btn-secondary" @click="closeEditMode">Cancel</button>
+                                        <button class="btn btn-secondary cancel" @click="closeEditMode">Cancel</button>
                                     </div>
                                     <div v-if="mode==='EDIT'" class="text-right">
-                                        <button class="btn btn-primary" @click="updateProfile" :disabled="isProceedable">Save Changes</button>
+                                        <button class="btn btn-primary save" @click="updateProfile" :disabled="isProceedable">Save Changes</button>
                                     </div>
                                 </div>
                             </div>
@@ -92,17 +92,17 @@
                         <div class="col-sm-8">
                             <div class="cards-wrapper" v-if="savedCards && savedCards.length > 0">
                                 <div class="row" v-for="(card,key) in savedCards" :key="key">
-                                    <div class="col-sm-8">
-                                        <div class="saved-card" @click="setPreferredCard(card)">
+                                    <div class="col-sm-9 col-9">
+                                        <div class="saved-card" @click="setPreferredCard(preferredCard)">
                                             <div :class="{ 'radio-btn-tick' : card.IsPreferred, 'radio-btn-untick' : !card.IsPreferred}" class="mr16">
                                                 <input type="radio" v-model="preferredCard" :value="card._id">
                                                 <label></label>
                                             </div>
                                             <img :src="getImageUrl(card.Card.Vendor)" alt />
-                                            <span :class="{ 'brand-primary' : card.IsPreferred, '' : !card.IsPreferred}">xxxx xxxx xxxx {{ card.Card.LastFour }}</span>
+                                            <span>xxxx xxxx xxxx {{ card.Card.LastFour }}</span>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3 col-3">
                                         <div class="actions float-right">
                                             <button class="btn btn-link error mb0" @click="deleteCard(card._id)" :disabled="card.IsPreferred">Delete</button>
                                         </div>
@@ -227,7 +227,7 @@ export default {
                 }
             });
         },
-        setPreferredCard(preferredCard) {
+        setPreferredCard(oldCard) {
             this.$swal({
                 title: 'Are you sure?',
                 text: 'Your preferred card will be updated',
@@ -238,22 +238,12 @@ export default {
                 if (isConfirm.value) {
                     try {
                         this.isLoading = true;
-                        await instance.post('api/client/preferredcard', { client: this.getUser().Owner._id, card: preferredCard._id });
-
+                        await instance.post('api/client/preferredcard', { client: this.getUser().Owner._id, card: this.preferredCard });
                         this.$swal({
                             title: 'Updated',
                             text: 'Preferred card has been updated',
                             type: 'success'
                         });
-                        this.savedCards = this.savedCards.map(card => {
-                            if (card._id == preferredCard._id) {
-                                card.IsPreferred = true;
-                            } else {
-                                card.IsPreferred = false;
-                            }
-                            return card;
-                        });
-                        this.preferredCard = preferredCard._id;
                         this.isLoading = false;
                     } catch (err) {
                         this.$swal({
@@ -262,6 +252,8 @@ export default {
                             type: 'error'
                         });
                     }
+                } else {
+                    this.preferredCard = oldCard;
                 }
             });
         },
@@ -499,6 +491,21 @@ export default {
 
                     p {
                         text-align: center !important;
+                    }
+                    .cancel,.save {
+                        width: 100%;
+                    }
+                }
+            }
+            .profile-cards {
+                .cards-details {
+                    .cards-wrapper {
+                        margin-top: 16px;
+                        .saved-card {
+                            span {
+                                letter-spacing: 0px;
+                            }
+                        }
                     }
                 }
             }

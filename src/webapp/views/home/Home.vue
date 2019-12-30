@@ -2,7 +2,6 @@
     <div class="home">
         <section class="hero">
             <div class="heroslider">
-
                 <agile :options="herosliderOptions" v-if="heroslider.length > 0">
                     <div class="slide" v-for="(hero,key) in heroslider" :key="key">
                         <div class="hero-wrapper pos-relative">
@@ -184,6 +183,7 @@ export default {
                 autoplaySpeed: 5000,
                 slidesToShow: 3,
                 pauseOnHover: true,
+                navButtons: true,
                 dots: false,
                 responsive: [{
                     breakpoint: 1199,
@@ -212,7 +212,7 @@ export default {
                 responsive: [{
                     breakpoint: 1199,
                     settings: {
-                        slidesToShow: 3
+                        slidesToShow: 3,
                     }
                 }, {
                     breakpoint: 768,
@@ -230,7 +230,24 @@ export default {
                 infinite: true,
                 autoplaySpeed: 5000,
                 slidesToShow: 1,
-                dots: false
+                dots: false,
+                navButtons: false,
+                responsive: [{
+                    breakpoint: 1199,
+                    settings: {
+                        navButtons: true
+                    }
+                }, {
+                    breakpoint: 768,
+                    settings: {
+                        navButtons: true
+                    }
+                }, {
+                    breakpoint: 300,
+                    settings: {
+                        navButtons: false
+                    }
+                }]
             },
             workflow: [{
                 Id: 1,
@@ -492,7 +509,7 @@ export default {
             /* iPad Landscape */
             @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
                 .content {
-                    padding: 24px;
+                    padding: 24px 24px 0;
                 }
             }
         }
@@ -559,6 +576,10 @@ export default {
                                 z-index: 1;
                             }
 
+                            @media (max-width: 767px) {
+                                height: 60vh !important;
+                            }
+
                             /* iPhone x Portrait */
                             @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
                                 height: 200px;
@@ -573,15 +594,11 @@ export default {
                             z-index: 3;
 
                             .hero-header {
-                                color: $brand-primary;
-
-
+                                color: $white;
                             }
 
                             .hero-desc {
-                                @include text-clamp(3);
-
-
+                                @include text-clamp(4);
                             }
 
 
@@ -598,7 +615,6 @@ export default {
                 .slide {
                     .offer {
                         background: $white;
-                        border-radius: 10px;
                         width: 320px;
                         margin: 80px 24px 40px;
 
@@ -633,13 +649,11 @@ export default {
             }
 
             @media (max-width: 767px) {
-                .offers {
-                    .offer {
-                        max-width: 100%;
-                        margin-bottom: 24px;
-
-                        &:last-child {
-                            margin-bottom: 0;
+                .offers-slider {
+                    .slide {
+                        .offer {
+                            width: 100%;
+                            margin: 0;
                         }
                     }
                 }
@@ -647,53 +661,38 @@ export default {
 
             /* iPhone 6, 6S, 7 and 8 Landscape */
             @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
-                .offers {
-                    .offer {
-                        .offer-image {
-                            height: 380px;
-                        }
-                    }
-                }
+                
             }
 
             /* iPhone 6+, 6S+, 7+ and 8+ Landscape */
             @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
-                .offers {
-                    .offer {
-                        .offer-image {
-                            height: 380px;
-                        }
-                    }
-                }
+                
             }
 
             /* iPhone x Landscape */
             @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
-                .offers {
-                    .offer {
-                        margin-bottom: 24px;
-
-                        &:last-child {
-                            margin-bottom: 0;
-                        }
-                    }
-                }
+                
             }
 
             /* iPad Portrait */
             @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-                .offers {
-                    .offer {
-                        margin-bottom: 24px;
+                .offers-slider {
+                    .slide {
+                        .offer {
+                            width: 300px;
+                            margin: 0;
+                        }
                     }
                 }
             }
 
             /* iPad Landscape */
             @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-                .offers {
-                    .offer {
-                        max-width: 288px;
+                .offers-slider {
+                    .slide {
+                        .offer {
+                            width: 420px;
+                        }
                     }
                 }
             }

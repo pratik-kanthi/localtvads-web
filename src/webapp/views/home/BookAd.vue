@@ -23,7 +23,7 @@
                 <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Lets Go!</button>
             </div>
         </div>
-        <div class="ad-views" v-if="broadcastLocation && adLength"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated Views
+        <div class="ad-views d-none d-sm-block" v-if="broadcastLocation && adLength"><img src="@/assets/images/eye.svg" class="mr8" alt="">Estimated Views
             <span>{{ getMaximumViewCount() || 0 | formatValue(0) }}</span>
         </div>
     </div>
@@ -263,7 +263,13 @@ export default {
             }
 
             .ad-views {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
                 margin: 20px auto -20px;
+                span {
+                    font-size: 14px;
+                }
             }
         }
 

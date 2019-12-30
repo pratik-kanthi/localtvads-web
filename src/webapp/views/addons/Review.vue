@@ -13,9 +13,9 @@
                 </p>
                 <div class="action text-center">
                     <router-link to="/">
-                        <button class="btn btn-white">Go to home page</button>
+                        <button class="btn btn-white mr16">Go to home page</button>
                     </router-link>
-                    <button class="btn btn-white ml16" v-if="$parent.clientServiceAddOn.ServiceAddOn.IsUploadRequired" @click="goToSelectMedia">Edit resources</button>
+                    <button class="btn btn-white mr16" v-if="$parent.clientServiceAddOn.ServiceAddOn.IsUploadRequired" @click="goToSelectMedia">Edit resources</button>
                 </div>
             </div>
         </div>
@@ -70,11 +70,18 @@ export default {
         }
     }
     @media (max-width: 768px) {
-        margin: 0;
+        margin: 16px 0;
         padding: 40px 16px;
         .checked {
             img {
                 width: 120px;
+            }
+        }
+        .action {
+            .btn {
+                &:first-child {
+                    margin-bottom: 16px;
+                }
             }
         }
     }

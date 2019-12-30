@@ -132,12 +132,10 @@
                         </div>
                     </div>
                     <div class="action" v-if="selectedPlan">
-                        <center>
-                            <button class="btn btn-danger border" @click="cancel">Cancel</button>
-                            <button class="btn btn-primary" @click="goToPayment">
-                                Proceed
-                            </button>
-                        </center>
+                        <button class="btn btn-danger border" @click="cancel">Cancel</button>
+                        <button class="btn btn-primary" @click="goToPayment">
+                            Proceed
+                        </button>
                     </div>
                 </div>
             </div>
@@ -627,7 +625,9 @@ export default {
             .action {
                 padding: 40px;
                 margin-bottom: 56px;
-
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
                 .btn {
                     min-width: 250px !important;
                     margin-right: 20px;
@@ -701,6 +701,8 @@ export default {
                 .action {
                     padding: 0;
                     margin: 0;
+                    display: flex;
+                    flex-direction: column-reverse;
                     .btn {
                         min-width: 100% !important;
                         margin-bottom: 16px;
