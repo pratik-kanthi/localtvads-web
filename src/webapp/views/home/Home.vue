@@ -2,15 +2,15 @@
     <div class="home">
         <section class="hero">
             <div class="heroslider">
-                <agile :options="herosliderOptions" v-if="heroslider.length > 0">
+                <agile :options="herosliderOptions" v-if="heroslider">
                     <div class="slide" v-for="(hero,key) in heroslider" :key="key">
                         <div class="hero-wrapper pos-relative">
-                            <div class="hero-image" :style="{'background-image': 'url(' + hero.ImageUrl + ')', 'height':'100%','background-size':'cover'}"></div>
+                            <div class="hero-image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + hero.ImageUrl + ')', 'height':'100%','background-size':'cover'}"></div>
                             <div class="overlay-layer"></div>
                             <div class="hero-content">
                                 <div class="container">
-                                    <h2 class="hero-header">{{ hero.Header }}</h2>
-                                    <p class="hero-desc">{{ hero.Desc }}</p>
+                                    <h2 class="hero-header">{{ hero.Name }}</h2>
+                                    <p class="hero-desc">{{ hero.Description }}</p>
                                 </div>
                             </div>
                         </div>
@@ -97,18 +97,18 @@
                 <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has been the industry's standard dummy text ever since. Corporate social responsibility policymaker inclusion, resist; compassion mass incarceration correlation white paper. Program area energize optimism radical shared value policymaker.</p>
             </div>
             <div class="contianer-fluid mt40">
-                <div class="testimonial-slider">
+                <div class="testimonial-slider" v-if="testimonials">
                     <agile :options="sliderOptions">
-                        <div class="slide" v-for="t in testimonials" :key="t.id">
+                        <div class="slide" v-for="t in testimonials" :key="t._id">
                             <div class="content">
                                 <div class="profile-photo">
                                     <div class="profile-photo">
-                                        <div class="background-image-holder image" :style="{'background-image': 'url('+ require('../../../assets/images/testimonials/' + t.LogoUrl) + ')'}"></div>
+                                        <div class="background-image-holder image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + t.ImageUrl + ')'}"></div>
                                     </div>
                                 </div>
-                                <h6 class="name">{{ t.Manager }}</h6>
+                                <h6 class="name">{{ t.Name }}</h6>
                                 <h6 class="company">{{ t.Company }}</h6>
-                                <p class="desc">{{ t.Desc }}</p>
+                                <p class="desc">{{ t.Description }}</p>
                             </div>
                         </div>
                     </agile>
@@ -165,8 +165,6 @@
 import BookAd from '@/webapp/views/home/BookAd.vue';
 import ResetPassword from '@/webapp/common/modals/ResetPassword.vue';
 import instance from '@/api';
-import testimonials from '@/assets/data/testimonials.json';
-import heroslider from '@/assets/data/slider.json';
 
 export default {
     name: 'Home',
@@ -176,7 +174,7 @@ export default {
     },
     data() {
         return {
-            testimonials: testimonials,
+            testimonials: null,
             offersSliderOptions: {
                 autoplay: true,
                 infinite: true,
@@ -202,7 +200,7 @@ export default {
                     }
                 }]
             },
-            heroslider: heroslider,
+            heroslider: null,
             sliderOptions: {
                 autoplay: true,
                 infinite: true,
@@ -273,6 +271,19 @@ export default {
         };
     },
     methods: {
+        async getSliders() {
+            try {
+                let result = await instance.get('api/sliders/all');
+                this.heroslider = result.data;
+            } catch (err) {
+                this.$swal({
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
+                });
+                console.error(err);
+            }
+        },
         async subscribeUser() {
             try {
                 await instance.post('api/contact/subscribe', { subscriberEmail: this.subscriberEmail });
@@ -316,6 +327,19 @@ export default {
                 });
                 throw (err);
             }
+        },
+        async getTestimonials() {
+            try {
+                let result = await instance.get('/api/testimonials/all');
+                this.testimonials = result.data;
+            } catch (err) {
+                this.$swal({
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
+                });
+                console.error(err);
+            }
         }
     },
     computed: {
@@ -349,6 +373,8 @@ export default {
             });
             console.error(err);
         }
+        this.getSliders();
+        this.getTestimonials();
     }
 };
 </script>
@@ -802,7 +828,7 @@ export default {
                         padding: 80px 48px 24px;
                         border-radius: 18px;
                         position: relative;
-
+                        min-height: 440px;
                         .profile-photo {
                             position: relative;
                             top: -24px;
