@@ -225,6 +225,7 @@ export default {
                 }]
             },
             herosliderOptions: {
+                autoplay: true,
                 infinite: true,
                 autoplaySpeed: 5000,
                 slidesToShow: 1,
@@ -585,12 +586,15 @@ export default {
 
         .hero {
             padding: 0;
+            min-height: 550px;
+            background-color: #333;
 
             .heroslider {
                 .agile {
                     .slide {
                         .hero-wrapper {
-                            height: 70vh;
+                            /*height: 70vh;*/
+                            height: 550px;
 
                             .overlay-layer {
                                 position: absolute;
@@ -625,6 +629,7 @@ export default {
 
                             .hero-desc {
                                 @include text-clamp(4);
+                                white-space: pre-wrap;
                             }
 
 
@@ -686,19 +691,13 @@ export default {
             }
 
             /* iPhone 6, 6S, 7 and 8 Landscape */
-            @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
-                
-            }
+            @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {}
 
             /* iPhone 6+, 6S+, 7+ and 8+ Landscape */
-            @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
-                
-            }
+            @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {}
 
             /* iPhone x Landscape */
-            @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
-                
-            }
+            @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {}
 
             /* iPad Portrait */
             @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
@@ -829,6 +828,7 @@ export default {
                         border-radius: 18px;
                         position: relative;
                         min-height: 440px;
+
                         .profile-photo {
                             position: relative;
                             top: -24px;
