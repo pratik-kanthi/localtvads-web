@@ -34,6 +34,26 @@
 			}
 		}
 	}
+	.VueCarousel {
+		.VueCarousel-pagination {
+			.VueCarousel-dot-container {
+				margin-left: 16px;
+				.VueCarousel-dot {
+					background-color: #e5eaee;
+					border-radius: 8px !important;
+					border: none;
+					cursor: pointer;
+					height: 16px;
+					font-size: 0;
+					line-height: 0;
+					margin: 0;
+					padding: 0;
+					transition-duration: .3s;
+					width: 16px;
+				}
+			}
+		}
+	}
 }
 .offers-slider {
 	.agile {
@@ -68,6 +88,30 @@
 				}
 			}
 		}
+	}
+	.VueCarousel {
+		.VueCarousel-navigation {
+			.VueCarousel-navigation-button {
+				i {
+					font-size: 48px;
+				}
+				&:focus {
+					outline: none;
+					color: $brand-secondary;
+					cursor: pointer;
+				}
+			}
+			@media (max-width: 900px) {
+				display: none !important;
+			}
+			@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+				display: none !important;
+			}
+			@media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+				display: none !important;
+			}
+		}
+		
 	}
 }
 

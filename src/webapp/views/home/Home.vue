@@ -70,8 +70,8 @@
                 <h3 class="section-title-2 text-center mb16">Latest Offers</h3>
                 <div class="underlined"></div>
                 <div class="offers-slider mt48">
-                    <agile :options="offersSliderOptions" v-if="offers.length > 0">
-                        <div class="slide" v-for="(offer,key) in offers" :key="key">
+                    <carousel :per-page="3" :pagination-enabled="false" :navigation-enabled="true" :autoplay="true" :autoplay-hover-pause="true" :loop="true" :speed="600" :per-page-custom="[[300, 1], [768, 2], [1199, 3]]" :navigation-click-target-size="20" navigation-prev-label="<i class='material-icons'>keyboard_arrow_left</i>" navigation-next-label="<i class='material-icons'>keyboard_arrow_right</i>" :center-mode="true" :scroll-per-page="false">
+                        <slide class="slide" v-for="(offer,key) in offers" :key="key">
                             <div class="offer">
                                 <div class="offer-image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + offer.ImageUrl + ')'}"></div>
                                 <div class="offer-content">
@@ -79,10 +79,8 @@
                                     <p class="text-clamp-2">{{ offer.Description }}</p>
                                 </div>
                             </div>
-                        </div>
-                        <template slot="prevButton"><i class="material-icons">keyboard_arrow_left</i></template>
-                        <template slot="nextButton"><i class="material-icons">keyboard_arrow_right</i></template>
-                    </agile>
+                        </slide>
+                    </carousel>
                 </div>
             </div>
         </section>
@@ -98,8 +96,8 @@
             </div>
             <div class="contianer-fluid mt40">
                 <div class="testimonial-slider" v-if="testimonials">
-                    <agile :options="sliderOptions">
-                        <div class="slide" v-for="t in testimonials" :key="t._id">
+                    <carousel :per-page="3" :autoplay="true" :autoplay-hover-pause="true" :loop="true" :speed="600" pagination-active-color="#ff6500" :pagination-size="16" :pagination-padding="5" :per-page-custom="[[300, 1], [769, 2], [1199, 3]]" :center-mode="true">
+                        <slide v-for="t in testimonials" :key="t._id" class="slide">
                             <div class="content">
                                 <div class="profile-photo">
                                     <div class="profile-photo">
@@ -110,8 +108,8 @@
                                 <h6 class="company">{{ t.Company }}</h6>
                                 <p class="desc">{{ t.Description }}</p>
                             </div>
-                        </div>
-                    </agile>
+                        </slide>
+                    </carousel>
                 </div>
             </div>
         </section>
@@ -201,29 +199,6 @@ export default {
                 }]
             },
             heroslider: null,
-            sliderOptions: {
-                autoplay: true,
-                infinite: true,
-                autoplaySpeed: 5000,
-                slidesToShow: 3,
-                navButtons: false,
-                responsive: [{
-                    breakpoint: 1199,
-                    settings: {
-                        slidesToShow: 3,
-                    }
-                }, {
-                    breakpoint: 768,
-                    settings: {
-                        slidesToShow: 2
-                    }
-                }, {
-                    breakpoint: 300,
-                    settings: {
-                        slidesToShow: 1
-                    }
-                }]
-            },
             herosliderOptions: {
                 autoplay: true,
                 infinite: true,
@@ -705,7 +680,7 @@ export default {
                     .slide {
                         .offer {
                             width: 300px;
-                            margin: 0;
+                            margin: 0 15px;
                         }
                     }
                 }
@@ -717,6 +692,9 @@ export default {
                     .slide {
                         .offer {
                             width: 420px;
+                            .offer-image {
+                                height: 320px;
+                            }
                         }
                     }
                 }
@@ -724,9 +702,14 @@ export default {
 
             /* iPad Pro Portrait */
             @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-                .offers {
-                    .offer {
-                        max-width: 288px;
+                .offers-slider {
+                    .slide {
+                        .offer {
+                            width: 420px;
+                            .offer-image {
+                                height: 320px;
+                            }
+                        }
                     }
                 }
             }
@@ -828,7 +811,7 @@ export default {
                         border-radius: 18px;
                         position: relative;
                         min-height: 440px;
-
+                        cursor: pointer;
                         .profile-photo {
                             position: relative;
                             top: -24px;
