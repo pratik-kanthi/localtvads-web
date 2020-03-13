@@ -52,6 +52,8 @@
             <div class="container">
                 <h3 class="section-title-2 text-center mb16">How it works</h3>
                 <div class="underlined"></div>
+                <br>
+                <h4 class="section-title-2 text-center mb16">Follow our simple 4 step process</h4>
                 <div class="row works-wrapper mt48">
                     <div class="col-md-6 col-lg-3 text-center" v-for="work in workflow" :key="work.Id">
                         <div class="work">
@@ -84,17 +86,15 @@
                 </div>
             </div>
         </section>
-        <section class="video" id="about">
-            <div class="background-image-holder video-bg">
-                <div class="play-button"><img src="@/assets/images/play.svg" alt=""></div>
-            </div>
-        </section>
+        
         <section class="testimonial bg--grey">
             <div class="container">
-                <h2 class="section-title-1 text-center mb56">Happy Customers, Happy Businesses</h2>
-                <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has been the industry's standard dummy text ever since. Corporate social responsibility policymaker inclusion, resist; compassion mass incarceration correlation white paper. Program area energize optimism radical shared value policymaker.</p>
+                <h2 class="section-title-1 text-center mb16">Testimonials</h2>
+                <div class="underlined"></div>
+                <br>
+                <p class="text-center">Hear from our happy customers about how easy it is and how much you can gain by <router-link tag="a" to="/#book-now">booking</router-link> your LocalTV Ad today.</p>
             </div>
-            <div class="contianer-fluid mt40">
+            <div class="container-fluid mt40">
                 <div class="testimonial-slider" v-if="testimonials">
                     <carousel :per-page="3" :autoplay="true" :autoplay-hover-pause="true" :loop="true" :speed="600" pagination-active-color="#ff6500" :pagination-size="16" :pagination-padding="5" :per-page-custom="[[300, 1], [769, 2], [1199, 3]]" :center-mode="true">
                         <slide v-for="t in testimonials" :key="t._id" class="slide">
@@ -119,7 +119,7 @@
                     <div class="info">
                         <img src="@/assets/images/info.png" alt="">
                         <h1 class="text-center white">Contact Us</h1>
-                        <p class="lead text-center">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        <p class="lead text-center">We'd love to hear from you. Simply fill out the form opposite and we'll get back to you within 24 hours.</p>
                     </div>
                 </div>
                 <div class="col-sm-6 p-0">
@@ -134,11 +134,11 @@
                         </div>
                         <div class="form-group">
                             <label for="" class="ml0">Subject</label>
-                            <input v-model="enquiryForm.Subject" type="text" class="form-control" placeholder="What can we help you with..">
+                            <input v-model="enquiryForm.Subject" type="text" class="form-control" placeholder="What can we help with?">
                         </div>
                         <div class="form-group">
                             <label for="" class="ml0">Message</label>
-                            <textarea v-model="enquiryForm.Message" name="" id="" cols="30" rows="4" class="form-control" placeholder="Gives us more details.."></textarea>
+                            <textarea v-model="enquiryForm.Message" name="" id="" cols="30" rows="4" class="form-control" placeholder="How can we help?"></textarea>
                         </div>
                         <button @click="submitEnquiry" :disabled="!isEnquiryFormValid" class="btn btn-primary btn-full mt16">Send a Message</button>
                     </div>
@@ -147,12 +147,12 @@
         </section>
         <section class="subscription bg--grey">
             <div class="container">
-                <h2 class="section-title-1 text-center mb48">Get notified <br>about latest updates and offers</h2>
-                <p class="lead text-center mb48">Lorem Ipsum is simply dummy text of the printing and typesetting industry.<br>It has been the industry's standard dummy text ever since.</p>
+                <h2 class="section-title-1 text-center mb20">Get exclusive email offers</h2>
+                <h6 class="section-title-1 text-center mb48">And stay in touch with our monthly Newsletter</h6>
                 <div class="form-group email-wrapper">
                     <img src="@/assets/images/mail.svg" class="mail-icon" alt="">
                     <input v-model="subscriberEmail" type="email" class="form-control" placeholder="Your Email">
-                    <button :disabled="!isSubscriberEmailValid" @click="subscribeUser" class="btn btn-primary subscribe">Subscribe</button>
+                    <button :disabled="!isSubscriberEmailValid" @click="subscribeUser" class="btn btn-primary subscribe">Sign Up</button>
                 </div>
             </div>
         </section>
@@ -225,21 +225,21 @@ export default {
             },
             workflow: [{
                 Id: 1,
-                Name: 'Select Your Slot',
-                Desc: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aut error optio voluptatibus ab voluptatum esse voluptates? Perspiciatis, maxime similique. Debitis, earum nulla. Molestias soluta sit aspernatur ipsa expedita libero ex!'
+                Name: 'Select Your Location',
+                Desc: 'Choose your target areas to run your ad'
             }, {
                 Id: 2,
                 Name: 'Choose Your Plan',
-                Desc: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aut error optio voluptatibus ab voluptatum esse voluptates? Perspiciatis, maxime similique. Debitis, earum nulla. Molestias soluta sit aspernatur ipsa expedita libero ex!'
+                Desc: 'Select when and how many times you want your ad aired'
             }, {
                 Id: 3,
                 Name: 'Upload Your Ad',
-                Desc: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aut error optio voluptatibus ab voluptatum esse voluptates? Perspiciatis, maxime similique. Debitis, earum nulla. Molestias soluta sit aspernatur ipsa expedita libero ex!'
+                Desc: 'If you have already got an ad, great, if not we are here to help create your content'
             }, {
                 Id: 4,
-                Name: 'Dont Lorem ipsum',
-                Desc: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aut error optio voluptatibus ab voluptatum esse voluptates? Perspiciatis, maxime similique. Debitis, earum nulla. Molestias soluta sit aspernatur ipsa expedita libero ex!'
-            }],
+                Name: 'Approval',
+                Desc: 'Once your ad is ready to air we will send it to you for final approval'
+            }, ],
             offers: [],
             subscriberEmail: '',
             enquiryForm: {},

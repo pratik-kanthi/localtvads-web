@@ -12,10 +12,10 @@
                 <div class="col-lg-8">
                     <ul class="menu" :class="{'nav-menu': showMenu}">
                         <li @click="toggleMenu">
-                            <router-link tag="a" to="/#book-now">Book Now</router-link>
+                            <router-link tag="a" to="/#how-it-works">How It Works</router-link>
                         </li>
                         <li @click="toggleMenu">
-                            <router-link tag="a" to="/#how-it-works">How it works</router-link>
+                            <router-link tag="a" to="/#book-now">Book Now</router-link>
                         </li>
                         <li @click="toggleMenu">
                             <router-link tag="a" to="/#offers">Offers</router-link>

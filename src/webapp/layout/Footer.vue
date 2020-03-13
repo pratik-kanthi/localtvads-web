@@ -12,10 +12,10 @@
                 <div class="col-lg-7">
                     <ul class="menu">
                         <li>
-                            <router-link tag="a" to="/#book-now">Book Now</router-link>
+                            <router-link tag="a" to="/#how-it-works">How It Works</router-link>
                         </li>
                         <li>
-                            <router-link tag="a" to="/#how-it-works">How it works</router-link>
+                            <router-link tag="a" to="/#book-now">Book Now</router-link>
                         </li>
                         <li>
                             <router-link tag="a" to="/#offers">Offers</router-link>
@@ -30,13 +30,8 @@
                 </div>
                 <div class="col-lg-3">
                     <ul class="social">
-                        <li>
-                            <a><img src="@/assets/images/facebook.svg" alt=""></a>
-                        </li>
-                        <li>
-                            <a><img src="@/assets/images/twitter.svg" alt=""></a>
-                        </li>
-                        <li>© 2019 localtvads.com</li>
+                        
+                        <li>© 2020 localtvads.com</li>
                     </ul>
                 </div>
             </div>
