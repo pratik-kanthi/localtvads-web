@@ -189,8 +189,9 @@ export default {
         ul.auth-wrapper {
             @include list-unstyled();
             margin: 0;
-            float: right;
-
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
             li {
                 float: left;
                 margin-right: 40px;

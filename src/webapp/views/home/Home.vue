@@ -5,14 +5,7 @@
                 <agile :options="herosliderOptions" v-if="heroslider">
                     <div class="slide" v-for="(hero,key) in heroslider" :key="key">
                         <div class="hero-wrapper pos-relative">
-                            <div class="hero-image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + hero.ImageUrl + ')', 'height':'100%','background-size':'cover'}"></div>
-                            <div class="overlay-layer"></div>
-                            <div class="hero-content">
-                                <div class="container">
-                                    <h2 class="hero-header">{{ hero.Name }}</h2>
-                                    <p class="hero-desc">{{ hero.Description }}</p>
-                                </div>
-                            </div>
+                            <div class="hero-image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + hero.ImageUrl + ')', 'height':'100%','background-size':'cover', 'background-position': 'center center'}"></div>
                         </div>
                     </div>
                     <template slot="prevButton"><i class="material-icons arrow">keyboard_arrow_left</i></template>
@@ -86,7 +79,7 @@
                 </div>
             </div>
         </section>
-        
+
         <section class="testimonial bg--grey">
             <div class="container">
                 <h2 class="section-title-1 text-center mb16">Testimonials</h2>
@@ -571,16 +564,6 @@ export default {
                             /*height: 70vh;*/
                             height: 550px;
 
-                            .overlay-layer {
-                                position: absolute;
-                                background-color: rgba(0, 0, 0, 0.7);
-                                top: 0;
-                                bottom: 0;
-                                left: 0;
-                                right: 0;
-                                z-index: 1;
-                            }
-
                             @media (max-width: 767px) {
                                 height: 60vh !important;
                             }
@@ -589,25 +572,6 @@ export default {
                             @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
                                 height: 200px;
                             }
-                        }
-
-                        .hero-content {
-                            width: 100%;
-                            @include center('vertical');
-                            color: $white;
-                            font-size: 24px;
-                            z-index: 3;
-
-                            .hero-header {
-                                color: $white;
-                            }
-
-                            .hero-desc {
-                                @include text-clamp(4);
-                                white-space: pre-wrap;
-                            }
-
-
                         }
                     }
                 }
