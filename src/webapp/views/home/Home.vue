@@ -193,7 +193,7 @@ export default {
             },
             heroslider: null,
             herosliderOptions: {
-                autoplay: true,
+                autoplay: false,
                 infinite: true,
                 autoplaySpeed: 5000,
                 slidesToShow: 1,
