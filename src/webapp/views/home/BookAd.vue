@@ -128,7 +128,7 @@ export default {
         },
         getMaximumViewCount() {
             let channel = this.channels.find(channel => channel._id === this.broadcastLocation);
-            if (channel.Viewerships) {
+            if (channel.Viewerships && channel.Viewerships[0]) {
                 let max = channel.Viewerships[0].Count;
                 channel.Viewerships.map(views => {
                     if (views.Count > max) {
