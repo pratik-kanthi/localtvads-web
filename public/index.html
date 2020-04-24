@@ -1,27 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>Local TV Ads</title>
-    <meta name="title" content="Local TV Ads">
-    <meta name="description" content="Grow your business faster. Creating an ad for your business is easier than you think">
-    <meta name="keywords" content="Local TV Ads, How it works, Latest Offers, Book Your Ad, Create Your Ad">
-    <meta name="author" content="Local TV Ads">
-    <meta property="og:title" content="Local TV Ads" />
-    <meta property="og:image" content="<%= BASE_URL %>images/logo-dark.svg" />
-    <meta property="og:description" content="Grow your business faster. Creating an ad for your business is easier than you think." />
-    <script src="https://js.stripe.com/v2/"></script>
-  </head>
-  <body style="margin: 0">
-    <noscript>
-      <strong>We're sorry but localtvads-website doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <script src="config.js"></script>
-    <!-- built files will be auto injected -->
-  </body>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+        <title>Local TV Ads</title>
+        <meta name="title" content="Local TV Ads" />
+        <meta name="description" content="Grow your business faster. Creating an ad for your business is easier than you think" />
+        <meta name="keywords" content="Local TV Ads, How it works, Latest Offers, Book Your Ad, Create Your Ad" />
+        <meta name="author" content="Local TV Ads" />
+        <meta property="og:title" content="Local TV Ads" />
+        <meta property="og:image" content="<%= BASE_URL %>images/logo-dark.svg" />
+        <meta property="og:description" content="Grow your business faster. Creating an ad for your business is easier than you think." />
+        <script src="https://js.stripe.com/v2/"></script>
+    </head>
+    <style>
+        #fallback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .fallback-text {
+            padding-top: 32px;
+            font-size: 18px;
+            font-family: 'Roboto';
+        }
+    </style>
+    <body style="margin: 0">
+        <noscript>
+            <strong>We're sorry but localtvads-website doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+        </noscript>
+        <div id="app"></div>
+        <script src="config.js"></script>
+        <!-- built files will be auto injected -->
+
+        <div id="fallback" style="display:none">
+            <img src="images/logo.png" />
+            <div class="fallback-text">Uh oh! We don't support Internet Explorer. Please download a modern browser to use this site</div>
+            <div class="fallback-text">We recommend using Google Chrome or Firefox</div>
+        </div>
+
+        <script>
+            function msieversion() {
+                var ua = window.navigator.userAgent;
+                var msie = ua.indexOf('MSIE ');
+                if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+                    document.getElementById('fallback').style.display = 'block';
+                }
+            }
+
+            msieversion();
+        </script>
+    </body>
 </html>
