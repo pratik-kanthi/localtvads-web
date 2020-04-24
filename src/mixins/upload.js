@@ -3,7 +3,7 @@ export const uploadMixin = {
         return {
             config: {
                 maxSize: 250,
-                allowedExtensions: ['mp4','webm','avi', 'mpv', 'mpg', 'flv']
+                allowedExtensions: ['mp4', 'webm', 'avi', 'mpv', 'mpg', 'flv']
             },
             isValid: false,
             upload: {
@@ -20,8 +20,9 @@ export const uploadMixin = {
             this.isValid = false;
             this.upload.chosen = this.$refs.fileUpload.files[0];
             window.URL = window.URL || window.webkitURL;
-            let duration, video = document.createElement('video');
-            video.preload = 'metadata';
+            let duration,
+                video = document.createElement('video');
+            video.preload = 'auto';
             video.onloadedmetadata = () => {
                 window.URL.revokeObjectURL(video.src);
                 duration = video.duration;
@@ -44,6 +45,7 @@ export const uploadMixin = {
                 this.videoUrl = video.src;
             };
             video.src = URL.createObjectURL(this.upload.chosen);
+            this.videoUrl = video.src;
         },
         cancelUpload() {
             this.upload.chosen = null;
@@ -72,7 +74,7 @@ export const uploadMixin = {
                 confirmButtonText: 'Confirm',
                 closeOnConfirm: false
             }).then(isConfirm => {
-                if(isConfirm.value) {
+                if (isConfirm.value) {
                     this.uploadFile();
                 }
             });

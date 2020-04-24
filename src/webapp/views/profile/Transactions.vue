@@ -44,12 +44,20 @@ export default {
         async downloadReceipt(transaction) {
             this.isLoading = true;
             let result = await axios.get(window.endpoint + 'api/client/transaction/' + transaction, {
+                responseType: 'arraybuffer',
                 headers: {
                     'Content-Type': 'application/json',
+                    Accept: 'application/pdf',
                     Authorization: 'bearer ' + VueCookies.get('token')
                 }
             });
-            window.open(result.data);
+
+            const url = window.URL.createObjectURL(new Blob([result.data], { type: 'application/pdf' }));
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'invoice_' + transaction + '.pdf';
+            document.body.appendChild(link);
+            link.click();
             this.isLoading = false;
         },
         ...mapGetters(['getUser'])
