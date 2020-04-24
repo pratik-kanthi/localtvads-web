@@ -10,7 +10,9 @@
                 <div class="transaction-table" v-else>
                     <b-table striped hover :items="transactions" :fields="fields" :per-page="perPage" :current-page="currentPage" responsive id="transaction-table">
                         <template v-slot:cell(Action)="data">
-                            <button @click="downloadReceipt(data.item.ReferenceID)" class="btn btn-sm btn-link pl0 pt0 pr0 t-m">Download</button>
+                            <button @click="downloadReceipt(data.item.ReferenceID)" class="btn btn-sm btn-link pl0 pt0 pr0 t-m">
+                                Download
+                            </button>
                         </template>
                     </b-table>
                     <b-pagination v-model="currentPage" :total-rows="transactions.length" :per-page="perPage" first-text="First" prev-text="Prev" next-text="Next" last-text="Last" aria-controls="transaction-table" align="right" class="pt0 pb16 pr16"></b-pagination>
@@ -32,7 +34,7 @@ export default {
     data() {
         return {
             isLoading: false,
-            fields: ['DateTime', 'ReferenceID', 'Details', 'Status', 'Total', 'Action'],
+            fields: ['DateTime', 'Details', 'Status', 'Total', 'Action'],
             transactions: [],
             perPage: 15,
             currentPage: 1
@@ -42,22 +44,13 @@ export default {
         async downloadReceipt(transaction) {
             this.isLoading = true;
             let result = await axios.get(window.endpoint + 'api/client/transaction/' + transaction, {
-                responseType: 'arraybuffer',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/pdf',
-                    'Authorization': 'bearer ' + VueCookies.get('token')
+                    Authorization: 'bearer ' + VueCookies.get('token')
                 }
             });
-
-            const url = window.URL.createObjectURL(new Blob([result.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'invoice_' + transaction + '.pdf'); //or any other extension
-            document.body.appendChild(link);
-            link.click();
+            window.open(result.data);
             this.isLoading = false;
-
         },
         ...mapGetters(['getUser'])
     },
@@ -65,11 +58,11 @@ export default {
         this.isLoading = true;
         try {
             let result = await instance.get('api/client/transactions?client=' + this.getUser().Owner._id);
-            this.transactions = result.data.map((item) => {
+            this.transactions = result.data.map(item => {
                 return {
                     DateTime: this.moment(item.DateTime).format('DD/MM/YYYY HH:mm'),
                     ReferenceID: item.ReferenceId,
-                    Details: item.ChannelPlan && item.ChannelPlan.Channel ? (item.ChannelPlan.Channel.Name + ', ' + item.ChannelPlan.AdSchedule.Name) : ('Add On - ' + item.ServiceAddOn.Name),
+                    Details: item.ChannelPlan && item.ChannelPlan.Channel ? item.ChannelPlan.Channel.Name + ', ' + item.ChannelPlan.AdSchedule.Name : 'Add On - ' + item.ServiceAddOn.Name,
                     Status: item.Status.substring(0, 1).toUpperCase() + item.Status.substring(1),
                     Total: '£' + item.TotalAmount.toFixed(2)
                 };
@@ -89,54 +82,54 @@ export default {
 </script>
 
 <style lang="scss" scopped>
-    .transactions {
-        min-height: calc(100vh - 80px);
+.transactions {
+    min-height: calc(100vh - 80px);
 
-        .transactions-wrapper {
-            background-color: $white;
-            border-radius: 8px;
-            box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
+    .transactions-wrapper {
+        background-color: $white;
+        border-radius: 8px;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
 
-            .no-data {
-                padding: 40px;
-            }
+        .no-data {
+            padding: 40px;
+        }
 
-            .transaction-table {
-                table {
-                    border-collapse: collapse;
-                    border-spacing: 0 5px;
-                    width: 100%;
+        .transaction-table {
+            table {
+                border-collapse: collapse;
+                border-spacing: 0 5px;
+                width: 100%;
 
-                    thead {
-                        tr {
-                            background-color: $brand-primary;
-                            color: $white;
+                thead {
+                    tr {
+                        background-color: $brand-primary;
+                        color: $white;
 
-                            th {
-                                border: none;
-                                font-size: 16px;
-                                font-weight: 500;
-                                font-family: $font-family-heading;
+                        th {
+                            border: none;
+                            font-size: 16px;
+                            font-weight: 500;
+                            font-family: $font-family-heading;
 
-                                &:first-child {
-                                    border-top-left-radius: 6px;
-                                }
+                            &:first-child {
+                                border-top-left-radius: 6px;
+                            }
 
-                                &:last-child {
-                                    border-top-right-radius: 6px;
-                                }
+                            &:last-child {
+                                border-top-right-radius: 6px;
                             }
                         }
                     }
+                }
 
-                    tbody {
-                        tr {
-                            color: $base;
-                            background-color: $white;
-                        }
+                tbody {
+                    tr {
+                        color: $base;
+                        background-color: $white;
                     }
                 }
             }
         }
     }
+}
 </style>

@@ -2,14 +2,18 @@
     <div class="home">
         <section class="hero">
             <div class="heroslider">
-                <agile :options="herosliderOptions" v-if="heroslider">
-                    <div class="slide" v-for="(hero,key) in heroslider" :key="key">
+                <agile :options="herosliderOptions" :unagile="!showCarousel" v-if="heroslider">
+                    <div class="slide" v-for="(hero, key) in heroslider" :key="key">
                         <div class="hero-wrapper pos-relative">
-                            <div class="hero-image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + hero.ImageUrl + ')', 'height':'100%','background-size':'cover', 'background-position': 'center center'}"></div>
+                            <div class="hero-image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + hero.ImageUrl + ')', height: '100%', 'background-size': 'cover', 'background-position': 'center center' }"></div>
                         </div>
                     </div>
-                    <template slot="prevButton"><i class="material-icons arrow">keyboard_arrow_left</i></template>
-                    <template slot="nextButton"><i class="material-icons arrow">keyboard_arrow_right</i></template>
+                    <template slot="prevButton"
+                    ><i class="material-icons arrow">keyboard_arrow_left</i></template
+                    >
+                    <template slot="nextButton"
+                    ><i class="material-icons arrow">keyboard_arrow_right</i></template
+                    >
                 </agile>
             </div>
         </section>
@@ -45,7 +49,7 @@
             <div class="container">
                 <h3 class="section-title-2 text-center mb16">How it works</h3>
                 <div class="underlined"></div>
-                <br>
+                <br />
                 <h4 class="section-title-2 text-center mb16">Follow our simple 4 step process</h4>
                 <div class="row works-wrapper mt48">
                     <div class="col-md-6 col-lg-3 text-center" v-for="work in workflow" :key="work.Id">
@@ -64,11 +68,11 @@
             <div class="container">
                 <h3 class="section-title-2 text-center mb16">Latest Offers</h3>
                 <div class="underlined"></div>
-                <div class="offers-slider mt48">
+                <div class="offers-slider">
                     <carousel :per-page="3" :pagination-enabled="false" :navigation-enabled="true" :autoplay="true" :autoplay-hover-pause="true" :loop="true" :speed="600" :per-page-custom="[[300, 1], [768, 2], [1199, 3]]" :navigation-click-target-size="20" navigation-prev-label="<i class='material-icons'>keyboard_arrow_left</i>" navigation-next-label="<i class='material-icons'>keyboard_arrow_right</i>" :center-mode="true" :scroll-per-page="false">
-                        <slide class="slide" v-for="(offer,key) in offers" :key="key">
+                        <slide class="slide" v-for="(offer, key) in offers" :key="key">
                             <div class="offer">
-                                <div class="offer-image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + offer.ImageUrl + ')'}"></div>
+                                <div class="offer-image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + offer.ImageUrl + ')' }"></div>
                                 <div class="offer-content">
                                     <h4 class="section-subtitle mb-3">{{ offer.Name }}</h4>
                                     <p class="text-clamp-2">{{ offer.Description }}</p>
@@ -80,11 +84,11 @@
             </div>
         </section>
 
-        <section class="testimonial bg--grey">
+        <section class="testimonial bg--grey" id="about">
             <div class="container">
                 <h2 class="section-title-1 text-center mb16">Testimonials</h2>
                 <div class="underlined"></div>
-                <br>
+                <br />
                 <p class="text-center">Hear from our happy customers about how easy it is and how much you can gain by <router-link tag="a" to="/#book-now">booking</router-link> your LocalTV Ad today.</p>
             </div>
             <div class="container-fluid mt40">
@@ -94,7 +98,7 @@
                             <div class="content">
                                 <div class="profile-photo">
                                     <div class="profile-photo">
-                                        <div class="background-image-holder image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + t.ImageUrl + ')'}"></div>
+                                        <div class="background-image-holder image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + t.ImageUrl + ')' }"></div>
                                     </div>
                                 </div>
                                 <h6 class="name">{{ t.Name }}</h6>
@@ -110,7 +114,7 @@
             <div class="row">
                 <div class="col-sm-6 p-0">
                     <div class="info">
-                        <img src="@/assets/images/info.png" alt="">
+                        <img src="@/assets/images/info.png" alt="" />
                         <h1 class="text-center white">Contact Us</h1>
                         <p class="lead text-center">We'd love to hear from you. Simply fill out the form opposite and we'll get back to you within 24 hours.</p>
                     </div>
@@ -119,19 +123,19 @@
                     <div class="contact-form">
                         <div class="form-group">
                             <label for="" class="ml0">Name</label>
-                            <input v-model="enquiryForm.Name" type="text" class="form-control" placeholder="Your Name">
+                            <input v-model="enquiryForm.Name" type="text" class="form-control" placeholder="Your Name" />
                         </div>
                         <div class="form-group">
                             <label for="" class="ml0">Email ID</label>
-                            <input v-model="enquiryForm.Email" type="email" class="form-control" placeholder="Your email address">
+                            <input v-model="enquiryForm.Email" type="email" class="form-control" placeholder="Your email address" />
                         </div>
                         <div class="form-group">
                             <label for="" class="ml0">Subject</label>
-                            <input v-model="enquiryForm.Subject" type="text" class="form-control" placeholder="What can we help with?">
+                            <input v-model="enquiryForm.Subject" type="text" class="form-control" placeholder="What can we help with?" />
                         </div>
                         <div class="form-group">
                             <label for="" class="ml0">Message</label>
-                            <textarea v-model="enquiryForm.Message" name="" id="" cols="30" rows="4" class="form-control" placeholder="How can we help?"></textarea>
+                            <textarea wrap="hard" v-model="enquiryForm.Message" name="" id="" cols="30" rows="4" class="form-control" placeholder="How can we help?"></textarea>
                         </div>
                         <button @click="submitEnquiry" :disabled="!isEnquiryFormValid" class="btn btn-primary btn-full mt16">Send a Message</button>
                     </div>
@@ -143,8 +147,8 @@
                 <h2 class="section-title-1 text-center mb20">Get exclusive email offers</h2>
                 <h6 class="section-title-1 text-center mb48">And stay in touch with our monthly Newsletter</h6>
                 <div class="form-group email-wrapper">
-                    <img src="@/assets/images/mail.svg" class="mail-icon" alt="">
-                    <input v-model="subscriberEmail" type="email" class="form-control" placeholder="Your Email">
+                    <img src="@/assets/images/mail.svg" class="mail-icon" alt="" />
+                    <input v-model="subscriberEmail" type="email" class="form-control" placeholder="Your Email" />
                     <button :disabled="!isSubscriberEmailValid" @click="subscribeUser" class="btn btn-primary subscribe">Sign Up</button>
                 </div>
             </div>
@@ -174,65 +178,79 @@ export default {
                 pauseOnHover: true,
                 navButtons: true,
                 dots: false,
-                responsive: [{
-                    breakpoint: 1199,
-                    settings: {
-                        slidesToShow: 3
+                responsive: [
+                    {
+                        breakpoint: 1199,
+                        settings: {
+                            slidesToShow: 3
+                        }
+                    },
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            slidesToShow: 2
+                        }
+                    },
+                    {
+                        breakpoint: 300,
+                        settings: {
+                            slidesToShow: 1
+                        }
                     }
-                }, {
-                    breakpoint: 768,
-                    settings: {
-                        slidesToShow: 2
-                    }
-                }, {
-                    breakpoint: 300,
-                    settings: {
-                        slidesToShow: 1
-                    }
-                }]
+                ]
             },
             heroslider: null,
+            showCarousel: false,
             herosliderOptions: {
-                autoplay: false,
+                autoplay: true,
                 infinite: true,
                 autoplaySpeed: 5000,
                 slidesToShow: 1,
                 dots: false,
                 navButtons: false,
-                responsive: [{
-                    breakpoint: 1199,
-                    settings: {
-                        navButtons: true
+                responsive: [
+                    {
+                        breakpoint: 1199,
+                        settings: {
+                            navButtons: true
+                        }
+                    },
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            navButtons: true
+                        }
+                    },
+                    {
+                        breakpoint: 300,
+                        settings: {
+                            navButtons: false
+                        }
                     }
-                }, {
-                    breakpoint: 768,
-                    settings: {
-                        navButtons: true
-                    }
-                }, {
-                    breakpoint: 300,
-                    settings: {
-                        navButtons: false
-                    }
-                }]
+                ]
             },
-            workflow: [{
-                Id: 1,
-                Name: 'Select Your Location',
-                Desc: 'Choose your target areas to run your ad'
-            }, {
-                Id: 2,
-                Name: 'Choose Your Plan',
-                Desc: 'Select when and how many times you want your ad aired'
-            }, {
-                Id: 3,
-                Name: 'Upload Your Ad',
-                Desc: 'If you have already got an ad, great, if not we are here to help create your content'
-            }, {
-                Id: 4,
-                Name: 'Approval',
-                Desc: 'Once your ad is ready to air we will send it to you for final approval'
-            }, ],
+            workflow: [
+                {
+                    Id: 1,
+                    Name: 'Select Your Location',
+                    Desc: 'Choose your target areas to run your ad'
+                },
+                {
+                    Id: 2,
+                    Name: 'Choose Your Plan',
+                    Desc: 'Select when and how many times you want your ad aired'
+                },
+                {
+                    Id: 3,
+                    Name: 'Upload Your Ad',
+                    Desc: 'If you have already got an ad, great, if not we are here to help create your content'
+                },
+                {
+                    Id: 4,
+                    Name: 'Approval',
+                    Desc: 'Once your ad is ready to air we will send it to you for final approval'
+                }
+            ],
             offers: [],
             subscriberEmail: '',
             enquiryForm: {},
@@ -244,6 +262,11 @@ export default {
             try {
                 let result = await instance.get('api/sliders/all');
                 this.heroslider = result.data;
+                if (this.heroslider.length > 1) {
+                    this.showCarousel = true;
+                } else {
+                    this.showCarousel = false;
+                }
             } catch (err) {
                 this.$swal({
                     title: 'Error',
@@ -269,7 +292,7 @@ export default {
                     type: 'error',
                     confirmButtonColor: '#ff6500'
                 });
-                throw (err);
+                throw err;
             }
         },
         async submitEnquiry() {
@@ -294,7 +317,7 @@ export default {
                     type: 'error',
                     confirmButtonColor: '#ff6500'
                 });
-                throw (err);
+                throw err;
             }
         },
         async getTestimonials() {
@@ -349,631 +372,629 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .home {
-        .page-header {
-            background-size: cover;
-            height: 600px;
-            background-repeat: no-repeat;
-            background-position: center center;
+.home {
+    .page-header {
+        background-size: cover;
+        height: 600px;
+        background-repeat: no-repeat;
+        background-position: center center;
+        position: relative;
+
+        .tagline {
             position: relative;
+            padding: 88px 120px;
 
+            h1 {
+                color: $white;
+                font-weight: 600;
+                margin-bottom: 24px;
+                font-size: 40px;
 
+                span {
+                    color: $brand-primary;
+                }
+            }
+
+            h3 {
+                color: $white;
+                font-weight: 400;
+                font-size: 24px;
+                line-height: normal;
+            }
+        }
+
+        @media (max-width: 767px) {
+            height: 50vh;
 
             .tagline {
-                position: relative;
-                padding: 88px 120px;
+                padding: 16px 0;
 
                 h1 {
-                    color: $white;
-                    font-weight: 600;
-                    margin-bottom: 24px;
-                    font-size: 40px;
-
-                    span {
-                        color: $brand-primary;
-                    }
+                    font-size: 32px;
+                    line-height: 40px;
                 }
 
                 h3 {
-                    color: $white;
-                    font-weight: 400;
-                    font-size: 24px;
-                    line-height: normal;
-                }
-            }
-
-            @media (max-width: 767px) {
-                height: 50vh;
-
-                .tagline {
-                    padding: 16px 0;
-
-                    h1 {
-                        font-size: 32px;
-                        line-height: 40px;
-                    }
-
-                    h3 {
-                        font-size: 18px;
-                        line-height: 28px;
-                    }
-                }
-            }
-
-            /* iPhone 6, 6S, 7 and 8 Landscape */
-            @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
-                .tagline {
-                    h1 {
-                        line-height: 30px;
-                        margin-bottom: 8px !important;
-                    }
-                }
-            }
-
-            /* iPhone 6+, 6S+, 7+ and 8+ Portrait */
-            @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
-                .tagline {
-                    h1 {
-                        font-size: 30px;
-                        margin-bottom: 8px !important;
-                    }
-                }
-            }
-
-            /* iPhone 6+, 6S+, 7+ and 8+ Landscape */
-            @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
-                .tagline {
-                    padding: 10px 0 !important;
-
-                    h1 {
-                        margin-bottom: 8px !important;
-                    }
-                }
-            }
-
-            @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
-                .tagline {
-                    padding: 24px 0;
-                }
-            }
-
-            /* iPad Portrait */
-            @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-                .tagline {
-                    padding: 78px 24px;
+                    font-size: 18px;
+                    line-height: 28px;
                 }
             }
         }
 
-        .content-area {
-            margin-top: -104px;
-            position: relative;
-            z-index: 0;
-
-            .content {
-                border-radius: 6px;
-                padding: 24px 40px 40px;
-                background-image: url('../../../assets/images/pattern.svg');
-                background-size: cover;
-                background-position: center center;
-                color: #fff;
-                background-color: $brand-primary;
-
-                .header {
-                    .icon {
-                        position: absolute;
-                        top: -9px;
-                    }
-                }
-            }
-
-            @media (max-width: 767px) {
-                margin-top: -14%;
-
-                .content {
-                    margin-top: -1px;
-                    padding: 24px;
-                }
-            }
-
-            /* iPhone 6, 6S, 7 and 8 Portrait */
-            @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
-                margin-top: -25%;
-            }
-
-            /* iPhone 6, 6S, 7 and 8 Landscape */
-            @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
-                margin-top: -10%;
-            }
-
-            /* iPhone 6+, 6S+, 7+ and 8+ Landscape */
-            @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
-                margin-top: -10% !important;
-            }
-
-            /* iPhone x Portrait */
-            @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
-                margin-top: -20%;
-            }
-
-            /* iPhone x Landscape */
-            @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
-                margin-top: -25%;
-            }
-
-            /* iPad Landscape */
-            @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-                .content {
-                    padding: 24px 24px 0;
+        /* iPhone 6, 6S, 7 and 8 Landscape */
+        @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
+            .tagline {
+                h1 {
+                    line-height: 30px;
+                    margin-bottom: 8px !important;
                 }
             }
         }
 
-        .how-it-works {
-            .works-wrapper {
-                .work {
-                    padding: 16px 24px;
-                    border-top-left-radius: 10px;
-                    border-bottom-right-radius: 10px;
-                    cursor: pointer;
-
-                    .counter {
-                        padding: 16px;
-
-                        h6 {
-                            background: $brand-primary;
-                            color: $white;
-                            margin: 0 auto;
-                            width: 56px;
-                            height: 56px;
-                            border-radius: 50%;
-                            padding: 16px;
-                            box-shadow: 0 10px 10px 0 rgba(255, 101, 0, 0.46);
-                        }
-                    }
-
-                    &:hover {
-                        background: $brand-primary;
-                        color: $white;
-
-                        .counter {
-                            h6 {
-                                background: $white;
-                                color: $brand-primary;
-                                box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.12);
-                            }
-                        }
-
-                        h4 {
-                            color: $white;
-                        }
-                    }
+        /* iPhone 6+, 6S+, 7+ and 8+ Portrait */
+        @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
+            .tagline {
+                h1 {
+                    font-size: 30px;
+                    margin-bottom: 8px !important;
                 }
             }
         }
 
-        .hero {
-            padding: 0;
-            min-height: 550px;
-            background-color: #333;
-
-            .heroslider {
-                .agile {
-                    .slide {
-                        .hero-wrapper {
-                            /*height: 70vh;*/
-                            height: 550px;
-
-                            @media (max-width: 767px) {
-                                height: 60vh !important;
-                            }
-
-                            /* iPhone x Portrait */
-                            @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
-                                height: 200px;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        .latest-offers {
-            .offers-slider {
-                position: relative;
-
-                .slide {
-                    .offer {
-                        background: $white;
-                        width: 320px;
-                        margin: 80px 24px 40px;
-
-                        .offer-image {
-                            position: relative;
-                            border-top-left-radius: 10px;
-                            border-top-right-radius: 10px;
-                            height: 250px;
-                            width: 100%;
-                            background-size: cover;
-                            background-repeat: no-repeat;
-                        }
-
-                        .offer-content {
-                            padding: 24px 16px;
-                            text-align: center;
-                            height: 140px;
-
-                            p {
-                                font-size: 16px;
-                                color: #4a4a4a;
-                            }
-                        }
-
-                        small {
-                            position: absolute;
-                            bottom: 8px;
-                            right: 8px;
-                        }
-                    }
-                }
-            }
-
-            @media (max-width: 767px) {
-                .offers-slider {
-                    .slide {
-                        .offer {
-                            width: 100%;
-                            margin: 0;
-                        }
-                    }
-                }
-            }
-
-            /* iPhone 6, 6S, 7 and 8 Landscape */
-            @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {}
-
-            /* iPhone 6+, 6S+, 7+ and 8+ Landscape */
-            @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {}
-
-            /* iPhone x Landscape */
-            @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {}
-
-            /* iPad Portrait */
-            @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-                .offers-slider {
-                    .slide {
-                        .offer {
-                            width: 300px;
-                            margin: 0 15px;
-                        }
-                    }
-                }
-            }
-
-            /* iPad Landscape */
-            @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-                .offers-slider {
-                    .slide {
-                        .offer {
-                            width: 420px;
-                            .offer-image {
-                                height: 320px;
-                            }
-                        }
-                    }
-                }
-            }
-
-            /* iPad Pro Portrait */
-            @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-                .offers-slider {
-                    .slide {
-                        .offer {
-                            width: 420px;
-                            .offer-image {
-                                height: 320px;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
-
-
-        .video {
-            width: 100%;
-            min-height: 480px;
-            position: relative;
-
-            .video-bg {
-                background-image: url('../../../assets/images/video-bg.jpg');
-                background-position-x: 120%;
-            }
-
-            .play-button {
-                position: relative;
-                top: 50%;
-                transform: translateY(-50%);
-                max-width: 50%;
-                background-color: #fff;
-                border-radius: 50%;
-                padding: 36px 40px;
-                width: 120px;
-                height: 120px;
-                margin: 0 auto;
-                border: 8px solid rgba(0, 0, 0, 0.2);
-
-                img {
-                    width: 30px;
-                    height: 30px;
-                }
-            }
-
-            @media (max-width: 767px) {
-                min-height: 150px;
-
-                .video-bg {
-                    background-position-x: 50%;
-                }
-
-                .play-button {
-                    width: 60px;
-                    height: 60px;
-                    padding: 9px 14px;
-
-                    img {
-                        width: 20px;
-                        height: 20px;
-                    }
-                }
-            }
-
-            @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
-                min-height: 350px;
-
-                .video-bg {
-                    background-position-x: 55%;
-                }
-            }
-
-            /* iPad Portrait */
-            @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-                min-height: 350px;
-
-                .video-bg {
-                    background-position-x: 55%;
-                }
-            }
-
-            /* iPad Landscape */
-            @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-                min-height: 350px;
-
-                .video-bg {
-                    background-position-x: 55%;
-                }
-            }
-        }
-
-        .testimonial {
-            p {
-                line-height: 32px;
-            }
-
-            .testimonial-slider {
-                padding: 0 40px;
-                position: relative;
-
-                .slide {
-                    .content {
-                        margin: 80px 24px 40px;
-                        background: $white;
-                        text-align: center;
-                        padding: 80px 48px 24px;
-                        border-radius: 18px;
-                        position: relative;
-                        min-height: 440px;
-                        cursor: pointer;
-                        .profile-photo {
-                            position: relative;
-                            top: -24px;
-
-                            .background-image-holder {
-                                width: 110px;
-                                height: 110px;
-                                left: 50%;
-                                transform: translateX(-50%);
-                                top: -88px;
-                                border-radius: 50%;
-                                box-shadow: 0 2px 24px 0 rgba(161, 161, 161, 0.5);
-                            }
-                        }
-
-                        .name {
-                            font-size: 18px;
-                            font-weight: 500;
-                            color: #212121;
-                        }
-
-                        .company {
-                            font-size: 18px;
-                            font-weight: normal;
-                            color: #212121;
-                        }
-
-                        .desc {
-                            margin-top: 24px;
-                            position: relative;
-
-                            &:before {
-                                content: '“';
-                                position: absolute;
-                                top: -24px;
-                                left: -24px;
-                                color: $brand-primary;
-                                font-size: 50px;
-                                font-weight: 500;
-                                letter-spacing: -3.7px;
-                                -webkit-transform: scaleY(-1);
-                                transform: scaleY(-1);
-
-                                @media (max-width: 767px) {
-                                    top: -30px;
-                                    left: -16px;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                @media (max-width: 767px) {
-                    padding: 0;
-
-                    .slide {
-                        .content {
-                            padding: 72px 16px 32px;
-                        }
-                    }
-                }
-            }
-        }
-
-        .contact-us {
-            .info {
-                background-color: $brand-primary;
-                background-image: url('../../../assets/images/pattern.svg');
-                height: 100%;
-                background-size: 170% 80%;
-                background-position: 51% 0%;
-                padding: 80px 96px;
-
-                img {
-                    display: block;
-                    margin: 0 auto;
-                    width: 290px;
-                    opacity: 0.89;
-                    margin-bottom: 40px;
-                }
+        /* iPhone 6+, 6S+, 7+ and 8+ Landscape */
+        @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+            .tagline {
+                padding: 10px 0 !important;
 
                 h1 {
-                    font-weight: 500;
-                    margin-bottom: 24px;
-                    font-size: 40px;
-                }
-
-                p {
-                    line-height: 32px;
-                    color: $white;
-                }
-            }
-
-            .contact-form {
-                padding: 80px 104px;
-
-                label {
-                    color: #2c3241;
-                }
-            }
-
-            @media (max-width: 767px) {
-                .info {
-                    padding: 40px;
-
-                    img {
-                        width: 200px;
-                    }
-                }
-
-                .contact-form {
-                    padding: 40px 30px;
-                }
-            }
-
-            @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
-                .info {
-                    padding: 40px;
-
-                    img {
-                        width: 200px;
-                    }
-                }
-
-                .contact-form {
-                    padding: 40px 30px;
-                }
-            }
-
-            /* iPad Portrait */
-            @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-                .info {
-                    padding: 40px;
-
-                    img {
-                        width: 200px;
-                    }
-                }
-
-                .contact-form {
-                    padding: 32px 40px 32px 28px;
-                }
-            }
-
-            /* iPad Landscape */
-            @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-                .info {
-                    padding: 60px 40px;
-
-                    img {
-                        width: 200px;
-                    }
-                }
-
-                .contact-form {
-                    padding: 32px 40px 32px 28px;
+                    margin-bottom: 8px !important;
                 }
             }
         }
 
-        .subscription {
-            p {
-                line-height: 32px;
+        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+            .tagline {
+                padding: 24px 0;
             }
+        }
 
-            .email-wrapper {
-                max-width: 500px;
-                position: relative;
-                margin: 0 auto;
+        /* iPad Portrait */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            .tagline {
+                padding: 78px 24px;
+            }
+        }
+    }
 
-                input {
-                    padding-left: 50px;
-                }
+    .content-area {
+        margin-top: -104px;
+        position: relative;
+        z-index: 0;
 
-                .mail-icon {
+        .content {
+            border-radius: 6px;
+            padding: 24px 40px 40px;
+            background-image: url('../../../assets/images/pattern.svg');
+            background-size: cover;
+            background-position: center center;
+            color: #fff;
+            background-color: $brand-primary;
+
+            .header {
+                .icon {
                     position: absolute;
-                    top: 14px;
-                    left: 12px;
-                }
-
-                .subscribe {
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    padding: 6px 24px;
-                    font-size: 20px;
+                    top: -9px;
                 }
             }
+        }
 
-            @media (max-width: 767px) {
-                .email-wrapper {
-                    .subscribe {
-                        position: inherit;
-                        margin-top: 32px;
-                        width: 100%;
+        @media (max-width: 767px) {
+            margin-top: -14%;
+
+            .content {
+                margin-top: -1px;
+                padding: 24px;
+            }
+        }
+
+        /* iPhone 6, 6S, 7 and 8 Portrait */
+        @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+            margin-top: -25%;
+        }
+
+        /* iPhone 6, 6S, 7 and 8 Landscape */
+        @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
+            margin-top: -10%;
+        }
+
+        /* iPhone 6+, 6S+, 7+ and 8+ Landscape */
+        @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+            margin-top: -10% !important;
+        }
+
+        /* iPhone x Portrait */
+        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
+            margin-top: -20%;
+        }
+
+        /* iPhone x Landscape */
+        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+            margin-top: -25%;
+        }
+
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            .content {
+                padding: 24px 24px 0;
+            }
+        }
+    }
+
+    .how-it-works {
+        .works-wrapper {
+            .work {
+                padding: 16px 24px;
+                border-top-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+                cursor: pointer;
+
+                .counter {
+                    padding: 16px;
+
+                    h6 {
+                        background: $brand-primary;
+                        color: $white;
+                        margin: 0 auto;
+                        width: 56px;
+                        height: 56px;
+                        border-radius: 50%;
+                        padding: 16px;
+                        box-shadow: 0 10px 10px 0 rgba(255, 101, 0, 0.46);
+                    }
+                }
+
+                &:hover {
+                    background: $brand-primary;
+                    color: $white;
+
+                    .counter {
+                        h6 {
+                            background: $white;
+                            color: $brand-primary;
+                            box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.12);
+                        }
+                    }
+
+                    h4 {
+                        color: $white;
                     }
                 }
             }
         }
     }
+
+    .hero {
+        padding: 0;
+        min-height: 550px;
+        background-color: #333;
+
+        .heroslider {
+            .agile {
+                .slide {
+                    .hero-wrapper {
+                        /*height: 70vh;*/
+                        height: 550px;
+
+                        @media (max-width: 767px) {
+                            height: 60vh !important;
+                        }
+
+                        /* iPhone x Portrait */
+                        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
+                            height: 200px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .latest-offers {
+        .offers-slider {
+            position: relative;
+
+            .slide {
+                .offer {
+                    background: $white;
+                    width: 320px;
+                    margin: 64px 24px 40px;
+
+                    .offer-image {
+                        position: relative;
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px;
+                        height: 250px;
+                        width: 100%;
+                        background-size: cover;
+                        background-repeat: no-repeat;
+                    }
+
+                    .offer-content {
+                        padding: 24px 16px;
+                        text-align: center;
+                        height: 140px;
+
+                        p {
+                            font-size: 16px;
+                            color: #4a4a4a;
+                        }
+                    }
+
+                    small {
+                        position: absolute;
+                        bottom: 8px;
+                        right: 8px;
+                    }
+                }
+            }
+        }
+
+        @media (max-width: 767px) {
+            .offers-slider {
+                .slide {
+                    .offer {
+                        width: 100%;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+
+        /* iPhone 6, 6S, 7 and 8 Landscape */
+        @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
+        }
+
+        /* iPhone 6+, 6S+, 7+ and 8+ Landscape */
+        @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+        }
+
+        /* iPhone x Landscape */
+        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+        }
+
+        /* iPad Portrait */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            .offers-slider {
+                .slide {
+                    .offer {
+                        width: 300px;
+                        margin: 0 15px;
+                    }
+                }
+            }
+        }
+
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            .offers-slider {
+                .slide {
+                    .offer {
+                        width: 420px;
+                        .offer-image {
+                            height: 320px;
+                        }
+                    }
+                }
+            }
+        }
+
+        /* iPad Pro Portrait */
+        @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            .offers-slider {
+                .slide {
+                    .offer {
+                        width: 420px;
+                        .offer-image {
+                            height: 320px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .video {
+        width: 100%;
+        min-height: 480px;
+        position: relative;
+
+        .video-bg {
+            background-image: url('../../../assets/images/video-bg.jpg');
+            background-position-x: 120%;
+        }
+
+        .play-button {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            max-width: 50%;
+            background-color: #fff;
+            border-radius: 50%;
+            padding: 36px 40px;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            border: 8px solid rgba(0, 0, 0, 0.2);
+
+            img {
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            min-height: 150px;
+
+            .video-bg {
+                background-position-x: 50%;
+            }
+
+            .play-button {
+                width: 60px;
+                height: 60px;
+                padding: 9px 14px;
+
+                img {
+                    width: 20px;
+                    height: 20px;
+                }
+            }
+        }
+
+        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+            min-height: 350px;
+
+            .video-bg {
+                background-position-x: 55%;
+            }
+        }
+
+        /* iPad Portrait */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            min-height: 350px;
+
+            .video-bg {
+                background-position-x: 55%;
+            }
+        }
+
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            min-height: 350px;
+
+            .video-bg {
+                background-position-x: 55%;
+            }
+        }
+    }
+
+    .testimonial {
+        p {
+            line-height: 32px;
+        }
+
+        .testimonial-slider {
+            padding: 0 40px;
+            position: relative;
+
+            .slide {
+                .content {
+                    margin: 80px 24px 40px;
+                    background: $white;
+                    text-align: center;
+                    padding: 80px 48px 24px;
+                    border-radius: 18px;
+                    position: relative;
+                    min-height: 440px;
+                    cursor: pointer;
+                    .profile-photo {
+                        position: relative;
+                        top: -24px;
+
+                        .background-image-holder {
+                            width: 110px;
+                            height: 110px;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            top: -88px;
+                            border-radius: 50%;
+                            box-shadow: 0 2px 24px 0 rgba(161, 161, 161, 0.5);
+                        }
+                    }
+
+                    .name {
+                        font-size: 18px;
+                        font-weight: 500;
+                        color: #212121;
+                    }
+
+                    .company {
+                        font-size: 18px;
+                        font-weight: normal;
+                        color: #212121;
+                    }
+
+                    .desc {
+                        margin-top: 24px;
+                        position: relative;
+
+                        &:before {
+                            content: '“';
+                            position: absolute;
+                            top: -24px;
+                            left: -24px;
+                            color: $brand-primary;
+                            font-size: 50px;
+                            font-weight: 500;
+                            letter-spacing: -3.7px;
+                            -webkit-transform: scaleY(-1);
+                            transform: scaleY(-1);
+
+                            @media (max-width: 767px) {
+                                top: -30px;
+                                left: -16px;
+                            }
+                        }
+                    }
+                }
+            }
+
+            @media (max-width: 767px) {
+                padding: 0;
+
+                .slide {
+                    .content {
+                        padding: 72px 16px 32px;
+                    }
+                }
+            }
+        }
+    }
+
+    .contact-us {
+        .info {
+            background-color: $brand-primary;
+            background-image: url('../../../assets/images/pattern.svg');
+            height: 100%;
+            background-size: 170% 80%;
+            background-position: 51% 0%;
+            padding: 80px 96px;
+
+            img {
+                display: block;
+                margin: 0 auto;
+                width: 290px;
+                opacity: 0.89;
+                margin-bottom: 40px;
+            }
+
+            h1 {
+                font-weight: 500;
+                margin-bottom: 24px;
+                font-size: 40px;
+            }
+
+            p {
+                line-height: 32px;
+                color: $white;
+            }
+        }
+
+        .contact-form {
+            padding: 80px 104px;
+
+            label {
+                color: #2c3241;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .info {
+                padding: 40px;
+
+                img {
+                    width: 200px;
+                }
+            }
+
+            .contact-form {
+                padding: 40px 30px;
+            }
+        }
+
+        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+            .info {
+                padding: 40px;
+
+                img {
+                    width: 200px;
+                }
+            }
+
+            .contact-form {
+                padding: 40px 30px;
+            }
+        }
+
+        /* iPad Portrait */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            .info {
+                padding: 40px;
+
+                img {
+                    width: 200px;
+                }
+            }
+
+            .contact-form {
+                padding: 32px 40px 32px 28px;
+            }
+        }
+
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            .info {
+                padding: 60px 40px;
+
+                img {
+                    width: 200px;
+                }
+            }
+
+            .contact-form {
+                padding: 32px 40px 32px 28px;
+            }
+        }
+    }
+
+    .subscription {
+        p {
+            line-height: 32px;
+        }
+
+        .email-wrapper {
+            max-width: 500px;
+            position: relative;
+            margin: 0 auto;
+
+            input {
+                padding-left: 50px;
+            }
+
+            .mail-icon {
+                position: absolute;
+                top: 14px;
+                left: 12px;
+            }
+
+            .subscribe {
+                position: absolute;
+                top: 0;
+                right: 0;
+                padding: 6px 24px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .email-wrapper {
+                .subscribe {
+                    position: inherit;
+                    margin-top: 32px;
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
 </style>

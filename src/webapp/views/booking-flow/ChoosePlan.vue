@@ -7,7 +7,7 @@
                         <div class="broadcast-location">
                             <label>Broadcast Location</label>
                             <select v-model="channelSelected" @change="getAvailableSlotsByChannel(false)">
-                                <option :value="channel._id" v-for="channel in channels" :key="channel._id" :disabled="channel.Status !== 'LIVE'">{{ channel.Name + ((channel.Status !== 'LIVE') ? ' (Coming Soon)' : '') }}</option>
+                                <option :value="channel._id" v-for="channel in channels" :key="channel._id" :disabled="channel.Status !== 'LIVE'">{{ channel.Name + (channel.Status !== 'LIVE' ? ' (Coming Soon)' : '') }}</option>
                             </select>
                         </div>
                     </div>
@@ -21,7 +21,7 @@
                         <div class="ad-length">
                             <label>Ad Length</label>
                             <select v-model="secondSelected" @change="getAvailableSlotsByChannel(false)">
-                                <option v-for="(sec,key) in seconds" :key="key" :value="sec">{{ sec }} Seconds</option>
+                                <option v-for="(sec, key) in seconds" :key="key" :value="sec">{{ sec }} Seconds</option>
                             </select>
                         </div>
                     </div>
@@ -58,9 +58,9 @@
                                 <i class="material-icons">keyboard_arrow_left</i>
                             </button>
                             <ul>
-                                <li v-for="(slot,key) in availableSlots" :key="key" @click="selectSlot(key, slot)" :class="{'active': slotStartDate === key}">
+                                <li v-for="(slot, key) in availableSlots" :key="key" @click="selectSlot(key, slot)" :class="{ active: slotStartDate === key }">
                                     <h5 class="date">{{ moment(key, 'YYYY-MM-DD').format('DD-MMM ddd') }}</h5>
-                                    <h4 class="amount" v-if="Object.keys(slot).length > 0">{{ slot[Object.keys(slot)[0]].TotalAmount/(getTotalSlotDuration/7) | currency }}<span class="t-s"> / week</span></h4>
+                                    <h4 class="amount" v-if="Object.keys(slot).length > 0">{{ (slot[Object.keys(slot)[0]].TotalAmount / (getTotalSlotDuration / 7)) | currency }}<span class="t-s"> / week</span></h4>
                                     <h4 class="amount" v-else>-</h4>
                                 </li>
                             </ul>
@@ -79,7 +79,7 @@
                                 </div>
                                 <div class="col-sm-4 text-center">
                                     <hr />
-                                    <img class="broadcast-img" src="@/assets/images/broadcast.svg" alt="">
+                                    <img class="broadcast-img" src="@/assets/images/broadcast.svg" alt="" />
                                 </div>
                                 <div class="col-sm-4 text-center">
                                     <h5>Ending On</h5>
@@ -90,36 +90,40 @@
                     </div>
                     <div class="broadcast-slots" v-if="selectedSlot">
                         <h5 class="label">Choose Your Plan</h5>
-                        <div class="row" v-if="Object.keys(selectedSlot).length > 0">
+                        <div class="row d-flex justify-content-center" v-if="Object.keys(selectedSlot).length > 0">
                             <div class="col-sm-6 col-lg-4 plan-wrapper" v-for="plan in selectedSlot" :key="plan.Plan">
-                                <div class="plan" :class="{'active-slot': selectedPlan.Plan === plan.Plan}">
+                                <div class="plan" :class="{ 'active-slot': selectedPlan.Plan === plan.Plan }">
                                     <div class="plan-name">
                                         <h5>{{ plan.AdSchedule.Name }}</h5>
                                         <p class="timing">{{ plan.AdSchedule.StartTime }} to {{ plan.AdSchedule.EndTime }}</p>
                                     </div>
                                     <div class="plan-amount">
-                                        <h4 class="amount">{{ plan.TotalAmount/(getTotalSlotDuration/7) | currency }}<span class="duration t-m thin">/ week</span>
-                                            <span v-if="plan.TotalAmountWithoutDiscount !== plan.TotalAmount" class="without-discount t-s brand-primary strike-through">{{ plan.TotalAmountWithoutDiscount/(getTotalSlotDuration/7) | currency }}</span>
+                                        <h4 class="amount">
+                                            {{ (plan.TotalAmount / (getTotalSlotDuration / 7)) | currency }}<span class="duration t-m thin">/ week</span>
+                                            <span v-if="plan.TotalAmountWithoutDiscount !== plan.TotalAmount" class="without-discount t-s brand-primary strike-through">{{ (plan.TotalAmountWithoutDiscount / (getTotalSlotDuration / 7)) | currency }}</span>
                                         </h4>
-                                        <p class="weeks"><span class="brand-primary">{{ plan.TotalAmount | currency }}</span> for {{ getTotalSlotDuration / 7 }} weeks</p>
+                                        <p class="weeks">
+                                            <span class="brand-primary">{{ plan.TotalAmount | currency }}</span> for {{ getTotalSlotDuration / 7 }} weeks
+                                        </p>
                                     </div>
                                     <div class="features">
                                         <ul class="mb8">
                                             <li class="medium">Played every {{ moment(slotStartDate, 'YYYY-MM-DD').format('dddd') }} between {{ plan.AdSchedule.StartTime }} - {{ plan.AdSchedule.EndTime }}</li>
                                             <li v-if="plan.ViewershipCount">
-                                                <span class="brand-primary bold">>{{ plan.ViewershipCount | formatValue(0) }}</span> expected ad views over 6 months</li>
+                                                <span class="brand-primary bold">>{{ plan.ViewershipCount | formatValue(0) }}</span> expected ad views over 6 months
+                                            </li>
                                             <li v-if="plan.ViewershipCount">
-                                                <span class="t-l medium">={{ ((plan.TotalAmount / plan.ViewershipCount) * 100) | formatValue(2) }} pence</span> per view<br>
+                                                <span class="t-l medium">={{ ((plan.TotalAmount / plan.ViewershipCount) * 100) | formatValue(2) }} pence</span> per view<br />
                                                 <span class="text-muted italic">(53x cheaper per view than leafletting)</span>
                                             </li>
                                             <li>
-                                                <span class="t-l medium">={{ (plan.TotalAmount / (getTotalSlotDuration / 7)) | currency }}</span> per week <br>
+                                                <span class="t-l medium">={{ (plan.TotalAmount / (getTotalSlotDuration / 7)) | currency }}</span> per week <br />
                                                 <span class="text-muted italic">(75x cheaper than 1/4 page in local newspaper)</span>
                                             </li>
                                         </ul>
                                     </div>
                                     <div class="selectplan">
-                                        <button class="btn btn-primary btn-full" @click="selectPlan(plan)" :class="{'btn-active': selectedPlan.Plan === plan.Plan}">
+                                        <button class="btn btn-primary btn-full" @click="selectPlan(plan)" :class="{ 'btn-active': selectedPlan.Plan === plan.Plan }">
                                             <span v-if="selectedPlan.Plan === plan.Plan">Selected</span>
                                             <span v-else>Choose this plan</span>
                                         </button>
@@ -167,7 +171,7 @@ export default {
     },
     methods: {
         cancel() {
-            this.$router.push('/', () => { });
+            this.$router.push('/', () => {});
         },
         changeQueryParams() {
             this.$router.replace({ name: 'BookingFlow', query: { channel: this.channelSelected, seconds: this.secondSelected, startdate: this.slotStartDate } });
@@ -210,17 +214,27 @@ export default {
             }
         },
         getNextSlots() {
-            this.sliderStartDate = this.moment(this.sliderEndDate, 'YYYY-MM-DD').add(1, 'days').format('YYYY-MM-DD');
-            this.sliderEndDate = this.moment(this.sliderEndDate, 'YYYY-MM-DD').add(4, 'days').format('YYYY-MM-DD');
+            this.sliderStartDate = this.moment(this.sliderEndDate, 'YYYY-MM-DD')
+                .add(1, 'days')
+                .format('YYYY-MM-DD');
+            this.sliderEndDate = this.moment(this.sliderEndDate, 'YYYY-MM-DD')
+                .add(4, 'days')
+                .format('YYYY-MM-DD');
             this.getAvailableSlots();
         },
         getPrevSlots() {
             if (this.moment() > this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(4, 'days')) {
-                this.sliderEndDate = this.moment().add(3, 'days').format('YYYY-MM-DD');
+                this.sliderEndDate = this.moment()
+                    .add(3, 'days')
+                    .format('YYYY-MM-DD');
                 this.sliderStartDate = this.moment().format('YYYY-MM-DD');
             } else {
-                this.sliderEndDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(1, 'days').format('YYYY-MM-DD');
-                this.sliderStartDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(4, 'days').format('YYYY-MM-DD');
+                this.sliderEndDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD')
+                    .subtract(1, 'days')
+                    .format('YYYY-MM-DD');
+                this.sliderStartDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD')
+                    .subtract(4, 'days')
+                    .format('YYYY-MM-DD');
             }
             this.getAvailableSlots();
         },
@@ -253,7 +267,6 @@ export default {
                 if (!isFirstTime) {
                     this.changeQueryParams();
                 }
-
             } catch (err) {
                 this.$swal({
                     title: 'Error',
@@ -272,7 +285,6 @@ export default {
                 this.secondSelected = this.seconds[0];
             }
             this.getAvailableSlots(isFirstTime);
-
         },
         selectSlot(date, slot) {
             this.selectedSlot = slot;
@@ -296,12 +308,13 @@ export default {
     },
     created() {
         if (!this.$route.query.channel || !this.$route.query.seconds || !this.$route.query.startdate) {
-            this.$router.push('/', () => { });
+            this.$router.push('/', () => {});
         } else {
-
             this.$parent.isLoading = true;
             this.sliderStartDate = this.$route.query.startdate;
-            this.sliderEndDate = this.moment(this.$route.query.startdate, 'YYYY-MM-DD').add(3, 'days').format('YYYY-MM-DD');
+            this.sliderEndDate = this.moment(this.$route.query.startdate, 'YYYY-MM-DD')
+                .add(3, 'days')
+                .format('YYYY-MM-DD');
             this.getAllChannels();
             this.getAvailableSlotsByChannel(true);
         }
@@ -513,9 +526,7 @@ export default {
                         border-radius: 6px;
                         &.active-slot {
                             // box-shadow: 0 0 8px 0 rgba(255, 101, 0, 0.5);
-                            @include box-shadow(
-                                0 0 8px 0 rgba(255, 101, 0, 0.5)
-                            );
+                            @include box-shadow(0 0 8px 0 rgba(255, 101, 0, 0.5));
                             border: 1px solid $brand-primary;
                         }
                         .plan-name {

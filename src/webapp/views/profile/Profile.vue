@@ -5,7 +5,7 @@
         </div>
         <div class="container">
             <div class="profile-wrapper">
-                <h3 class="section-title-2 brand-secondary medium mb40">My Account</h3>
+                <h3 class="section-title-2 brand-secondary medium mb32">My Account</h3>
                 <div class="profile-info mb32">
                     <h4 class="section-subtitle b-b pb16">My Info</h4>
                     <div class="row profile-details">
@@ -13,7 +13,7 @@
                         <div class="col-lg-8">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <div v-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl" class="profile-image" :style="{'background-image': 'url(' + getProfileImageUrl + ')'}"></div>
+                                    <div v-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl" class="profile-image" :style="{ 'background-image': 'url(' + getProfileImageUrl + ')' }"></div>
                                     <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="profile-text">{{ $store.state.user.Owner.Title[0] }}</div>
                                 </div>
                                 <div class="col-sm-6 content-column-center">
@@ -26,55 +26,55 @@
                                 <div class="col-sm-6">
                                     <div class="form-group mb16">
                                         <label class="ml0">Name</label>
-                                        <div v-if="mode==='VIEW'">
+                                        <div v-if="mode === 'VIEW'">
                                             <div class="bold">{{ getUser().Owner.Title }}</div>
                                         </div>
                                         <div v-else>
-                                            <input type="text" class="form-control" v-model="$store.state.user.Owner.Title">
+                                            <input type="text" class="form-control" v-model="$store.state.user.Owner.Title" />
                                         </div>
                                     </div>
 
                                     <div class="form-group mb16">
                                         <label class="ml0">Account Email</label>
-                                        <div v-if="mode==='VIEW'">
+                                        <div v-if="mode === 'VIEW'">
                                             <div class="bold">{{ getUser().Owner.Email }}</div>
                                         </div>
                                         <div v-else>
-                                            <input type="text" :disabled="isSocialAccount" class="form-control" v-model="$store.state.user.Owner.Email">
+                                            <input type="text" :disabled="isSocialAccount" class="form-control" v-model="$store.state.user.Owner.Email" />
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label class="ml0">Phone number</label>
-                                        <div v-if="mode==='VIEW'">
+                                        <div v-if="mode === 'VIEW'">
                                             <div v-if="getUser().Owner.Phone" class="bold">{{ getUser().Owner.Phone }}</div>
                                             <div v-else>--</div>
                                         </div>
                                         <div v-else>
-                                            <vue-tel-input disabled-fetching-country="true" v-model="$store.state.user.Owner.Phone" @input="checkPhoneValid" class="form-control"></vue-tel-input>
+                                            <vue-tel-input :disabled-fetching-country="true" v-model="$store.state.user.Owner.Phone" @input="checkPhoneValid" class="form-control"></vue-tel-input>
                                         </div>
                                     </div>
 
-                                    <div v-if="mode==='EDIT' && !isSocialAccount">
+                                    <div v-if="mode === 'EDIT' && !isSocialAccount">
                                         <div class="form-group mb16">
                                             <label class="ml0">Current Password</label>
-                                            <input type="password" class="form-control" v-model="currentPassword" placeholder="Enter current password">
+                                            <input type="password" class="form-control" v-model="currentPassword" placeholder="Enter current password" />
                                         </div>
                                         <div class="form-group mb16">
                                             <label class="ml0">New Password</label>
-                                            <input type="password" class="form-control" v-model="newPassword" placeholder="Enter new password">
+                                            <input type="password" class="form-control" v-model="newPassword" placeholder="Enter new password" />
                                         </div>
                                         <p class="mt16 mb16 t-s">Password must contain at least 8 characters with at least 1 capital letter, 1 small letter and 1 number</p>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <p v-if="mode==='VIEW'" class="text-right">
+                                    <p v-if="mode === 'VIEW'" class="text-right">
                                         <a @click="openEditMode()" class="alert mb0">Edit Profile</a>
                                     </p>
-                                    <div v-if="mode==='EDIT'" class="text-right mb16">
+                                    <div v-if="mode === 'EDIT'" class="text-right mb16">
                                         <button class="btn btn-secondary cancel" @click="closeEditMode">Cancel</button>
                                     </div>
-                                    <div v-if="mode==='EDIT'" class="text-right">
+                                    <div v-if="mode === 'EDIT'" class="text-right">
                                         <button class="btn btn-primary save" @click="updateProfile" :disabled="isProceedable">Save Changes</button>
                                     </div>
                                 </div>
@@ -91,11 +91,11 @@
                         </div>
                         <div class="col-sm-8">
                             <div class="cards-wrapper" v-if="savedCards && savedCards.length > 0">
-                                <div class="row" v-for="(card,key) in savedCards" :key="key">
+                                <div class="row" v-for="(card, key) in savedCards" :key="key">
                                     <div class="col-sm-9 col-9">
-                                        <div class="saved-card" @click="setPreferredCard(preferredCard)">
-                                            <div :class="{ 'radio-btn-tick' : card.IsPreferred, 'radio-btn-untick' : !card.IsPreferred}" class="mr16">
-                                                <input type="radio" v-model="preferredCard" :value="card._id">
+                                        <div class="saved-card" @click="setPreferredCard(card)">
+                                            <div :class="{ 'radio-btn-tick': card.IsPreferred, 'radio-btn-untick': !card.IsPreferred }" class="mr16">
+                                                <input type="radio" v-model="preferredCard" :value="card._id" />
                                                 <label></label>
                                             </div>
                                             <img :src="getImageUrl(card.Card.Vendor)" alt />
@@ -193,17 +193,17 @@ export default {
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Confirm'
-            }).then(async (isConfirm) => {
+            }).then(async isConfirm => {
                 if (isConfirm.value) {
                     try {
                         await instance.delete('api/client/deletecard?client=' + this.getUser().Owner._id + '&card=' + card);
-                        this.savedCards = this.savedCards.filter((c) => {
+                        this.savedCards = this.savedCards.filter(c => {
                             return c._id != card;
                         });
                         this.$swal({
                             title: 'Deleted',
                             text: 'Your card has been deleted',
-                            type: 'success',
+                            type: 'success'
                         });
                     } catch (err) {
                         this.$swal({
@@ -227,18 +227,29 @@ export default {
                 }
             });
         },
-        setPreferredCard(oldCard) {
+        setPreferredCard(card) {
             this.$swal({
                 title: 'Are you sure?',
                 text: 'Your preferred card will be updated',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Confirm'
-            }).then(async (isConfirm) => {
+            }).then(async isConfirm => {
                 if (isConfirm.value) {
                     try {
                         this.isLoading = true;
-                        await instance.post('api/client/preferredcard', { client: this.getUser().Owner._id, card: this.preferredCard });
+                        await instance.post('api/client/preferredcard', { client: this.getUser().Owner._id, card: card._id });
+                        this.preferredCard = card._id;
+
+                        this.savedCards = this.savedCards.map(scard => {
+                            if (scard._id == this.preferredCard) {
+                                scard.IsPreferred = true;
+                            } else {
+                                scard.IsPreferred = false;
+                            }
+                            return scard;
+                        });
+
                         this.$swal({
                             title: 'Updated',
                             text: 'Preferred card has been updated',
@@ -252,8 +263,6 @@ export default {
                             type: 'error'
                         });
                     }
-                } else {
-                    this.preferredCard = oldCard;
                 }
             });
         },
@@ -268,7 +277,6 @@ export default {
                 this.isSocialAccount = false;
             }
             this.mode = 'EDIT';
-
         },
         closeEditMode() {
             this.$store.state.user = this.tempUser;
@@ -280,8 +288,8 @@ export default {
                 text: 'Your profile will be updated',
                 type: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Confirm',
-            }).then(async (isConfirm) => {
+                confirmButtonText: 'Confirm'
+            }).then(async isConfirm => {
                 if (isConfirm.value) {
                     let user = this.getUser();
                     let requestObj = {
@@ -349,11 +357,11 @@ export default {
         },
         logout() {
             this.$store.dispatch('logout');
-            this.$router.push('/', () => { });
+            this.$router.push('/', () => {});
             this.showProfile = false;
         },
 
-        ...mapGetters(['getUser']),
+        ...mapGetters(['getUser'])
     },
     computed: {
         getProfileImageUrl() {
@@ -365,7 +373,7 @@ export default {
                 if (!this.newPassword) {
                     flag = false;
                 } else {
-                    if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/.test(this.newPassword))) {
+                    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/.test(this.newPassword)) {
                         flag = false;
                     }
                 }
@@ -374,9 +382,7 @@ export default {
         }
     },
     events: {
-        close: () => {
-
-        }
+        close: () => {}
     },
     created() {
         this.getSavedCards();
@@ -385,139 +391,140 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .profile-wrapper {
-        background-color: $white;
-        padding: 40px 64px;
-        border-radius: 8px;
-        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
-        margin: 0 40px;
+.profile-wrapper {
+    background-color: $white;
+    padding: 40px 64px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
+    margin: 0 40px;
+
+    .profile-info {
+        .profile-details {
+            padding: 24px 0;
+
+            .profile-image {
+                width: 108px;
+                height: 108px;
+                border-radius: 50%;
+                background-size: cover;
+                background-repeat: no-repeat;
+                margin-bottom: 24px;
+                border: 2px solid $brand-primary;
+            }
+
+            .profile-text {
+                width: 108px;
+                height: 108px;
+                padding: 0 30px;
+                line-height: 104px;
+                border: 1px solid $brand-primary;
+                border-radius: 50%;
+                font-size: 80px;
+                color: $brand-primary;
+                margin-bottom: 24px;
+            }
+
+            ul.edit-options {
+                @include list-unstyled();
+
+                li {
+                    margin-bottom: 66px;
+                    display: block;
+                    text-align: right;
+                    font-size: 16px;
+                    color: $brand-primary;
+
+                    &:first-child {
+                        margin: 50px 0 88px;
+                    }
+                }
+            }
+        }
+    }
+
+    .profile-cards {
+        .cards-details {
+            padding: 24px 0 40px;
+
+            .cards-wrapper {
+                max-height: 158px;
+                overflow-y: auto;
+                overflow-x: hidden;
+
+                .saved-card {
+                    cursor: pointer;
+
+                    input[type='radio'] {
+                        margin-left: 1px;
+                    }
+
+                    .radio-btn-tick {
+                        top: 4px;
+                    }
+
+                    width: 100%;
+                    padding: 8px 0;
+
+                    span {
+                        letter-spacing: 3px;
+                    }
+
+                    img {
+                        width: 56px;
+                        margin-right: 16px;
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 767px) {
+        background-color: transparent;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        text-align: center;
 
         .profile-info {
             .profile-details {
-                padding: 24px 0;
+                padding: 16px 0;
 
                 .profile-image {
-                    width: 108px;
-                    height: 108px;
-                    border-radius: 50%;
-                    background-size: cover;
-                    background-repeat: no-repeat;
-                    margin-bottom: 24px;
-                    border: 2px solid $brand-primary;
+                    margin-top: 16px;
+                    margin-right: auto;
+                    margin-left: auto;
                 }
 
-                .profile-text {
-                    width: 108px;
-                    height: 108px;
-                    padding: 0 30px;
-                    line-height: 104px;
-                    border: 1px solid $brand-primary;
-                    border-radius: 50%;
-                    font-size: 80px;
-                    color: $brand-primary;
-                    margin-bottom: 24px;
+                p {
+                    text-align: center !important;
                 }
-
-                ul.edit-options {
-                    @include list-unstyled();
-
-                    li {
-                        margin-bottom: 66px;
-                        display: block;
-                        text-align: right;
-                        font-size: 16px;
-                        color: $brand-primary;
-
-                        &:first-child {
-                            margin: 50px 0 88px;
-                        }
-                    }
+                .cancel,
+                .save {
+                    width: 100%;
                 }
             }
         }
-
         .profile-cards {
             .cards-details {
-                padding: 24px 0 40px;
-
                 .cards-wrapper {
-                    max-height: 158px;
-                    overflow-y: auto;
-                    overflow-x: hidden;
-
+                    margin-top: 16px;
                     .saved-card {
-                        cursor: pointer;
-
-                        input[type='radio'] {
-                            margin-left: 1px;
-                        }
-
-                        .radio-btn-tick {
-                            top: 4px;
-                        }
-
-                        width: 100%;
-                        padding: 8px 0;
-
                         span {
-                            letter-spacing: 3px;
-                        }
-
-                        img {
-                            width: 56px;
-                            margin-right: 16px;
-                        }
-                    }
-                }
-            }
-        }
-
-        @media (max-width: 767px) {
-            background-color: transparent;
-            margin: 0;
-            padding: 0;
-            box-shadow: none;
-            text-align: center;
-
-            .profile-info {
-                .profile-details {
-                    padding: 16px 0;
-
-                    .profile-image {
-                        margin-top: 16px;
-                        margin-right: auto;
-                        margin-left: auto;
-                    }
-
-                    p {
-                        text-align: center !important;
-                    }
-                    .cancel,.save {
-                        width: 100%;
-                    }
-                }
-            }
-            .profile-cards {
-                .cards-details {
-                    .cards-wrapper {
-                        margin-top: 16px;
-                        .saved-card {
-                            span {
-                                letter-spacing: 0px;
-                            }
+                            letter-spacing: 0px;
                         }
                     }
                 }
             }
         }
     }
+}
 </style>
 <style lang="scss">
-    .vti {
-        &__dropdown {
-            &:hover {
-                background-color: transparent !important;
-            }
+.vti {
+    &__dropdown {
+        &:hover {
+            background-color: transparent !important;
         }
     }
+}
 </style>

@@ -5,13 +5,13 @@
                 <div v-if="progress === 0 && !$parent.clientAdPlan.ClientAd && !upload.chosen" class="upload-box">
                     <h4 class="bold">You can Upload Video</h4>
                     <p class="text-muted mb0">Click on the upload button or drag and drop your upload file here.</p>
-                    <p class="brand-primary">(less than {{ config.maxSize }}MB and within {{ $parent.clientAdPlan.ChannelPlan.Plan.Seconds }} seconds) </p>
+                    <p class="brand-primary">(less than {{ config.maxSize }}MB and within {{ $parent.clientAdPlan.ChannelPlan.Plan.Seconds }} seconds)</p>
                     <input id="fileUpload" class="hidden" type="file" @change="fileUploaded" accept="video/mp4,video/x-m4v,video/*" ref="fileUpload" />
-                    <button class="btn btn-primary upload mt16" @click="chooseFile" :disabled="isLoading"><img src="@/assets/images/upload.svg"> <span class="button-text">Upload Video</span></button>
+                    <button class="btn btn-primary upload mt16" @click="chooseFile" :disabled="isLoading"><img src="@/assets/images/upload.svg" /> <span class="button-text">Upload Video</span></button>
                 </div>
                 <div class="video-wrapper" v-if="progress === 0 && upload.chosen">
                     <video controls class="mb24">
-                        <source :src="videoUrl" type="video/mp4">
+                        <source :src="videoUrl" type="video/mp4" />
                     </video>
                     <div class="action text-center">
                         <button class="btn btn-white btn-bordered m-xs0 mr16" @click="cancelUpload">Cancel</button>
@@ -20,17 +20,15 @@
                 </div>
                 <div class="upload-progress" v-else-if="progress > 0">
                     <div class="details">
-                        <div class="pull-left">
-                            <strong class="t-l" v-text="upload.chosen.name"></strong>&nbsp;<span class="text-muted">is uploading...</span>
-                        </div>
+                        <div class="pull-left"><strong class="t-l" v-text="upload.chosen.name"></strong>&nbsp;<span class="text-muted">is uploading...</span></div>
                         <div class="pull-right">
                             <strong v-text="progress + ' %'"></strong>
                         </div>
-                        <br class="clearfix">
+                        <br class="clearfix" />
                         <div class="loader">
-                            <div class="value" :style="{'width': progress + '%'}"></div>
+                            <div class="value" :style="{ width: progress + '%' }"></div>
                         </div>
-                        <br class="clearfix">
+                        <br class="clearfix" />
                     </div>
                 </div>
             </div>
@@ -41,13 +39,13 @@
 
 <script>
 import '@/plugins/socket.io';
-import {uploadMixin} from '@/mixins/upload';
+import { uploadMixin } from '@/mixins/upload';
 export default {
     name: 'UploadAd',
     mixins: [uploadMixin],
     data() {
         return {
-            processing: false,
+            processing: false
         };
     },
     methods: {
@@ -64,7 +62,7 @@ export default {
             let start = 0;
             let chunk = this.upload.chosen.slice(start, chunkSize);
             this.sendSocket(chunk, counter, chunkSize, this.$parent.clientAdPlan, 'UPLOAD_CHUNK');
-            this.socket.on('UPLOAD_CHUNK_FINISHED', (data) => {
+            this.socket.on('UPLOAD_CHUNK_FINISHED', data => {
                 this.progress = (((data * 100000) / this.upload.chosen.size) * 100).toFixed(0);
                 ++counter;
                 start = start + chunkSize;
@@ -101,7 +99,7 @@ export default {
                     this.$store.commit('VIDEO_BEING_UPLOADED', false);
                     this.socket.disconnect();
                     this.$parent.fetchClientAdPlan();
-                },1000);
+                }, 1000);
             });
         }
     }
@@ -109,52 +107,52 @@ export default {
 </script>
 
 <style scoped lang="scss">
-    .upload-wrapper{
-        margin: 0 80px;
-        background-image: url('../../../assets/images/pattern.svg');
-        background-color: $brand-primary;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center center;
-        padding: 64px 108px;
-        border-radius: 8px;
-        .upload-box {
-            background: $white;
+.upload-wrapper {
+    margin: 0 80px;
+    background-image: url('../../../assets/images/pattern.svg');
+    background-color: $brand-primary;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 64px 108px;
+    border-radius: 8px;
+    .upload-box {
+        background: $white;
+        box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        padding: 64px;
+        text-align: center;
+        .upload {
+            padding-left: 8px !important;
+            height: 48px;
             box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 64px;
-            text-align: center;
-            .upload {
-                padding-left: 8px !important;
-                height: 48px;
-                box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
-                &:focus {
-                    border: none;
-                    outline: 0;
-                }
-                img {
-                    top: 3px;
-                    position: relative;
-                    padding-right: 8px;
-                }
-                .button-text{
-                    border-left: 1px solid $light-grey;
-                    padding-top: 2px;
-                    padding-bottom: 2px;
-                    padding-left: 20px;
-                    padding-right: 8px;
-                    font-size: 14px;
-                    font-weight: 500;
-                }
+            &:focus {
+                border: none;
+                outline: 0;
             }
-        }
-        .video-wrapper {
-            height: auto;
-            video {
-                height: 400px;
-                object-fit: contain;
-                background: #000;
+            img {
+                top: 3px;
+                position: relative;
+                padding-right: 8px;
+            }
+            .button-text {
+                border-left: 1px solid $light-grey;
+                padding-top: 2px;
+                padding-bottom: 2px;
+                padding-left: 20px;
+                padding-right: 8px;
+                font-size: 14px;
+                font-weight: 500;
             }
         }
     }
+    .video-wrapper {
+        height: auto;
+        video {
+            height: auto;
+            object-fit: contain;
+            background: #000;
+        }
+    }
+}
 </style>
