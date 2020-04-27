@@ -1,7 +1,7 @@
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
     configureWebpack: {
-        devtool: 'eval'
+        devtool: process.env.NODE_ENV === 'development' ? 'eval' : 'none'
     },
     css: {
         loaderOptions: {
