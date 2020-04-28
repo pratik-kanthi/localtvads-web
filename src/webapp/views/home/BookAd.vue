@@ -46,7 +46,7 @@ export default {
             broadcastLocation: '',
             config: {
                 dateFormat: 'd/m/Y',
-                minDate: new Date(),
+                minDate: new Date(new Date().setDate(new Date().getDate() + 7)),
                 monthSelectorType: 'static',
                 yearSelectorType: 'static',
                 showNonCurrentDates: false,
