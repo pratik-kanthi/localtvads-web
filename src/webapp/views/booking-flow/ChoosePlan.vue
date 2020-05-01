@@ -505,7 +505,7 @@ export default {
                     img.broadcast-img {
                         margin-top: -24px;
                         padding: 0 16px;
-                        background-color: #f9f9f9;
+                        background-color: #ffffff;
                     }
                 }
             }

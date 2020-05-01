@@ -2,19 +2,20 @@
     <div>
         <Stepper :steps="steps" :current="currentStep"></Stepper>
         <div>
-            <component :is="currentStage" @advanceToPayment="goToPayment"></component>
+            <component :is="currentStage" @advanceToPayment="goToPayment" @advanceToUpload="goToUpload"></component>
         </div>
         <LoaderModal :showloader="isLoading" :message="loaderMessage + '...'"></LoaderModal>
     </div>
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import { mapGetters } from 'vuex';
 import instance from '@/api';
 import UploadAd from './UploadAd';
 import ChoosePlan from './ChoosePlan';
 import Review from './Review';
 import Payment from './Payment';
+import AdDetails from './AdDetails';
 import Stepper from '@/e9_components/components/Stepper';
 
 export default {
@@ -32,7 +33,7 @@ export default {
             selectedPlan: {},
             steps: [
                 {
-                    name: 'Book Your Ad',
+                    name: 'Select Ad Slot',
                     index: 1
                 },
                 {
@@ -40,12 +41,16 @@ export default {
                     index: 2
                 },
                 {
-                    name: 'Upload Your Ad',
+                    name: 'Ad Details',
                     index: 3
                 },
                 {
-                    name: 'Verification',
+                    name: 'Upload Your Ad',
                     index: 4
+                },
+                {
+                    name: 'Verification',
+                    index: 5
                 }
             ]
         };
@@ -57,15 +62,18 @@ export default {
                     this.isLoading = true;
                     let result = await instance.get('api/clientad/getclientadplan?clientadplan=' + this.$route.query.clientadplan);
                     this.clientAdPlan = result.data;
+
                     if (!this.clientAdPlan) {
                         this.currentStep = 1;
                         this.currentStage = ChoosePlan;
-                    }
-                    else if (!this.clientAdPlan.ClientAd) {
+                    } else if (!this.clientAdPlan.Category) {
                         this.currentStep = 3;
+                        this.currentStage = AdDetails;
+                    } else if (!this.clientAdPlan.ClientAd) {
+                        this.currentStep = 4;
                         this.currentStage = UploadAd;
                     } else {
-                        this.currentStep = 4;
+                        this.currentStep = 5;
                         this.currentStage = Review;
                     }
                     this.isLoading = false;
@@ -78,8 +86,7 @@ export default {
                     });
                     console.error(err);
                 }
-            }
-            else {
+            } else {
                 this.currentStep = 1;
                 this.currentStage = ChoosePlan;
             }
@@ -87,6 +94,11 @@ export default {
         goToPayment() {
             this.currentStep = 2;
             this.currentStage = Payment;
+        },
+        goToUpload(val) {
+            this.currentStep = 4;
+            this.currentStage = UploadAd;
+            this.clientAdPlan.Category = val;
         },
         preventNav(e) {
             if (!this.getIsVideoBeingUploaded()) return;
@@ -122,6 +134,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

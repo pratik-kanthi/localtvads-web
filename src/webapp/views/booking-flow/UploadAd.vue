@@ -3,7 +3,7 @@
         <div class="container" v-if="$parent.clientAdPlan">
             <div class="upload-wrapper">
                 <div v-if="progress === 0 && !$parent.clientAdPlan.ClientAd && !upload.chosen" class="upload-box">
-                    <h4 class="bold">You can Upload Video</h4>
+                    <h4 class="bold">You can now upload your video</h4>
                     <p class="text-muted mb0">Click on the upload button or drag and drop your upload file here.</p>
                     <p class="brand-primary">(less than {{ config.maxSize }}MB and within {{ $parent.clientAdPlan.ChannelPlan.Plan.Seconds }} seconds)</p>
                     <input id="fileUpload" class="hidden" type="file" @change="fileUploaded" accept="video/mp4,video/x-m4v,video/*" ref="fileUpload" />

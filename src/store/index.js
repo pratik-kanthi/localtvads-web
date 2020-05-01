@@ -64,22 +64,22 @@ export const store = new Vuex.Store({
         }
     },
     getters: {
-        isAuthLoader: (state) => {
+        isAuthLoader: state => {
             return state.auth.loader;
         },
-        isLoggedIn: (state) => {
+        isLoggedIn: state => {
             return state.isAuth;
         },
-        getUser: (state) => {
+        getUser: state => {
             return state.user;
         },
-        getShowDialog: (state) => {
+        getShowDialog: state => {
             return state.auth.showDialog;
         },
-        getDefaultChosen: (state) => {
+        getDefaultChosen: state => {
             return state.auth.defaultChosen;
         },
-        getIsVideoBeingUploaded: (state) => {
+        getIsVideoBeingUploaded: state => {
             return state.bookingFlow.videoBeingUploaded;
         }
     }

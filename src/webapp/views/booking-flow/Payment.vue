@@ -1,7 +1,7 @@
 <template>
     <div class="payment bg--grey">
         <div v-if="showCoupons">
-            <CoupnsModal :show-coupons="showCoupons" :options="{channel: $route.query.channel, adSchedule:$parent.selectedPlan.adSchedule, startDate: $parent.selectedPlan.broadcastStartDate}" @discountChosen="setDiscount"></CoupnsModal>
+            <CoupnsModal :show-coupons="showCoupons" :options="{ channel: $route.query.channel, adSchedule: $parent.selectedPlan.adSchedule, startDate: $parent.selectedPlan.broadcastStartDate }" @discountChosen="setDiscount"></CoupnsModal>
         </div>
         <div v-if="!paymentLoading">
             <div class="container">
@@ -10,11 +10,11 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="booking-details">
-                                <img class="" src="@/assets/images/logo-dark.svg" alt="">
+                                <img class="" src="@/assets/images/logo-dark.svg" alt="" />
                                 <div class="header">
                                     <h6>Booking Receipt</h6>
                                 </div>
-                                <hr class="mb24">
+                                <hr class="mb24" />
                                 <div class="content">
                                     <div class="booking-items">
                                         <label>Broadcast Location</label>
@@ -56,9 +56,7 @@
                                         </div>
                                     </div>
                                     <div class="recurring mb40" v-if="$parent.selectedPlan.isRenewal">
-                                        <h6 class="hero-text">
-                                            <i class="material-icons">done</i> Recurring Broadcast
-                                        </h6>
+                                        <h6 class="hero-text"><i class="material-icons">done</i> Recurring Broadcast</h6>
                                     </div>
                                 </div>
                                 <div class="dashed-line">
@@ -92,7 +90,8 @@
                                                 </i>
                                                 <div v-show="taxInfo" class="tooltip-info">
                                                     <div v-for="tax in this.$parent.selectedPlan.taxes" :key="tax.Name">
-                                                        <div class="name">{{ tax.Name }}
+                                                        <div class="name">
+                                                            {{ tax.Name }}
                                                             <span>({{ tax.Description }})</span>
                                                         </div>
                                                         <div class="value text-right" v-if="tax.Type === 'PERCENTAGE'">{{ tax.Value }}%</div>
@@ -110,7 +109,7 @@
                                             <h5>Total Amount</h5>
                                         </div>
                                         <div class="col-6 col-sm-6 text-right">
-                                            <h5 class="amount pull-right"> {{ getTotalAmount | currency }}</h5>
+                                            <h5 class="amount pull-right">{{ getTotalAmount | currency }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -126,16 +125,16 @@
                             <div class="cards-wrapper">
                                 <div class="saved-cards" v-if="savedCards.length > 0">
                                     <div class="cards">
-                                        <div class="card-title mb24" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}">
+                                        <div class="card-title mb24" @click="togglePaymentOptions('SavedCards')" :class="{ active: activeToggle === 'SavedCards' }">
                                             <div class="radio-btn-dot mr8">
-                                                <input type="radio" v-model="activeToggle" value="SavedCards">
+                                                <input type="radio" v-model="activeToggle" value="SavedCards" />
                                                 <label></label>
                                             </div>
                                             <span>Your saved cards</span>
                                         </div>
-                                        <div v-for="(card,key) in savedCards" :key="key" class="card-info" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
+                                        <div v-for="(card, key) in savedCards" :key="key" class="card-info" :class="{ active: existingCard === card._id }" @click="selectExistingCard(card._id)">
                                             <div class="radio-btn-tick mr8">
-                                                <input type="radio" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'">
+                                                <input type="radio" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'" />
                                                 <label></label>
                                             </div>
                                             <img :src="getImageUrl(card.Card.Vendor)" alt />
@@ -145,9 +144,9 @@
                                 </div>
                                 <div class="new-card">
                                     <form ref="form" class="p0">
-                                        <div class="card-title" @click="togglePaymentOptions('NewCard')" :class="{'active':activeToggle === 'NewCard'}">
+                                        <div class="card-title" @click="togglePaymentOptions('NewCard')" :class="{ active: activeToggle === 'NewCard' }">
                                             <div class="radio-btn-dot mr8">
-                                                <input type="radio" v-model="activeToggle" value="NewCard">
+                                                <input type="radio" v-model="activeToggle" value="NewCard" />
                                                 <label></label>
                                             </div>
                                             <span>New credit and debit card</span>
@@ -204,7 +203,6 @@
                                             <i class="material-icons brand-primary">close</i>
                                         </a>
                                     </div>
-
                                 </div>
                                 <p class="mt16 mb16">I have read and accept the terms of use,rules of Local TV Ads and privacy policy</p>
                                 <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now</button>
@@ -243,15 +241,14 @@ export default {
             showCoupons: false,
             taxInfo: false,
             tooltip: false,
-            taxAmount: 0,
+            taxAmount: 0
         };
     },
     methods: {
         calculateDiscount() {
             if (this.discount.AmountType === 'PERCENTAGE') {
                 return (this.discount.Amount * this.$parent.selectedPlan.baseAmount) / 100;
-            } else
-                return this.discount.Amount;
+            } else return this.discount.Amount;
         },
         async getCards() {
             try {
@@ -282,11 +279,10 @@ export default {
         getTaxAmount() {
             let subTotal = this.$parent.selectedPlan.baseAmount - this.discountAmount;
             this.taxAmount = 0;
-            this.$parent.selectedPlan.taxes.map((tax) => {
+            this.$parent.selectedPlan.taxes.map(tax => {
                 if (tax.Type === 'PERCENTAGE') {
                     this.taxAmount += (tax.Value * subTotal) / 100;
-                } else
-                    this.taxAmount = tax.Value;
+                } else this.taxAmount = tax.Value;
             });
         },
         openCouponsModal() {
@@ -312,16 +308,18 @@ export default {
             let result;
             try {
                 result = await instance.post('api/clientad/new', obj);
-                this.$router.push({
-                    name: 'BookingFlow',
-                    query: {
-                        clientadplan: result.data._id
-                    }
-                }, () => {
-                });
+                this.$router.push(
+                    {
+                        name: 'BookingFlow',
+                        query: {
+                            clientadplan: result.data._id
+                        }
+                    },
+                    () => {}
+                );
                 this.$swal({
                     title: 'Successful',
-                    text: 'Payment has been successful. You are now being redirected to upload',
+                    text: 'Payment has been successful. You are now being redirected to ad details and video upload',
                     type: 'success'
                 });
                 await this.$parent.fetchClientAdPlan(result.data._id);
@@ -339,10 +337,8 @@ export default {
         setDiscount(discount) {
             this.showCoupons = false;
             this.discount = discount;
-            if (discount)
-                this.discountAmount = this.calculateDiscount();
-            else
-                this.discountAmount = 0;
+            if (discount) this.discountAmount = this.calculateDiscount();
+            else this.discountAmount = 0;
             this.getTaxAmount();
         },
         showInfo(isDisplay) {
@@ -394,9 +390,7 @@ export default {
             background-color: $white;
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
             &:after {
-                background: linear-gradient(-45deg, #ffffff 16px, transparent 0)
-                    linear-gradient(45deg, #ffffff 16px, transparent 0) repeat-x
-                    left bottom;
+                background: linear-gradient(-45deg, #ffffff 16px, transparent 0) linear-gradient(45deg, #ffffff 16px, transparent 0) repeat-x left bottom;
                 background-size: 32px 32px;
                 content: ' ';
                 display: block;
@@ -461,11 +455,7 @@ export default {
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    background-image: linear-gradient(
-                        to right,
-                        #223049 50%,
-                        transparent 50%
-                    );
+                    background-image: linear-gradient(to right, #223049 50%, transparent 50%);
                     background-size: 32px 100%;
                 }
             }
