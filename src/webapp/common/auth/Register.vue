@@ -8,19 +8,27 @@
         </div>
         <form name="register">
             <div class="form-group">
-                <input type="text" class="form-control" v-model="user.Name" placeholder="Name">
+                <input type="text" class="form-control" v-model="user.Name" placeholder="Name" />
             </div>
             <div class="form-group">
-                <input type="email" class="form-control" v-model="user.Email" placeholder="Email">
+                <input type="email" class="form-control" v-model="user.Email" placeholder="Email" />
             </div>
             <div class="form-group">
-                <input type="password" class="form-control" v-model="user.Password" placeholder="Password">
+                <input type="password" class="form-control" v-model="user.Password" placeholder="Password" />
             </div>
             <div class="form-group">
-                <input type="password" class="form-control" v-model="user.ConfirmPassword" placeholder="Confirm Password">
+                <input type="password" class="form-control" v-model="user.ConfirmPassword" placeholder="Confirm Password" />
             </div>
+
             <p class="mt16 mb16 t-s">Password must contain at least 8 characters with at least 1 capital letter, 1 small letter and 1 number</p>
-            <button class="btn btn-primary btn-full" @click="register" :disabled="!isValid || isAuthLoader">Register</button>
+
+            <div class="form-check d-flex align-items-start">
+                <input v-model="user.IsSubscribed" type="checkbox" class="form-check-input" />
+                <label class="form-check-label t-s brand-primary">
+                    Subscribe me to updates, offers and newsletter from Local TV Ads
+                </label>
+            </div>
+            <button class="btn btn-primary btn-full mt16" @click="register" :disabled="!isValid || isAuthLoader">Register</button>
             <div class="alert alert-danger text-center mt24" v-if="errMessage">
                 {{ errMessage }}
             </div>
@@ -34,11 +42,11 @@ import Google from '@/webapp/common/auth/Google';
 import Facebook from '@/webapp/common/auth/Facebook';
 import instance from '@/api';
 import LoaderModal from '@/webapp/common/modals/LoaderModal';
-import {mapGetters} from 'vuex';
+import { mapGetters } from 'vuex';
 export default {
     name: 'Register',
-    components: {Facebook, Google, LoaderModal},
-    data(){
+    components: { Facebook, Google, LoaderModal },
+    data() {
         return {
             api: 'api/auth/clientsocialregister',
             user: {
@@ -46,14 +54,16 @@ export default {
                 Email: '',
                 Password: '',
                 ConfirmPassword: '',
-                AuthorisationScheme: 'Standard'
+                AuthorisationScheme: 'Standard',
+                IsSubscribed: false
             },
             show: false,
-            errMessage: ''
+            errMessage: '',
+            subscribed: false
         };
     },
     methods: {
-        async register(){
+        async register() {
             try {
                 this.$store.commit('LOGIN_LOADER', true);
                 await instance.post('api/auth/clientregister', this.user);
@@ -75,19 +85,19 @@ export default {
     computed: {
         isValid() {
             let flag = true;
-            if(!this.user.Name) {
+            if (!this.user.Name) {
                 flag = false;
             }
-            if(!this.user.Email) {
+            if (!this.user.Email) {
                 flag = false;
             }
-            if(!(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.user.Email))) {
+            if (!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.user.Email)) {
                 flag = false;
             }
-            if(!this.user.Password) {
+            if (!this.user.Password) {
                 flag = false;
             }
-            if(!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/.test(this.user.Password))) {
+            if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/.test(this.user.Password)) {
                 flag = false;
             }
             if (this.user.Password !== this.user.ConfirmPassword) {
@@ -101,17 +111,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
-    .separater {
-        border-top: 1px solid #DDD;
-        margin: 20px 0;
-        line-height: 20px;
-        .content {
-            background: #fff;
-            padding: 12px;
-            font-size: 12px;
-            color: #333 !important;
-            position: relative;
-            top: -12px;
-        }
+.separater {
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+    line-height: 20px;
+    .content {
+        background: #fff;
+        padding: 12px;
+        font-size: 12px;
+        color: #333 !important;
+        position: relative;
+        top: -12px;
     }
+}
 </style>

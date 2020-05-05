@@ -280,8 +280,8 @@ export default {
             try {
                 await instance.post('api/contact/subscribe', { subscriberEmail: this.subscriberEmail });
                 this.$swal({
-                    title: 'Successful',
-                    text: 'You have subscribed successfullyly.',
+                    title: 'Subscribed!',
+                    text: 'You have subscribed successfully.',
                     type: 'success',
                     confirmButtonColor: '#ff6500'
                 });
