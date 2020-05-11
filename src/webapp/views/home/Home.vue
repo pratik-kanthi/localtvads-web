@@ -578,16 +578,17 @@ export default {
         min-height: 550px;
         background-color: #333;
 
+        @media (max-width: 767px) {
+            height: 100% !important;
+            min-height: 0px;
+        }
+
         .heroslider {
             .agile {
                 .slide {
                     .hero-wrapper {
                         /*height: 70vh;*/
                         height: 550px;
-
-                        @media (max-width: 767px) {
-                            height: 60vh !important;
-                        }
 
                         /* iPhone x Portrait */
                         @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {

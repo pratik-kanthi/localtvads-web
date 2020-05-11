@@ -4,75 +4,51 @@
             <VideoModal :show-video="displayAdVideo" :video-url="videoUrl" @close="closeVideo"></VideoModal>
         </div>
         <div class="container">
-            <div class="profile-ads">
+            <div class="d-flex justify-content-between align-items-center">
                 <h3 class="section-title-2 mb24">My Ad Plans</h3>
-                <div v-if="!isLoading && clientAds.length === 0">
-                    <p class="lead">No ads have been added</p>
-                </div>
-                <div v-else>
-                    <div class="row ads-wrapper" v-for="ad in clientAds" :key="ad._id">
-                        <div class="col-sm-6">
-                            <div class="ad-video">
-                                <div class="vedio" v-if="ad.ClientAd && ad.ClientAd.VideoUrl">
-                                    <video :id="ad.ClientAd._id" :src="getVideoUrl(ad.ClientAd.VideoUrl)" width="100%" height="100%" @loadedmetadata="forwardVideo(ad.ClientAd._id)"></video>
-                                    <div class="action">
-                                        <a @click="openVideo(ad.ClientAd.VideoUrl)"><img src="@/assets/images/play.png" alt="" class="play"></a>
-                                    </div>
-                                </div>
-                                <div class="background-image-holder ad-bg" v-else>
-                                    <div class="action">
-                                        <button class="btn btn-white" @click="goToVideoUpload(ad._id)">Upload Your Ad</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="plan-details">
-                                <div class="plan-info">
-                                    <p class="info-label">Broadcast Location</p>
-                                    <h6 class="info-desc">{{ ad.ChannelPlan.Plan.Channel.Name }}</h6>
-                                </div>
-                                <div class="plan-info">
-                                    <p class="info-label">Broadcast Slot</p>
-                                    <h6 class="info-desc">{{ ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.Name }} ({{ ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.StartTime }} to {{ ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.EndTime }})</h6>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="plan-info">
-                                            <p class="info-label">Broadcast Start</p>
-                                            <h6 class="info-desc">{{ moment(ad.StartDate, 'YYYY-MM-DD').format('Do MMMM YYYY') }}</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="plan-info">
-                                            <p class="info-label">Broadcast End</p>
-                                            <h6 class="info-desc">{{ moment(ad.EndDate, 'YYYY-MM-DD').format('Do MMMM YYYY') }}</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="plan-info mb0">
-                                            <p class="info-label">Ad Length</p>
-                                            <h6 class="info-desc">{{ ad.ChannelPlan.Plan.Seconds }} sec</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="plan-info mb0">
-                                            <p class="info-label">Broadcast Duration</p>
-                                            <h6 class="info-desc">6 months</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-center mt40" v-if="showLoadMore">
-                        <button class="btn btn-primary" @click="getClientAds" v-if="!isLoading">Load More</button>
-                        <img class="loading" src="@/assets/images/loader.svg" v-if="isLoading" alt="spinner" />
-                    </div>
+                <div class="form-group d-flex align-items-center">
+                    <input placeholder="Search ads by name" type="text" v-model="filterCriteria" class="form-control p8" />
+                    <i class="material-icons white p8 rounded brand-primary-bg">search</i>
                 </div>
             </div>
+
+            <div v-if="!isLoading && clientAds.length === 0">
+                <p class="lead">You haven't purchased any ad plans</p>
+            </div>
+            <div v-else class="ads-table-wrapper">
+                <div class="ads-table">
+                    <b-table :filter="filterCriteria" :filter-function="filterTable" :items="clientAds" :fields="fields" :per-page="perPage" :current-page="currentPage" responsive id="transaction-table">
+                        <template v-slot:cell(Name)="data">
+                            <div class="d-flex flex-column">
+                                <div>{{ data.item.Name }}</div>
+                            </div>
+                        </template>
+                        <template v-slot:cell(Schedule)="data">
+                            <div class="d-flex flex-column">
+                                <span>{{ data.item.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.Name }}</span>
+                                <span class="t-s">{{ data.item.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.StartTime }} - {{ data.item.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.EndTime }}</span>
+                            </div>
+                        </template>
+                        <template v-slot:cell(Channel)="data">
+                            <span>{{ data.item.ChannelPlan.Plan.Channel.Name }}</span>
+                        </template>
+                        <template v-slot:cell(StartDate)="data">
+                            <div>{{ data.item.StartDate | formatDate('DD-MMM-YYYY') }}</div>
+                        </template>
+                        <template v-slot:cell(Action)="data">
+                            <div class="d-flex flex-column justify-content-center   ">
+                                <div v-if="data.item.ClientAd">
+                                    <button @click="openVideo(data.item.ClientAd.VideoUrl)" class="t-s table-action-button btn brand-secondary-bg w-100  rounded white">View Ad</button>
+                                </div>
+                                <div v-else>
+                                    <button @click="goToVideoUpload(data.item._id)" class="t-s table-action-button btn brand-primary-bg pl8 pr8 w-100 rounded white">Finish Setup</button>
+                                </div>
+                            </div>
+                        </template>
+                    </b-table>
+                </div>
+            </div>
+            <b-pagination v-model="currentPage" :total-rows="clientAds.length" :per-page="perPage" first-text="First" prev-text="Prev" next-text="Next" last-text="Last" aria-controls="transaction-table" align="right" class="pt0 pb16 pr16"></b-pagination>
         </div>
     </section>
 </template>
@@ -94,11 +70,22 @@ export default {
             pagination: {
                 count: 5
             },
+            perPage: 15,
+            currentPage: 1,
+            fields: ['Name', 'Status', 'StartDate', 'Channel', 'Schedule', 'Action'],
             showLoadMore: true,
-            isLoading: false
+            isLoading: false,
+            filterCriteria: ''
         };
     },
     methods: {
+        filterTable(row, filter) {
+            if (row.Name.toLowerCase().includes(filter)) {
+                return row;
+            } else {
+                return null;
+            }
+        },
         closeVideo() {
             this.displayAdVideo = false;
         },
@@ -149,90 +136,53 @@ export default {
 </script>
 
 <style lang="scss" scopped>
-.myads {
-    min-height: calc(100vh - 80px);
-    .profile-ads {
-        background-color: $white;
-        padding: 40px 64px;
-        border-radius: 8px;
-        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
-        margin: 0 40px;
-        .ads-wrapper {
-            margin-bottom: 24px;
+.ads-table-wrapper {
+    background-color: $white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+.ads-table {
+    table {
+        border-collapse: collapse;
+        border-spacing: 0 5px;
+        width: 100%;
 
-            &:last-child {
-                margin-bottom: 0;
-            }
+        thead {
+            tr {
+                th {
+                    padding: 24px;
+                    border: none;
+                    font-size: 16px;
+                    font-weight: 500;
+                    font-family: $font-family-heading;
 
-            .ad-video {
-                width: 100%;
-                height: 240px;
-                position: relative;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                background-color: $black;
-                .ad-bg {
-                    background-image: url('../../../assets/images/ad-video-bg.jpg');
-                }
-
-                .vedio {
-                    height: 100%;
-                    video {
-                        height: 240px;
-                        object-fit: cover;
-                    }
-                }
-
-                .action {
-                    @include center(both);
-                    .play {
-                        width: 56px;
+                    &:first-child {
+                        border-top-left-radius: 6px;
                     }
 
-                    .btn {
-                        max-width: 150px;
-                    }
-                }
-            }
-
-            .plan-details {
-                .plan-info {
-                    margin-bottom: 20px;
-
-                    .info-label {
-                        margin-bottom: 4px;
-                        font-size: 12px;
-                        color: #acacac;
-                        font-weight: 500;
-                        font-family: $font-family-heading;
-                    }
-
-                    .info-desc {
-                        font-size: 14px;
-                        font-weight: 500;
-                        font-style: normal;
-                        font-stretch: normal;
-                        line-height: normal;
-                        letter-spacing: normal;
-                        color: #4c4c4c;
+                    &:last-child {
+                        border-top-right-radius: 6px;
                     }
                 }
             }
         }
-        .loading {
-            width: 100px;
-        }
-    }
-    @media (max-width: 767px) {
-        .profile-ads {
-            margin: 0;
-            padding: 0;
-            box-shadow: none;
-            .plan-details {
-                margin-top: 16px;
+
+        tbody {
+            tr {
+                color: $base;
+                background-color: $white;
+
+                &:last-child {
+                    td {
+                        padding-bottom: 48px !important;
+                    }
+                }
             }
         }
     }
+}
+
+.table-action-button {
+    height: auto;
 }
 </style>
