@@ -30,3 +30,5 @@ config.js
 firebase.json
 .firebase/*
 
+# Misc
+ssh

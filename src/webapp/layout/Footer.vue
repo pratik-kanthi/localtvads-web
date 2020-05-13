@@ -5,7 +5,7 @@
                 <div class="col-lg-2">
                     <div class="logo">
                         <router-link tag="a" to="/">
-                            <img src="@/assets/images/logo-dark.svg" alt="">
+                            <img src="@/assets/images/new_logo_dark.png" alt="" />
                         </router-link>
                     </div>
                 </div>
@@ -30,7 +30,6 @@
                 </div>
                 <div class="col-lg-3">
                     <ul class="social">
-                        
                         <li>© 2020 localtvads.com</li>
                     </ul>
                 </div>
