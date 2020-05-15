@@ -127,13 +127,15 @@ import instance from '@/api';
 import NewCardModal from '@/webapp/common/modals/NewCardModal';
 import ImageUpload from '@/e9_components/components/ImageUpload';
 import LoaderModal from '@/webapp/common/modals/LoaderModal';
+import VueTelInput from 'vue-tel-input';
 
 export default {
     name: 'Profile',
     components: {
         NewCardModal,
         ImageUpload,
-        LoaderModal
+        LoaderModal,
+        VueTelInput
     },
     data() {
         return {

@@ -1,7 +1,16 @@
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const CompressionPlugin = require('compression-webpack-plugin');
+const webpack = require('webpack');
+
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
     configureWebpack: {
-        devtool: process.env.NODE_ENV === 'development' ? 'eval' : 'none'
+        devtool: process.env.NODE_ENV === 'development' ? 'eval' : 'none',
+        plugins: [new BundleAnalyzerPlugin()]
+    },
+    chainWebpack(config) {
+        config.plugins.delete('prefetch');
+        config.plugin('CompressionPlugin').use(CompressionPlugin);
     },
     css: {
         loaderOptions: {
@@ -17,6 +26,7 @@ module.exports = {
     },
     lintOnSave: false,
     pwa: {
+        serviceWorker: false,
         name: 'LocalTV Ads',
         themeColor: '#ff6500',
         msTileColor: '#ff6500',

@@ -1,274 +1,284 @@
 input,
 select,
 textarea {
-	font-family: $font-family-heading;
+    font-family: $font-family-heading;
 }
-input[type="text"],
-input[type="email"],
+input[type='text'],
+input[type='email'],
 textarea,
 select,
-input[type="password"] {
-	-webkit-appearance: none;
-	-moz-appearance: none;
+input[type='password'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
 .form-group {
-	margin-bottom: 16px;
-	line-height: 19px;
-	font-size: 16px;
-	position: relative;
-	label {
-		float: left;
-		margin-left: 12px;
-		width: 100%;
-	}
-	.form-control {
-		width: 100%;
-		height: 48px;
-		@include border-radius(6px);
-		padding: 12px;
-		box-shadow: none;
-		-webkit-appearance: none;
-		color: $base;
-		&:focus {
-			outline: none;
-		}
-		&::-webkit-input-placeholder {
-			/* Chrome/Opera/Safari */
-			text-transform: capitalize;
-			color: lighten($body-text, 15%);
-			font-family: $font-family-heading !important;
-			font-weight: 400;
-		}
-		&::-moz-placeholder {
-			/* Firefox 19+ */
-			color: lighten($body-text, 15%);
-			text-transform: capitalize;
-			font-family: $font-family-heading !important;
-			font-weight: 400;
-		}
-		&:-ms-input-placeholder {
-			/* IE 10+ */
-			color: lighten($body-text, 15%);
-			text-transform: capitalize;
-			font-family: $font-family-heading !important;
-			font-weight: 400;
-		}
-		&:-moz-placeholder {
-			/* Firefox 18- */
-			color: lighten($body-text, 15%);
-			text-transform: capitalize;
-			font-family: $font-family-heading !important;
-			font-weight: 400;
-		}
-		&.no-border {
-			border: none;
-		}
-		&.datepicker {
-			background-image: url('../assets/images/datepicker.svg');
-			background-repeat: no-repeat;
-			background-size: 26px;
-			background-position: right 14px center;
-		}
-	}
-	textarea {
-		width: 100%;
-		height: 150px !important;
-		font-family: $font-family-body;
-		resize: none;
-		&:focus {
-			border-color: $light-grey;
-		}
-	}
-	select {
-		height: 48px;
-		width: 100%;
-		border-radius: 6px;
-		background-color: $white;
-		border: none;
-		font-size: 16px;
-		cursor: pointer;
-		color: lighten($body-text, 15%);
-		font-weight: 400;
-		font-family: $font-family-heading;
-		background-image: url('../assets/images/select.png');
-		background-repeat: no-repeat;
-		background-size: 16px;
-		background-position: right 13px center;
-		box-shadow: none;
-		-webkit-appearance: none;
-		&:focus {
-			outline: none;
-		}
-		option {
-			color: $base !important;
-			// &:first {
-			// 	color: lighten($body-text, 15%);
-			// }
-		}
-	}
+    margin-bottom: 16px;
+    line-height: 19px;
+    font-size: 16px;
+    position: relative;
+    label {
+        float: left;
+        margin-left: 12px;
+        width: 100%;
+
+        @media (max-width: 767px) {
+            font-size: 14px;
+        }
+    }
+    .form-control {
+        width: 100%;
+        height: 48px;
+        @include border-radius(6px);
+        padding: 12px;
+        box-shadow: none;
+        -webkit-appearance: none;
+        color: $base;
+        &:focus {
+            outline: none;
+        }
+        &::-webkit-input-placeholder {
+            /* Chrome/Opera/Safari */
+            text-transform: capitalize;
+            color: lighten($body-text, 15%);
+            font-family: $font-family-heading !important;
+            font-weight: 400;
+        }
+        &::-moz-placeholder {
+            /* Firefox 19+ */
+            color: lighten($body-text, 15%);
+            text-transform: capitalize;
+            font-family: $font-family-heading !important;
+            font-weight: 400;
+        }
+        &:-ms-input-placeholder {
+            /* IE 10+ */
+            color: lighten($body-text, 15%);
+            text-transform: capitalize;
+            font-family: $font-family-heading !important;
+            font-weight: 400;
+        }
+        &:-moz-placeholder {
+            /* Firefox 18- */
+            color: lighten($body-text, 15%);
+            text-transform: capitalize;
+            font-family: $font-family-heading !important;
+            font-weight: 400;
+        }
+        &.no-border {
+            border: none;
+        }
+        &.datepicker {
+            background-image: url('../assets/images/datepicker.svg');
+            background-repeat: no-repeat;
+            background-size: 26px;
+            background-position: right 14px center;
+        }
+
+        @media (max-width: 767px) {
+            height: 40px;
+            @include border-radius(4px);
+            padding: 8px;
+            font-size: 16px;
+        }
+    }
+    textarea {
+        width: 100%;
+        height: 150px !important;
+        font-family: $font-family-body;
+        resize: none;
+        &:focus {
+            border-color: $light-grey;
+        }
+    }
+    select {
+        height: 48px;
+        width: 100%;
+        border-radius: 6px;
+        background-color: $white;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        color: lighten($body-text, 15%);
+        font-weight: 400;
+        font-family: $font-family-heading;
+        background-image: url('../assets/images/select.png');
+        background-repeat: no-repeat;
+        background-size: 16px;
+        background-position: right 13px center;
+        box-shadow: none;
+        -webkit-appearance: none;
+        &:focus {
+            outline: none;
+        }
+        option {
+            color: $base !important;
+            // &:first {
+            // 	color: lighten($body-text, 15%);
+            // }
+        }
+    }
 }
-input[type="file"] {
-	background: transparent;
-	&:before {
-		padding: 0 10px !important;
-	}
+input[type='file'] {
+    background: transparent;
+    &:before {
+        padding: 0 10px !important;
+    }
 }
 
-input[type="file"] {
-	width: 100%;
-	outline: 0 !important;
-	margin-top: 4px;
-	margin-bottom: 10px;
-	height: 40px;
-	&::-webkit-file-upload-button {
-		visibility: hidden !important;
-		-webkit-appearance: none;
-	}
-	&::before {
-		content: 'Choose File';
-		display: inline-block;
-		background-color: $brand-primary;
-		border-radius: 6px;
-		line-height: 30px;
-		padding: 0px 12px;
-		height: 30px;
-		outline: none;
-		white-space: nowrap;
-		color: #fff;
-		cursor: pointer;
-		font-weight: 700;
-		font-size: 11px;
-		outline: 0 !important;
-	}
-	&:hover {
-		&::before {
-			border-color: $black;
-		}
-	}
+input[type='file'] {
+    width: 100%;
+    outline: 0 !important;
+    margin-top: 4px;
+    margin-bottom: 10px;
+    height: 40px;
+    &::-webkit-file-upload-button {
+        visibility: hidden !important;
+        -webkit-appearance: none;
+    }
+    &::before {
+        content: 'Choose File';
+        display: inline-block;
+        background-color: $brand-primary;
+        border-radius: 6px;
+        line-height: 30px;
+        padding: 0px 12px;
+        height: 30px;
+        outline: none;
+        white-space: nowrap;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 11px;
+        outline: 0 !important;
+    }
+    &:hover {
+        &::before {
+            border-color: $black;
+        }
+    }
 }
 .radio-btn-dot {
-	position: relative;
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-	left: 0;
-	top:0;
-	label {
-		&:after {
-			width: 20px;
-			height: 20px;
-			content: '';
-			border: 2px solid #9b9b9b;
-			background-color: #fff;
-			background-repeat: no-repeat;
-			background-position: 3px 3px;
-			border-radius: 50%;
-			position: absolute;
-			left:0;
-			top:0;
-			z-index: 0;
-			cursor: pointer;
-			transition: all 200ms ease-in;
-		  }
-	}
-	input:checked ~ label {
-		color: #fff;
-		&:after {
-		  border-color: #1b6ed0;
-		  background-image: url('../assets/images/dot.svg');
-		}
-	  }
-	input {
-		width: 20px;
-		height: 20px;
-		position: absolute;
-		left: 0;
-		top: 0;
-		z-index: 0;
-		cursor: pointer;
-		visibility: hidden;
-	}
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    left: 0;
+    top: 0;
+    label {
+        &:after {
+            width: 20px;
+            height: 20px;
+            content: '';
+            border: 2px solid #9b9b9b;
+            background-color: #fff;
+            background-repeat: no-repeat;
+            background-position: 3px 3px;
+            border-radius: 50%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 0;
+            cursor: pointer;
+            transition: all 200ms ease-in;
+        }
+    }
+    input:checked ~ label {
+        color: #fff;
+        &:after {
+            border-color: #1b6ed0;
+            background-image: url('../assets/images/dot.svg');
+        }
+    }
+    input {
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 0;
+        cursor: pointer;
+        visibility: hidden;
+    }
 }
 .radio-btn-tick {
-	position: relative;
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-	left: 0;
-	top:0;
-	label {
-		&:after {
-			width: 20px;
-			height: 20px;
-			content: '';
-			border: 2px solid #9b9b9b;
-			background-color: #fff;
-			background-repeat: no-repeat;
-			background-position: 1px 3px;
-			border-radius: 50%;
-			z-index: 0;
-			position: absolute;
-			left:0;
-			top:0;
-			cursor: pointer;
-			transition: all 200ms ease-in;
-		  }
-	}
-	input:checked ~ label {
-		color: #fff;
-		&:after {
-		  background-color: $brand-primary;
-		  border-color: $brand-primary;
-		  background-image: url('../assets/images/check.svg');
-		}
-	  }
-	input {
-		width: 20px;
-		height: 20px;
-		z-index: 0;
-		position: absolute;
-		left: 0;
-		top: 0;
-		cursor: pointer;
-		visibility: hidden;
-	}
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    left: 0;
+    top: 0;
+    label {
+        &:after {
+            width: 20px;
+            height: 20px;
+            content: '';
+            border: 2px solid #9b9b9b;
+            background-color: #fff;
+            background-repeat: no-repeat;
+            background-position: 1px 3px;
+            border-radius: 50%;
+            z-index: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
+            cursor: pointer;
+            transition: all 200ms ease-in;
+        }
+    }
+    input:checked ~ label {
+        color: #fff;
+        &:after {
+            background-color: $brand-primary;
+            border-color: $brand-primary;
+            background-image: url('../assets/images/check.svg');
+        }
+    }
+    input {
+        width: 20px;
+        height: 20px;
+        z-index: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+        cursor: pointer;
+        visibility: hidden;
+    }
 }
 
-
 .radio-btn-untick {
-	position: relative;
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-	left: 0;
-	top:0;
-	label {
-		&:after {
-			width: 20px;
-			height: 20px;
-			content: '';
-			border: 2px solid #9b9b9b;
-			background-color: #fff;
-			background-repeat: no-repeat;
-			background-position: 1px 3px;
-			border-radius: 50%;
-			z-index: 0;
-			position: absolute;
-			left:0;
-			top:0;
-			cursor: pointer;
-			transition: all 200ms ease-in;
-		  }
-	}
-	input {
-		width: 20px;
-		height: 20px;
-		z-index: 0;
-		position: absolute;
-		left: 0;
-		top: 0;
-		cursor: pointer;
-		visibility: hidden;
-	}
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    left: 0;
+    top: 0;
+    label {
+        &:after {
+            width: 20px;
+            height: 20px;
+            content: '';
+            border: 2px solid #9b9b9b;
+            background-color: #fff;
+            background-repeat: no-repeat;
+            background-position: 1px 3px;
+            border-radius: 50%;
+            z-index: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
+            cursor: pointer;
+            transition: all 200ms ease-in;
+        }
+    }
+    input {
+        width: 20px;
+        height: 20px;
+        z-index: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+        cursor: pointer;
+        visibility: hidden;
+    }
 }

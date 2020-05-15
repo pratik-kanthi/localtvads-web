@@ -9,16 +9,7 @@
                     <input id="fileUpload" class="hidden" type="file" @change="fileUploaded" accept="video/mp4,video/x-m4v,video/*" ref="fileUpload" />
                     <button class="btn btn-primary upload mt16" @click="chooseFile" :disabled="isLoading"><img src="@/assets/images/upload.svg" /> <span class="button-text">Upload Video</span></button>
                 </div>
-                <div class="video-wrapper" v-if="progress === 0 && upload.chosen">
-                    <video controls class="mb24">
-                        <source :src="videoUrl" type="video/mp4" />
-                    </video>
-                    <div class="action text-center">
-                        <button class="btn btn-white btn-bordered m-xs0 mr16" @click="cancelUpload">Cancel</button>
-                        <button class="btn btn-white" @click="uploadVideo">Submit</button>
-                    </div>
-                </div>
-                <div class="upload-progress" v-else-if="progress > 0">
+                <div class="upload-progress" v-else-if="upload.chosen">
                     <div class="details">
                         <div class="pull-left"><strong class="t-l" v-text="upload.chosen.name"></strong>&nbsp;<span class="text-muted">is uploading...</span></div>
                         <div class="pull-right">

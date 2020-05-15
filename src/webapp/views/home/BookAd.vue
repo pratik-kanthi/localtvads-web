@@ -1,26 +1,34 @@
 <template>
     <div class="book-ads">
-        <div>
-            <div class="form-group">
-                <label for="" class="text-white">Broadcast location</label>
-                <select class="form-control" v-model="broadcastLocation" @change="loadSecondsbyChannel">
-                    <option disabled selected hidden value="">Select Broadcast Location</option>
-                    <option :value="channel._id" v-for="channel in channels" :key="channel._id" :disabled="channel.Status !== 'LIVE'">{{ channel.Name + (channel.Status !== 'LIVE' ? ' (Coming Soon)' : '') }}</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="" class="text-white">Ad Length</label>
-                <select :disabled="disableAdLength" class="form-control" v-model="adLength" @change="loadScheduleAvailability">
-                    <option disabled selected hidden value="">Select Ad Length</option>
-                    <option v-for="(sec, key) in seconds" :key="key" :value="sec">{{ sec }} Seconds</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="" class="text-white">Start Date</label>
-                <flat-pickr v-model="startDate" :config="config" class="form-control datepicker no-border" placeholder="Select starting date" :disabled="!broadcastLocation || !adLength" ref="calendar"></flat-pickr>
-            </div>
-            <div class="action">
-                <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Lets Go!</button>
+        <div class="row">
+            <div class="col d-flex justify-content-sm-between justify-content-md-between flex-md-row flex-column">
+                <div class="form-group d-flex flex-md-row flex-sm-column ">
+                    <div class="">
+                        <label for="" class="text-white">Broadcast location</label>
+                        <select class="form-control" v-model="broadcastLocation" @change="loadSecondsbyChannel">
+                            <option disabled selected hidden value="">Select Broadcast Location</option>
+                            <option :value="channel._id" v-for="channel in channels" :key="channel._id" :disabled="channel.Status !== 'LIVE'">{{ channel.Name + (channel.Status !== 'LIVE' ? ' (Coming Soon)' : '') }}</option>
+                        </select>
+                    </div>
+
+                    <div class="second-el">
+                        <label for="" class="text-white">Ad Length</label>
+                        <select :disabled="disableAdLength" class="form-control" v-model="adLength" @change="loadScheduleAvailability">
+                            <option disabled selected hidden value="">Select Ad Length</option>
+                            <option v-for="(sec, key) in seconds" :key="key" :value="sec">{{ sec }} Seconds</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group d-flex flex-column flex-md-row justify-content-between align-items-sm-end">
+                    <div class="">
+                        <label for="" class="text-white">Start Date</label>
+                        <flat-pickr v-model="startDate" :config="config" class="form-control datepicker no-border" placeholder="Select starting date" :disabled="!broadcastLocation || !adLength" ref="calendar"></flat-pickr>
+                    </div>
+                    <div class="second-el cta">
+                        <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Go!</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="ad-views d-none d-sm-block" v-if="broadcastLocation && adLength && getExpectedAdViews()">
@@ -189,19 +197,8 @@ export default {
         margin-bottom: 16px;
     }
 
-    .form-group {
-        width: 280px;
-        margin-right: 16px;
-        display: inline-block;
-        margin-bottom: 0;
-
-        .form-control {
-            margin-bottom: 0;
-        }
-
-        .datepicker {
-            background-color: #fff;
-        }
+    .datepicker {
+        background-color: #fff;
     }
 
     .action {
@@ -245,14 +242,27 @@ export default {
         }
     }
 
+    .second-el {
+        padding-left: 16px;
+        &.cta {
+            width: 50%;
+        }
+        @media (max-width: 767px) {
+            padding: 0;
+            &.cta {
+                width: 100%;
+            }
+        }
+    }
     @media (max-width: 767px) {
-        padding: 20px 0;
-
         .form-group {
             width: 100%;
             margin-bottom: 16px;
         }
 
+        .cta {
+            margin-top: 24px;
+        }
         .action {
             width: 100%;
             display: block;

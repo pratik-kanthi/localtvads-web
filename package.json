@@ -51,6 +51,7 @@
     "@vue/eslint-plugin": "^4.2.0",
     "babel-eslint": "^10.0.1",
     "chalk": "^2.4.2",
+    "compression-webpack-plugin": "^4.0.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "lint-staged": "^9.4.2",
@@ -59,6 +60,7 @@
     "path": "^0.12.7",
     "sass-loader": "^8.0.0",
     "vue-template-compiler": "^2.6.10",
+    "webpack-bundle-analyzer": "^3.7.0",
     "yorkie": "^2.0.0"
   },
   "eslintConfig": {
