@@ -9,6 +9,7 @@ import { TablePlugin } from 'bootstrap-vue';
 import { PaginationPlugin } from 'bootstrap-vue';
 import VScrollLock from 'v-scroll-lock';
 import VueSweetalert2 from 'vue-sweetalert2';
+import VueAnalytics from 'vue-analytics';
 
 Vue.use(VueCookies);
 Vue.prototype.io = io;
@@ -21,3 +22,8 @@ Vue.use(VueTelInput);
 Vue.use(VScrollLock);
 Vue.use(VueSweetalert2);
 Vue.use(VueTelInput);
+
+Vue.use(VueAnalytics, {
+    id: 'UA-166794218-1',
+    checkDuplicatedScript: true
+});

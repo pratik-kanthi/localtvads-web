@@ -11,7 +11,8 @@
             <div class="form-group">
                 <label for="" class="text-white">Ad Length</label>
                 <select :disabled="disableAdLength" class="form-control" v-model="adLength" @change="loadScheduleAvailability">
-                    <option disabled selected hidden value="">Select Ad Length</option>
+                    <option v-if="!secondsLoading" disabled selected hidden value="">Select Ad Length</option>
+                    <option v-if="secondsLoading" disabled selected hidden value="">Loading...</option>
                     <option v-for="(sec, key) in seconds" :key="key" :value="sec">{{ sec }} Seconds</option>
                 </select>
             </div>
@@ -62,6 +63,7 @@ export default {
             dateValidations: [],
             channels: [],
             seconds: [],
+            secondsLoading: false,
             startDate: null,
             endDate: null,
             sDate: new this.moment().add(1, 'days'),
@@ -118,9 +120,11 @@ export default {
         },
         async loadSecondsbyChannel() {
             try {
+                this.secondsLoading = true;
                 let result = await instance.get('/api/channel/seconds?channel=' + this.broadcastLocation);
                 this.seconds = result.data;
                 this.disableAdLength = false;
+                this.secondsLoading = false;
             } catch (err) {
                 this.$swal({
                     title: 'Error',

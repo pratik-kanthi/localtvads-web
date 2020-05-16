@@ -8,7 +8,6 @@ import moment from 'moment';
 import './e9_components';
 import '@/scss/style.scss';
 import LoaderModal from './webapp/common/modals/LoaderModal';
-import './registerServiceWorker';
 
 window.$ = require('jquery');
 window.google = {

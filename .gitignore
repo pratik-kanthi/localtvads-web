@@ -31,4 +31,4 @@ firebase.json
 .firebase/*
 
 # Misc
-ssh
+sshkey
