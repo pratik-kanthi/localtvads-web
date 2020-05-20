@@ -1,27 +1,34 @@
 <template>
     <div class="book-ads">
-        <div>
-            <div class="form-group">
-                <label for="" class="text-white">Broadcast location</label>
-                <select class="form-control" v-model="broadcastLocation" @change="loadSecondsbyChannel">
-                    <option disabled selected hidden value="">Select Broadcast Location</option>
-                    <option :value="channel._id" v-for="channel in channels" :key="channel._id" :disabled="channel.Status !== 'LIVE'">{{ channel.Name + (channel.Status !== 'LIVE' ? ' (Coming Soon)' : '') }}</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="" class="text-white">Ad Length</label>
-                <select :disabled="disableAdLength" class="form-control" v-model="adLength" @change="loadScheduleAvailability">
-                    <option v-if="!secondsLoading" disabled selected hidden value="">Select Ad Length</option>
-                    <option v-if="secondsLoading" disabled selected hidden value="">Loading...</option>
-                    <option v-for="(sec, key) in seconds" :key="key" :value="sec">{{ sec }} Seconds</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="" class="text-white">Start Date</label>
-                <flat-pickr v-model="startDate" :config="config" class="form-control datepicker no-border" placeholder="Select starting date" :disabled="!broadcastLocation || !adLength" ref="calendar"></flat-pickr>
-            </div>
-            <div class="action">
-                <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Lets Go!</button>
+        <div class="row">
+            <div class="col d-flex justify-content-sm-between justify-content-md-between flex-md-row flex-column">
+                <div class="form-group d-flex flex-md-row flex-sm-column section-one">
+                    <div class="">
+                        <label for="" class="text-white">Broadcast location</label>
+                        <select class="form-control" v-model="broadcastLocation" @change="loadSecondsbyChannel">
+                            <option disabled selected hidden value="">Select Broadcast Location</option>
+                            <option :value="channel._id" v-for="channel in channels" :key="channel._id" :disabled="channel.Status !== 'LIVE'">{{ channel.Name + (channel.Status !== 'LIVE' ? ' (Coming Soon)' : '') }}</option>
+                        </select>
+                    </div>
+
+                    <div class="second-el">
+                        <label for="" class="text-white">Ad Length</label>
+                        <select :disabled="disableAdLength" class="form-control" v-model="adLength" @change="loadScheduleAvailability">
+                            <option disabled selected hidden value="">Select Ad Length</option>
+                            <option v-for="(sec, key) in seconds" :key="key" :value="sec">{{ sec }} Seconds</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group d-flex flex-column flex-md-row justify-content-between align-items-sm-end section-2">
+                    <div class="">
+                        <label for="" class="text-white">Start Date</label>
+                        <flat-pickr v-model="startDate" :config="config" class="form-control datepicker no-border" placeholder="Select starting date" :disabled="!broadcastLocation || !adLength" ref="calendar"></flat-pickr>
+                    </div>
+                    <div class="second-el cta">
+                        <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Go!</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="ad-views d-none d-sm-block" v-if="broadcastLocation && adLength && getExpectedAdViews()">
@@ -63,7 +70,6 @@ export default {
             dateValidations: [],
             channels: [],
             seconds: [],
-            secondsLoading: false,
             startDate: null,
             endDate: null,
             sDate: new this.moment().add(1, 'days'),
@@ -120,11 +126,9 @@ export default {
         },
         async loadSecondsbyChannel() {
             try {
-                this.secondsLoading = true;
                 let result = await instance.get('/api/channel/seconds?channel=' + this.broadcastLocation);
                 this.seconds = result.data;
                 this.disableAdLength = false;
-                this.secondsLoading = false;
             } catch (err) {
                 this.$swal({
                     title: 'Error',
