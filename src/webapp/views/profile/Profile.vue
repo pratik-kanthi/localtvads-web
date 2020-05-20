@@ -50,9 +50,9 @@
                                             <div v-if="getUser().Owner.Phone" class="bold">{{ getUser().Owner.Phone }}</div>
                                             <div v-else>--</div>
                                         </div>
-                                        <div v-else>
+                                        <!-- <div v-else>
                                             <vue-tel-input :disabled-fetching-country="true" v-model="$store.state.user.Owner.Phone" @input="checkPhoneValid" class="form-control"></vue-tel-input>
-                                        </div>
+                                        </div> -->
                                     </div>
 
                                     <div v-if="mode === 'EDIT' && !isSocialAccount">
@@ -127,15 +127,13 @@ import instance from '@/api';
 import NewCardModal from '@/webapp/common/modals/NewCardModal';
 import ImageUpload from '@/e9_components/components/ImageUpload';
 import LoaderModal from '@/webapp/common/modals/LoaderModal';
-import VueTelInput from 'vue-tel-input';
 
 export default {
     name: 'Profile',
     components: {
         NewCardModal,
         ImageUpload,
-        LoaderModal,
-        VueTelInput
+        LoaderModal
     },
     data() {
         return {

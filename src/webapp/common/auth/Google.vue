@@ -40,17 +40,12 @@ export default {
                     gapi.auth2
                         .getAuthInstance()
                         .grantOfflineAccess({
-                            redirect_uri: 'postmessage',
-                            approval_prompt: 'force'
+                            redirect_uri: 'postmessage'
                         })
                         .then(
                             () => {
-                                gapi.auth2
-                                    .getAuthInstance()
-                                    .isSignedIn.listen(this.updateSigninStatus);
-                                this.updateSigninStatus(
-                                    gapi.auth2.getAuthInstance().isSignedIn.get()
-                                );
+                                gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
+                                this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
                             },
                             () => {
                                 this.$store.commit('LOGIN_LOADER', false);
@@ -60,15 +55,12 @@ export default {
             });
         },
         loadGAPIScript(gapiUrl) {
-            return new Promise((resolve) => {
+            return new Promise(resolve => {
                 let script = document.createElement('script');
                 script.src = gapiUrl;
                 script.onreadystatechange = script.onload = () => {
                     let interval = setInterval(() => {
-                        if (
-                            !script.readyState ||
-                                /loaded|complete/.test(script.readyState)
-                        ) {
+                        if (!script.readyState || /loaded|complete/.test(script.readyState)) {
                             clearInterval(interval);
                             resolve();
                         }
@@ -97,11 +89,7 @@ export default {
                 try {
                     this.isError = false;
                     let result = await instance.post(this.api, body);
-                    this.$cookies.set(
-                        'token',
-                        result.data.TokenString,
-                        result.data.iat - Math.floor(Date.now() / 1000) + 's'
-                    );
+                    this.$cookies.set('token', result.data.TokenString, result.data.iat - Math.floor(Date.now() / 1000) + 's');
                     delete result.data.TokenString;
                     localStorage.setItem('user', JSON.stringify(result.data));
                     this.$store.dispatch('loginSuccess');
@@ -128,11 +116,7 @@ export default {
                                 this.$store.commit('LOGIN_LOADER', true);
                                 try {
                                     let result = await instance.post('api/auth/clientsocialregister', body);
-                                    this.$cookies.set(
-                                        'token',
-                                        result.data.TokenString,
-                                        result.data.iat - Math.floor(Date.now() / 1000) + 's'
-                                    );
+                                    this.$cookies.set('token', result.data.TokenString, result.data.iat - Math.floor(Date.now() / 1000) + 's');
                                     delete result.data.TokenString;
                                     localStorage.setItem('user', JSON.stringify(result.data));
                                     this.$store.dispatch('loginSuccess');
@@ -142,7 +126,7 @@ export default {
                                         title: 'Error',
                                         text: err.error,
                                         type: 'warning',
-                                        confirmButtonColor: '#ff6500',
+                                        confirmButtonColor: '#ff6500'
                                     });
                                     console.error(err);
                                 }
@@ -163,26 +147,26 @@ export default {
 </script>
 
 <style scoped lang="scss">
-    .btn-google {
-        width: 100%;
-        background-color: #4285f4;
-        color: #ffffff;
-        border: none;
-        text-transform: capitalize;
-        position: relative;
-        font-weight: 500 !important;
-        height: 42px;
-        margin-bottom: 20px;
-        &:hover {
-            background: #4285f4;
-            color: #fff;
-        }
+.btn-google {
+    width: 100%;
+    background-color: #4285f4;
+    color: #ffffff;
+    border: none;
+    text-transform: capitalize;
+    position: relative;
+    font-weight: 500 !important;
+    height: 42px;
+    margin-bottom: 20px;
+    &:hover {
+        background: #4285f4;
+        color: #fff;
     }
+}
 
-    img {
-        position: absolute;
-        width: 24px;
-        left: 8px;
-        top: 8px;
-    }
+img {
+    position: absolute;
+    width: 24px;
+    left: 8px;
+    top: 8px;
+}
 </style>

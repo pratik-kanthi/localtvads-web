@@ -2,7 +2,7 @@
     <div class="book-ads">
         <div class="row">
             <div class="col d-flex justify-content-sm-between justify-content-md-between flex-md-row flex-column">
-                <div class="form-group d-flex flex-md-row flex-sm-column ">
+                <div class="form-group d-flex flex-md-row flex-sm-column section-one">
                     <div class="">
                         <label for="" class="text-white">Broadcast location</label>
                         <select class="form-control" v-model="broadcastLocation" @change="loadSecondsbyChannel">
@@ -20,7 +20,7 @@
                     </div>
                 </div>
 
-                <div class="form-group d-flex flex-column flex-md-row justify-content-between align-items-sm-end">
+                <div class="form-group d-flex flex-column flex-md-row justify-content-between align-items-sm-end section-2">
                     <div class="">
                         <label for="" class="text-white">Start Date</label>
                         <flat-pickr v-model="startDate" :config="config" class="form-control datepicker no-border" placeholder="Select starting date" :disabled="!broadcastLocation || !adLength" ref="calendar"></flat-pickr>
@@ -199,6 +199,10 @@ export default {
 
     .datepicker {
         background-color: #fff;
+
+        @media (max-width: 767px) {
+            height: 32px !important;
+        }
     }
 
     .action {
@@ -243,21 +247,27 @@ export default {
     }
 
     .second-el {
-        padding-left: 16px;
+        padding-left: 28px;
         &.cta {
             width: 50%;
         }
         @media (max-width: 767px) {
-            padding: 0;
+            padding-left: 8px;
             &.cta {
                 width: 100%;
             }
         }
     }
+
     @media (max-width: 767px) {
         .form-group {
             width: 100%;
             margin-bottom: 16px;
+        }
+
+        .form-control {
+            font-size: 12px;
+            height: 32px !important;
         }
 
         .cta {

@@ -1,12 +1,14 @@
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CompressionPlugin = require('compression-webpack-plugin');
-const webpack = require('webpack');
 
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
     configureWebpack: {
         devtool: process.env.NODE_ENV === 'development' ? 'eval' : 'none',
-        plugins: [new BundleAnalyzerPlugin()]
+        plugins: [new BundleAnalyzerPlugin()],
+        resolve: {
+            alias: { moment: 'moment/src/moment' }
+        }
     },
     chainWebpack(config) {
         config.plugins.delete('prefetch');

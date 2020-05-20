@@ -27,7 +27,7 @@
                         </h3>
                     </div>
                     <div class="col-md-6 d-none d-sm-block d-md-block d-lg-block">
-                        <div class="text-right">
+                        <div class="d-flex flex-row justify-content-end align-items-center">
                             <span class="mr16">Don't have an Ad?</span>
                             <router-link to="addons">
                                 <button class="btn btn-white btn-sm">Create your ad</button>
@@ -36,7 +36,8 @@
                     </div>
                 </div>
                 <BookAd></BookAd>
-                <div class="text-center d-block d-sm-none d-md-none d-lg-none">
+                <hr />
+                <div class="d-flex justify-content-between d-block d-sm-none d-md-none d-lg-none">
                     <div class="mb8">Don't have an Ad?</div>
                     <router-link to="addons">
                         <button class="btn btn-white btn-sm">Create your ad</button>
