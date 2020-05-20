@@ -193,18 +193,11 @@ export default {
         margin-bottom: 16px;
     }
 
-    .form-group {
-        width: 280px;
-        margin-right: 16px;
-        display: inline-block;
-        margin-bottom: 0;
+    .datepicker {
+        background-color: #fff;
 
-        .form-control {
-            margin-bottom: 0;
-        }
-
-        .datepicker {
-            background-color: #fff;
+        @media (max-width: 767px) {
+            height: 32px !important;
         }
     }
 
@@ -249,14 +242,33 @@ export default {
         }
     }
 
-    @media (max-width: 767px) {
-        padding: 20px 0;
+    .second-el {
+        padding-left: 28px;
+        &.cta {
+            width: 50%;
+        }
+        @media (max-width: 767px) {
+            padding-left: 8px;
+            &.cta {
+                width: 100%;
+            }
+        }
+    }
 
+    @media (max-width: 767px) {
         .form-group {
             width: 100%;
             margin-bottom: 16px;
         }
 
+        .form-control {
+            font-size: 12px;
+            height: 32px !important;
+        }
+
+        .cta {
+            margin-top: 24px;
+        }
         .action {
             width: 100%;
             display: block;

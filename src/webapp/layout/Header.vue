@@ -293,7 +293,7 @@ nav {
 
         .logo-wrapper {
             width: 100%;
-            height: 40px;
+            height: 32px;
             line-height: 50px;
         }
 

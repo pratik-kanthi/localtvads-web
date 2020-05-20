@@ -19,7 +19,7 @@
         </section>
         <div class="container content-area" id="book-now">
             <div class="content">
-                <div class="header mb24 row">
+                <div class="header mb16 row">
                     <div class="col-md-6">
                         <h3 class="section-title-2 text-white pos-relative">
                             <img class="icon" src="@/assets/images/tv.svg" alt="tv" />
@@ -27,7 +27,7 @@
                         </h3>
                     </div>
                     <div class="col-md-6 d-none d-sm-block d-md-block d-lg-block">
-                        <div class="text-right">
+                        <div class="d-flex flex-row justify-content-end align-items-center">
                             <span class="mr16">Don't have an Ad?</span>
                             <router-link to="addons">
                                 <button class="btn btn-white btn-sm">Create your ad</button>
@@ -36,7 +36,8 @@
                     </div>
                 </div>
                 <BookAd></BookAd>
-                <div class="text-center d-block d-sm-none d-md-none d-lg-none">
+                <hr />
+                <div class="d-flex justify-content-between d-block d-sm-none d-md-none d-lg-none">
                     <div class="mb8">Don't have an Ad?</div>
                     <router-link to="addons">
                         <button class="btn btn-white btn-sm">Create your ad</button>
@@ -64,7 +65,7 @@
                 </div>
             </div>
         </section>
-        <section class="latest-offers bg--grey" id="offers">
+        <section v-if="offers.length > 0" class="latest-offers bg--grey" id="offers">
             <div class="container">
                 <h3 class="section-title-2 text-center mb16">Latest Offers</h3>
                 <div class="underlined"></div>
@@ -112,7 +113,7 @@
         </section>
         <section class="contact-us p-0" id="contact">
             <div class="row">
-                <div class="col-sm-6 p-0">
+                <div class="col-sm-6 p-0 contact-form-image">
                     <div class="info">
                         <img src="@/assets/images/info.png" alt="" />
                         <h1 class="text-center white">Contact Us</h1>
@@ -121,35 +122,39 @@
                 </div>
                 <div class="col-sm-6 p-0">
                     <div class="contact-form">
+                        <div class="mb32 mob-only">
+                            <h2 class="section-title-1">Contact Us</h2>
+                            <p class="black">We'd love to hear from you. Fill the below form and we'll get back to you soon.</p>
+                        </div>
+
                         <div class="form-group">
-                            <label for="" class="ml0">Name</label>
                             <input v-model="enquiryForm.Name" type="text" class="form-control" placeholder="Your Name" />
                         </div>
                         <div class="form-group">
-                            <label for="" class="ml0">Email ID</label>
                             <input v-model="enquiryForm.Email" type="email" class="form-control" placeholder="Your email address" />
                         </div>
                         <div class="form-group">
-                            <label for="" class="ml0">Subject</label>
                             <input v-model="enquiryForm.Subject" type="text" class="form-control" placeholder="What can we help with?" />
                         </div>
                         <div class="form-group">
-                            <label for="" class="ml0">Message</label>
                             <textarea wrap="hard" v-model="enquiryForm.Message" name="" id="" cols="30" rows="4" class="form-control" placeholder="How can we help?"></textarea>
                         </div>
-                        <button @click="submitEnquiry" :disabled="!isEnquiryFormValid" class="btn btn-primary btn-full mt16">Send a Message</button>
+                        <button @click="submitEnquiry" :disabled="!isEnquiryFormValid" class="btn btn-primary btn-full mt16">Send</button>
                     </div>
                 </div>
             </div>
         </section>
         <section class="subscription bg--grey">
             <div class="container">
-                <h2 class="section-title-1 text-center mb20">Get exclusive email offers</h2>
-                <h6 class="section-title-1 text-center mb48">And stay in touch with our monthly Newsletter</h6>
-                <div class="form-group email-wrapper">
-                    <img src="@/assets/images/mail.svg" class="mail-icon" alt="" />
-                    <input v-model="subscriberEmail" type="email" class="form-control" placeholder="Your Email" />
-                    <button :disabled="!isSubscriberEmailValid" @click="subscribeUser" class="btn btn-primary subscribe">Sign Up</button>
+                <h2 class="section-title-1 text-center">Subscribe to exclusive email offers</h2>
+                <div class="t-l text-center mb24">And stay in touch with our monthly newsletter</div>
+                <div class="form-group subscription-form d-flex justify-content-center ">
+                    <div class="d-flex">
+                        <input v-model="subscriberEmail" type="email" class="form-control" placeholder="Your Email" />
+                    </div>
+                    <div>
+                        <button :disabled="!isSubscriberEmailValid" @click="subscribeUser" class="btn btn-primary">Sign Up</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -485,12 +490,23 @@ export default {
                     position: absolute;
                     top: -9px;
                 }
+
+                @media (max-width: 767px) {
+                    .icon {
+                        height: 24px;
+                    }
+
+                    .section-title-2 {
+                        .pl48 {
+                            padding-left: 32px !important;
+                        }
+                        font-size: 14px !important;
+                    }
+                }
             }
         }
 
         @media (max-width: 767px) {
-            margin-top: -14%;
-
             .content {
                 margin-top: -1px;
                 padding: 24px;
@@ -514,7 +530,7 @@ export default {
 
         /* iPhone x Portrait */
         @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
-            margin-top: -20%;
+            margin-top: -10%;
         }
 
         /* iPhone x Landscape */
@@ -891,6 +907,12 @@ export default {
             }
         }
 
+        .contact-form-image {
+            @media (max-width: 767px) {
+                display: none;
+            }
+        }
+
         .contact-form {
             padding: 80px 104px;
 
@@ -963,37 +985,10 @@ export default {
             line-height: 32px;
         }
 
-        .email-wrapper {
-            max-width: 500px;
-            position: relative;
-            margin: 0 auto;
-
-            input {
-                padding-left: 50px;
-            }
-
+        .subscription-form {
             .mail-icon {
-                position: absolute;
-                top: 14px;
-                left: 12px;
-            }
-
-            .subscribe {
-                position: absolute;
-                top: 0;
-                right: 0;
-                padding: 6px 24px;
-                font-size: 20px;
-            }
-        }
-
-        @media (max-width: 767px) {
-            .email-wrapper {
-                .subscribe {
-                    position: inherit;
-                    margin-top: 32px;
-                    width: 100%;
-                }
+                margin-right: -32px;
+                z-index: 999;
             }
         }
     }

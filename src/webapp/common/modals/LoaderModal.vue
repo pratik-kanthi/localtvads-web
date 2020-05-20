@@ -13,7 +13,7 @@ import lottie from 'lottie-web';
 import animationData from '@/assets/data/loader.json';
 export default {
     name: 'LoaderModal',
-    props: ['showloader','message'],
+    props: ['showloader', 'message'],
     mounted() {
         this.anim = lottie.loadAnimation({
             container: this.$refs.loader,
@@ -27,41 +27,41 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .loader {
-        position: fixed;
-        top: 0;
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1041;
+    .overlay {
+        opacity: 0.95;
+        position: absolute;
         left: 0;
         right: 0;
-        z-index:1041;
-        .overlay {
-            opacity: 0.95;
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            background-color: #fff;
-            z-index: 2;
+        top: 0;
+        bottom: 0;
+        background-color: #fff;
+        z-index: 2;
+    }
+    .content {
+        min-height: 100vh;
+        padding: 8px;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        p {
+            margin-top: 16px;
+            font-size: 18px;
+            z-index: 3;
         }
-        .content {
-            min-height: 100vh;
-            padding: 8px;
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            p {
-                margin-top: 16px;
-                font-size: 18px;
-                z-index: 3;
-            }
-            .loader-wrapper {
-                width: 300px;
-                height: 300px;
-                z-index: 3;
-            }
+        .loader-wrapper {
+            width: 300px;
+            height: 300px;
+            z-index: 3;
         }
     }
+}
 </style>

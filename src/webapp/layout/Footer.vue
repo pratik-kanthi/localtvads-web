@@ -2,36 +2,32 @@
     <footer>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-2">
+                <div class="col footer-content d-flex flex-column flex-sm-row justify-content-between align-items-center">
                     <div class="logo">
                         <router-link tag="a" to="/">
                             <img src="@/assets/images/new_logo_dark.png" alt="" />
                         </router-link>
                     </div>
-                </div>
-                <div class="col-lg-7">
-                    <ul class="menu">
-                        <li>
+                    <div class="footer-nav d-flex flex-column flex-sm-row justify-content-between">
+                        <div>
                             <router-link tag="a" to="/#how-it-works">How It Works</router-link>
-                        </li>
-                        <li>
+                        </div>
+                        <div>
                             <router-link tag="a" to="/#book-now">Book Now</router-link>
-                        </li>
-                        <li>
+                        </div>
+                        <div>
                             <router-link tag="a" to="/#offers">Offers</router-link>
-                        </li>
-                        <li>
+                        </div>
+                        <div>
                             <router-link tag="a" to="/#about">About</router-link>
-                        </li>
-                        <li>
+                        </div>
+                        <div>
                             <router-link tag="a" to="/#contact">Contact us</router-link>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-lg-3">
-                    <ul class="social">
-                        <li>© 2020 localtvads.com</li>
-                    </ul>
+                        </div>
+                    </div>
+                    <div>
+                        © 2020 Local TV Ads
+                    </div>
                 </div>
             </div>
         </div>
@@ -45,6 +41,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.footer-content {
+    .footer-nav {
+        a {
+            padding: 16px;
+        }
+    }
+
+    @media (max-width: 767px) {
+        align-items: flex-start !important;
+        padding: 24px 16px;
+        .logo {
+            width: 80px;
+        }
+        .footer-nav {
+            padding: 24px 0;
+            a {
+                padding: 0;
+            }
+        }
+    }
+}
 footer {
     padding: 40px 45px;
     .logo {
