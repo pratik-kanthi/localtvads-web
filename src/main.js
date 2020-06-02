@@ -2,7 +2,6 @@ import '@/config';
 import Vue from 'vue';
 import App from './App.vue';
 import router from './routes';
-import './plugins';
 import { store } from './store';
 import moment from 'moment';
 import './e9_components';
@@ -30,3 +29,5 @@ new Vue({
     router: router,
     store
 }).$mount('#app');
+
+import './plugins';

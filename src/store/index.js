@@ -4,6 +4,7 @@ import VueCookies from 'vue-cookies';
 
 Vue.use(Vuex);
 
+const LOADER_TOGGLE = 'LOADER_TOGGLE';
 const LOGIN_LOADER = 'LOGIN_LOADER';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGOUT = 'LOGOUT';
@@ -14,6 +15,7 @@ const FORGOT_PASSWORD = 'FORGOT_PASSWORD';
 
 export const store = new Vuex.Store({
     state: {
+        isAppLoading: true,
         isAuth: !!VueCookies.get('token'), // state to check whether user has logged in
         user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : '',
         auth: {
@@ -27,6 +29,9 @@ export const store = new Vuex.Store({
         forgotPassword: false
     },
     mutations: {
+        [LOADER_TOGGLE](state, val) {
+            state.isAppLoading = val;
+        },
         [LOGIN_LOADER](state, val) {
             state.auth.loader = val;
         },

@@ -35,14 +35,14 @@ export default {
     name: 'ImageUpload',
     props: ['show', 'config', 'data'],
     components: {
-        Cropper,
+        Cropper
     },
     data() {
         return {
             loading: false,
             upload: {
                 chosen: null,
-                src: null,
+                src: null
             },
             position: {
                 left: 0,
@@ -107,7 +107,7 @@ export default {
                     return;
                 }
                 this.isValid = true;
-                reader.onload = (e) => {
+                reader.onload = e => {
                     this.upload.src = e.target.result;
                 };
                 reader.readAsDataURL(this.upload.chosen);
@@ -135,7 +135,7 @@ export default {
                 this.$swal({
                     title: 'Uploaded',
                     text: 'Image has been uploaded successfully',
-                    type: 'success',
+                    type: 'success'
                 });
             } catch (err) {
                 this.$parent.isLoading = false;
@@ -152,14 +152,15 @@ export default {
             let formData = new window.FormData();
             formData.append('file', this.upload.chosen);
             let bodyObj = {
-                ...this.data,
-                cropx: this.position.left,
-                cropy: this.position.top,
-                cropw: this.position.width,
-                croph: this.position.height
+                ...this.data
             };
             let t = new URLSearchParams(bodyObj).toString();
             this.config.api = this.config.api + '&' + t;
+            this.config.api += '&cropx=' + this.position.left;
+            this.config.api += '&cropy=' + this.position.top;
+            this.config.api += '&cropw=' + this.position.width;
+            this.config.api += '&croph=' + this.position.height;
+
             formData.append('document', JSON.stringify(bodyObj));
             try {
                 let result = await this.callAPI(formData);
@@ -185,21 +186,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    input[type='file'] {
-        &:before {
-            border-radius: 6px !important;
-            padding: 0 16px;
+input[type='file'] {
+    &:before {
+        border-radius: 6px !important;
+        padding: 0 16px;
+    }
+}
+
+.upload-actions {
+    button {
+        position: relative;
+
+        i {
+            position: absolute;
+            left: 13px;
         }
     }
-
-    .upload-actions {
-        button {
-            position: relative;
-
-            i {
-                position: absolute;
-                left: 13px;
-            }
-        }
-    }
+}
 </style>

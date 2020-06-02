@@ -18,10 +18,13 @@
                             <router-link tag="a" to="/#book-now">Book Now</router-link>
                         </li>
                         <li @click="toggleMenu">
-                            <router-link tag="a" to="/#offers">Offers</router-link>
+                            <router-link tag="a" to="/#about-us">About</router-link>
                         </li>
                         <li @click="toggleMenu">
-                            <router-link tag="a" to="/#about">About</router-link>
+                            <router-link tag="a" to="/#why-tv">Why LocalTV</router-link>
+                        </li>
+                        <li @click="toggleMenu">
+                            <router-link tag="a" to="/#offers">Offers</router-link>
                         </li>
                         <li @click="toggleMenu">
                             <router-link tag="a" to="/#contact">Contact us</router-link>
