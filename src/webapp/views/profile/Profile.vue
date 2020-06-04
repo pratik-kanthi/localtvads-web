@@ -9,7 +9,6 @@
                 <div class="profile-info mb32">
                     <h4 class="section-subtitle b-b pb16">My Info</h4>
                     <div class="row profile-details">
-                        <div class="col-lg-4 mb24">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nisi voluptatibus ab quod ex fugiat dicta delectus. Sunt pariatur culpa quam adipisci velit cupiditate eos quas. Officiis error dolor labore quasi?</div>
                         <div class="col-lg-8">
                             <div class="row">
                                 <div class="col-sm-6">
@@ -51,7 +50,7 @@
                                             <div v-else>--</div>
                                         </div>
                                         <div v-else>
-                                            <vue-tel-input default-country="gb" :disabled-fetching-country="true" v-model="$store.state.user.Owner.Phone" @input="checkPhoneValid" class="form-control"></vue-tel-input>
+                                            <vue-tel-input :only-countries="onlyCountries" default-country="gb" :disabled-fetching-country="true" v-model="$store.state.user.Owner.Phone" @input="checkPhoneValid" class="form-control"></vue-tel-input>
                                         </div>
                                     </div>
 
@@ -86,7 +85,7 @@
                     <h4 class="section-subtitle b-b pb16">My Cards</h4>
                     <div class="row cards-details">
                         <div class="col-sm-4">
-                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam repudiandae molestias maiores, est distinctio, harum nulla, enim tenetur quae mollitia iste.</p>
+                            <p>Your saved cards are shown. You need at least one card added to your account to keep your ad plans active.</p>
                             <button class="btn btn-primary btn-full" @click="openNewCardModal">Add New Card</button>
                         </div>
                         <div class="col-sm-8">
@@ -156,7 +155,8 @@ export default {
             uploadImageModal: false,
             isLoading: false,
             isSocialAccount: false,
-            fetchCountry: true
+            fetchCountry: true,
+            onlyCountries: ['gb']
         };
     },
     methods: {
@@ -483,7 +483,6 @@ export default {
         margin: 0;
         padding: 0;
         box-shadow: none;
-        text-align: center;
 
         .profile-info {
             .profile-details {
@@ -493,10 +492,6 @@ export default {
                     margin-top: 16px;
                     margin-right: auto;
                     margin-left: auto;
-                }
-
-                p {
-                    text-align: center !important;
                 }
                 .cancel,
                 .save {

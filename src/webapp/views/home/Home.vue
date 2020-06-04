@@ -8,8 +8,8 @@
                             <div class="hero-wrapper pos-relative">
                                 <div class="hero-image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + hero.ImageUrl + ')', height: '100%', 'background-size': 'cover', 'background-position': 'center center' }"></div>
                                 <div class="overlay"></div>
-                                <div class="container d-flex align-items-center">
-                                    <div class="overlay-text" v-html="hero.Name"></div>
+                                <div class="container">
+                                    <div class="overlay-text container" v-html="hero.Name"></div>
                                 </div>
                             </div>
                         </div>
@@ -55,13 +55,13 @@
                 <div class="container">
                     <h3 class="section-title-2 text-center mb16">About Local Tv Ads</h3>
                     <div class="underlined"></div>
-                    <div class="d-flex mt32 justify-content-center">
-                        <div class="t-l p24 w-50">
+                    <div class="d-flex mt32 flex-column flex-md-row justify-content-center">
+                        <div class="t-l p24">
                             <p>LocalTV Ads evolved to make TV advertising easy. We provide the most technologically advanced and efficient ad booking system. Our efforts make it simple and cost effective to both create a new ad and to schedule it for airing in multiple locations. Or you can re-use your existing ad. Flexible. Simple.</p>
                             <p class="brand-primary">Launched during the 2020 Covid-19 lockdown period our aim is enable every business, from the smallest sole trader to multinational corporates, the same seamless access to get their message out to customers.</p>
                             <p>Advertising on TV has never been so easy.</p>
                         </div>
-                        <div class="p24 w-50 d-flex align-items-center justify-content-center">
+                        <div class="p24 d-flex align-items-center justify-content-center">
                             <img height="150px" src="@/assets/images/new_logo_dark.png" alt="" />
                         </div>
                     </div>
@@ -72,18 +72,18 @@
                 <div class="container">
                     <h3 class="section-title-2 text-center mb16">Why Advertise on TV?</h3>
                     <div class="underlined"></div>
-                    <div class="d-flex mt32 justify-content-between mt64">
-                        <div class="w-50">
+                    <div class="d-flex mt32 flex-md-row flex-column justify-content-between">
+                        <div class="w-md-50">
                             <carousel @page-change="switchDescription" :per-page="1" :mouse-drag="false">
                                 <slide>
-                                    <img height="200px" src="@/assets/images/whytv-1.png" alt="" />
+                                    <img class="slider-image" src="@/assets/images/whytv-1.png" alt="" />
                                 </slide>
                                 <slide>
-                                    <img height="200px" src="@/assets/images/whytv-2.png" alt="" />
+                                    <img class="slider-image" src="@/assets/images/whytv-2.png" alt="" />
                                 </slide>
                             </carousel>
                         </div>
-                        <div class="t-l p32 w-50">
+                        <div class="t-l p24">
                             <div v-if="currentWhyTvPage == 0">
                                 <p class="t-xl black">Target an enormous audience</p>
                                 <p>TV is the most profitable form of advertising. It gives you the widest reach with the least cost</p>
@@ -101,15 +101,15 @@
                 <div class="container">
                     <h3 class="section-title-2 text-center white mb16">Why use Local TV</h3>
                     <div class="underlined-white"></div>
-                    <div class="d-flex align-items-center justify-content-between mt32">
-                        <div class="white t-l w-50">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between mt32">
+                        <div class="white t-l p24">
                             With amazing reach to customers in both domestic and commercial settings, LocalTV Ads can bring your products and services to a whole new audience.
                             <br />
                             <br />
                             Simple. Easy. Cost effective.
                         </div>
-                        <div class="">
-                            <img height="400px" src="@/assets/images/coverage.png" alt="" />
+                        <div class="p24">
+                            <img class="infographic" src="@/assets/images/coverage.png" alt="" />
                             <div class="white mt24">
                                 <p>
                                     Our tv network coverage reaches 15% of England and Wales. <br />
@@ -557,6 +557,21 @@ export default {
         &.dark {
             background-image: url('../../../assets/images/pattern.svg');
         }
+
+        .infographic {
+            height: 400px;
+            @media (max-width: 767px) {
+                height: 240px;
+            }
+        }
+
+        .slider-image {
+            height: 200px;
+
+            @media (max-width: 767px) {
+                height: 120px;
+            }
+        }
     }
 
     .content-area {
@@ -633,7 +648,6 @@ export default {
             }
         }
     }
-
     .how-it-works {
         .works-wrapper {
             .work {
@@ -710,15 +724,24 @@ export default {
 
                     .overlay-text {
                         position: absolute;
-                        top: 30%;
                         font-size: 24px;
                         color: $white;
                         max-width: 100%;
-                        overflow-x: none;
+                        top: 50%;
+                        -ms-transform: translateY(-50%);
+                        transform: translateY(-50%);
 
                         /deep/.main {
                             color: $brand-primary !important;
                             font-size: 32px !important;
+                        }
+
+                        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
+                            /deep/.main {
+                                font-size: 18px !important;
+                            }
+                            font-size: 14px;
+                            padding-bottom: 24px;
                         }
                     }
                 }

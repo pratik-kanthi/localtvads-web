@@ -511,6 +511,10 @@ footer {
     color: $links !important;
 }
 
+.white-bg {
+    background-color: $white !important;
+}
+
 .brand-primary-bg {
     background-color: $brand-primary;
 }
@@ -639,5 +643,14 @@ footer {
     display: none !important;
     @media (max-width: 767px) {
         display: block !important;
+    }
+}
+
+/* Width */
+
+.w-md-50 {
+    width: 100%;
+    @media (max-width: 767px) {
+        width: 100%;
     }
 }

@@ -3,14 +3,23 @@
         <div class="container" v-if="$parent.clientAdPlan">
             <div class="upload-wrapper">
                 <div v-if="progress === 0 && !$parent.clientAdPlan.ClientAd && !upload.chosen" class="upload-box">
-                    <h4 class="bold">You can now upload your video</h4>
+                    <h4 class="bold">You can Upload Video</h4>
                     <p class="text-muted mb0">Click on the upload button or drag and drop your upload file here.</p>
                     <p class="brand-primary">(less than {{ config.maxSize }}MB and within {{ $parent.clientAdPlan.ChannelPlan.Plan.Seconds }} seconds)</p>
                     <input id="fileUpload" class="hidden" type="file" @change="fileUploaded" accept="video/mp4,video/x-m4v,video/*" ref="fileUpload" />
                     <button class="btn btn-primary upload mt16" @click="chooseFile" :disabled="isLoading"><img src="@/assets/images/upload.svg" /> <span class="button-text">Upload Video</span></button>
                 </div>
-                <div class="upload-progress" v-else-if="upload.chosen">
-                    <div class="details">
+                <div class="video-wrapper" v-if="progress === 0 && upload.chosen">
+                    <video controls class="mb24">
+                        <source :src="videoUrl" type="video/mp4" />
+                    </video>
+                    <div class="action text-center">
+                        <button class="btn btn-white btn-bordered m-xs0 mr16" @click="cancelUpload">Cancel</button>
+                        <button class="btn btn-white" @click="uploadVideo">Submit</button>
+                    </div>
+                </div>
+                <div class="upload-progress" v-else-if="progress > 0">
+                    <div class="details white-bg">
                         <div class="pull-left"><strong class="t-l" v-text="upload.chosen.name"></strong>&nbsp;<span class="text-muted">is uploading...</span></div>
                         <div class="pull-right">
                             <strong v-text="progress + ' %'"></strong>
@@ -140,7 +149,7 @@ export default {
     .video-wrapper {
         height: auto;
         video {
-            height: auto;
+            height: 400px;
             object-fit: contain;
             background: #000;
         }

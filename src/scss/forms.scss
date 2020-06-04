@@ -117,6 +117,10 @@ input[type='password'] {
             // 	color: lighten($body-text, 15%);
             // }
         }
+
+        @media (max-width: 767px) {
+            background-image: none;
+        }
     }
 }
 input[type='file'] {

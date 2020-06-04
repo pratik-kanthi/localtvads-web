@@ -188,7 +188,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .book-ads {
     color: #fff !important;
     position: relative;
@@ -263,11 +263,11 @@ export default {
         .form-group {
             width: 100%;
             margin-bottom: 16px;
-        }
 
-        .form-control {
-            font-size: 12px;
-            height: 32px !important;
+            .form-control {
+                font-size: 12px;
+                height: 32px !important;
+            }
         }
 
         .cta {
