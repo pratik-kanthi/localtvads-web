@@ -6,8 +6,7 @@
                     <agile :options="herosliderOptions" :unagile="!showCarousel" v-if="heroslider">
                         <div class="slide" v-for="(hero, key) in heroslider" :key="key">
                             <div class="hero-wrapper pos-relative">
-                                <div class="hero-image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + hero.ImageUrl + ')', height: '100%', 'background-size': 'cover', 'background-position': 'center center' }"></div>
-                                <div class="overlay"></div>
+                                <div class="hero-image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + hero.ImageUrl + ')', height: '100%', 'background-size': 'cover', 'background-position': 'top center' }"></div>
                                 <div class="container">
                                     <div class="overlay-text container" v-html="hero.Name"></div>
                                 </div>
@@ -575,7 +574,7 @@ export default {
     }
 
     .content-area {
-        margin-top: -104px;
+        margin-top: -16px;
         position: relative;
         z-index: 0;
 
