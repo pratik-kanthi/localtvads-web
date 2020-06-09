@@ -6,21 +6,25 @@
                     <agile :options="herosliderOptions" :unagile="!showCarousel" v-if="heroslider">
                         <div class="slide" v-for="(hero, key) in heroslider" :key="key">
                             <div class="hero-wrapper pos-relative">
-                                <div class="hero-image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + hero.ImageUrl + ')', height: '100%', 'background-size': 'cover', 'background-position': 'top center' }"></div>
+                                <div
+                                    class="hero-image"
+                                    :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + hero.ImageUrl + ')', height: '100%', 'background-size': 'cover', 'background-position': 'top center' }"
+                                ></div>
                                 <div class="container">
                                     <div class="overlay-text container" v-html="hero.Name"></div>
                                 </div>
                             </div>
                         </div>
-                        <template slot="prevButton"
-                        ><i class="material-icons arrow">keyboard_arrow_left</i></template
-                        >
-                        <template slot="nextButton"
-                        ><i class="material-icons arrow">keyboard_arrow_right</i></template
-                        >
+                        <template slot="prevButton">
+                            <i class="material-icons arrow">keyboard_arrow_left</i>
+                        </template>
+                        <template slot="nextButton">
+                            <i class="material-icons arrow">keyboard_arrow_right</i>
+                        </template>
                     </agile>
                 </div>
             </section>
+
             <div class="container content-area" id="book-now">
                 <div class="content">
                     <div class="header mb16 row">
@@ -40,7 +44,9 @@
                         </div>
                     </div>
                     <BookAd></BookAd>
-                    <div class="d-flex justify-content-between d-block d-sm-none d-md-none d-lg-none">
+                    <div
+                        class="d-flex justify-content-between d-block d-sm-none d-md-none d-lg-none"
+                    >
                         <div class="mb8">Don't have an Ad?</div>
                         <router-link to="addons">
                             <button class="btn btn-white btn-sm">Create your ad</button>
@@ -50,18 +56,98 @@
             </div>
             <ResetPassword v-if="$route.name === 'ResetPassword'"></ResetPassword>
 
-            <section id="about-us" class="section-home pb16">
+            <section id="about-us" class="section-home">
                 <div class="container">
-                    <h3 class="section-title-2 text-center mb16">About Local Tv Ads</h3>
-                    <div class="underlined"></div>
-                    <div class="d-flex mt32 flex-column flex-md-row justify-content-center">
-                        <div class="t-l p24">
-                            <p>LocalTV Ads evolved to make TV advertising easy. We provide the most technologically advanced and efficient ad booking system. Our efforts make it simple and cost effective to both create a new ad and to schedule it for airing in multiple locations. Or you can re-use your existing ad. Flexible. Simple.</p>
-                            <p class="brand-primary">Launched during the 2020 Covid-19 lockdown period our aim is enable every business, from the smallest sole trader to multinational corporates, the same seamless access to get their message out to customers.</p>
-                            <p>Advertising on TV has never been so easy.</p>
+                    <div class="row mt64">
+                        <div class="col-md-6 t-l">
+                            <p>For the first time ever LOCAL TV ADS is making online booking for TV advertising AFFORDABLE !! As long as you’re LOCAL you qualify for BEST pricing . So here’s grow your LOCAL customer base, in your LOCAL area, using LOCALTVADS.com.</p>
+                            <p>Designed to book a TV advertising slot, just like booking a flight, LOCALTVADS.COM automatically enables local business, births , deaths and marriages announcements at uniquely low cost on your LOCAL TV</p>
+                            <p>
+                                Advertising on TV has never been so easy, nor accessible. Register now and bring your brand to
+                                life.
+                            </p>
                         </div>
-                        <div class="p24 d-flex align-items-center justify-content-center">
-                            <img height="150px" src="@/assets/images/new_logo_dark.png" alt="" />
+                        <div class="col-md-6">
+                            <div class="p24">
+                                <img src="@/assets/images/new_logo_dark.png" height="240" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="brand-primary-bg">
+                <div class="container">
+                    <div class="row">
+                        <div>
+                            <p
+                                class="white t-xl"
+                            >We are UK's biggest and best LOCAL TV network. Operating 24/7 on:</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt24">
+                        <div class="white d-flex justify-content-between w-100">
+                            <div>
+                                <img height="64px" src="@/assets/images/bristol.jpg" alt />
+                                <div class="t-l mt8">Bristol TV</div>
+                            </div>
+                            <div>
+                                <img height="64px" src="@/assets/images/bristol.jpg" alt />
+                                <div class="t-l mt8">Bristol TV</div>
+                            </div>
+                            <div>
+                                <img height="64px" src="@/assets/images/bristol.jpg" alt />
+                                <div class="t-l mt8">Bristol TV</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lighter-grey-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="@/assets/images/home_illustration.png" height="480px" alt />
+                        </div>
+                        <div class="col-md-6 d-flex flex-column justify-content-center">
+                            <div class="p24">
+                                <div class="t-xl">TV ads surely cost an arm and a leg, right?</div>
+                                <br />
+                                <div>
+                                    <span class="t-xl black">No!</span>
+                                    <span class="t-l">
+                                        in this launch you will, as a pioneer, be able to create and broadcast TV advertisements affordable
+                                        to you and assisted by our dedicated specialists. They can provide an end-to-end service that'll
+                                        take care of everything from script to production, tailored to your budget. Flexible. Simple..
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="how-it-works" class="how-it-works">
+                <div class="container">
+                    <h3 class="section-title-2 text-center mb16">How it works</h3>
+                    <div class="underlined"></div>
+                    <br />
+                    <h4 class="section-title-2 text-center mb16">Follow our simple 4 step process</h4>
+                    <div class="row works-wrapper mt48">
+                        <div
+                            class="col-md-6 col-lg-6 text-center"
+                            v-for="work in workflow"
+                            :key="work.Id"
+                        >
+                            <div class="work">
+                                <div class="counter mb-2">
+                                    <h6>{{ work.Id }}</h6>
+                                </div>
+                                <h4 class="section-subtitle mb-3">{{ work.Name }}</h4>
+                                <p class="desc">{{ work.Desc }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -73,12 +159,16 @@
                     <div class="underlined"></div>
                     <div class="d-flex mt32 flex-md-row flex-column justify-content-between">
                         <div class="w-md-50">
-                            <carousel @page-change="switchDescription" :per-page="1" :mouse-drag="false">
+                            <carousel
+                                @page-change="switchDescription"
+                                :per-page="1"
+                                :mouse-drag="false"
+                            >
                                 <slide>
-                                    <img class="slider-image" src="@/assets/images/whytv-1.png" alt="" />
+                                    <img class="slider-image" src="@/assets/images/whytv-1.png" alt />
                                 </slide>
                                 <slide>
-                                    <img class="slider-image" src="@/assets/images/whytv-2.png" alt="" />
+                                    <img class="slider-image" src="@/assets/images/whytv-2.png" alt />
                                 </slide>
                             </carousel>
                         </div>
@@ -100,19 +190,20 @@
                 <div class="container">
                     <h3 class="section-title-2 text-center white mb16">Why use Local TV</h3>
                     <div class="underlined-white"></div>
-                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between mt32">
+                    <div
+                        class="d-flex flex-column flex-md-row align-items-center justify-content-between mt32"
+                    >
                         <div class="white t-l p24">
                             With amazing reach to customers in both domestic and commercial settings, LocalTV Ads can bring your products and services to a whole new audience.
                             <br />
-                            <br />
-                            Simple. Easy. Cost effective.
+                            <br />Simple. Easy. Cost effective.
                         </div>
                         <div class="p24">
-                            <img class="infographic" src="@/assets/images/coverage.png" alt="" />
+                            <img class="infographic" src="@/assets/images/coverage.png" alt />
                             <div class="white mt24">
                                 <p>
-                                    Our tv network coverage reaches 15% of England and Wales. <br />
-                                    Nearly 9.5mn people and 800k businesses within the 6 licence areas.
+                                    Our tv network coverage reaches 15% of England and Wales.
+                                    <br />Nearly 9.5mn people and 800k businesses within the 6 licence areas.
                                 </p>
                             </div>
                         </div>
@@ -120,34 +211,32 @@
                 </div>
             </section>
 
-            <section id="how-it-works" class="how-it-works">
-                <div class="container">
-                    <h3 class="section-title-2 text-center mb16">How it works</h3>
-                    <div class="underlined"></div>
-                    <br />
-                    <h4 class="section-title-2 text-center mb16">Follow our simple 4 step process</h4>
-                    <div class="row works-wrapper mt48">
-                        <div class="col-md-6 col-lg-3 text-center" v-for="work in workflow" :key="work.Id">
-                            <div class="work">
-                                <div class="counter mb-2">
-                                    <h6>{{ work.Id }}</h6>
-                                </div>
-                                <h4 class="section-subtitle mb-3">{{ work.Name }}</h4>
-                                <p class="desc">{{ work.Desc }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
             <section v-if="offers.length > 0" class="latest-offers bg--grey" id="offers">
                 <div class="container">
                     <h3 class="section-title-2 text-center mb16">Latest Offers</h3>
                     <div class="underlined"></div>
                     <div class="offers-slider">
-                        <carousel :per-page="3" :pagination-enabled="false" :navigation-enabled="true" :autoplay="true" :autoplay-hover-pause="true" :loop="true" :speed="600" :per-page-custom="[[300, 1], [768, 2], [1199, 3]]" :navigation-click-target-size="20" navigation-prev-label="<i class='material-icons'>keyboard_arrow_left</i>" navigation-next-label="<i class='material-icons'>keyboard_arrow_right</i>" :center-mode="true" :scroll-per-page="false">
+                        <carousel
+                            :per-page="3"
+                            :pagination-enabled="false"
+                            :navigation-enabled="true"
+                            :autoplay="true"
+                            :autoplay-hover-pause="true"
+                            :loop="true"
+                            :speed="600"
+                            :per-page-custom="[[300, 1], [768, 2], [1199, 3]]"
+                            :navigation-click-target-size="20"
+                            navigation-prev-label="<i class='material-icons'>keyboard_arrow_left</i>"
+                            navigation-next-label="<i class='material-icons'>keyboard_arrow_right</i>"
+                            :center-mode="true"
+                            :scroll-per-page="false"
+                        >
                             <slide class="slide" v-for="(offer, key) in offers" :key="key">
                                 <div class="offer">
-                                    <div class="offer-image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + offer.ImageUrl + ')' }"></div>
+                                    <div
+                                        class="offer-image"
+                                        :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + offer.ImageUrl + ')' }"
+                                    ></div>
                                     <div class="offer-content">
                                         <h4 class="section-subtitle mb-3">{{ offer.Name }}</h4>
                                         <p class="text-clamp-2">{{ offer.Description }}</p>
@@ -164,16 +253,33 @@
                     <h2 class="section-title-1 text-center mb16">Testimonials</h2>
                     <div class="underlined"></div>
                     <br />
-                    <p class="text-center">Hear from our happy customers about how easy it is and how much you can gain by <router-link tag="a" to="/#book-now">booking</router-link> your LocalTV Ad today.</p>
+                    <p class="text-center">
+                        Hear from our happy customers about how easy it is and how much you can gain by
+                        <router-link tag="a" to="/#book-now">booking</router-link>your LocalTV Ad today.
+                    </p>
                 </div>
                 <div class="container-fluid mt40">
                     <div class="testimonial-slider" v-if="testimonials">
-                        <carousel :per-page="3" :autoplay="true" :autoplay-hover-pause="true" :loop="true" :speed="600" pagination-active-color="#ff6500" :pagination-size="16" :pagination-padding="5" :per-page-custom="[[300, 1], [769, 2], [1199, 3]]" :center-mode="true">
+                        <carousel
+                            :per-page="3"
+                            :autoplay="true"
+                            :autoplay-hover-pause="true"
+                            :loop="true"
+                            :speed="600"
+                            pagination-active-color="#ff6500"
+                            :pagination-size="16"
+                            :pagination-padding="5"
+                            :per-page-custom="[[300, 1], [769, 2], [1199, 3]]"
+                            :center-mode="true"
+                        >
                             <slide v-for="t in testimonials" :key="t._id" class="slide">
                                 <div class="content">
                                     <div class="profile-photo">
                                         <div class="profile-photo">
-                                            <div class="background-image-holder image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + t.ImageUrl + ')' }"></div>
+                                            <div
+                                                class="background-image-holder image"
+                                                :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + t.ImageUrl + ')' }"
+                                            ></div>
                                         </div>
                                     </div>
                                     <h6 class="name">{{ t.Name }}</h6>
@@ -189,31 +295,63 @@
                 <div class="row">
                     <div class="col-sm-6 p-0 contact-form-image">
                         <div class="info">
-                            <img src="@/assets/images/info.png" alt="" />
+                            <img src="@/assets/images/info.png" alt />
                             <h1 class="text-center white">Contact Us</h1>
-                            <p class="lead text-center">We'd love to hear from you. Simply fill out the form opposite and we'll get back to you within 24 hours.</p>
+                            <p
+                                class="lead text-center"
+                            >We'd love to hear from you. Simply fill out the form opposite and we'll get back to you within 24 hours.</p>
                         </div>
                     </div>
                     <div class="col-sm-6 p-0">
                         <div class="contact-form">
                             <div class="mb32 mob-only">
                                 <h2 class="section-title-1">Contact Us</h2>
-                                <p class="black">We'd love to hear from you. Fill the below form and we'll get back to you soon.</p>
+                                <p
+                                    class="black"
+                                >We'd love to hear from you. Fill the below form and we'll get back to you soon.</p>
                             </div>
 
                             <div class="form-group">
-                                <input v-model="enquiryForm.Name" type="text" class="form-control" placeholder="Your Name" />
+                                <input
+                                    v-model="enquiryForm.Name"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Your Name"
+                                />
                             </div>
                             <div class="form-group">
-                                <input v-model="enquiryForm.Email" type="email" class="form-control" placeholder="Your email address" />
+                                <input
+                                    v-model="enquiryForm.Email"
+                                    type="email"
+                                    class="form-control"
+                                    placeholder="Your email address"
+                                />
                             </div>
                             <div class="form-group">
-                                <input v-model="enquiryForm.Subject" type="text" class="form-control" placeholder="What can we help with?" />
+                                <input
+                                    v-model="enquiryForm.Subject"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="What can we help with?"
+                                />
                             </div>
                             <div class="form-group">
-                                <textarea wrap="hard" v-model="enquiryForm.Message" name="" id="" cols="30" rows="4" class="form-control" placeholder="How can we help?"></textarea>
+                                <textarea
+                                    wrap="hard"
+                                    v-model="enquiryForm.Message"
+                                    name
+                                    id
+                                    cols="30"
+                                    rows="4"
+                                    class="form-control"
+                                    placeholder="How can we help?"
+                                ></textarea>
                             </div>
-                            <button @click="submitEnquiry" :disabled="!isEnquiryFormValid" class="btn btn-primary btn-full mt16">Send</button>
+                            <button
+                                @click="submitEnquiry"
+                                :disabled="!isEnquiryFormValid"
+                                class="btn btn-primary btn-full mt16"
+                            >Send</button>
                         </div>
                     </div>
                 </div>
@@ -222,12 +360,21 @@
                 <div class="container">
                     <h2 class="section-title-1 text-center">Subscribe to exclusive email offers</h2>
                     <div class="t-l text-center mb24">And stay in touch with our monthly newsletter</div>
-                    <div class="form-group subscription-form d-flex justify-content-center ">
+                    <div class="form-group subscription-form d-flex justify-content-center">
                         <div class="d-flex">
-                            <input v-model="subscriberEmail" type="email" class="form-control" placeholder="Your Email" />
+                            <input
+                                v-model="subscriberEmail"
+                                type="email"
+                                class="form-control"
+                                placeholder="Your Email"
+                            />
                         </div>
                         <div>
-                            <button :disabled="!isSubscriberEmailValid" @click="subscribeUser" class="btn btn-primary">Sign Up</button>
+                            <button
+                                :disabled="!isSubscriberEmailValid"
+                                @click="subscribeUser"
+                                class="btn btn-primary"
+                            >Sign Up</button>
                         </div>
                     </div>
                 </div>
@@ -314,22 +461,22 @@ export default {
                 {
                     Id: 1,
                     Name: 'Select Your Location',
-                    Desc: 'Choose your target areas to run your ad'
+                    Desc: 'Just as you’d book a flight – tell us where you want your ad to go and when! We are currently offering the service in zones around each TV licence area'
                 },
                 {
                     Id: 2,
                     Name: 'Choose Your Plan',
-                    Desc: 'Select when and how many times you want your ad aired'
+                    Desc: 'Select when and how many times you want your ad aired. From just £XXX you could broadcast a 20 sec ad in the mornings. Or, if you have even bigger plans plans to grow your customer base, you could get your message out there even more potential customers with a 30 sec ad during prime time!'
                 },
                 {
                     Id: 3,
                     Name: 'Upload Your Ad',
-                    Desc: 'If you have already got an ad, great, if not we are here to help create your content'
+                    Desc: 'If you’ve already got one up your sleeve, great! If not, our experts are on hand. They can give you all the help you need to get your message out there in the best possible way and suit your budget'
                 },
                 {
                     Id: 4,
                     Name: 'Approval',
-                    Desc: 'Once your ad is ready to air we will send it to you for final approval'
+                    Desc: 'Once your ad has been uploaded, created or commissioned, all you need to do to confirm your booking, we’ll check everything is good to go, and within a couple of days your campaign could be playing out in the most important place on earth – your local area! Once your ad is ready to air we will send it to you for final approval.'
                 }
             ],
             currentWhyTvPage: 0,
@@ -574,7 +721,7 @@ export default {
     }
 
     .content-area {
-        margin-top: -16px;
+        margin-top: -64px;
         position: relative;
         z-index: 0;
 
@@ -651,9 +798,12 @@ export default {
         .works-wrapper {
             .work {
                 padding: 16px 24px;
+                box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
                 border-top-left-radius: 10px;
                 border-bottom-right-radius: 10px;
+                min-height: 300px;
                 cursor: pointer;
+                margin: 8px 0;
 
                 .counter {
                     padding: 16px;
@@ -692,7 +842,7 @@ export default {
 
     .hero {
         padding: 0;
-        min-height: 550px;
+        min-height: 620px;
         background-color: #333;
 
         @media (max-width: 767px) {
@@ -705,7 +855,7 @@ export default {
                 .slide {
                     .hero-wrapper {
                         /*height: 70vh;*/
-                        height: 550px;
+                        height: 620px;
 
                         /* iPhone x Portrait */
                         @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
