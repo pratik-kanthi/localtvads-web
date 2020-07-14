@@ -1,0 +1,400 @@
+<template>
+    <div class="table-wrapper">
+        <div class="table-options" v-if="options">
+            <a v-show="options.export" @click="exportData">Export</a>
+            <a v-show="options.arrange" @click="arrangeColumns">Arrange</a>
+            <a v-show="options.reset" @click="resetTable">Reset</a>
+        </div>
+        <table
+            :class="[tableClass, { 'table-responsive-xs table-responsive-sm table-responsive-md': $attrs.hasOwnProperty('responsive') }]"
+            :style="{ 'border-spacing': '0px ' + ($attrs.hasOwnProperty('spacing') ? $attrs.spacing + 'px' : '0px'), 'border-collapse': 'separate' }"
+            v-if="clonedHeadings"
+        >
+            <thead>
+                <tr>
+                    <th
+                        v-for="(header, hKey) in clonedHeadings"
+                        :key="hKey"
+                        :class="[theadThClass, typeof header.class == 'string' ? header.class : '']"
+                    >
+                        <span v-if="$scopedSlots[header.key + '(head)']">
+                            <slot :name="header.key + '(head)'"></slot>
+                        </span>
+                        <span v-else class="d-flex">
+                            <span class="sort" v-if="sortBy[header.key]">
+                                <i
+                                    class="material-icons"
+                                    :class="{ active: currentSort && currentSort.name === header.key && currentSort.value === 'asc' }"
+                                    @click="changeSort(header.key, 'asc')"
+                                >arrow_drop_up</i>
+                                <i
+                                    class="material-icons"
+                                    :class="{ active: currentSort && currentSort.name === header.key && currentSort.value === 'desc' }"
+                                    @click="changeSort(header.key, 'desc')"
+                                >arrow_drop_down</i>
+                            </span>
+                            <span>{{ header.label || header.key || '' }}</span>
+                        </span>
+                    </th>
+                </tr>
+                <tr class="linear-activity" v-show="isLoading">
+                    <td class="indeterminate" :colspan="clonedHeadings.length"></td>
+                </tr>
+            </thead>
+            <tbody v-if="clonedItems.length">
+                <tr
+                    v-for="(row, key) in clonedItems"
+                    :key="key"
+                    :class="tbodyTrClass"
+                    @click="actionWrapper($event, row)"
+                >
+                    <td
+                        v-for="(header, hKey) in clonedHeadings"
+                        :key="hKey"
+                        :class="setTdClasses(header, row)"
+                    >
+                        <span v-if="$scopedSlots[header.key]">
+                            <slot :name="header.key" :value="row"></slot>
+                        </span>
+                        <span
+                            v-else
+                        >{{ header.formatter ? header.formatter(row[header.key]) : row[header.key] }}</span>
+                    </td>
+                </tr>
+                <tr v-if="isLoading" class="overlay"></tr>
+            </tbody>
+            <div v-else-if="$slots.empty" v-show="!isLoading">
+                <slot name="empty"></slot>
+            </div>
+            <div class="empty" v-else v-show="!isLoading">
+                <p>There are currently no items to show.</p>
+            </div>
+        </table>
+        <div class="pagination" v-if="pagination && clonedItems.length">
+            <p>Showing {{ (pagination.currentPage - 1) * pagination.perPage + 1 }} - {{ Math.min(...[pagination.currentPage * pagination.perPage, pagination.totalItems]) }} of {{ pagination.totalItems }} results.</p>
+            <ul v-show="pagination.totalItems > pagination.perPage" class="mb0 float-right">
+                <li
+                    v-if="pagination.currentPage !== 1 && pagination.showJumpToFirst"
+                    @click="changePage(1)"
+                >
+                    <!--eslint-disable-next-line-->
+                    <span>{{ '<<' }}</span>
+                </li>
+                <li
+                    v-if="pagination.currentPage !== 1"
+                    @click="changePage(--pagination.currentPage)"
+                >
+                    <!--eslint-disable-next-line-->
+                    <span>{{ '<' }}</span>
+                </li>
+                <li
+                    v-for="(val, key) in totalPages"
+                    :key="key"
+                    :class="{ active: pagination.currentPage === val }"
+                    @click="changePage(val)"
+                >
+                    <span>{{ val }}</span>
+                </li>
+                <li
+                    v-if="clonedItems.length === pagination.perPage && pagination.currentPage !== totalPages.length"
+                    @click="changePage(++pagination.currentPage)"
+                >
+                    <span>{{ '>' }}</span>
+                </li>
+                <li
+                    v-if="clonedItems.length === pagination.perPage && pagination.showJumpToLast"
+                    @click="changePage(Math.ceil(pagination.totalItems / pagination.perPage))"
+                >
+                    <span>{{ '>>' }}</span>
+                </li>
+            </ul>
+        </div>
+        <br class="clearfix" v-if="pagination && clonedItems.length" />
+        <div class="arrange" v-if="isArrange">
+            <div class="arrange__overlay"></div>
+            <div class="arrange__box">
+                <h6 class="arrange__box__title">Arrange Columns</h6>
+                <div class="arrange__box__body">
+                    <div
+                        class="arrange__box__body__option"
+                        v-for="(prop, key) in tempHeadings"
+                        :key="key"
+                    >
+                        <div class="arrange__box__body__option__name">{{ prop.label || prop.key }}</div>
+                        <div class="arrange__box__body__option__value">
+                            <label :for="prop.key" class="checkbox">
+                                <input :id="prop.key" type="checkbox" v-model="prop.selected" />
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <Button
+                            type="success"
+                            size="sm"
+                            :action="saveColumns"
+                            text="Save"
+                            custom-class="inline-block"
+                        ></Button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import Button from './Button';
+export default {
+    name: 'Table',
+    props: {
+        filters: {},
+        headings: {
+            type: Array
+        },
+        items: {
+            type: [Array, Function],
+            required: true
+        },
+        onRowClick: {
+            type: Function
+        },
+        pagination: {
+            type: Object
+        },
+        sort: {
+            type: Object
+        },
+        theadThClass: {
+            type: String
+        },
+        tableClass: {
+            type: String
+        },
+        tbodyTrClass: {
+            type: String
+        },
+        tbodyTdClass: {
+            type: [String, Function]
+        },
+        options: {
+            type: Object
+        }
+    },
+    components: {
+        Button
+    },
+    data() {
+        return {
+            clonedItems: [],
+            sortedItems: [],
+            clonedHeadings: this.headings || [],
+            tempHeadings:
+                this.headings.map(heading => {
+                    return { ...heading, selected: true };
+                }) || [],
+            sortBy: {},
+            currentSort: this.sort,
+            isAPI: true,
+            isArrange: false,
+            isLoading: false
+        };
+    },
+    methods: {
+        actionWrapper($event, row) {
+            if (this.onRowClick && $event.target.parentNode.tagName !== 'A') this.onRowClick(row);
+            else return false;
+        },
+        arrangeColumns() {
+            this.isArrange = true;
+        },
+        callAPI() {
+            this.isLoading = true;
+            this.$nextTick(async () => {
+                let obj = {
+                    pagination: this.pagination,
+                    sort: this.currentSort,
+                    filters: this.filters
+                };
+                try {
+                    this.clonedItems = await this.items(obj);
+                    this.isLoading = false;
+                } catch (err) {
+                    this.isLoading = false;
+                }
+                this.isLoading = false;
+            });
+        },
+        changePage(index) {
+            let pagination = this.pagination;
+            if (this.isAPI) {
+                this.callAPI();
+            } else {
+                this.clonedItems = this.sortedItems.slice((index - 1) * this.pagination.perPage, index * this.pagination.perPage);
+                pagination.totalItems = this.sortedItems.length;
+            }
+            pagination.currentPage = index;
+            this.$emit('update:pagination', pagination);
+        },
+        changeSort(key, type) {
+            this.currentSort = {
+                name: key,
+                value: type
+            };
+            if (this.isAPI) {
+                this.callAPI();
+            } else {
+                this.sortedItems = this.items.sort((a, b) => {
+                    if (type === 'asc') {
+                        return a[key] > b[key] ? 1 : -1;
+                    } else if (type === 'desc') return b[key] > a[key] ? 1 : -1;
+                    return 0;
+                });
+                if (this.pagination) this.changePage(this.pagination.currentPage);
+                else this.clonedItems = this.sortedItems;
+            }
+        },
+        exportData() {
+            let csvContent = 'data:text/csv;charset=utf-8,';
+            let includedColumns = [];
+            csvContent += this.clonedHeadings.map(head => {
+                includedColumns.push(head.key);
+                return head.label || head.key;
+            });
+            csvContent += '\r\n';
+            this.sortedItems.map(item => {
+                includedColumns.map(key => {
+                    if (typeof item[key] === 'object') {
+                        csvContent += this.processObject(item[key]) + ',';
+                    } else if (item[key] instanceof Date) {
+                        csvContent += item[key].toLocaleString();
+                    } else if (key !== '_id') {
+                        csvContent += item[key] + ',';
+                    }
+                });
+                csvContent += '\r\n';
+            });
+            let encodedUri = encodeURI(csvContent);
+            window.open(encodedUri);
+        },
+        setItems() {
+            if (this.pagination) {
+                this.clonedItems = this.items.slice((this.pagination.currentPage - 1) * this.pagination.perPage, this.pagination.perPage);
+            } else {
+                this.clonedItems = this.items;
+            }
+        },
+        processObject(obj) {
+            let str = '';
+            for (let key in obj) {
+                if (typeof obj[key] === 'object') {
+                    str += this.processObject(obj[key]);
+                } else if (obj[key] instanceof Date) {
+                    str += obj[key].toLocaleString() + ';';
+                } else if (key !== '_id') {
+                    str += key + ': ' + obj[key] + ';';
+                }
+            }
+            return str;
+        },
+        resetTable() {
+            this.clonedHeadings = [];
+        },
+        saveColumns() {
+            this.clonedHeadings = this.tempHeadings.filter(heading => heading.selected);
+            this.isArrange = false;
+        },
+        setTdClasses(header, row) {
+            let classes = [];
+            if (header.class && typeof header.class === 'function') {
+                classes.push(header.class(row));
+            } else {
+                classes.push(header.class);
+            }
+            if (typeof this.tbodyTdClass === 'function') {
+                classes.push(this.tbodyTdClass(header, row));
+            } else {
+                classes.push(this.tbodyTdClass);
+            }
+            if (this.onRowClick) {
+                classes.push('pointer');
+            }
+            return classes;
+        },
+        validateAllProps() {
+            let err;
+            if (!Array.isArray(this.items) && !this.pagination) {
+                err = 'items must be a function when using it with the pagination or pagination object must be present when items is a function';
+            }
+            return err;
+        }
+    },
+    computed: {
+        totalPages() {
+            if (this.pagination) {
+                let threshold = this.pagination.threshold ? Math.ceil(this.pagination.threshold) : 2;
+                let total = Math.ceil(this.pagination.totalItems / this.pagination.perPage);
+                let pages = new Set();
+                let counter = this.pagination.currentPage;
+                while (counter >= 1 && this.pagination.currentPage - counter <= threshold / 2) {
+                    pages.add(counter);
+                    counter--;
+                }
+                counter = this.pagination.currentPage;
+                while (counter <= total && counter - this.pagination.currentPage <= threshold / 2) {
+                    pages.add(counter);
+                    counter++;
+                }
+                return Array.from(pages).sort();
+            } else {
+                return [];
+            }
+        }
+    },
+    watch: {
+        filters: {
+            handler() {
+                this.pagination.currentPage = 1;
+                this.callAPI();
+            },
+            deep: true
+        },
+        items: {
+            handler(newValue) {
+                if (!this.isAPI) {
+                    this.sortedItems = newValue;
+                    if (this.pagination) this.changePage(1);
+                }
+            },
+            deep: true
+        }
+    },
+    async created() {
+        // Initialise the sorts
+        let err = this.validateAllProps();
+        if (err) {
+            console.error(err);
+        }
+        for (let key in this.clonedHeadings) {
+            if (this.clonedHeadings[key].sortable) {
+                this.sortBy[this.clonedHeadings[key].key] = true;
+            }
+        }
+        if (Array.isArray(this.items)) {
+            this.isAPI = false;
+            if (this.pagination) this.pagination.totalItems = this.items.length;
+        }
+
+        if (this.sort && this.sort.name) {
+            this.changeSort(this.sort.name, this.sort.value);
+        } else {
+            if (!this.isAPI) {
+                this.sortedItems = this.items;
+                this.setItems();
+            } else {
+                this.callAPI();
+            }
+        }
+    }
+};
+</script>

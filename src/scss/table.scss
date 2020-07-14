@@ -1,8 +1,283 @@
-table {
-    tr {
-        td {
-            vertical-align: middle !important;
-            padding: 16px 24px !important;
+.table-wrapper {
+    z-index: 1;
+
+    .table-options {
+        margin-bottom: 16px;
+        text-align: right;
+        a {
+            padding: 4px 16px;
+            color: $white;
+            background-color: $brand-primary;
+            margin-right: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    }
+    table {
+        width: 100%;
+        border-spacing: 0 16px !important;
+        position: relative;
+        font-family: $font-family-body;
+
+        thead {
+            tr {
+                th {
+                    text-align: left;
+                    color: $brand-secondary;
+                    padding: 0px;
+                    border: none;
+                    > span {
+                        vertical-align: middle;
+                    }
+                    .sort {
+                        display: inline-flex;
+                        flex-direction: column;
+                        align-content: flex-start;
+                        i {
+                            line-height: 12px;
+                            color: $brand-secondary;
+                            opacity: 0.5;
+                            cursor: pointer;
+                            &:hover {
+                                opacity: 0.8;
+                            }
+                            &.active {
+                                opacity: 1;
+                            }
+                        }
+                    }
+                }
+                &:first-child {
+                    th {
+                        &:first-child {
+                            border-top-left-radius: $border-radius;
+                        }
+                        &:last-child {
+                            border-top-right-radius: $border-radius;
+                        }
+                    }
+                }
+            }
+        }
+
+        tbody {
+            tr {
+                background: $white;
+                border-collapse: separate;
+                border-spacing: 0 1em;
+                border: 1px solid $brand-secondary;
+                box-shadow: 0 2px 4px 0 rgba(46, 91, 255, 0.08);
+
+                td {
+                    padding: 8px 0;
+                    &:first-child {
+                        padding-left: 16px;
+                    }
+                    &:last-child {
+                        padding-right: 16px;
+                    }
+                    border: none;
+                }
+            }
+        }
+
+        .empty {
+            padding: 8px 0 0 16px;
+        }
+
+        .linear-activity {
+            overflow: hidden;
+            width: 100%;
+            height: 1px;
+            background-color: $white;
+            margin: 1px auto;
+            .indeterminate {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                padding: 1px;
+                &:before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    height: 100%;
+                    background-color: $dark-grey;
+                    animation: indeterminate_first 1.5s infinite ease-out;
+                }
+            }
+        }
+
+        @media (max-width: 767px) {
+            &.table-responsive-xs {
+                display: block;
+                width: 100%;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            &.table-responsive-sm {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            &.table-responsive-md {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        &.table-responsive {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+
+    .pagination {
+        float: right;
+        margin: 16px;
+        p {
+            text-align: right;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+            li {
+                cursor: pointer;
+                text-align: center;
+                display: inline-block;
+                margin-right: 4px;
+                margin-bottom: 4px;
+                width: 32px;
+                height: 32px;
+                background-color: $white;
+                color: $brand-primary;
+                border: 1px solid $lighter-grey;
+                border-radius: $border-radius;
+                span {
+                    line-height: 32px;
+                }
+                &.active {
+                    color: $white;
+                    background-color: $brand-primary;
+                }
+            }
+        }
+    }
+    .arrange {
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        &__overlay {
+            position: absolute;
+            opacity: 0.4;
+            background-color: black;
+            z-index: 1;
+            margin: 0;
+            padding: 0;
+            width: inherit;
+            height: inherit;
+        }
+        &__box {
+            z-index: 2;
+            width: 300px;
+            background-color: $white;
+            border-radius: $border-radius;
+            &__title {
+                background-color: $brand-primary;
+                color: $white;
+                padding: 16px;
+                margin: 0;
+                border-top-right-radius: $border-radius;
+                border-top-left-radius: $border-radius;
+            }
+            &__body {
+                padding: 16px;
+                &__option {
+                    display: block;
+                    width: 100%;
+                    margin-bottom: 16px;
+                    &__name {
+                        display: inline-block;
+                        color: $light-grey;
+                        width: 70%;
+                    }
+                    &__value {
+                        width: 28%;
+                        display: inline-block;
+                        text-align: right;
+                    }
+                    .checkbox {
+                        display: block;
+                        position: relative;
+                        padding-left: 35px;
+                        margin-bottom: 12px;
+                        cursor: pointer;
+                        font-size: 22px;
+                        user-select: none;
+                    }
+                    .checkbox input {
+                        position: absolute;
+                        opacity: 0;
+                        cursor: pointer;
+                        height: 0;
+                        width: 0;
+                    }
+                    .checkmark {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        height: 25px;
+                        width: 25px;
+                        background-color: #eee;
+                    }
+                    .checkbox input:checked ~ .checkmark {
+                        background-color: #eee;
+                    }
+                    .checkmark:after {
+                        content: '';
+                        position: absolute;
+                        display: none;
+                    }
+                    .checkbox input:checked ~ .checkmark:after {
+                        display: block;
+                    }
+                    .checkbox .checkmark:after {
+                        right: 9px;
+                        top: 5px;
+                        width: 5px;
+                        height: 10px;
+                        border: solid $brand-primary;
+                        border-width: 0 3px 3px 0;
+                        transform: rotate(45deg);
+                    }
+                }
+                .inline-block {
+                    display: inline-block;
+                }
+            }
+        }
+    }
+    @keyframes indeterminate_first {
+        0% {
+            left: 0%;
+            width: 10%;
+        }
+        100% {
+            left: 90%;
+            width: 10%;
         }
     }
 }

@@ -2,13 +2,13 @@
     <footer>
         <div class="container-fluid">
             <div class="row">
-                <div class="col footer-content d-flex flex-column flex-sm-row justify-content-between align-items-center">
+                <div class="col footer-content d-flex flex-column flex-md-row justify-content-between align-items-start align-items-lg-center">
                     <div class="logo">
                         <router-link tag="a" to="/">
                             <img src="@/assets/images/new_logo_dark.png" alt="" />
                         </router-link>
                     </div>
-                    <div class="footer-nav d-flex flex-column flex-sm-row justify-content-between">
+                    <div class="footer-nav d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-md-left">
                         <div>
                             <router-link tag="a" to="/#how-it-works">How It Works</router-link>
                         </div>
@@ -45,6 +45,22 @@ export default {
     .footer-nav {
         a {
             padding: 16px;
+        }
+
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            margin-left: -240px;
+        }
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            margin-left: 0px;
+        }
+
+        /* iPad Pro Portrait */
+        @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            margin-left: 0px;
+        }
+        @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+            margin-left: -240px !important;
         }
     }
 
@@ -107,7 +123,7 @@ footer {
     }
     /* Mobile */
     @media (max-width: 767px) {
-        padding: 16px 0;
+        padding: 8px 0;
         ul.menu {
             justify-content: flex-start;
             li {

@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showVideo" size="xl" centered hide-header hide-footer no-close-on-esc no-close-on-backdrop id="video-modal">
+    <b-modal v-model="showVideo" size="lg" centered hide-header hide-footer no-close-on-esc no-close-on-backdrop id="video-modal">
         <div class="video-wrapper">
             <video controls :src="videoUrl" autoplay="true"></video>
             <i class="material-icons close-video" @click="close">clear</i>
@@ -13,7 +13,7 @@ export default {
     props: {
         showVideo: {
             type: Boolean,
-            required: true,
+            required: true
         },
         videoUrl: {
             type: String,
@@ -21,15 +21,13 @@ export default {
         }
     },
     data() {
-        return {
-
-        };
+        return {};
     },
     methods: {
         close() {
             this.$emit('close', true);
         }
-    },
+    }
 };
 </script>
 
@@ -50,7 +48,7 @@ export default {
     border-radius: 6px;
     video {
         width: 100%;
-        height: 650px;
+        padding: 24px 0;
         object-fit: contain;
         cursor: pointer;
         -webkit-appearance: none;

@@ -1,39 +1,26 @@
 <template>
     <div class="book-ads">
-        <div class="row">
-            <div class="col d-flex justify-content-sm-between justify-content-md-between flex-md-row flex-column">
-                <div class="form-group d-flex flex-md-row flex-sm-column section-one">
-                    <div class="">
-                        <label for="" class="text-white">Broadcast location</label>
-                        <select class="form-control" v-model="broadcastLocation" @change="loadSecondsbyChannel">
-                            <option disabled selected hidden value="">Select Broadcast Location</option>
-                            <option :value="channel._id" v-for="channel in channels" :key="channel._id" :disabled="channel.Status !== 'LIVE'">{{ channel.Name + (channel.Status !== 'LIVE' ? ' (Coming Soon)' : '') }}</option>
-                        </select>
-                    </div>
+        <div class="row mt-n8">
+            <div class="col-md-4 col-lg-6 booking-option booking-location">
+                <label for class="text-white mt8">Broadcast location</label>
+                <select class="form-control" v-model="broadcastLocation" @change="loadLowestPrices">
+                    <option style="text-color: #ccc" class="placeholder" selected hidden value>Select Broadcast Location</option>
+                    <option :value="channel._id" v-for="channel in channels" :key="channel._id" :disabled="channel.Status !== 'LIVE'">{{ channel.Name + (channel.Status !== 'LIVE' ? ' (Coming Soon)' : '') }}</option>
+                </select>
+            </div>
 
-                    <div class="second-el">
-                        <label for="" class="text-white">Ad Length</label>
-                        <select :disabled="disableAdLength" class="form-control" v-model="adLength" @change="loadScheduleAvailability">
-                            <option disabled selected hidden value="">Select Ad Length</option>
-                            <option v-for="(sec, key) in seconds" :key="key" :value="sec">{{ sec }} Seconds</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="col-md-3 col-lg-4 booking-option">
+                <label for class="text-white mt8">Select days</label>
+                <WeekDays :value="daysSelected"></WeekDays>
+            </div>
 
-                <div class="form-group d-flex flex-column flex-md-row justify-content-between align-items-sm-end section-2">
-                    <div class="">
-                        <label for="" class="text-white">Start Date</label>
-                        <flat-pickr v-model="startDate" :config="config" class="form-control datepicker no-border" placeholder="Select starting date" :disabled="!broadcastLocation || !adLength" ref="calendar"></flat-pickr>
-                    </div>
-                    <div class="second-el cta">
-                        <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Go!</button>
-                    </div>
-                </div>
+            <div class="col-md-2 col-lg-2 booking-option book-now-button">
+                <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Go!</button>
             </div>
         </div>
-        <div class="ad-views d-none d-sm-block" v-if="broadcastLocation && adLength && getExpectedAdViews()">
-            <img src="@/assets/images/eye.svg" class="mr8" alt="" />Estimated Views
-            <span>{{ getExpectedAdViews() | formatValue }}</span>
+        <div class="ad-views d-flex align-items-center justify-content-center" v-if="broadcastLocation && lowest">
+            <i class="material-icons">local_offer</i>
+            <span class="t-l">Prices as low as {{ lowest | currency }}</span>
         </div>
     </div>
 </template>
@@ -42,11 +29,13 @@
 import instance from '@/api';
 import flatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
+import WeekDays from '@/e9_components/components/WeekDays';
 
 export default {
     name: 'BookAd',
     components: {
-        flatPickr
+        flatPickr,
+        WeekDays
     },
     data() {
         return {
@@ -57,16 +46,11 @@ export default {
                 minDate: new Date(new Date().setDate(new Date().getDate() + 7)),
                 monthSelectorType: 'static',
                 yearSelectorType: 'static',
-                showNonCurrentDates: false,
-                onMonthChange: () => {
-                    this.sDate = new this.moment()
-                        .year(this.$refs.calendar.fp.currentYear)
-                        .month(this.$refs.calendar.fp.currentMonth)
-                        .date(1);
-                    this.loadScheduleAvailability();
-                },
+
                 disable: []
             },
+            lowest: '',
+            daysSelected: [],
             dateValidations: [],
             channels: [],
             seconds: [],
@@ -83,10 +67,7 @@ export default {
                 {
                     name: 'BookingFlow',
                     query: {
-                        channel: this.broadcastLocation,
-                        seconds: this.adLength,
-                        startdate: this.moment(this.startDate, 'DD/MM/YYYY').format('YYYY-MM-DD')
-                        // startdate: this.startDate.replace(/\//g, '-')
+                        channel: this.broadcastLocation
                     }
                 },
                 () => {}
@@ -95,6 +76,7 @@ export default {
         async loadScheduleAvailability() {
             this._switchShimmer(true);
             try {
+                this.adLength = '30';
                 let result = await instance.get('/api/channel/availability?channel=' + this.broadcastLocation + '&seconds=' + this.adLength + '&startdate=' + this.sDate.format('YYYY-MM-DD') + '&enddate=' + this.sDate.endOf('month').format('YYYY-MM-DD'));
                 let totalActiveSchedules = result.data.totalActiveSchedules;
                 let disableDates = [new Date()];
@@ -138,6 +120,19 @@ export default {
                 console.error(err);
             }
         },
+        async loadLowestPrices() {
+            try {
+                let result = await instance.get('/api/channel/lowest?channel=' + this.broadcastLocation);
+                this.lowest = result.data;
+            } catch (err) {
+                this.$swal({
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
+                });
+                console.error(err);
+            }
+        },
         getMaximumViewCount() {
             let channel = this.channels.find(channel => channel._id === this.broadcastLocation);
             if (channel.Viewerships && channel.Viewerships[0]) {
@@ -156,10 +151,10 @@ export default {
             return channel.ExpectedAdViews || false;
         },
         _switchShimmer(isAppend) {
-            let str = '<div class=\'shimmer-item\'>';
-            str += '<div class=\'animated-background calendar-box-title\'></div>';
+            let str = "<div class='shimmer-item'>";
+            str += "<div class='animated-background calendar-box-title'></div>";
             for (let i = 0; i < 5; i++) {
-                str += '<div>' + '<div class=\'animated-background calendar-box\'></div>' + '<div class=\'animated-background calendar-box\'></div>' + '<div class=\'animated-background calendar-box\'></div>' + '<div class=\'animated-background calendar-box\'></div>' + '<div class=\'animated-background calendar-box\'></div>' + '<div class=\'animated-background calendar-box\'></div>' + '<div class=\'animated-background calendar-box\'></div>' + '</div>';
+                str += '<div>' + "<div class='animated-background calendar-box'></div>" + "<div class='animated-background calendar-box'></div>" + "<div class='animated-background calendar-box'></div>" + "<div class='animated-background calendar-box'></div>" + "<div class='animated-background calendar-box'></div>" + "<div class='animated-background calendar-box'></div>" + "<div class='animated-background calendar-box'></div>" + '</div>';
             }
             str += '</div></div>';
 
@@ -169,7 +164,7 @@ export default {
     },
     computed: {
         isProceedable() {
-            return !this.broadcastLocation || !this.adLength || !this.startDate || this.moment(this.startDate, 'DD/MM/YYYY') < this.moment();
+            return !this.broadcastLocation || !this.daysSelected.length > 0;
         }
     },
     async created() {
@@ -192,6 +187,86 @@ export default {
 .book-ads {
     color: #fff !important;
     position: relative;
+    margin-top: -8px;
+
+    .booking-location {
+        @media (max-width: 767px) {
+            margin-top: -6px !important;
+        }
+    }
+
+    .booking-option {
+        select {
+            font-size: 14px;
+            background-image: url('../../../assets/images/select.png');
+            background-color: white;
+            background-size: 18px;
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+
+            /* iPad Landscape */
+            @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+                font-size: 13px;
+                background-size: 12px;
+                background-position: right 12px center;
+            }
+            /* iPad Landscape */
+            @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+                font-size: 13px;
+                background-size: 12px;
+                background-position: right 12px center;
+            }
+        }
+
+        /* iPad Landscape */
+        @media (max-width: 767px) {
+            margin-top: 8px;
+        }
+
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            padding-right: 0px;
+        }
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            padding-right: 0px;
+        }
+    }
+
+    .book-now-button {
+        margin-top: 40px;
+        @media (max-width: 767px) {
+            margin-top: 24px;
+        }
+
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            padding-right: 16px;
+        }
+
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            padding-right: 16px;
+        }
+    }
+
+    .form-control {
+        height: 48px;
+        border: none;
+
+        &:disabled {
+            background-color: #f9f9f9 !important;
+        }
+
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            font-size: 13px;
+        }
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            font-size: 13px;
+        }
+    }
 
     .plan-type {
         margin-bottom: 16px;
@@ -199,10 +274,13 @@ export default {
 
     .datepicker {
         background-color: #fff;
+        height: 48px;
 
-        @media (max-width: 767px) {
-            height: 32px !important;
-        }
+        background-image: url('../../../assets/images/datepicker.svg');
+        background-color: white;
+        background-size: 18px;
+        background-repeat: no-repeat;
+        background-position: right 18px center;
     }
 
     .action {
@@ -230,9 +308,14 @@ export default {
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
         padding: 12px;
-        margin: 40px auto -40px;
+        margin: 40px auto -32px;
         line-height: 16px;
         font-weight: 100;
+
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            margin: 18px auto -24px;
+        }
 
         img {
             margin-bottom: 6px;
@@ -316,10 +399,13 @@ export default {
         }
     }
 
+    /* iPhone x Landscape */
+    @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+        padding: 0px !important;
+    }
+
     /* iPad Landscape */
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-        padding: 40px 0;
-
         .form-group {
             width: 240px;
         }
@@ -331,8 +417,6 @@ export default {
 
     /* iPad Pro Landscape */
     @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-        padding: 40px 24px;
-
         .form-group {
             width: 240px;
         }

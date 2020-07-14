@@ -1,42 +1,55 @@
 .btn {
-	@include border-radius(6px);
-	cursor: pointer;
-	border: none;
-	height: 48px;
-	font-family: $font-family-heading;
-	&.btn-white {
-		background: $white !important;
-		color: $brand-primary !important;
-		&.btn-bordered {
-			background: transparent !important;
-			color: $white !important;
-			border: 2px solid $white;
-		}
-	}
-	&.btn-primary {
-		background: $brand-primary !important;
-		color: $white;
-		border: none;
-		min-height: 42px;
-		&.btn-bordered {
-			background: transparent !important;
-			color: $brand-primary !important;
-			border: 2px solid $brand-primary;
-		}
-	}
-	&.btn-full {
-		width: 100%;
-	}
-	&.btn-link {
-		color: $brand-primary;
-		text-decoration: none;
-	}
-	&.btn-sm {
-		height: 32px;
-		font-size: 16px;
-		padding: 3px 14px;
-	}
-	&:disabled {
-		cursor: not-allowed;
-	}
+    @include border-radius(6px);
+    cursor: pointer;
+    border: none;
+    height: 48px;
+    font-family: $font-family-heading;
+
+    &.btn-white {
+        background: $white !important;
+        color: $brand-primary !important;
+        &.btn-bordered {
+            background: transparent !important;
+            color: $white !important;
+            border: 2px solid $white;
+        }
+    }
+    &.btn-primary {
+        background: $brand-primary !important;
+        color: $white;
+        border: none;
+        min-height: 42px;
+        &.btn-bordered {
+            background: transparent !important;
+            color: $brand-primary !important;
+            border: 2px solid $brand-primary;
+        }
+    }
+
+    &.btn-primary-small {
+        background: $brand-primary !important;
+        color: $white;
+        border: none;
+        &.btn-bordered {
+            background: transparent !important;
+            color: $brand-primary !important;
+            border: 2px solid $brand-primary;
+        }
+    }
+
+    &.btn-full {
+        width: 100%;
+    }
+    &.btn-link {
+        color: $brand-primary;
+        text-decoration: none;
+    }
+    &.btn-sm {
+        height: 32px;
+        font-size: 16px;
+        padding: 3px 14px;
+    }
+    &:disabled {
+        cursor: not-allowed;
+    }
 }

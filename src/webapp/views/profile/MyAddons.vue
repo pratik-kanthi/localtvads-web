@@ -1,19 +1,39 @@
 <template>
-    <section class="bg--grey myaddons">
+    <section class="bg--grey myaddons pt24">
         <LoaderModal :showloader="isLoading" message="Please wait while we fetch the data..."></LoaderModal>
         <div class="container">
-            <h3 class="section-title-2 mb24">My Addons</h3>
+            <h3 class="section-title-2 mb24 mt-md-24">My Addons</h3>
             <div class="addons-wrapper">
                 <div v-if="!isLoading && addons.length === 0" class="no-data">
                     <p class="lead">No addon has been added</p>
                 </div>
-                <div class="addons-table" v-else>
+                <div class="addons-table d-none d-md-block" v-else>
                     <b-table :items="addons" :fields="fields" :per-page="perPage" :current-page="currentPage" :sort-by.sync="sortBy" :sort-desc="true" responsive id="addons-table">
                         <template v-slot:cell(ClientId)="data">
                             <button class="btn btn-sm btn-link pl0 pr0" @click="goToContentUpload(data.value)">View Details</button>
                         </template>
                     </b-table>
                     <b-pagination v-model="currentPage" :total-rows="addons.length" :per-page="perPage" first-text="First" prev-text="Prev" next-text="Next" last-text="Last" aria-controls="addons-table" align="right" class="pt0 pb16 pr16"></b-pagination>
+                </div>
+
+                <div class="d-block d-md-none" v-for="addon in addons">
+                    <b-card :title="addon.Name" class="mb-2">
+                        <b-card-text>
+                            <div class="d-flex flex-row justify-content-between ">
+                                <div>
+                                    <div>Date Booked:</div>
+                                    <div class="">
+                                        <span class="bold">{{ addon.Date }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center mt16">
+                                <div>
+                                    <button class="btn btn-sm btn-link pl0 pr0" @click="goToContentUpload(addon.value)">View Details</button>
+                                </div>
+                            </div>
+                        </b-card-text>
+                    </b-card>
                 </div>
             </div>
         </div>
@@ -28,17 +48,21 @@ export default {
         return {
             isLoading: false,
             sortBy: 'Date',
-            fields: [{
-                key: 'Date',
-                sortable: false
-            }, {
-                key: 'Name',
-                sortable: false
-            }, {
-                key: 'ClientId',
-                label: 'Action',
-                sortable: false
-            }],
+            fields: [
+                {
+                    key: 'Date',
+                    sortable: false
+                },
+                {
+                    key: 'Name',
+                    sortable: false
+                },
+                {
+                    key: 'ClientId',
+                    label: 'Action',
+                    sortable: false
+                }
+            ],
             addons: [],
             perPage: 15,
             currentPage: 1
@@ -59,7 +83,7 @@ export default {
         this.isLoading = true;
         try {
             let result = await instance.get('api/serviceaddons/client/all?client=' + this.getUser().Owner._id);
-            this.addons = result.data.map((item) => {
+            this.addons = result.data.map(item => {
                 return {
                     Date: this.moment(item.DateTime).format('DD/MM/YYYY'),
                     Name: item.ServiceAddOn.Name + ' ' + item.ServiceAddOn.Description,
@@ -90,6 +114,11 @@ export default {
         .no-data {
             padding: 40px;
         }
+
+        .card-title {
+            font-size: 16px;
+        }
+
         .addons-table {
             table {
                 border-collapse: collapse;

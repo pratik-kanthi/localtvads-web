@@ -6,9 +6,9 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="booking-details">
-                            <img class="" src="@/assets/images/logo-dark.svg" alt="">
+                            <img class="" src="@/assets/images/new_logo_dark.png" alt="" />
                             <h6 class="t-l medium">Booking Receipt</h6>
-                            <hr class="mb24">
+                            <hr class="mb24" />
                             <div class="content">
                                 <h4 class="section-subtitle mb24 lh24 addon-title">
                                     <span class="brand-primary" v-text="this.$parent.serviceAddOn.Name + ' '"></span>
@@ -44,7 +44,8 @@
                                             </i>
                                             <div v-show="taxInfo" class="tooltip-info">
                                                 <div v-for="tax in this.$parent.taxes" :key="tax.Name">
-                                                    <div class="name">{{ tax.Name }}
+                                                    <div class="name">
+                                                        {{ tax.Name }}
                                                         <span>({{ tax.Description }})</span>
                                                     </div>
                                                     <div class="value text-right" v-if="tax.Type === 'PERCENTAGE'">{{ tax.Value }}%</div>
@@ -62,7 +63,7 @@
                                         <h5>Total Amount</h5>
                                     </div>
                                     <div class="col-6 col-sm-6 text-right">
-                                        <h5 class="amount pull-right"> {{ $parent.serviceAddOn.TotalAmount | currency }}</h5>
+                                        <h5 class="amount pull-right">{{ $parent.serviceAddOn.TotalAmount | currency }}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -78,16 +79,16 @@
                         <div class="cards-wrapper">
                             <div class="saved-cards" v-if="savedCards.length > 0">
                                 <div class="cards">
-                                    <div class="card-title" @click="togglePaymentOptions('SavedCards')" :class="{'active':activeToggle === 'SavedCards'}">
+                                    <div class="card-title" @click="togglePaymentOptions('SavedCards')" :class="{ active: activeToggle === 'SavedCards' }">
                                         <div class="radio-btn-dot mr8">
-                                            <input type="radio" v-model="activeToggle" value="SavedCards">
+                                            <input type="radio" v-model="activeToggle" value="SavedCards" />
                                             <label></label>
                                         </div>
                                         <span>Your saved cards</span>
                                     </div>
-                                    <div v-for="(card,key) in savedCards" :key="key" class="card-info" :class="{'active': existingCard === card._id}" @click="selectExistingCard(card._id)">
+                                    <div v-for="(card, key) in savedCards" :key="key" class="card-info" :class="{ active: existingCard === card._id }" @click="selectExistingCard(card._id)">
                                         <div class="radio-btn-tick mr8">
-                                            <input type="radio" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'">
+                                            <input type="radio" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'" />
                                             <label></label>
                                         </div>
                                         <img :src="getImageUrl(card.Card.Vendor)" alt />
@@ -97,9 +98,9 @@
                             </div>
                             <div class="new-card">
                                 <form ref="form" class="p0">
-                                    <div class="card-title" @click="togglePaymentOptions('NewCard')" :class="{'active':activeToggle === 'NewCard'}">
+                                    <div class="card-title" @click="togglePaymentOptions('NewCard')" :class="{ active: activeToggle === 'NewCard' }">
                                         <div class="radio-btn-dot mr8">
-                                            <input type="radio" v-model="activeToggle" value="NewCard">
+                                            <input type="radio" v-model="activeToggle" value="NewCard" />
                                             <label></label>
                                         </div>
                                         <span>New credit and debit card</span>
@@ -216,13 +217,15 @@ export default {
                     } else {
                         this.$parent.currentStage = Review;
                     }
-                    this.$router.push({
-                        name: 'Addons',
-                        query: {
-                            clientaddon: result.data._id
-                        }
-                    }, () => {
-                    });
+                    this.$router.push(
+                        {
+                            name: 'Addons',
+                            query: {
+                                clientaddon: result.data._id
+                            }
+                        },
+                        () => {}
+                    );
                 });
             } catch (err) {
                 this.paymentLoading = false;
@@ -256,109 +259,253 @@ export default {
             this.getCards();
         }
         this.loadCardJS();
-    },
+    }
 };
 </script>
 
 <style lang="scss" scoped>
-    .payment-wrapper {
-        padding: 24px 64px;
+.payment-wrapper {
+    padding: 24px 64px;
 
-        .booking-details {
-            height: 100%;
-            padding: 24px;
-            position: relative;
-            background-color: $white;
-            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    .booking-details {
+        height: 100%;
+        padding: 24px;
+        position: relative;
+        background-color: $white;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 
-            &:after {
-                background: linear-gradient(-45deg, #ffffff 16px, transparent 0) linear-gradient(45deg, #ffffff 16px, transparent 0) repeat-x left bottom;
-                background-size: 32px 32px;
-                content: ' ';
-                display: block;
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 32px;
+        &:after {
+            background: linear-gradient(-45deg, #ffffff 16px, transparent 0) linear-gradient(45deg, #ffffff 16px, transparent 0) repeat-x left bottom;
+            background-size: 32px 32px;
+            content: ' ';
+            display: block;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 32px;
+        }
+
+        img {
+            display: block;
+            max-width: 120px;
+            margin: 0 auto 32px;
+        }
+
+        .content {
+            margin-bottom: 32px;
+
+            .addon-title {
+                .desc {
+                    text-transform: lowercase;
+                }
             }
 
-            img {
-                display: block;
-                max-width: 120px;
-                margin: 0 auto 32px;
-            }
+            .booking-items {
+                margin-bottom: 24px;
 
-            .content {
-                margin-bottom: 32px;
-
-                .addon-title {
-                    .desc {
-                        text-transform: lowercase;
-                    }
+                label {
+                    font-size: 14px !important;
+                    margin-bottom: 8px;
+                    color: #acacac;
                 }
 
-                .booking-items {
-                    margin-bottom: 24px;
+                ul.benefits {
+                    @include list-unstyled();
 
-                    label {
-                        font-size: 14px !important;
+                    li {
+                        font-size: 16px;
+                        font-weight: 500;
                         margin-bottom: 8px;
-                        color: #acacac;
-                    }
+                        padding-left: 24px;
+                        font-family: $font-family-heading;
+                        position: relative;
 
-                    ul.benefits {
-                        @include list-unstyled();
-
-                        li {
-                            font-size: 16px;
-                            font-weight: 500;
-                            margin-bottom: 8px;
-                            padding-left: 24px;
-                            font-family: $font-family-heading;
-                            position: relative;
-
-                            &:before {
-                                content: '';
-                                background-image: url('../../../assets/images/tick.svg');
-                                height: 16px;
-                                width: 16px;
-                                left: 0;
-                                top: 6px;
-                                background-size: cover;
-                                position: absolute;
-                                background-repeat: no-repeat;
-                            }
+                        &:before {
+                            content: '';
+                            background-image: url('../../../assets/images/tick.svg');
+                            height: 16px;
+                            width: 16px;
+                            left: 0;
+                            top: 6px;
+                            background-size: cover;
+                            position: absolute;
+                            background-repeat: no-repeat;
                         }
                     }
                 }
             }
+        }
 
-            .dashed-line {
+        .dashed-line {
+            position: relative;
+            height: 1px;
+
+            .line {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image: linear-gradient(to right, #223049 50%, transparent 50%);
+                background-size: 32px 100%;
+            }
+        }
+
+        .total {
+            .taxes {
                 position: relative;
-                height: 1px;
 
-                .line {
+                i {
+                    position: relative;
+                    top: 4px;
+                    left: 4px;
+                    font-size: 18px;
+                    color: $brand-primary;
+                    cursor: pointer;
+                }
+
+                .tooltip-info {
+                    width: 250px;
                     position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background-image: linear-gradient(to right,
-                            #223049 50%,
-                            transparent 50%);
-                    background-size: 32px 100%;
+                    left: 64px;
+                    color: $base;
+                    bottom: 6px;
+                    border-radius: 6px;
+                    background: #fff;
+                    padding: 8px 12px;
+                    box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
+                    font-size: 12px;
+
+                    .name {
+                        display: inline-block;
+                        width: 80%;
+                    }
+
+                    .value {
+                        display: inline-block;
+                        width: 20%;
+                    }
                 }
             }
 
-            .total {
-                .taxes {
+            h5 {
+                font-weight: 500;
+                line-height: 32px;
+
+                .amount {
+                    text-align: right !important;
+                }
+            }
+        }
+    }
+
+    .cards-wrapper {
+        background-color: $white;
+        border-radius: 8px;
+        padding: 24px;
+        height: 100%;
+        border: solid 1.4px #cecece;
+
+        .saved-cards {
+            border: 1px solid #4a90e2;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 8px;
+
+            .cards {
+                max-height: 158px;
+                overflow-y: auto;
+                overflow-x: hidden;
+
+                input[type='radio'] {
+                    margin-left: 1px;
+                }
+
+                .card-title {
+                    margin-bottom: 20px;
+                    cursor: pointer;
+
+                    .radio-btn-dot {
+                        top: 2px;
+                    }
+
+                    span {
+                        font-family: $font-family-heading;
+                        font-size: 16px;
+                        font-weight: 500;
+                        color: rgba(0, 0, 0, 0.87);
+                    }
+                }
+
+                .card-info {
+                    margin-bottom: 24px;
+                    opacity: 0.5;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    z-index: 100;
+
+                    .radio-btn-tick {
+                        top: 4px;
+                    }
+
+                    span {
+                        letter-spacing: 2px;
+                    }
+
+                    img {
+                        width: 56px;
+                        margin-right: 16px;
+                    }
+
+                    &.active {
+                        opacity: 1;
+
+                        span {
+                            font-weight: 600;
+                        }
+                    }
+                }
+            }
+        }
+
+        .new-card {
+            border: 1px solid #4a90e2;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+
+            form {
+                padding: 16px 0;
+
+                .card-title {
+                    margin-bottom: 20px;
+                    cursor: pointer;
+
+                    .radio-btn-dot {
+                        top: 2px;
+                    }
+
+                    span {
+                        font-family: $font-family-heading;
+                        font-size: 16px;
+                        font-weight: 500;
+                        color: rgba(0, 0, 0, 0.87);
+                    }
+                }
+
+                label {
+                    font-size: 14px;
+                    font-weight: 300;
+                }
+
+                .consents {
                     position: relative;
 
                     i {
                         position: relative;
-                        top: 4px;
-                        left: 4px;
+                        top: 3px;
+                        left: 6px;
                         font-size: 18px;
                         color: $brand-primary;
                         cursor: pointer;
@@ -367,268 +514,63 @@ export default {
                     .tooltip-info {
                         width: 250px;
                         position: absolute;
-                        left: 64px;
-                        color: $base;
-                        bottom: 6px;
+                        left: 126px;
+                        top: -80px;
                         border-radius: 6px;
                         background: #fff;
                         padding: 8px 12px;
                         box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
-                        font-size: 12px;
-
-                        .name {
-                            display: inline-block;
-                            width: 80%;
-                        }
-
-                        .value {
-                            display: inline-block;
-                            width: 20%;
-                        }
                     }
                 }
+            }
 
-                h5 {
-                    font-weight: 500;
-                    line-height: 32px;
+            .input-card-number {
+                width: 100%;
+                position: relative;
 
-                    .amount {
-                        text-align: right !important;
-                    }
+                img {
+                    position: absolute;
+                    right: 10px;
+                    width: 40px;
+                    top: 36px;
+                    overflow: auto;
+                    z-index: 2 !important;
                 }
+            }
+
+            .hidden-container {
+                display: none;
             }
         }
+    }
 
-        .cards-wrapper {
-            background-color: $white;
-            border-radius: 8px;
-            padding: 24px;
-            height: 100%;
-            border: solid 1.4px #cecece;
+    @media (max-width: 767px) {
+        .payment-wrapper {
+            padding: 24px 0;
 
-            .saved-cards {
-                border: 1px solid #4a90e2;
-                border-radius: 6px;
-                padding: 16px;
-                margin-bottom: 8px;
+            .cards-wrapper {
+                background: transparent;
+                border-radius: 0;
+                padding: 0;
+                border: none;
 
-                .cards {
-                    max-height: 158px;
-                    overflow-y: auto;
-                    overflow-x: hidden;
-
-                    input[type='radio'] {
-                        margin-left: 1px;
+                .saved-cards {
+                    .cards {
+                        max-height: 175px;
                     }
-
-                    .card-title {
-                        margin-bottom: 20px;
-                        cursor: pointer;
-
-                        .radio-btn-dot {
-                            top: 2px;
-                        }
-
-                        span {
-                            font-family: $font-family-heading;
-                            font-size: 16px;
-                            font-weight: 500;
-                            color: rgba(0, 0, 0, 0.87);
-                        }
-                    }
-
-                    .card-info {
-                        margin-bottom: 24px;
-                        opacity: 0.5;
-                        border-radius: 6px;
-                        cursor: pointer;
-                        z-index: 100;
-
-                        .radio-btn-tick {
-                            top: 4px;
-                        }
-
-                        span {
-                            letter-spacing: 2px;
-                        }
-
-                        img {
-                            width: 56px;
-                            margin-right: 16px;
-                        }
-
-                        &.active {
-                            opacity: 1;
-
-                            span {
-                                font-weight: 600;
-                            }
-                        }
-                    }
-                }
-            }
-
-            .new-card {
-                border: 1px solid #4a90e2;
-                padding: 16px;
-                border-radius: 6px;
-                margin-bottom: 8px;
-
-                form {
-                    padding: 16px 0;
-
-                    .card-title {
-                        margin-bottom: 20px;
-                        cursor: pointer;
-
-                        .radio-btn-dot {
-                            top: 2px;
-                        }
-
-                        span {
-                            font-family: $font-family-heading;
-                            font-size: 16px;
-                            font-weight: 500;
-                            color: rgba(0, 0, 0, 0.87);
-                        }
-                    }
-
-                    label {
-                        font-size: 14px;
-                        font-weight: 300;
-                    }
-
-                    .consents {
-                        position: relative;
-
-                        i {
-                            position: relative;
-                            top: 3px;
-                            left: 6px;
-                            font-size: 18px;
-                            color: $brand-primary;
-                            cursor: pointer;
-                        }
-
-                        .tooltip-info {
-                            width: 250px;
-                            position: absolute;
-                            left: 126px;
-                            top: -80px;
-                            border-radius: 6px;
-                            background: #fff;
-                            padding: 8px 12px;
-                            box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
-                        }
-                    }
-                }
-
-                .input-card-number {
-                    width: 100%;
-                    position: relative;
-
-                    img {
-                        position: absolute;
-                        right: 10px;
-                        width: 40px;
-                        top: 36px;
-                        overflow: auto;
-                        z-index: 2 !important;
-                    }
-                }
-
-                .hidden-container {
-                    display: none;
-                }
-            }
-        }
-
-        @media (max-width: 767px) {
-            .payment-wrapper {
-                padding: 24px 0;
-
-                .cards-wrapper {
-                    background: transparent;
-                    border-radius: 0;
-                    padding: 0;
-                    border: none;
-
-                    .saved-cards {
-                        .cards {
-                            max-height: 175px;
-                        }
-                    }
-                }
-            }
-        }
-
-        @media only screen and (max-device-width: 320px) and (-webkit-min-device-pixel-ratio: 2) {
-            .payment-wrapper {
-                .cards-wrapper {
-                    .saved-cards {
-                        .cards {
-                            .card-info {
-                                img {
-                                    width: 40px;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        /* iPad Portrait */
-        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-            .payment-wrapper {
-                .cards-wrapper {
-                    margin-top: 24px;
-                }
-            }
-        }
-
-        /* iPad Landscape */
-        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-            .payment-wrapper {
-                padding: 24px 0;
-            }
-        }
-
-        /* iPad Pro Portrait */
-        @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-            .payment-wrapper {
-                .cards-wrapper {
-                    margin-top: 0;
                 }
             }
         }
     }
 
-    /* iPhone 5/SE Portrait */
-    @media only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+    @media only screen and (max-device-width: 320px) and (-webkit-min-device-pixel-ratio: 2) {
         .payment-wrapper {
-            padding: 0;
-        }
-    }
-
-    /* iPhone 6, 6S, 7 and 8 Portrait */
-    @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
-        .payment-wrapper {
-            padding: 0;
-        }
-    }
-
-    /* iPhone X Portrait */
-    @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
-        .payment-wrapper {
-            padding: 0;
-
             .cards-wrapper {
                 .saved-cards {
                     .cards {
                         .card-info {
                             img {
-                                width: 32px;
+                                width: 40px;
                             }
                         }
                     }
@@ -637,17 +579,76 @@ export default {
         }
     }
 
-    .transaction-message {
-        display: flex;
-        flex-flow: column nowrap;
-        align-items: center;
-        justify-items: center;
-        justify-content: center;
-        font-size: 20px;
-        letter-spacing: 0.75px;
-        background-color: #fff;
-        height: 500px;
-        width: 100%;
-        color: $brand-secondary;
+    /* iPad Portrait */
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+        .payment-wrapper {
+            .cards-wrapper {
+                margin-top: 24px;
+            }
+        }
     }
+
+    /* iPad Landscape */
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+        .payment-wrapper {
+            padding: 24px 0;
+        }
+    }
+
+    /* iPad Pro Portrait */
+    @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+        .payment-wrapper {
+            .cards-wrapper {
+                margin-top: 0;
+            }
+        }
+    }
+}
+
+/* iPhone 5/SE Portrait */
+@media only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+    .payment-wrapper {
+        padding: 0;
+    }
+}
+
+/* iPhone 6, 6S, 7 and 8 Portrait */
+@media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+    .payment-wrapper {
+        padding: 0;
+    }
+}
+
+/* iPhone X Portrait */
+@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
+    .payment-wrapper {
+        padding: 0;
+
+        .cards-wrapper {
+            .saved-cards {
+                .cards {
+                    .card-info {
+                        img {
+                            width: 32px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.transaction-message {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    font-size: 20px;
+    letter-spacing: 0.75px;
+    background-color: #fff;
+    height: 500px;
+    width: 100%;
+    color: $brand-secondary;
+}
 </style>

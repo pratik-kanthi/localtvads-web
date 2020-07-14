@@ -3,79 +3,76 @@
         <div v-if="showNewCard">
             <NewCardModal :show-new-card="showNewCard" @close="close"></NewCardModal>
         </div>
-        <div class="container">
+        <div class="container pm-24">
             <div class="profile-wrapper">
                 <h3 class="section-title-2 brand-secondary medium mb32">My Account</h3>
                 <div class="profile-info mb32">
                     <h4 class="section-subtitle b-b pb16">My Info</h4>
                     <div class="row profile-details">
-                        <div class="col-lg-8">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div v-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl" class="profile-image" :style="{ 'background-image': 'url(' + getProfileImageUrl + ')' }"></div>
-                                    <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="profile-text">{{ $store.state.user.Owner.Title[0] }}</div>
+                        <div class="col-lg-3 mb24">
+                            <div class="d-flex justify-content-center ">
+                                <div v-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl" class="profile-image" :style="{ 'background-image': 'url(' + getProfileImageUrl + ')' }"></div>
+                                <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="profile-text">{{ $store.state.user.Owner.Title[0] }}</div>
+                            </div>
+                            <div class="d-flex justify-content-center ">
+                                <a @click="showProfileImageModal">Change profile picture</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-9 d-flex justify-content-between flex-column-reverse  ">
+                            <div class="w-lg-50 mt-3 mt-lg-0">
+                                <div class="form-group mb16">
+                                    <label class="ml0">Name</label>
+                                    <div v-if="mode === 'VIEW'">
+                                        <div class="bold">{{ getUser().Owner.Title }}</div>
+                                    </div>
+                                    <div v-else>
+                                        <input type="text" class="form-control" v-model="$store.state.user.Owner.Title" />
+                                    </div>
                                 </div>
-                                <div class="col-sm-6 content-column-center">
-                                    <p class="text-right">
-                                        <a @click="showProfileImageModal" class="alert mb0">Change profile picture</a>
-                                    </p>
+
+                                <div class="form-group mb16">
+                                    <label class="ml0">Account Email</label>
+                                    <div v-if="mode === 'VIEW'">
+                                        <div class="bold">{{ getUser().Owner.Email }}</div>
+                                    </div>
+                                    <div v-else>
+                                        <input type="text" :disabled="isSocialAccount" class="form-control" v-model="$store.state.user.Owner.Email" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="ml0">Phone number</label>
+                                    <div v-if="mode === 'VIEW'">
+                                        <div v-if="getUser().Owner.Phone" class="bold">{{ getUser().Owner.Phone }}</div>
+                                        <div v-else>--</div>
+                                    </div>
+                                    <div v-else>
+                                        <vue-tel-input :only-countries="onlyCountries" default-country="gb" :disabled-fetching-country="true" v-model="$store.state.user.Owner.Phone" @input="checkPhoneValid" class="form-control"></vue-tel-input>
+                                    </div>
+                                </div>
+
+                                <div v-if="mode === 'EDIT' && !isSocialAccount">
+                                    <div class="form-group mb16">
+                                        <label class="ml0">Current Password</label>
+                                        <input type="password" class="form-control" v-model="currentPassword" placeholder="Enter current password" />
+                                    </div>
+                                    <div class="form-group mb16">
+                                        <label class="ml0">New Password</label>
+                                        <input type="password" class="form-control" v-model="newPassword" placeholder="Enter new password" />
+                                    </div>
+                                    <p class="mt16 mb16 t-s">Password must contain at least 8 characters with at least 1 capital letter, 1 small letter and 1 number</p>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group mb16">
-                                        <label class="ml0">Name</label>
-                                        <div v-if="mode === 'VIEW'">
-                                            <div class="bold">{{ getUser().Owner.Title }}</div>
-                                        </div>
-                                        <div v-else>
-                                            <input type="text" class="form-control" v-model="$store.state.user.Owner.Title" />
-                                        </div>
-                                    </div>
 
-                                    <div class="form-group mb16">
-                                        <label class="ml0">Account Email</label>
-                                        <div v-if="mode === 'VIEW'">
-                                            <div class="bold">{{ getUser().Owner.Email }}</div>
-                                        </div>
-                                        <div v-else>
-                                            <input type="text" :disabled="isSocialAccount" class="form-control" v-model="$store.state.user.Owner.Email" />
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="ml0">Phone number</label>
-                                        <div v-if="mode === 'VIEW'">
-                                            <div v-if="getUser().Owner.Phone" class="bold">{{ getUser().Owner.Phone }}</div>
-                                            <div v-else>--</div>
-                                        </div>
-                                        <div v-else>
-                                            <vue-tel-input :only-countries="onlyCountries" default-country="gb" :disabled-fetching-country="true" v-model="$store.state.user.Owner.Phone" @input="checkPhoneValid" class="form-control"></vue-tel-input>
-                                        </div>
-                                    </div>
-
-                                    <div v-if="mode === 'EDIT' && !isSocialAccount">
-                                        <div class="form-group mb16">
-                                            <label class="ml0">Current Password</label>
-                                            <input type="password" class="form-control" v-model="currentPassword" placeholder="Enter current password" />
-                                        </div>
-                                        <div class="form-group mb16">
-                                            <label class="ml0">New Password</label>
-                                            <input type="password" class="form-control" v-model="newPassword" placeholder="Enter new password" />
-                                        </div>
-                                        <p class="mt16 mb16 t-s">Password must contain at least 8 characters with at least 1 capital letter, 1 small letter and 1 number</p>
-                                    </div>
+                            <div class="d-flex justify-content-start align-items justify-content-lg-end">
+                                <p v-if="mode === 'VIEW'" class="">
+                                    <a class="brand-primary" @click="openEditMode()">Edit Profile</a>
+                                </p>
+                                <div v-if="mode === 'EDIT'" class="text-right mr16">
+                                    <button class="btn btn-sm btn-primary-small  save" @click="updateProfile" :disabled="isProceedable">Save</button>
                                 </div>
-                                <div class="col-sm-6">
-                                    <p v-if="mode === 'VIEW'" class="text-right">
-                                        <a @click="openEditMode()" class="alert mb0">Edit Profile</a>
-                                    </p>
-                                    <div v-if="mode === 'EDIT'" class="text-right mb16">
-                                        <button class="btn btn-secondary cancel" @click="closeEditMode">Cancel</button>
-                                    </div>
-                                    <div v-if="mode === 'EDIT'" class="text-right">
-                                        <button class="btn btn-primary save" @click="updateProfile" :disabled="isProceedable">Save Changes</button>
-                                    </div>
+                                <div v-if="mode === 'EDIT'" class="text-right">
+                                    <button class="btn btn-sm btn-secondary cancel" @click="closeEditMode">Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -83,12 +80,13 @@
                 </div>
                 <div class="profile-cards">
                     <h4 class="section-subtitle b-b pb16">My Cards</h4>
-                    <div class="row cards-details">
-                        <div class="col-sm-4">
-                            <p>Your saved cards are shown. You need at least one card added to your account to keep your ad plans active.</p>
-                            <button class="btn btn-primary btn-full" @click="openNewCardModal">Add New Card</button>
+                    <div class="row">
+                        <div class="col mt24">
+                            <p>You have added the following cards. You need at least one card added to your account to keep your ad plans active.</p>
                         </div>
-                        <div class="col-sm-8">
+                    </div>
+                    <div class="row cards-details">
+                        <div class="col col-lg-8">
                             <div class="cards-wrapper" v-if="savedCards && savedCards.length > 0">
                                 <div class="row" v-for="(card, key) in savedCards" :key="key">
                                     <div class="col-sm-9 col-9">
@@ -112,6 +110,9 @@
                                 <p class="lead">No card added yet.</p>
                             </div>
                         </div>
+                    </div>
+                    <div class="d-flex justify-content-start">
+                        <button class="btn btn-link btn-icon p0" @click="openNewCardModal"><i class="material-icons align-top">add</i><span class="pl8">Add Card</span></button>
                     </div>
                 </div>
             </div>

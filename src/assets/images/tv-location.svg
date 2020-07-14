@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="108px" height="103px" viewBox="0 0 108 103" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 10</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Home-slider-1-Copy-2" transform="translate(-352.000000, -853.000000)" stroke="#FF6500" stroke-width="5">
+            <g id="OVERVIEW/STEPS" transform="translate(157.000000, 721.000000)">
+                <g id="Group-18" transform="translate(115.000000, 0.000000)">
+                    <g id="Group-21" transform="translate(0.000000, 100.000000)">
+                        <g id="Group-10" transform="translate(82.000000, 35.000000)">
+                            <g id="real-estate-action-building-pin" transform="translate(55.833333, 0.000000)">
+                                <circle id="Oval" cx="23.75" cy="23.75" r="7.91666667"></circle>
+                                <path d="M46.6666667,23.4375 C46.6666667,39.0625 23.3333333,62.5 23.3333333,62.5 C23.3333333,62.5 0,39.0625 0,23.4375 C0,10.4933262 10.4466892,0 23.3333333,0 C36.2199775,0 46.6666667,10.4933262 46.6666667,23.4375 L46.6666667,23.4375 Z" id="Path"></path>
+                            </g>
+                            <g id="modern-tv-flat" transform="translate(0.000000, 24.000000)">
+                                <path d="M79.8333333,46.8824573 C79.8333333,50.4786262 79.8333333,55.2738458 79.8333333,61.2681159 C79.8333333,61.7643718 79.4359232,62.1666667 78.9456929,62.1666667 L1.72097378,62.1666667 C1.2307435,62.1666667 0.833333333,61.7643718 0.833333333,61.2681159 L0.833333333,1.06521739 C0.833333333,0.568961529 1.2307435,0.166666667 1.72097378,0.166666667 L45.8333333,0.166666667" id="Path"></path>
+                                <rect id="Rectangle" x="35.8333333" y="62.1666667" width="10" height="11"></rect>
+                                <line x1="1.83333333" y1="50.4393939" x2="62.5" y2="50.5" id="Path"></line>
+                                <line x1="22.8333333" y1="73.1666667" x2="57.8333333" y2="73.1666667" id="Path"></line>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

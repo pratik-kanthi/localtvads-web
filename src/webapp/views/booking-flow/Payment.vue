@@ -6,11 +6,11 @@
         <div v-if="!paymentLoading">
             <div class="container">
                 <div class="payment-wrapper">
-                    <h3 class="section-title-2 mb24">Payment Method</h3>
-                    <div class="row">
+                    <h3 class="section-title-2 mb24">Payment</h3>
+                    <div class="row mt48">
                         <div class="col-lg-6">
                             <div class="booking-details">
-                                <img class="" src="@/assets/images/logo-dark.svg" alt="" />
+                                <img class src="@/assets/images/logo-dark.svg" alt />
                                 <div class="header">
                                     <h6>Booking Receipt</h6>
                                 </div>
@@ -68,9 +68,7 @@
                                             <p>Subscription Amount</p>
                                         </div>
                                         <div class="col-6 col-sm-6 text-right">
-                                            <p>
-                                                {{ $parent.selectedPlan.baseAmount | currency }}
-                                            </p>
+                                            <p>{{ $parent.selectedPlan.baseAmount | currency }}</p>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -85,9 +83,7 @@
                                         <div class="col-6 col-sm-6">
                                             <div class="taxes">
                                                 <span>Taxes</span>
-                                                <i class="material-icons" @mouseover="showTaxInfo(true)" @mouseout="showTaxInfo(false)">
-                                                    info
-                                                </i>
+                                                <i class="material-icons" @mouseover="showTaxInfo(true)" @mouseout="showTaxInfo(false)">info</i>
                                                 <div v-show="taxInfo" class="tooltip-info">
                                                     <div v-for="tax in this.$parent.selectedPlan.taxes" :key="tax.Name">
                                                         <div class="name">
@@ -184,9 +180,7 @@
                                             </label>
                                             <span class="brand-primary medium">Save Card</span>
                                             <i class="material-icons" v-if="savedCards.length === 0 && $parent.selectedPlan.isRenewal" @mouseover="showInfo(true)" @mouseout="showInfo(false)">info</i>
-                                            <span v-show="tooltip" class="tooltip-info">
-                                                Your current plan is a recurring one and you don't have any saved cards. Saving a card is mandatory in this case.
-                                            </span>
+                                            <span v-show="tooltip" class="tooltip-info">Your current plan is a recurring one and you don't have any saved cards. Saving a card is mandatory in this case.</span>
                                         </div>
                                     </form>
                                 </div>
@@ -208,16 +202,21 @@
                                 <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now</button>
                             </div>
                         </div>
-                        <div v-else class="col-sm-6">
-                            <h5 class="mb8">Please login to continue with your booking.</h5>
+                        <div v-else class="col-sm-6 p24">
+                            <div class="t-xl d-none d-md-block">
+                                Please login to continue with payment
+                            </div>
+                            <div class="t-l mt16 text-center d-block d-md-none">Please login to continue with payment</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="mt16 transaction-message" v-else>
-            <p>Your transaction is being processed...</p>
-            <p class="bold">Please do not click back or refresh</p>
+            <div class="p24 text-center">
+                <p>Your transaction is being processed...</p>
+                <p class="bold">Please do not click back or refresh</p>
+            </div>
         </div>
     </div>
 </template>
@@ -284,6 +283,9 @@ export default {
                     this.taxAmount += (tax.Value * subTotal) / 100;
                 } else this.taxAmount = tax.Value;
             });
+        },
+        showLogin() {
+            this.$store.commit('DIALOG_CHOSEN', 'login');
         },
         openCouponsModal() {
             this.showCoupons = true;
@@ -369,7 +371,6 @@ export default {
     created() {
         window.scrollTo(0, 0);
         if (!this.isLoggedIn()) {
-            this.$store.commit('DIALOG_CHOSEN', 'login');
         } else {
             this.getCards();
         }

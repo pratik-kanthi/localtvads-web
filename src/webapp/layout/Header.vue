@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="nav-bar row">
                 <div class="col-lg-2">
-                    <div class="logo-wrapper">
+                    <div class="logo-wrapper pl48">
                         <router-link tag="a" to="/">
                             <img src="@/assets/images/new_logo.png" alt="logo" class="logo" />
                         </router-link>
@@ -12,19 +12,16 @@
                 <div class="col-lg-8">
                     <ul class="menu" :class="{ 'nav-menu': showMenu }">
                         <li @click="toggleMenu">
-                            <router-link tag="a" to="/#how-it-works">How It Works</router-link>
-                        </li>
-                        <li @click="toggleMenu">
                             <router-link tag="a" to="/#book-now">Book Now</router-link>
                         </li>
                         <li @click="toggleMenu">
-                            <router-link tag="a" to="/#about-us">About</router-link>
+                            <router-link tag="a" to="/#overview">Overview</router-link>
                         </li>
                         <li @click="toggleMenu">
-                            <router-link tag="a" to="/#why-tv">Why LocalTV</router-link>
+                            <router-link tag="a" to="/#how-it-works">How It Works</router-link>
                         </li>
                         <li @click="toggleMenu">
-                            <router-link tag="a" to="/#offers">Offers</router-link>
+                            <router-link tag="a" to="/#create-ad">About Local TV</router-link>
                         </li>
                         <li @click="toggleMenu">
                             <router-link tag="a" to="/#contact">Contact us</router-link>
@@ -39,9 +36,12 @@
                         <li v-if="!isLoggedIn">
                             <a class="btn btn-white btn-sm" @click="chooseAuth('register')">Register</a>
                         </li>
+
                         <li v-if="isLoggedIn" class="profile-wrapper">
                             <a class="profile" @click="toggleProfile(undefined)" v-click-outside="closeProfile">
-                                <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="text">{{ $store.state.user.Owner.Title[0] }}</div>
+                                <div v-if="$store.state.user.Owner && !$store.state.user.Owner.ImageUrl" class="text">
+                                    {{ $store.state.user.Owner.Title[0] }}
+                                </div>
                                 <img v-else-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl" class="picture" :src="getImageUrl" :alt="$store.state.user.Owner.Title" />
                             </a>
                             <ul class="" :class="{ 'profile-menu': showProfile }">
@@ -148,11 +148,20 @@ nav {
 
 .nav-bar {
     min-height: 80px;
-    padding: 0 35px;
+
+    /* iPad Pro Portrait */
+    @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+        padding-right: 32px !important;
+    }
 
     .logo-wrapper {
-        width: 88px;
+        width: 128px;
         line-height: 78px;
+
+        @media (max-width: 990px) {
+            width: 88px;
+            padding-left: 16px !important;
+        }
 
         .logo {
             max-width: 100%;

@@ -2,7 +2,7 @@
     <div>
         <Stepper :steps="steps" :current="currentStep"></Stepper>
         <div>
-            <component :is="currentStage" @advanceToPayment="goToPayment" @advanceToUpload="goToUpload"></component>
+            <component :is="currentStage" @advanceToPayment="goToPayment" @advanceToUpload="goToUpload" @advanceToAddOns="goToAddOns"></component>
         </div>
         <LoaderModal :showloader="isLoading" :message="loaderMessage + '...'"></LoaderModal>
     </div>
@@ -16,6 +16,8 @@ import ChoosePlan from './ChoosePlan';
 import Review from './Review';
 import Payment from './Payment';
 import AdDetails from './AdDetails';
+import ChooseAddons from '../addons/ChooseAddon';
+import AddOnPayment from '../addons/Payment';
 import Stepper from '@/e9_components/components/Stepper';
 
 export default {
@@ -29,28 +31,33 @@ export default {
             currentStep: 1,
             clientAdPlan: null,
             isLoading: false,
-            loaderMessage: 'Please stand by while we fetch data',
+            loaderMessage: 'Fetching available plans',
+            hasAddOn: false,
             selectedPlan: {},
             steps: [
                 {
-                    name: 'Select Ad Slot',
+                    name: 'Create your plan',
                     index: 1
                 },
                 {
-                    name: 'Payment',
+                    name: 'Choose Add On',
                     index: 2
                 },
                 {
-                    name: 'Ad Details',
+                    name: 'Payment',
                     index: 3
                 },
                 {
-                    name: 'Upload Your Ad',
+                    name: 'Ad Details',
                     index: 4
                 },
                 {
-                    name: 'Verification',
+                    name: 'Upload Your Ad',
                     index: 5
+                },
+                {
+                    name: 'Verification',
+                    index: 6
                 }
             ]
         };
@@ -91,9 +98,17 @@ export default {
                 this.currentStage = ChoosePlan;
             }
         },
-        goToPayment() {
+        goToAddOns() {
             this.currentStep = 2;
-            this.currentStage = Payment;
+            this.currentStage = ChooseAddons;
+        },
+        goToPayment() {
+            this.currentStep = 3;
+            if (this.hasAddOn) {
+                this.currentStage = AddOnPayment;
+            } else {
+                this.currentStage = Payment;
+            }
         },
         goToUpload(val) {
             this.currentStep = 4;

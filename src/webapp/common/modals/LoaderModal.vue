@@ -1,8 +1,8 @@
 <template>
     <div class="loader" v-show="showloader">
         <div class="overlay"></div>
-        <div class="content" v-scroll-lock="showloader">
-            <p v-if="message" class="brand-primary bold">{{ message }}</p>
+        <div class="content d-flex flex-column justify-content-center align-items-center" v-scroll-lock="showloader">
+            <img src="@/assets/images/loader.svg" height="120" />
         </div>
     </div>
 </template>
@@ -33,15 +33,13 @@ export default {
     }
     .content {
         min-height: 100vh;
-        padding: 8px;
         border-radius: 6px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
         width: 100%;
+
+        img {
+            z-index: 999;
+        }
         p {
-            margin-top: 16px;
             font-size: 18px;
             z-index: 3;
         }

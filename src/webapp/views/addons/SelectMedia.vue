@@ -1,38 +1,48 @@
 <template>
-    <div class="p32">
-        <p>Choose the images and videos to be included. You can add a new image/video as well. Kindly select at least 1
-            item.</p>
-        <button class="btn btn-primary" :disabled="isNotProceedable" @click="updateResources">Finish & Submit</button>
-        <p class="bold t-l mt16">Total <span class="brand-primary">{{ imagesSelected.length }}</span> image(s) and <span class="brand-primary">{{ videosSelected.length }}</span> video(s) selected.</p>
+    <div class="p32 container">
+        <div class="mt64">
+            <h3 class="brand-secondary">Step 4 : Upload your media</h3>
+            <div class="mt24 t-l">You can now upload the media you'd like us to use in your ad. Our team will use these images and videos to create you final ad. You can edit these resources later on by visiting the "My AddOns" page. If you're ready to upload, click "Finish & Submit"</div>
+
+            <button class="btn mt48 btn-primary" :disabled="isNotProceedable" @click="updateResources">Finish & Submit</button>
+        </div>
+        <p class="bold t-l mt48">
+            Total
+            <span class="brand-primary">{{ imagesSelected.length }}</span> image(s) and <span class="brand-primary">{{ videosSelected.length }}</span> video(s) selected.
+        </p>
         <div class="mt16">
-            <div class="toggle" :class="{'toggle-inactive': !textToggle}">
-                <h3 class="section-title-2 white mb0">Text
-                    <i class="material-icons" @click="toggleText">{{ textToggle ? 'keyboard_arrow_up':
-                        'keyboard_arrow_down' }}</i>
+            <div class="toggle" :class="{ 'toggle-inactive': !textToggle }">
+                <h3 class="section-title-2 white mb0">
+                    Text
+                    <i class="material-icons" @click="toggleText">
+                        {{ textToggle ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
+                    </i>
                 </h3>
             </div>
             <div class="toggle-pane" v-show="textToggle">
                 <div class="form-group">
-                    <label for="" class="control-label"></label>
+                    <label for class="control-label"></label>
                     <textarea class="form-control" v-model="text"></textarea>
                 </div>
             </div>
         </div>
         <div class="mt32">
-            <div class="toggle" :class="{'toggle-inactive': !imageToggle}">
-                <h3 class="section-title-2 white mb0">Images ({{ images.length }})
-                    <i class="material-icons" @click="toggleImage">{{ imageToggle ? 'keyboard_arrow_up':
-                        'keyboard_arrow_down' }}</i>
+            <div class="toggle" :class="{ 'toggle-inactive': !imageToggle }">
+                <h3 class="section-title-2 white mb0">
+                    Images ({{ images.length }})
+                    <i class="material-icons" @click="toggleImage">
+                        {{ imageToggle ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
+                    </i>
                 </h3>
             </div>
             <div class="toggle-pane" v-show="imageToggle">
                 <p v-if="images.length === 0">There are no images uploaded.</p>
                 <button class="btn btn-secondary mb16" @click="addImage">Add Image</button>
-                <ImageUpload v-if="showUploadImageModal" @cancel="cancelImageUploadModal" @close="closeImageUploadModal" :show="true" :config="{...config, api: 'api/clientresource/image'}" :data="{ownerid: getUser().Owner._id}"></ImageUpload>
+                <ImageUpload v-if="showUploadImageModal" @cancel="cancelImageUploadModal" @close="closeImageUploadModal" :show="true" :config="{ ...config, api: 'api/clientresource/image' }" :data="{ ownerid: getUser().Owner._id }"></ImageUpload>
                 <div class="row">
                     <div class="col-sm-4" v-for="(img, key) in images" :key="key">
-                        <div class="image" :style="{'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + img.ResourceUrl + ')'}" @click="selectImage(img)">
-                            <div :class="{'overlay': imagesSelected.indexOf(img._id) > -1}"></div>
+                        <div class="image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + img.ResourceUrl + ')' }" @click="selectImage(img)">
+                            <div :class="{ overlay: imagesSelected.indexOf(img._id) > -1 }"></div>
                             <input :id="img._id" type="checkbox" class="check" v-model="imagesSelected" :value="img._id" :disabled="true" />
                             <label :for="img._id" class="check-label box mb8 mr8">
                                 <span></span>
@@ -44,18 +54,18 @@
             </div>
         </div>
         <div class="mt32">
-            <div class="toggle" :class="{'toggle-inactive': !videoToggle}">
-                <h3 class="section-title-2 white mb0">Videos ({{ videos.length }})
-                    <i class="material-icons" @click="toggleVideo">{{ videoToggle ? 'keyboard_arrow_up':
-                        'keyboard_arrow_down' }}</i>
+            <div class="toggle" :class="{ 'toggle-inactive': !videoToggle }">
+                <h3 class="section-title-2 white mb0">
+                    Videos ({{ videos.length }})
+                    <i class="material-icons" @click="toggleVideo">
+                        {{ videoToggle ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
+                    </i>
                 </h3>
             </div>
             <div class="toggle-pane" v-show="videoToggle">
                 <p v-if="videos.length === 0 && !progress">There are no videos uploaded.</p>
-                <input id="fileUpload" class="hidden" type="file" @change="fileUploaded" accept="video/mp4,video/x-m4v,video/*" ref="fileUpload" />
-                <button class="btn btn-secondary mb8" @click="chooseFile" :disabled="isLoading" v-if="!upload.chosen">
-                    Add Video
-                </button>
+                <input id="fileUpload" class="hidden" type="file" @change="fileUploaded" accept="video/mp4, video/x-m4v, video/*" ref="fileUpload" />
+                <button class="btn btn-secondary mb8" @click="chooseFile" :disabled="isLoading" v-if="!upload.chosen">Add Video</button>
                 <div class="video-wrapper" v-if="progress === 0 && upload.chosen">
                     <div class="mb8">
                         <button class="btn btn-primary mr16" @click="uploadVideo">Upload</button>
@@ -64,7 +74,7 @@
                     <div class="row mt16">
                         <div class="col-sm-6">
                             <video controls class="mb24" height="400">
-                                <source :src="videoUrl" type="video/mp4">
+                                <source :src="videoUrl" type="video/mp4" />
                             </video>
                         </div>
                     </div>
@@ -72,25 +82,26 @@
                 <div class="upload-progress" v-else-if="progress > 0">
                     <div class="details">
                         <div class="pull-left">
-                            <strong class="t-l" v-text="upload.chosen.name"></strong>&nbsp;<span class="text-muted">is uploading...</span>
+                            <strong class="t-l" v-text="upload.chosen.name"></strong>&nbsp;
+                            <span class="text-muted">is upLoading</span>
                         </div>
                         <div class="pull-right">
                             <strong v-text="progress + ' %'"></strong>
                         </div>
-                        <br class="clearfix">
+                        <br class="clearfix" />
                         <div class="loader">
-                            <div class="value" :style="{'width': progress + '%'}"></div>
+                            <div class="value" :style="{ width: progress + '%' }"></div>
                         </div>
-                        <br class="clearfix">
+                        <br class="clearfix" />
                     </div>
                 </div>
                 <div class="row mt16">
                     <div class="col-sm-4" v-for="(video, key) in videos" :key="key">
                         <div class="video black-bg" style="height: 300px">
                             <video :id="video._id" width="100%" height="100%" preload="metadata" @loadedmetadata="forwardVideo(video._id)">
-                                <source :src="getVideoUrl(video)" type="video/webm">
+                                <source :src="getVideoUrl(video)" type="video/webm" />
                             </video>
-                            <img src="@/assets/images/play.png" alt="play">
+                            <img src="@/assets/images/player_button.png" alt="play" />
                             <input :id="video._id" type="checkbox" class="check" v-model="videosSelected" :value="video._id" />
                             <label :for="video._id" class="check-label box mb8 mr8" @click="selectVideo(video)">
                                 <span></span>
@@ -157,8 +168,7 @@ export default {
                     this.videos = [];
 
                     result.data.forEach(resource => {
-                        if (resource.Type === 'IMAGE')
-                            this.images.push(resource);
+                        if (resource.Type === 'IMAGE') this.images.push(resource);
                         else if (resource.Type === 'VIDEO') {
                             this.videos.push(resource);
                         }
@@ -187,17 +197,13 @@ export default {
         },
         selectImage(img) {
             let index = this.imagesSelected.indexOf(img._id);
-            if (index > -1)
-                this.imagesSelected.splice(index, 1);
-            else
-                this.imagesSelected.push(img._id);
+            if (index > -1) this.imagesSelected.splice(index, 1);
+            else this.imagesSelected.push(img._id);
         },
         selectVideo(img) {
             let index = this.videosSelected.indexOf(img._id);
-            if (index > -1)
-                this.videosSelected.splice(index, 1);
-            else
-                this.videosSelected.push(img._id);
+            if (index > -1) this.videosSelected.splice(index, 1);
+            else this.videosSelected.push(img._id);
         },
         toggleText() {
             this.textToggle = !this.textToggle;
@@ -209,17 +215,14 @@ export default {
             this.videoToggle = !this.videoToggle;
         },
         updateResources() {
-
             this.$swal({
-
                 title: 'Are you sure?',
                 text: 'Images and Videos will be sent to the content specialist team',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Confirm',
                 closeOnConfirm: false
-
-            }).then(async (isConfirm) => {
+            }).then(async isConfirm => {
                 if (isConfirm.value) {
                     this.$parent.isLoading = true;
 
@@ -237,8 +240,6 @@ export default {
                             type: 'success'
                         });
                         this.$parent.currentStage = Review;
-
-
                     } catch (err) {
                         this.$parent.isLoading = false;
                         this.$swal({
@@ -264,7 +265,7 @@ export default {
             let start = 0;
             let chunk = this.upload.chosen.slice(start, chunkSize);
             this.sendSocket(chunk, counter, chunkSize, this.$parent.clientServiceAddOn, 'UPLOAD_RESOURCE_CHUNK');
-            this.socket.on('UPLOAD_CHUNK_FINISHED', (data) => {
+            this.socket.on('UPLOAD_CHUNK_FINISHED', data => {
                 this.progress = (((data * 100000) / this.upload.chosen.size) * 100).toFixed(0);
                 ++counter;
                 start = start + chunkSize;
@@ -274,7 +275,7 @@ export default {
                 }
             });
 
-            this.socket.on('UPLOAD_FINISHED', (data) => {
+            this.socket.on('UPLOAD_FINISHED', data => {
                 this.progress = 100;
                 setTimeout(() => {
                     this.$swal({
@@ -310,103 +311,100 @@ export default {
     },
     async created() {
         if (!this.$route.query.clientaddon) {
-            this.$router.push('/', () => { });
+            this.$router.push('/', () => {});
         } else {
             await this.getAllMedia();
             await this.initialiseResources();
-
-
-
         }
     }
 };
 </script>
 
 <style lang="scss" scoped>
-    .toggle {
-        background-color: $brand-primary;
-        padding: 12px 12px 12px 24px;
-        border-top-left-radius: 6px;
-        border-top-right-radius: 6px;
+.toggle {
+    background-color: $brand-primary;
+    padding: 12px 12px 12px 24px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
 
-        &-inactive {
-            border-radius: 6px;
-        }
-
-        i {
-            font-size: 24px;
-            float: right;
-            margin-right: 16px;
-            position: relative;
-            top: 4px;
-            cursor: pointer;
-        }
-    }
-
-    .toggle-pane {
-        border: 3px solid $lighter-grey;
-        padding: 24px;
-        border-top: none;
-    }
-
-    .image {
-        height: 300px;
-        background-size: cover;
+    &-inactive {
         border-radius: 6px;
+    }
+
+    i {
+        font-size: 24px;
+        float: right;
+        margin-right: 16px;
+        position: relative;
+        top: 4px;
         cursor: pointer;
-        position: relative;
-
-        .overlay {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            right: 0;
-            left: 0;
-            background-color: rgba(256, 256, 256, 0.5);
-        }
-
-        &:hover {
-            box-shadow: 0 0 8px 0 rgba(104, 104, 104, 0.98);
-        }
-
-        .check-label {
-            position: absolute;
-            bottom: 8px;
-            right: 4px;
-        }
-
-        .check:disabled+label {
-            opacity: 1 !important;
-        }
     }
+}
 
-    .video {
-        position: relative;
+.toggle-pane {
+    border: 3px solid $lighter-grey;
+    padding: 24px;
+    border-top: none;
+}
+
+.image {
+    height: 300px;
+    background-size: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
         left: 0;
-
-        video {
-            border-radius: 6px;
-        }
-
-        img {
-            position: absolute;
-            height: 40px;
-            width: 40px;
-            margin: auto auto;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-        }
-
-        .check-label {
-            position: absolute;
-            bottom: 16px;
-            right: 4px;
-        }
-
-        .check:disabled+label {
-            opacity: 1 !important;
-        }
+        background-color: rgba(256, 256, 256, 0.5);
     }
+
+    &:hover {
+        box-shadow: 0 0 8px 0 rgba(104, 104, 104, 0.98);
+    }
+
+    .check-label {
+        position: absolute;
+        bottom: 8px;
+        right: 4px;
+    }
+
+    .check:disabled + label {
+        opacity: 1 !important;
+    }
+}
+
+.video {
+    position: relative;
+    left: 0;
+
+    video {
+        border-radius: 6px;
+    }
+
+    img {
+        position: absolute;
+        height: 40px;
+        width: 40px;
+        margin: auto auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+
+    .check-label {
+        position: absolute;
+        bottom: 16px;
+        right: 4px;
+    }
+
+    .check:disabled + label {
+        opacity: 1 !important;
+    }
+}
 </style>

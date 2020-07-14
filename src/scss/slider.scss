@@ -1,152 +1,208 @@
+.channels-carousel {
+    .agile {
+        .agile__actions {
+            .agile__dots {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: -40px;
+                .agile__dot {
+                    margin-left: 16px;
+                    button {
+                        background-color: #e5eaee;
+                        border-radius: 4px;
+                        border: none;
+                        cursor: pointer;
+                        display: block;
+                        height: 16px;
+                        font-size: 0;
+                        line-height: 0;
+                        margin: 0;
+                        padding: 0;
+                        transition-duration: 0.3s;
+                        width: 16px;
+                    }
+                    &.agile__dot--current,
+                    &:hover {
+                        button {
+                            background-color: $brand-primary;
+                            height: 18px;
+                            width: 18px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .VueCarousel {
+        .VueCarousel-pagination {
+            .VueCarousel-dot-container {
+                margin-left: 16px;
+                .VueCarousel-dot {
+                    background-color: #e5eaee;
+                    border-radius: 8px !important;
+                    border: none;
+                    cursor: pointer;
+                    height: 16px;
+                    font-size: 0;
+                    line-height: 0;
+                    margin: 0;
+                    padding: 0;
+                    transition-duration: 0.3s;
+                    width: 16px;
+                }
+            }
+        }
+    }
+}
 .testimonial-slider {
-	.agile {
-		.agile__actions {
-			.agile__dots {
-				position: absolute;
-				left: 50%;
-				transform: translateX(-50%);
-				bottom: -40px;
-				.agile__dot {
-					margin-left: 16px;
-					button {
-						background-color: #e5eaee;
-						border-radius: 4px;
-						border: none;
-						cursor: pointer;
-						display: block;
-						height: 16px;
-						font-size: 0;
-						line-height: 0;
-						margin: 0;
-						padding: 0;
-						transition-duration: .3s;
-						width: 16px;
-					}
-					&.agile__dot--current,
-					&:hover {
-						button {
-							background-color: $brand-primary;
-							height: 18px;
-							width: 18px;
-						}
-					}
-				}
-			}
-		}
-	}
-	.VueCarousel {
-		.VueCarousel-pagination {
-			.VueCarousel-dot-container {
-				margin-left: 16px;
-				.VueCarousel-dot {
-					background-color: #e5eaee;
-					border-radius: 8px !important;
-					border: none;
-					cursor: pointer;
-					height: 16px;
-					font-size: 0;
-					line-height: 0;
-					margin: 0;
-					padding: 0;
-					transition-duration: .3s;
-					width: 16px;
-				}
-			}
-		}
-	}
+    .agile {
+        .agile__actions {
+            .agile__dots {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: -40px;
+                .agile__dot {
+                    margin-left: 16px;
+                    button {
+                        background-color: #e5eaee;
+                        border-radius: 4px;
+                        border: none;
+                        cursor: pointer;
+                        display: block;
+                        height: 16px;
+                        font-size: 0;
+                        line-height: 0;
+                        margin: 0;
+                        padding: 0;
+                        transition-duration: 0.3s;
+                        width: 16px;
+                    }
+                    &.agile__dot--current,
+                    &:hover {
+                        button {
+                            background-color: $brand-primary;
+                            height: 18px;
+                            width: 18px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .VueCarousel {
+        .VueCarousel-pagination {
+            .VueCarousel-dot-container {
+                margin-left: 16px;
+                .VueCarousel-dot {
+                    background-color: #e5eaee;
+                    border-radius: 8px !important;
+                    border: none;
+                    cursor: pointer;
+                    height: 16px;
+                    font-size: 0;
+                    line-height: 0;
+                    margin: 0;
+                    padding: 0;
+                    transition-duration: 0.3s;
+                    width: 16px;
+                }
+            }
+        }
+    }
 }
 .offers-slider {
-	.agile {
-		.agile__actions {
-			.agile__nav-button {
-				background: transparent;
-				border: none;
-				color: $brand-secondary;
-				cursor: pointer;
-				font-size: 24px;
-				height: 100%;
-				position: absolute;
-				top: 0;
-				width: 80px;
-				i {
-					font-size: 48px;
-				}
-				&.agile__nav-button--next {
-					right: -88px;
-				}
-				&.agile__nav-button--prev {
-					left: -88px;
-				}
-				/* iPad Landscape */
-				@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-					&.agile__nav-button--next {
-						right: -56px;
-					}
-					&.agile__nav-button--prev {
-						left: -56px;
-					}
-				}
-			}
-		}
-	}
-	.VueCarousel {
-		.VueCarousel-navigation {
-			.VueCarousel-navigation-button {
-				i {
-					font-size: 48px;
-				}
-				&:focus {
-					outline: none;
-					color: $brand-secondary;
-					cursor: pointer;
-				}
-			}
-			@media (max-width: 900px) {
-				display: none !important;
-			}
-			@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-				display: none !important;
-			}
-			@media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-				display: none !important;
-			}
-		}
-		
-	}
+    .agile {
+        .agile__actions {
+            .agile__nav-button {
+                background: transparent;
+                border: none;
+                color: $brand-secondary;
+                cursor: pointer;
+                font-size: 24px;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                width: 80px;
+                i {
+                    font-size: 48px;
+                }
+                &.agile__nav-button--next {
+                    right: -88px;
+                }
+                &.agile__nav-button--prev {
+                    left: -88px;
+                }
+                /* iPad Landscape */
+                @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+                    &.agile__nav-button--next {
+                        right: -56px;
+                    }
+                    &.agile__nav-button--prev {
+                        left: -56px;
+                    }
+                }
+            }
+        }
+    }
+    .VueCarousel {
+        .VueCarousel-navigation {
+            .VueCarousel-navigation-button {
+                i {
+                    font-size: 48px;
+                }
+                &:focus {
+                    outline: none;
+                    color: $brand-secondary;
+                    cursor: pointer;
+                }
+            }
+            @media (max-width: 900px) {
+                display: none !important;
+            }
+            @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+                display: none !important;
+            }
+            @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+                display: none !important;
+            }
+        }
+    }
 }
 
-.heroslider{
-	.agile {
-		.agile__actions {
-			.agile__nav-button {
-				background: transparent;
-				border: none;
-				color: $white;
-				cursor: pointer;
-				font-size: 24px;
-				height: 100%;
-				position: absolute;
-				top: 0;
-				width: 80px;
-				i {
-					font-size: 48px;
-				}
-				&.agile__nav-button--next {
-					right: 0px;
-				}
-				&.agile__nav-button--prev {
-					left: 0px;
-				}
-				/* iPad Landscape */
-				@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-					&.agile__nav-button--next {
-						right: -16px;
-					}
-					&.agile__nav-button--prev {
-						left: -16px;
-					}
-				}
-			}
-		}
-	}
+.heroslider {
+    .agile {
+        .agile__actions {
+            .agile__nav-button {
+                background: transparent;
+                border: none;
+                color: $white;
+                cursor: pointer;
+                font-size: 24px;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                width: 80px;
+                i {
+                    font-size: 48px;
+                }
+                &.agile__nav-button--next {
+                    right: 0px;
+                }
+                &.agile__nav-button--prev {
+                    left: 0px;
+                }
+                /* iPad Landscape */
+                @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+                    &.agile__nav-button--next {
+                        right: -16px;
+                    }
+                    &.agile__nav-button--prev {
+                        left: -16px;
+                    }
+                }
+            }
+        }
+    }
 }

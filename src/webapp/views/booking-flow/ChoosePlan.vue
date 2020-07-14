@@ -1,147 +1,48 @@
 <template>
-    <div class="choose-plan bg--grey">
-        <div class="selected-broadcast-location">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-4 col-lg-3">
-                        <div class="broadcast-location">
-                            <label>Broadcast Location</label>
-                            <select v-model="channelSelected" @change="getAvailableSlotsByChannel(false)">
-                                <option :value="channel._id" v-for="channel in channels" :key="channel._id" :disabled="channel.Status !== 'LIVE'">{{ channel.Name + (channel.Status !== 'LIVE' ? ' (Coming Soon)' : '') }}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-lg-3">
-                        <div class="broadcast-start">
-                            <label>Broadcast Start</label>
-                            <h5>{{ moment(slotStartDate, 'YYYY-MM-DD').format('MMMM D, YYYY') }}</h5>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-lg-2">
-                        <div class="ad-length">
-                            <label>Ad Length</label>
-                            <select v-model="secondSelected" @change="getAvailableSlotsByChannel(false)">
-                                <option v-for="(sec, key) in seconds" :key="key" :value="sec">{{ sec }} Seconds</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-lg-2">
-                        <div class="broadcast-duration">
-                            <label>Broadcast Duration</label>
-                            <h5>6 months</h5>
-                        </div>
-                    </div>
-                    <!-- <div class="col-md-4 col-lg-1">
-                        <div class="recurring form-group mb0">
-                            <label for="recurring" class="control-label">Recurring</label>
-                            <input class="check" type="checkbox" name="recurring" id="recurring" v-model="isRenewal" />
-                            <label class="check-label" for="recurring"></label>
-                            <br class="clearfix">
-                        </div>
-                    </div> -->
-                    <div class="col-md-4 col-lg-2">
-                        <div class="tolatcost">
-                            <label>Total Cost</label>
-                            <h5 class="bold" v-if="selectedPlan">{{ selectedPlan.TotalAmount | currency }}</h5>
-                        </div>
+    <div class="choose-plan">
+        <div class="container">
+            <h3 class="mt64 brand-secondary">Step 1 : Create your plan</h3>
+
+            <div class="d-flex justify-content-between mt32">
+                <div>
+                    <div class="t-xl">How many times do you want your ad to air in a day?</div>
+                    <div class="t-l">This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
+
+                    <div class="counter d-flex align-items-center mt24">
+                        <button @click="decrement()" :disabled="quantity == 1" class="btn btn-primary btn-circle">-</button>
+                        <div class="quantity t-l p16">{{ quantity }}</div>
+                        <button @click="increment()" class="btn btn-primary btn-circle">+</button>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="container">
-            <div class="channels-wrapper">
-                <div class="channel-wrapper">
-                    <div class="available-slots">
-                        <h5 class="label">Available Slots</h5>
-                        <div class="slots">
-                            <button class="prev" :disabled="!checkStartDate" @click="getPrevSlots">
-                                <i class="material-icons">keyboard_arrow_left</i>
-                            </button>
-                            <ul>
-                                <li v-for="(slot, key) in availableSlots" :key="key" @click="selectSlot(key, slot)" :class="{ active: slotStartDate === key }">
-                                    <h5 class="date">{{ moment(key, 'YYYY-MM-DD').format('DD-MMM ddd') }}</h5>
-                                    <h4 class="amount" v-if="Object.keys(slot).length > 0">{{ (slot[Object.keys(slot)[0]].TotalAmount / (getTotalSlotDuration / 7)) | currency }}<span class="t-s"> / week</span></h4>
-                                    <h4 class="amount" v-else>-</h4>
-                                </li>
-                            </ul>
-                            <button class="next" @click="getNextSlots">
-                                <i class="material-icons">keyboard_arrow_right</i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="broadcast-details">
-                        <h5 class="label">Broadcast Details</h5>
-                        <div class="details">
-                            <div class="row">
-                                <div class="col-sm-4 text-center">
-                                    <h5>Starting On</h5>
-                                    <h4 class="bold">{{ moment(slotStartDate, 'YYYY-MM-DD').format('Do MMM YYYY, dddd') }}</h4>
-                                </div>
-                                <div class="col-sm-4 text-center">
-                                    <hr />
-                                    <img class="broadcast-img" src="@/assets/images/broadcast.svg" alt="" />
-                                </div>
-                                <div class="col-sm-4 text-center">
-                                    <h5>Ending On</h5>
-                                    <h4 class="bold">{{ moment(slotEndDate, 'YYYY-MM-DD').format('Do MMM YYYY, dddd') }}</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="broadcast-slots" v-if="selectedSlot">
-                        <h5 class="label">Choose Your Plan</h5>
-                        <div class="row d-flex justify-content-center" v-if="Object.keys(selectedSlot).length > 0">
-                            <div class="col-sm-6 col-lg-4 plan-wrapper" v-for="plan in selectedSlot" :key="plan.Plan">
-                                <div class="plan" :class="{ 'active-slot': selectedPlan.Plan === plan.Plan }">
-                                    <div class="plan-name">
-                                        <h5>{{ plan.AdSchedule.Name }}</h5>
-                                        <p class="timing">{{ plan.AdSchedule.StartTime }} to {{ plan.AdSchedule.EndTime }}</p>
-                                    </div>
-                                    <div class="plan-amount">
-                                        <h4 class="amount">
-                                            {{ (plan.TotalAmount / (getTotalSlotDuration / 7)) | currency }}<span class="duration t-m thin">/ week</span>
-                                            <span v-if="plan.TotalAmountWithoutDiscount !== plan.TotalAmount" class="without-discount t-s brand-primary strike-through">{{ (plan.TotalAmountWithoutDiscount / (getTotalSlotDuration / 7)) | currency }}</span>
-                                        </h4>
-                                        <p class="weeks">
-                                            <span class="brand-primary">{{ plan.TotalAmount | currency }}</span> for {{ getTotalSlotDuration / 7 }} weeks
-                                        </p>
-                                    </div>
-                                    <div class="features">
-                                        <ul class="mb8">
-                                            <li class="medium">Played every {{ moment(slotStartDate, 'YYYY-MM-DD').format('dddd') }} between {{ plan.AdSchedule.StartTime }} - {{ plan.AdSchedule.EndTime }}</li>
-                                            <li v-if="plan.ViewershipCount">
-                                                <span class="brand-primary bold">>{{ plan.ViewershipCount | formatValue(0) }}</span> expected ad views over 6 months
-                                            </li>
-                                            <li v-if="plan.ViewershipCount">
-                                                <span class="t-l medium">={{ ((plan.TotalAmount / plan.ViewershipCount) * 100) | formatValue(2) }} pence</span> per view<br />
-                                                <span class="text-muted italic">(53x cheaper per view than leafletting)</span>
-                                            </li>
-                                            <li>
-                                                <span class="t-l medium">={{ (plan.TotalAmount / (getTotalSlotDuration / 7)) | currency }}</span> per week <br />
-                                                <span class="text-muted italic">(75x cheaper than 1/4 page in local newspaper)</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="selectplan">
-                                        <button class="btn btn-primary btn-full" @click="selectPlan(plan)" :class="{ 'btn-active': selectedPlan.Plan === plan.Plan }">
-                                            <span v-if="selectedPlan.Plan === plan.Plan">Selected</span>
-                                            <span v-else>Choose this plan</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div v-else>
-                            There are no plans available for this date. Please choose another date to book your slot.
-                        </div>
-                    </div>
-                    <div class="action" v-if="selectedPlan">
-                        <button class="btn btn-danger border" @click="cancel">Cancel</button>
-                        <button class="btn btn-primary" @click="goToPayment">
-                            Proceed
-                        </button>
-                    </div>
+
+            <div class="mt32">
+                <div class="t-xl">Select you ad slots</div>
+                <div class="t-l">This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
+            </div>
+
+            <div class="slot-container mt24">
+                <ChannelSlot v-for="index in quantity" :key="index" :index="index" :slotOptions="channelslots" @done="handleSelect" :planLength="planLength"></ChannelSlot>
+            </div>
+
+            <div v-if="selected.length > 0" class="pricing-info d-flex justify-content-between align-items-start mt24 border border-primary p32">
+                <div>
+                    <div class="t-xl">Plan duration : {{ planLength }} months</div>
+                    <div class="t-l mt16">You could save £23 on 6 month plan:</div>
+                    <div class="brand-primary t-l">Switch to 6 months plan</div>
                 </div>
+                <div class="text-right">
+                    <div class="t-l">
+                        You will be charged
+                        <span class="brand-primary t-xl">{{ (getPlanTotal() / 13.03) | currency }} / week</span> from the date your ad goes live
+                    </div>
+                    <div class="t-l mt24  black">Total Plan Amount: {{ getPlanTotal() | currency }}</div>
+                </div>
+            </div>
+
+            <div class="action mt48 mb64 d-flex justify-content-center">
+                <button class="btn btn-white w-25 border" @click="cancel">Cancel</button>
+                <button class="btn btn-primary w-25 ml16" @click="goToPayment">Proceed</button>
             </div>
         </div>
     </div>
@@ -149,27 +50,58 @@
 
 <script>
 import instance from '@/api';
+import ChannelSlot from './ChannelSlot';
+
+import BooleanField from '@/e9_components/components/BooleanField';
 
 export default {
     name: 'ChoosePlan',
+    components: {
+        BooleanField,
+        ChannelSlot
+    },
     data() {
         return {
+            quantity: 1,
             availableSlots: {},
+            channelslots: [],
+            selected: [],
+            planLength: 3,
             channels: [],
             channelSelected: this.$route.query.channel,
             isRenewal: false,
             seconds: [],
             secondSelected: this.$route.query.seconds,
             selectedSlot: {},
+            slotOptions: [],
             selectedPlan: {},
             sliderEndDate: '',
             sliderStartDate: '',
             slotStartDate: this.$route.query.startdate,
             slotEndDate: this.moment(this.$route.query.startdate, 'YYYY-MM-DD').add(window.slotduration, 'days'),
-            taxes: []
+            taxes: [],
+            booloptions: {
+                label: 'Plan Length'
+            }
         };
     },
     methods: {
+        increment() {
+            this.quantity++;
+        },
+        decrement() {
+            this.quantity--;
+        },
+        handleSelect(e, o) {
+            this.selected.push(e);
+        },
+        getPlanTotal() {
+            let total = 0;
+            this.selected.map(item => {
+                total += item.BaseAmount;
+            });
+            return total;
+        },
         cancel() {
             this.$router.push('/', () => {});
         },
@@ -181,30 +113,18 @@ export default {
             let startDate = this.sliderStartDate ? this.sliderStartDate : this.slotStartDate;
             let endDate = this.sliderEndDate ? this.sliderEndDate : this.slotEndDate;
             try {
-                let result = await instance.get('api/channel/plans?channel=' + this.channelSelected + '&seconds=' + this.secondSelected + '&startdate=' + startDate + '&enddate=' + endDate);
+                let result = await instance.get('api/channel/plans?channel=' + this.channelSelected + '&seconds=20&startdate=2020-07-31' + '&enddate=2020-10-30');
                 this.availableSlots = result.data.plans;
                 this.taxes = result.data.taxes;
-                if (isFirstTime) {
-                    this.selectedSlot = this.availableSlots[startDate];
-                    let key = Object.keys(this.selectedSlot)[0];
-                    this.selectedPlan = this.selectedSlot[key];
-                }
-                this.$parent.isLoading = false;
-            } catch (err) {
-                this.$parent.isLoading = false;
-                this.$swal({
-                    title: 'Error',
-                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error'
+
+                this.selectedSlot = this.availableSlots['2020-07-31'];
+                this.slotOptions = Object.entries(this.selectedSlot).map(item => {
+                    return item[1];
                 });
-                console.error(err);
-            }
-        },
-        async getAllChannels() {
-            try {
-                let result = await instance.get('api/channel/all');
-                this.channels = result.data;
+                this.selectedPlan = this.selectedSlot;
+                this.$parent.isLoading = false;
             } catch (err) {
+                this.$parent.isLoading = false;
                 this.$swal({
                     title: 'Error',
                     text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
@@ -239,25 +159,8 @@ export default {
             this.getAvailableSlots();
         },
         goToPayment() {
-            this.$parent.selectedPlan = {
-                channel: this.channelSelected,
-                broadcastLocation: this.channels.find(channel => this.channelSelected === channel._id),
-                broadcastSlot: this.selectedPlan.AdSchedule.Name,
-                adStartTime: this.selectedPlan.AdSchedule.StartTime,
-                adEndTime: this.selectedPlan.AdSchedule.EndTime,
-                adSchedule: this.selectedPlan.AdSchedule._id,
-                broadcastStartDate: this.slotStartDate,
-                broadcastEndDate: this.slotEndDate,
-                adLength: this.secondSelected,
-                broadcastDuration: '6 months',
-                totalAmount: this.selectedPlan ? this.selectedPlan.TotalAmount : '',
-                offerDiscount: this.selectedPlan ? this.selectedPlan.OfferDiscount : '',
-                plan: this.selectedPlan ? this.selectedPlan.Plan : '',
-                isRenewal: this.isRenewal,
-                baseAmount: this.selectedPlan ? this.selectedPlan.BaseAmount - this.selectedPlan.OfferDiscount : '',
-                taxes: this.taxes
-            };
-            this.$emit('advanceToPayment');
+            this.$parent.selectedPlan.slots = this.selected;
+            this.$emit('advanceToAddOns');
         },
         async getAvailableSlotsByChannel(isFirstTime) {
             try {
@@ -275,24 +178,24 @@ export default {
                 });
                 console.error(err);
             }
-            if (this.seconds.indexOf(parseInt(this.secondSelected)) === -1) {
-                this.$swal({
-                    title: 'Warning',
-                    text: 'Ad length has changed according to the channel. Please select your desired Ad length',
-                    type: 'warning',
-                    confirmButtonColor: '#ff6500'
-                });
-                this.secondSelected = this.seconds[0];
-            }
             this.getAvailableSlots(isFirstTime);
         },
-        selectSlot(date, slot) {
-            this.selectedSlot = slot;
-            this.slotStartDate = date;
-            this.slotEndDate = this.moment(date, 'YYYY-MM-DD').add(window.slotduration, 'days');
-            let key = Object.keys(this.selectedSlot)[0];
-            this.selectedPlan = this.selectedSlot[key];
-            this.changeQueryParams();
+        async getChannelPlan() {
+            try {
+                let result = await instance.get('api/channel/plan?channel=' + this.channelSelected);
+                this.channelslots = result.data.ChannelSlot;
+                this.$parent.isLoading = false;
+            } catch (err) {
+                this.$swal({
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
+                });
+                console.error(err);
+            }
+        },
+        selectSlot() {
+            this.selected.push();
         },
         selectPlan(plan) {
             this.selectedPlan = plan;
@@ -307,16 +210,11 @@ export default {
         }
     },
     created() {
-        if (!this.$route.query.channel || !this.$route.query.seconds || !this.$route.query.startdate) {
+        if (!this.$route.query.channel) {
             this.$router.push('/', () => {});
         } else {
             this.$parent.isLoading = true;
-            this.sliderStartDate = this.$route.query.startdate;
-            this.sliderEndDate = this.moment(this.$route.query.startdate, 'YYYY-MM-DD')
-                .add(3, 'days')
-                .format('YYYY-MM-DD');
-            this.getAllChannels();
-            this.getAvailableSlotsByChannel(true);
+            this.getChannelPlan();
         }
     }
 };
@@ -324,6 +222,117 @@ export default {
 
 <style lang="scss" scoped>
 .choose-plan {
+    .counter {
+        .btn-circle {
+            border-radius: 50%;
+            height: 32px;
+            width: 42px;
+        }
+    }
+    .border-primary {
+        border: 1px solid $brand-primary !important;
+    }
+    input,
+    textarea {
+        border: 1px solid $brand-primary;
+        box-sizing: border-box;
+        margin: 0;
+        outline: none;
+        padding: 10px;
+    }
+
+    .pricing-info {
+        box-shadow: 0 0 8px 0 rgba(255, 101, 0, 0.5);
+        border: 1px solid #ff6500;
+    }
+
+    select {
+        background-image: url('../../../assets/images/select.png');
+        background-color: white;
+        background-size: 18px;
+        background-repeat: no-repeat;
+        background-position: right 18px center;
+
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
+            font-size: 13px;
+            background-size: 12px;
+            background-position: right 12px center;
+        }
+        /* iPad Landscape */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+            font-size: 13px;
+            background-size: 12px;
+            background-position: right 12px center;
+        }
+    }
+
+    .slot-details {
+        .medium::before {
+            content: '';
+            background-image: url('../../../assets/images/tick.svg');
+            height: 16px;
+            width: 16px;
+            left: 0;
+            top: 6px;
+            background-size: cover;
+            position: absolute;
+            background-repeat: no-repeat;
+        }
+    }
+
+    input[type='button'] {
+        -webkit-appearance: button;
+        cursor: pointer;
+        color: $white;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+
+    .input-group {
+        clear: both;
+        margin: 15px 0;
+        position: relative;
+    }
+    .input-group input[type='button'] {
+        background-color: $brand-primary;
+        min-width: 38px;
+        width: auto;
+        transition: all 300ms ease;
+    }
+
+    .input-group .button-minus,
+    .input-group .button-plus {
+        font-weight: bold;
+        height: 38px;
+        padding: 0;
+        width: 38px;
+        position: relative;
+    }
+
+    .input-group .quantity-field {
+        position: relative;
+        height: 38px;
+        left: -6px;
+        text-align: center;
+        width: 62px;
+        display: inline-block;
+        font-size: 13px;
+        margin: 0 0 5px;
+        resize: vertical;
+    }
+
+    .button-plus {
+        left: -13px;
+    }
+
+    input[type='number'] {
+        -moz-appearance: textfield;
+        -webkit-appearance: none;
+    }
     label {
         font-family: $font-family-heading;
         color: #acacac;
@@ -331,6 +340,44 @@ export default {
         font-weight: 500;
         margin-bottom: 8px;
         display: block;
+    }
+
+    ul {
+        @include list-unstyled();
+        margin: 0;
+        li {
+            display: inline-block;
+            width: 25%;
+            text-align: center;
+            padding: 20px;
+            border-right: 1px solid #cecece;
+            cursor: pointer;
+
+            &:last-child {
+                border-right: none;
+            }
+
+            .date {
+                margin-bottom: 10px;
+                font-weight: 500;
+                font-size: 16px;
+                color: $brand-primary;
+            }
+            .amount {
+                font-weight: 500;
+                font-size: 20px;
+                margin-bottom: 0;
+                color: $brand-secondary;
+            }
+
+            &.active {
+                background-color: $brand-primary;
+                .date,
+                .amount {
+                    color: $white;
+                }
+            }
+        }
     }
 
     .selected-broadcast-location {
@@ -681,6 +728,8 @@ export default {
                 .available-slots {
                     .slots {
                         padding: 16px 40px 0;
+                        background: none;
+                        border: none;
                         .prev {
                             left: 4px;
                             top: 50%;
