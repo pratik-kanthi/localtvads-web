@@ -1,8 +1,11 @@
 <template>
     <div class="addons-wrapper">
         <div class="container">
+            <div class="mt64 brand-primary pointer" @click="goBack">Go Back</div>
             <h3 class="mt64 brand-secondary">Step 2 : Choose AddOns</h3>
-            <div class="mt24 t-xl">Do you have your own ad as a video file? If not, our team of specialists will create one for you</div>
+            <div
+                class="mt24 t-xl"
+            >Do you have your own ad as a video file? If not, our team of specialists will create one for you</div>
 
             <b-form-group class="mt48">
                 <b-form-radio class="t-xl" v-model="isAddOn" value="clientad">I have my own ad.</b-form-radio>
@@ -13,7 +16,10 @@
                 <h4 class="brand-secondary mt64 mb48">Select Your Add On</h4>
                 <div class="row addons-wrapper mb24">
                     <div class="col-lg-6 mb16" v-for="addon in addons" :key="addon._key">
-                        <div class="addon" :class="{ 'active-addon': $parent.serviceAddOn._id === addon._id }">
+                        <div
+                            class="addon"
+                            :class="{ 'active-addon': $parent.serviceAddOn._id === addon._id }"
+                        >
                             <div class="name">
                                 <h5>{{ addon.Name }}</h5>
                                 <p class="desc">{{ addon.Description }}</p>
@@ -24,11 +30,18 @@
                             </div>
                             <div class="benefits">
                                 <ul class="mb8">
-                                    <li v-for="benefit in addon.Benefits" :key="benefit">{{ benefit }}</li>
+                                    <li
+                                        v-for="benefit in addon.Benefits"
+                                        :key="benefit"
+                                    >{{ benefit }}</li>
                                 </ul>
                             </div>
                             <div class="selectaddon">
-                                <button class="btn btn-primary btn-full" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.serviceAddOn._id === addon._id }">
+                                <button
+                                    class="btn btn-primary btn-full"
+                                    @click="selectAddon(addon)"
+                                    :class="{ 'btn-selected': $parent.serviceAddOn._id === addon._id }"
+                                >
                                     <span v-if="$parent.serviceAddOn._id === addon._id">Selected</span>
                                     <span v-else>Choose this Addon</span>
                                 </button>
@@ -48,6 +61,8 @@
 
 <script>
 import instance from '@/api';
+
+import ChoosePlan from '../booking-flow/ChoosePlan';
 export default {
     name: 'ChooseAddons',
     data() {
@@ -57,6 +72,10 @@ export default {
         };
     },
     methods: {
+        goBack() {
+            this.$parent.currentStep = 1;
+            this.$parent.currentStage = ChoosePlan;
+        },
         cancel() {
             this.$router.push('/', () => {});
         },
@@ -99,6 +118,14 @@ export default {
     .custom-control-input:checked ~ .custom-control-label::before {
         background: $brand-primary;
         border: none;
+    }
+
+    .custom-control-label::before {
+        margin-top: -3px;
+    }
+
+    .custom-control-label::after {
+        margin-top: -3px;
     }
 }
 </style>

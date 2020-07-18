@@ -2,7 +2,12 @@
     <div>
         <Stepper :steps="steps" :current="currentStep"></Stepper>
         <div>
-            <component :is="currentStage" @advanceToPayment="goToPayment" @advanceToUpload="goToUpload" @advanceToAddOns="goToAddOns"></component>
+            <component
+                :is="currentStage"
+                @advanceToPayment="goToPayment"
+                @advanceToUpload="goToUpload"
+                @advanceToAddOns="goToAddOns"
+            ></component>
         </div>
         <LoaderModal :showloader="isLoading" :message="loaderMessage + '...'"></LoaderModal>
     </div>
@@ -33,6 +38,7 @@ export default {
             isLoading: false,
             loaderMessage: 'Fetching available plans',
             hasAddOn: false,
+            serviceAddOn: null,
             selectedPlan: {},
             steps: [
                 {
@@ -65,6 +71,7 @@ export default {
     methods: {
         async fetchClientAdPlan() {
             if (this.$route.query.clientadplan) {
+                debugger;
                 try {
                     this.isLoading = true;
                     let result = await instance.get('api/clientad/getclientadplan?clientadplan=' + this.$route.query.clientadplan);

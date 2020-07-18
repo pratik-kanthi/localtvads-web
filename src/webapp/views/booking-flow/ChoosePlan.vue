@@ -6,10 +6,16 @@
             <div class="d-flex justify-content-between mt32">
                 <div>
                     <div class="t-xl">How many times do you want your ad to air in a day?</div>
-                    <div class="t-l">This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
+                    <div
+                        class="t-l"
+                    >This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
 
                     <div class="counter d-flex align-items-center mt24">
-                        <button @click="decrement()" :disabled="quantity == 1" class="btn btn-primary btn-circle">-</button>
+                        <button
+                            @click="decrement()"
+                            :disabled="quantity == 1"
+                            class="btn btn-primary btn-circle"
+                        >-</button>
                         <div class="quantity t-l p16">{{ quantity }}</div>
                         <button @click="increment()" class="btn btn-primary btn-circle">+</button>
                     </div>
@@ -18,25 +24,52 @@
 
             <div class="mt32">
                 <div class="t-xl">Select you ad slots</div>
-                <div class="t-l">This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
+                <div
+                    class="t-l"
+                >This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
             </div>
 
             <div class="slot-container mt24">
-                <ChannelSlot v-for="index in quantity" :key="index" :index="index" :slotOptions="channelslots" @done="handleSelect" :planLength="planLength"></ChannelSlot>
+                <ChannelSlot
+                    v-for="index in quantity"
+                    :key="index"
+                    :index="index"
+                    :slot-options="channelslots"
+                    @done="handleSelect"
+                    :plan-length="planLength"
+                ></ChannelSlot>
             </div>
 
-            <div v-if="selected.length > 0" class="pricing-info d-flex justify-content-between align-items-start mt24 border border-primary p32">
+            <div
+                v-if="selected.length > 0"
+                class="pricing-info d-flex justify-content-between align-items-start mt24 border border-primary p32"
+            >
                 <div>
                     <div class="t-xl">Plan duration : {{ planLength }} months</div>
-                    <div class="t-l mt16">You could save £23 on 6 month plan:</div>
-                    <div class="brand-primary t-l">Switch to 6 months plan</div>
+                    <div
+                        v-if="planLength==3"
+                        class="t-l mt16"
+                    >You could save {{ totalSaving | currency }} on a 6 month plan:</div>
+                    <div
+                        v-if="planLength==3"
+                        @click="changePlanLength"
+                        class="brand-primary t-l"
+                    >Switch to 6 months plan</div>
+                    <div
+                        v-if="planLength==6"
+                        @click="changePlanLength"
+                        class="brand-primary t-l"
+                    >Switch to 3 months plan</div>
                 </div>
                 <div class="text-right">
-                    <div class="t-l">
-                        You will be charged
-                        <span class="brand-primary t-xl">{{ (getPlanTotal() / 13.03) | currency }} / week</span> from the date your ad goes live
+                    <div class="d-flex justify-content-between brand-primary t-xl">
+                        <div>Total Payable:</div>
+                        <div>{{ ( planTotal / 13.03) | currency }} / week</div>
                     </div>
-                    <div class="t-l mt24  black">Total Plan Amount: {{ getPlanTotal() | currency }}</div>
+                    <div class="d-flex justify-content-between">
+                        <div>Total Plan Amount:</div>
+                        <div>{{ planTotal | currency }}</div>
+                    </div>
                 </div>
             </div>
 
@@ -93,20 +126,23 @@ export default {
             this.quantity--;
         },
         handleSelect(e, o) {
-            this.selected.push(e);
-        },
-        getPlanTotal() {
-            let total = 0;
-            this.selected.map(item => {
-                total += item.BaseAmount;
-            });
-            return total;
+            if (!o) {
+                this.selected.push(e);
+            } else {
+                this.selected = this.selected.filter(slot => {
+                    return slot._id !== o._id;
+                });
+                this.selected.push(o);
+            }
         },
         cancel() {
             this.$router.push('/', () => {});
         },
         changeQueryParams() {
             this.$router.replace({ name: 'BookingFlow', query: { channel: this.channelSelected, seconds: this.secondSelected, startdate: this.slotStartDate } });
+        },
+        changePlanLength() {
+            this.planLength = this.planLength == 3 ? 6 : 3;
         },
         async getAvailableSlots(isFirstTime) {
             this.$parent.isLoading = true;
@@ -158,10 +194,13 @@ export default {
             }
             this.getAvailableSlots();
         },
+
         goToPayment() {
             this.$parent.selectedPlan.slots = this.selected;
+            this.$parent.selectedPlan.planLength = this.planLength;
             this.$emit('advanceToAddOns');
         },
+
         async getAvailableSlotsByChannel(isFirstTime) {
             try {
                 let result = await instance.get('api/channel/seconds?channel=' + this.channelSelected);
@@ -183,6 +222,8 @@ export default {
         async getChannelPlan() {
             try {
                 let result = await instance.get('api/channel/plan?channel=' + this.channelSelected);
+                this.$parent.selectedPlan.Channel = result.data.Channel;
+                this.$parent.selectedPlan._id = result.data._id;
                 this.channelslots = result.data.ChannelSlot;
                 this.$parent.isLoading = false;
             } catch (err) {
@@ -207,6 +248,27 @@ export default {
         },
         getTotalSlotDuration() {
             return window.slotduration;
+        },
+        totalSaving() {
+            let pricing1 = 0;
+            let pricing2 = 0;
+
+            this.channelslots.map(slot => {
+                pricing1 += slot.BaseAmount;
+            });
+            this.channelslots.map(slot => {
+                pricing2 += slot.BaseAmount2;
+            });
+
+            return pricing1 - pricing2;
+        },
+        planTotal() {
+            let total = 0;
+            this.selected.map(item => {
+                let t = this.planLength == 3 ? item.BaseAmount : item.BaseAmount2;
+                total += t;
+            });
+            return total;
         }
     },
     created() {

@@ -151,10 +151,10 @@ export default {
             return channel.ExpectedAdViews || false;
         },
         _switchShimmer(isAppend) {
-            let str = "<div class='shimmer-item'>";
-            str += "<div class='animated-background calendar-box-title'></div>";
+            let str = '<div class=\'shimmer-item\'>';
+            str += '<div class=\'animated-background calendar-box-title\'></div>';
             for (let i = 0; i < 5; i++) {
-                str += '<div>' + "<div class='animated-background calendar-box'></div>" + "<div class='animated-background calendar-box'></div>" + "<div class='animated-background calendar-box'></div>" + "<div class='animated-background calendar-box'></div>" + "<div class='animated-background calendar-box'></div>" + "<div class='animated-background calendar-box'></div>" + "<div class='animated-background calendar-box'></div>" + '</div>';
+                str += '<div>' + '<div class=\'animated-background calendar-box\'></div>' + '<div class=\'animated-background calendar-box\'></div>' + '<div class=\'animated-background calendar-box\'></div>' + '<div class=\'animated-background calendar-box\'></div>' + '<div class=\'animated-background calendar-box\'></div>' + '<div class=\'animated-background calendar-box\'></div>' + '<div class=\'animated-background calendar-box\'></div>' + '</div>';
             }
             str += '</div></div>';
 
