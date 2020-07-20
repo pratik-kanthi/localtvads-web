@@ -1,11 +1,9 @@
 <template>
-    <div class="addons-wrapper">
+    <div class="addons-parent">
         <div class="container">
             <div class="mt64 brand-primary pointer" @click="goBack">Go Back</div>
             <h3 class="mt64 brand-secondary">Step 2 : Choose AddOns</h3>
-            <div
-                class="mt24 t-xl"
-            >Do you have your own ad as a video file? If not, our team of specialists will create one for you</div>
+            <div class="mt24 t-xl">Do you have your own ad as a video file? If not, our team of specialists will create one for you</div>
 
             <b-form-group class="mt48">
                 <b-form-radio class="t-xl" v-model="isAddOn" value="clientad">I have my own ad.</b-form-radio>
@@ -16,10 +14,7 @@
                 <h4 class="brand-secondary mt64 mb48">Select Your Add On</h4>
                 <div class="row addons-wrapper mb24">
                     <div class="col-lg-6 mb16" v-for="addon in addons" :key="addon._key">
-                        <div
-                            class="addon"
-                            :class="{ 'active-addon': $parent.serviceAddOn._id === addon._id }"
-                        >
+                        <div class="addon" :class="{ 'active-addon': $parent.serviceAddOn._id === addon._id }">
                             <div class="name">
                                 <h5>{{ addon.Name }}</h5>
                                 <p class="desc">{{ addon.Description }}</p>
@@ -30,18 +25,11 @@
                             </div>
                             <div class="benefits">
                                 <ul class="mb8">
-                                    <li
-                                        v-for="benefit in addon.Benefits"
-                                        :key="benefit"
-                                    >{{ benefit }}</li>
+                                    <li v-for="benefit in addon.Benefits" :key="benefit">{{ benefit }}</li>
                                 </ul>
                             </div>
                             <div class="selectaddon">
-                                <button
-                                    class="btn btn-primary btn-full"
-                                    @click="selectAddon(addon)"
-                                    :class="{ 'btn-selected': $parent.serviceAddOn._id === addon._id }"
-                                >
+                                <button class="btn btn-primary btn-full" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.serviceAddOn._id === addon._id }">
                                     <span v-if="$parent.serviceAddOn._id === addon._id">Selected</span>
                                     <span v-else>Choose this Addon</span>
                                 </button>
@@ -126,126 +114,6 @@ export default {
 
     .custom-control-label::after {
         margin-top: -3px;
-    }
-}
-</style>
-
-<style lang="scss">
-.addons-wrapper {
-    .addons-wrapper {
-        .addon {
-            background-color: $white;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            text-align: center;
-            &.active-addon {
-                box-shadow: 0 0 8px 0 rgba(255, 101, 0, 0.5);
-                border: 1px solid $brand-primary;
-            }
-            .name {
-                padding: 12px 16px;
-                border-bottom: 1px solid #ddd;
-                h5 {
-                    font-weight: 500;
-                    font-size: 24px;
-                    color: $brand-primary;
-                    margin-bottom: 4px;
-                }
-                .desc {
-                    font-size: 16px;
-                    font-family: $font-family-heading;
-                    font-weight: 400;
-                    margin-bottom: 0;
-                    opacity: 0.6;
-                }
-            }
-            .price {
-                padding: 12px 16px;
-                border-bottom: 1px solid #ddd;
-                .amount {
-                    font-weight: 500;
-                    font-size: 36px;
-                    margin-bottom: 4px;
-                    color: $brand-secondary;
-                }
-            }
-            .benefits {
-                padding: 16px 36px;
-                ul {
-                    @include list-unstyled();
-                    li {
-                        font-family: $font-family-heading;
-                        font-size: 14px;
-                        color: $base;
-                        text-align: left;
-                        margin-bottom: 16px;
-                        line-height: 20px;
-                        cursor: pointer !important;
-                        padding-left: 32px;
-                        position: relative;
-                        &:last-child {
-                            margin-bottom: 0;
-                        }
-                        &:before {
-                            content: '';
-                            background-image: url('../../../assets/images/tick.svg');
-                            height: 16px;
-                            width: 16px;
-                            left: 0;
-                            top: 2px;
-                            background-size: cover;
-                            position: absolute;
-                            background-repeat: no-repeat;
-                        }
-                    }
-                }
-            }
-            .selectaddon {
-                padding: 0 32px 24px;
-                opacity: 1;
-                z-index: 2;
-                .btn-selected {
-                    background-color: $brand-secondary !important;
-                    border: none;
-                }
-            }
-        }
-    }
-    .action {
-        padding: 56px 24px 20px;
-        .btn {
-            min-width: 250px !important;
-            margin-right: 20px;
-            &.border {
-                background: transparent;
-                border: 1px solid $error !important;
-                color: $error;
-            }
-        }
-    }
-
-    @media (max-width: 767px) {
-        .addons {
-            margin: 0;
-            .action {
-                .btn {
-                    margin-bottom: 16px;
-                    min-width: 100% !important;
-                }
-            }
-        }
-    }
-    /* iPad Portrait */
-    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
-        .addons {
-            .action {
-                padding: 24px 24px 20px;
-                .btn {
-                    margin-bottom: 16px;
-                    min-width: 100% !important;
-                }
-            }
-        }
     }
 }
 </style>

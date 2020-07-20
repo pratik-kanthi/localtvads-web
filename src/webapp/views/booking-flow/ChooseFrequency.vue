@@ -181,7 +181,7 @@ export default {
             let startDate = this.sliderStartDate ? this.sliderStartDate : this.slotStartDate;
             let endDate = this.sliderEndDate ? this.sliderEndDate : this.slotEndDate;
             try {
-                let result = await instance.get('api/channel/plans?channel=' + this.channelSelected + '&seconds=' + this.secondSelected + '&startdate=' + startDate + '&enddate=' + endDate);
+                let result = await instance.get('api/channel/plan?channel=' + this.channelSelected + '&seconds=' + this.secondSelected + '&startdate=' + startDate + '&enddate=' + endDate);
                 this.availableSlots = result.data.plans;
                 this.taxes = result.data.taxes;
                 if (isFirstTime) {

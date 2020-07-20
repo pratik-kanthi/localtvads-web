@@ -1,13 +1,22 @@
 <template>
     <div>
         <Stepper :steps="steps" :current="currentStep"></Stepper>
+        <div class="container">
+            <div class="book-ads mt32">
+                <div class="row">
+                    <div class="col-md-4 col-lg-6 booking-option booking-location">
+                        <label class="section-title brand-primary">Broadcast Location</label>
+                        <p for class="brand-secondary">{{ channel.Name }}</p>
+                    </div>
+                    <div class="col-md-3 col-lg-4 booking-option">
+                        <label for class="text-white mt8">Select days</label>
+                        <WeekDays :disabled="true" :value="daysSelected"></WeekDays>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div>
-            <component
-                :is="currentStage"
-                @advanceToPayment="goToPayment"
-                @advanceToUpload="goToUpload"
-                @advanceToAddOns="goToAddOns"
-            ></component>
+            <component :is="currentStage" @advanceToPayment="goToPayment" @advanceToUpload="goToUpload" @advanceToAddOns="goToAddOns"></component>
         </div>
         <LoaderModal :showloader="isLoading" :message="loaderMessage + '...'"></LoaderModal>
     </div>
@@ -16,7 +25,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import instance from '@/api';
-import UploadAd from './UploadAd';
 import ChoosePlan from './ChoosePlan';
 import Review from './Review';
 import Payment from './Payment';
@@ -24,22 +32,26 @@ import AdDetails from './AdDetails';
 import ChooseAddons from '../addons/ChooseAddon';
 import AddOnPayment from '../addons/Payment';
 import Stepper from '@/e9_components/components/Stepper';
-
+import ChannelService from '@/services/ChannelService';
+import WeekDays from '@/e9_components/components/WeekDays';
 export default {
     name: 'BookingFlow',
     components: {
-        Stepper
+        Stepper,
+        WeekDays
     },
     data() {
         return {
-            currentStage: UploadAd,
             currentStep: 1,
-            clientAdPlan: null,
+            currentStage: null,
+            daysSelected: [],
+            clientAdPlan: {},
             isLoading: false,
             loaderMessage: 'Fetching available plans',
             hasAddOn: false,
             serviceAddOn: null,
-            selectedPlan: {},
+            selectedPlan: null,
+            channel: {},
             steps: [
                 {
                     name: 'Create your plan',
@@ -71,12 +83,10 @@ export default {
     methods: {
         async fetchClientAdPlan() {
             if (this.$route.query.clientadplan) {
-                debugger;
                 try {
                     this.isLoading = true;
                     let result = await instance.get('api/clientad/getclientadplan?clientadplan=' + this.$route.query.clientadplan);
                     this.clientAdPlan = result.data;
-
                     if (!this.clientAdPlan) {
                         this.currentStep = 1;
                         this.currentStage = ChoosePlan;
@@ -85,7 +95,7 @@ export default {
                         this.currentStage = AdDetails;
                     } else if (!this.clientAdPlan.ClientAd) {
                         this.currentStep = 4;
-                        this.currentStage = UploadAd;
+                        // this.currentStage = UploadAd;
                     } else {
                         this.currentStep = 5;
                         this.currentStage = Review;
@@ -119,7 +129,6 @@ export default {
         },
         goToUpload(val) {
             this.currentStep = 4;
-            this.currentStage = UploadAd;
             this.clientAdPlan.Category = val;
         },
         preventNav(e) {
@@ -132,8 +141,22 @@ export default {
         ...mapGetters(['getIsVideoBeingUploaded'])
     },
     async created() {
-        setTimeout(() => $('.v-stepper__step__step').text(''));
-        this.fetchClientAdPlan();
+        try {
+            setTimeout(() => $('.v-stepper__step__step').text(''));
+            this.daysSelected = atob(this.$route.query.daysSelected)
+                .split(',')
+                .map(function(item) {
+                    return parseInt(item);
+                });
+            this.channel = (await ChannelService._get(this.$route.query.channel)).data;
+            this.currentStage = ChoosePlan;
+        } catch (err) {
+            this.$swal({
+                title: 'Error',
+                text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                type: 'error'
+            });
+        }
     },
     beforeMount() {
         window.addEventListener('beforeunload', this.preventNav);

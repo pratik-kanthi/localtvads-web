@@ -2,80 +2,53 @@
     <div class="choose-plan">
         <div class="container">
             <h3 class="mt64 brand-secondary">Step 1 : Create your plan</h3>
-
-            <div class="d-flex justify-content-between mt32">
-                <div>
-                    <div class="t-xl">How many times do you want your ad to air in a day?</div>
-                    <div
-                        class="t-l"
-                    >This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
-
-                    <div class="counter d-flex align-items-center mt24">
-                        <button
-                            @click="decrement()"
-                            :disabled="quantity == 1"
-                            class="btn btn-primary btn-circle"
-                        >-</button>
-                        <div class="quantity t-l p16">{{ quantity }}</div>
-                        <button @click="increment()" class="btn btn-primary btn-circle">+</button>
-                    </div>
+            <div class="channel-plans-wrapper d-flex mt32">
+                <div class="channel-plan" v-for="(plan, key) in channelPlans" :key="key" :class="$parent.selectedPlan._id == plan._id ? 'active' : ''" @click="selectPlan(plan)">
+                    <span>{{ plan.ProductLength.Name }}</span>
                 </div>
             </div>
+            <div v-if="$parent.selectedPlan">
+                <div class="d-flex justify-content-between mt32">
+                    <div>
+                        <div class="t-xl">How many times do you want your ad to air in a day?</div>
+                        <div class="t-l">This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
 
-            <div class="mt32">
-                <div class="t-xl">Select you ad slots</div>
-                <div
-                    class="t-l"
-                >This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
-            </div>
-
-            <div class="slot-container mt24">
-                <ChannelSlot
-                    v-for="index in quantity"
-                    :key="index"
-                    :index="index"
-                    :slot-options="channelslots"
-                    @done="handleSelect"
-                    :plan-length="planLength"
-                ></ChannelSlot>
-            </div>
-
-            <div
-                v-if="selected.length > 0"
-                class="pricing-info d-flex justify-content-between align-items-start mt24 border border-primary p32"
-            >
-                <div>
-                    <div class="t-xl">Plan duration : {{ planLength }} months</div>
-                    <div
-                        v-if="planLength==3"
-                        class="t-l mt16"
-                    >You could save {{ totalSaving | currency }} on a 6 month plan:</div>
-                    <div
-                        v-if="planLength==3"
-                        @click="changePlanLength"
-                        class="brand-primary t-l"
-                    >Switch to 6 months plan</div>
-                    <div
-                        v-if="planLength==6"
-                        @click="changePlanLength"
-                        class="brand-primary t-l"
-                    >Switch to 3 months plan</div>
-                </div>
-                <div class="text-right">
-                    <div class="d-flex justify-content-between brand-primary t-xl">
-                        <div>Total Payable:</div>
-                        <div>{{ ( planTotal / 13.03) | currency }} / week</div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>Total Plan Amount:</div>
-                        <div>{{ planTotal | currency }}</div>
+                        <div class="counter d-flex align-items-center mt24">
+                            <button @click="decrement()" :disabled="quantity < 2" class="btn btn-primary btn-circle">-</button>
+                            <div class="quantity t-l p16">{{ quantity }}</div>
+                            <button @click="increment()" :disabled="quantity > 2" class="btn btn-primary btn-circle">+</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="action mt48 mb64 d-flex justify-content-center">
-                <button class="btn btn-white w-25 border" @click="cancel">Cancel</button>
-                <button class="btn btn-primary w-25 ml16" @click="goToPayment">Proceed</button>
+                <div class="mt32">
+                    <div class="t-xl">Select you ad slots</div>
+                    <div class="t-l">This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
+                </div>
+                <div class="slot-container mt24">
+                    <ChannelSlot v-for="index in quantity" :key="index" :no-of-days="$parent.daysSelected.length" :index="index" :slot-options="slotOptions" @done="handleSelect" :plan-length="$parent.selectedPlan.ProductLength.Duration"></ChannelSlot>
+                </div>
+                <div v-if="selected.length > 0" class="pricing-info d-flex justify-content-between align-items-start mt24 border border-primary p32">
+                    <div>
+                        <div class="t-xl">Plan duration : {{ planLength }} months</div>
+                        <div v-if="planLength == 3" class="t-l mt16">You could save {{ totalSaving | currency }} on a 6 month plan:</div>
+                        <div v-if="planLength == 3" @click="changePlanLength" class="brand-primary t-l">Switch to 6 months plan</div>
+                        <div v-if="planLength == 6" @click="changePlanLength" class="brand-primary t-l">Switch to 3 months plan</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="d-flex justify-content-between brand-primary t-xl">
+                            <div>Total Payable:</div>
+                            <div>{{ (planTotal / 13.03) | currency }} / week</div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div>Total Plan Amount:</div>
+                            <div>{{ planTotal | currency }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="action mt48 mb64 d-flex justify-content-center">
+                    <button class="btn btn-white w-25 border" @click="cancel">Cancel</button>
+                    <button class="btn btn-primary w-25 ml16" @click="goToPayment">Proceed</button>
+                </div>
             </div>
         </div>
     </div>
@@ -83,14 +56,12 @@
 
 <script>
 import instance from '@/api';
+import ChannelProductService from '@/services/ChannelProductService';
 import ChannelSlot from './ChannelSlot';
-
-import BooleanField from '@/e9_components/components/BooleanField';
 
 export default {
     name: 'ChoosePlan',
     components: {
-        BooleanField,
         ChannelSlot
     },
     data() {
@@ -100,7 +71,7 @@ export default {
             channelslots: [],
             selected: [],
             planLength: 3,
-            channels: [],
+            channelPlans: [],
             channelSelected: this.$route.query.channel,
             isRenewal: false,
             seconds: [],
@@ -144,63 +115,11 @@ export default {
         changePlanLength() {
             this.planLength = this.planLength == 3 ? 6 : 3;
         },
-        async getAvailableSlots(isFirstTime) {
-            this.$parent.isLoading = true;
-            let startDate = this.sliderStartDate ? this.sliderStartDate : this.slotStartDate;
-            let endDate = this.sliderEndDate ? this.sliderEndDate : this.slotEndDate;
-            try {
-                let result = await instance.get('api/channel/plans?channel=' + this.channelSelected + '&seconds=20&startdate=2020-07-31' + '&enddate=2020-10-30');
-                this.availableSlots = result.data.plans;
-                this.taxes = result.data.taxes;
-
-                this.selectedSlot = this.availableSlots['2020-07-31'];
-                this.slotOptions = Object.entries(this.selectedSlot).map(item => {
-                    return item[1];
-                });
-                this.selectedPlan = this.selectedSlot;
-                this.$parent.isLoading = false;
-            } catch (err) {
-                this.$parent.isLoading = false;
-                this.$swal({
-                    title: 'Error',
-                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error'
-                });
-                console.error(err);
-            }
-        },
-        getNextSlots() {
-            this.sliderStartDate = this.moment(this.sliderEndDate, 'YYYY-MM-DD')
-                .add(1, 'days')
-                .format('YYYY-MM-DD');
-            this.sliderEndDate = this.moment(this.sliderEndDate, 'YYYY-MM-DD')
-                .add(4, 'days')
-                .format('YYYY-MM-DD');
-            this.getAvailableSlots();
-        },
-        getPrevSlots() {
-            if (this.moment() > this.moment(this.sliderStartDate, 'YYYY-MM-DD').subtract(4, 'days')) {
-                this.sliderEndDate = this.moment()
-                    .add(3, 'days')
-                    .format('YYYY-MM-DD');
-                this.sliderStartDate = this.moment().format('YYYY-MM-DD');
-            } else {
-                this.sliderEndDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD')
-                    .subtract(1, 'days')
-                    .format('YYYY-MM-DD');
-                this.sliderStartDate = this.moment(this.sliderStartDate, 'YYYY-MM-DD')
-                    .subtract(4, 'days')
-                    .format('YYYY-MM-DD');
-            }
-            this.getAvailableSlots();
-        },
-
         goToPayment() {
             this.$parent.selectedPlan.slots = this.selected;
             this.$parent.selectedPlan.planLength = this.planLength;
             this.$emit('advanceToAddOns');
         },
-
         async getAvailableSlotsByChannel(isFirstTime) {
             try {
                 let result = await instance.get('api/channel/seconds?channel=' + this.channelSelected);
@@ -219,12 +138,20 @@ export default {
             }
             this.getAvailableSlots(isFirstTime);
         },
-        async getChannelPlan() {
+        async getChannelPlans() {
             try {
-                let result = await instance.get('api/channel/plan?channel=' + this.channelSelected);
-                this.$parent.selectedPlan.Channel = result.data.Channel;
-                this.$parent.selectedPlan._id = result.data._id;
-                this.channelslots = result.data.ChannelSlot;
+                this.channelPlans = await ChannelProductService._query({
+                    $filter: `Channel eq '${this.channelSelected}'`,
+                    $expand: 'ProductLength,ChannelSlots/Slot'
+                });
+                this.$parent.selectedPlan = this.channelPlans.find(function(item) {
+                    return item.ProductLength.Name == '3 Months';
+                });
+                this.slotOptions = JSON.parse(JSON.stringify(this.$parent.selectedPlan.ChannelSlots));
+                this.$parent.clientAdPlan.ChannelProduct = {
+                    ProductLength: this.$parent.selectedPlan.ProductLength,
+                    ChannelSlots: []
+                };
                 this.$parent.isLoading = false;
             } catch (err) {
                 this.$swal({
@@ -232,6 +159,7 @@ export default {
                     text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                     type: 'error'
                 });
+                this.$parent.isLoading = false;
                 console.error(err);
             }
         },
@@ -239,7 +167,7 @@ export default {
             this.selected.push();
         },
         selectPlan(plan) {
-            this.selectedPlan = plan;
+            this.$parent.selectedPlan = plan;
         }
     },
     computed: {
@@ -276,13 +204,26 @@ export default {
             this.$router.push('/', () => {});
         } else {
             this.$parent.isLoading = true;
-            this.getChannelPlan();
+            this.getChannelPlans();
         }
     }
 };
 </script>
 
 <style lang="scss" scoped>
+.channel-plans-wrapper {
+    .channel-plan {
+        margin-right: 16px;
+        padding: 8px 64px;
+        border: 1px solid #eee;
+        font-size: 18px;
+        cursor: pointer;
+        &.active {
+            color: $brand-primary;
+            border: 1px solid $brand-primary;
+        }
+    }
+}
 .choose-plan {
     .counter {
         .btn-circle {

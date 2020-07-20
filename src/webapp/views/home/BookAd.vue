@@ -4,7 +4,7 @@
             <div class="col-md-4 col-lg-6 booking-option booking-location">
                 <label for class="text-white mt8">Broadcast location</label>
                 <select class="form-control" v-model="broadcastLocation" @change="loadLowestPrices">
-                    <option style="text-color: #ccc" class="placeholder" selected hidden value>Select Broadcast Location</option>
+                    <option style="text-color: #ccc" class="placeholder" selected value>Select Broadcast Location</option>
                     <option :value="channel._id" v-for="channel in channels" :key="channel._id" :disabled="channel.Status !== 'LIVE'">{{ channel.Name + (channel.Status !== 'LIVE' ? ' (Coming Soon)' : '') }}</option>
                 </select>
             </div>
@@ -18,23 +18,20 @@
                 <button class="btn btn-white btn-bordered btn-full" @click="getChannelPlans()" :disabled="isProceedable">Go!</button>
             </div>
         </div>
-        <div class="ad-views d-flex align-items-center justify-content-center" v-if="broadcastLocation && lowest">
+        <div class="ad-views d-flex align-items-center justify-content-center" v-if="broadcastLocation && lowestValue">
             <i class="material-icons">local_offer</i>
-            <span class="t-l">Prices as low as {{ lowest | currency }}</span>
+            <span class="t-l">Prices as low as {{ lowestValue | currency }} per week</span>
         </div>
     </div>
 </template>
 
 <script>
-import instance from '@/api';
-import flatPickr from 'vue-flatpickr-component';
-import 'flatpickr/dist/flatpickr.css';
 import WeekDays from '@/e9_components/components/WeekDays';
+import ChannelService from '@/services/ChannelService';
 
 export default {
     name: 'BookAd',
     components: {
-        flatPickr,
         WeekDays
     },
     data() {
@@ -67,63 +64,21 @@ export default {
                 {
                     name: 'BookingFlow',
                     query: {
-                        channel: this.broadcastLocation
+                        channel: this.broadcastLocation,
+                        daysSelected: btoa(this.daysSelected)
                     }
                 },
                 () => {}
             );
         },
-        async loadScheduleAvailability() {
-            this._switchShimmer(true);
-            try {
-                this.adLength = '30';
-                let result = await instance.get('/api/channel/availability?channel=' + this.broadcastLocation + '&seconds=' + this.adLength + '&startdate=' + this.sDate.format('YYYY-MM-DD') + '&enddate=' + this.sDate.endOf('month').format('YYYY-MM-DD'));
-                let totalActiveSchedules = result.data.totalActiveSchedules;
-                let disableDates = [new Date()];
-                for (let key in result.data.dates) {
-                    if (result.data.dates.hasOwnProperty(key) && result.data.dates[key].length === totalActiveSchedules) {
-                        let counter = 0;
-                        while (counter < totalActiveSchedules) {
-                            if (result.data.dates[key][counter] === true) {
-                                break;
-                            }
-                            counter++;
-                        }
-                        if (counter === totalActiveSchedules) {
-                            disableDates.push(this.moment(key, 'YYYY-MM-DD').format('DD/MM/YYYY'));
-                        }
-                    }
-                }
-                this.$refs.calendar.fp.set('disable', disableDates);
-                this._switchShimmer(false);
-            } catch (err) {
-                this._switchShimmer(false);
-                this.$swal({
-                    title: 'Error',
-                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error'
-                });
-                throw err;
-            }
-        },
-        async loadSecondsbyChannel() {
-            try {
-                let result = await instance.get('/api/channel/seconds?channel=' + this.broadcastLocation);
-                this.seconds = result.data;
-                this.disableAdLength = false;
-            } catch (err) {
-                this.$swal({
-                    title: 'Error',
-                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error'
-                });
-                console.error(err);
-            }
-        },
         async loadLowestPrices() {
             try {
-                let result = await instance.get('/api/channel/lowest?channel=' + this.broadcastLocation);
-                this.lowest = result.data;
+                if (this.broadcastLocation) {
+                    let result = await ChannelService.getLowestPrice(this.broadcastLocation);
+                    this.lowest = result;
+                } else {
+                    this.lowest = null;
+                }
             } catch (err) {
                 this.$swal({
                     title: 'Error',
@@ -163,14 +118,20 @@ export default {
         }
     },
     computed: {
+        lowestValue() {
+            if (this.daysSelected) {
+                return this.lowest * this.daysSelected.length;
+            } else {
+                return null;
+            }
+        },
         isProceedable() {
             return !this.broadcastLocation || !this.daysSelected.length > 0;
         }
     },
     async created() {
         try {
-            let result = await instance.get('/api/channel/all');
-            this.channels = result.data;
+            this.channels = await ChannelService._query({ $filter: 'Status eq \'LIVE\'' });
         } catch (err) {
             this.$swal({
                 title: 'Error',
@@ -302,7 +263,7 @@ export default {
 
     .ad-views {
         background-color: $brand-secondary;
-        width: 300px;
+        width: 380px;
         font-family: $font-family-heading;
         text-align: center;
         border-top-left-radius: 8px;

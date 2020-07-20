@@ -61,10 +61,14 @@ export const store = new Vuex.Store({
         }
     },
     actions: {
-        loginSuccess({ commit }) {
+        loginSuccess({
+            commit
+        }) {
             commit(LOGIN_SUCCESS);
         },
-        logout({ commit }) {
+        logout({
+            commit
+        }) {
             commit(LOGOUT);
         }
     },

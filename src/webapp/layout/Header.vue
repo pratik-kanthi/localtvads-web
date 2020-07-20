@@ -28,7 +28,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-lg-2 ipad-view">
+                <div class="col-lg-2 auth-parent">
                     <ul class="auth-wrapper" :class="{ 'nav-menu': showMenu }">
                         <li v-if="!isLoggedIn">
                             <a @click="chooseAuth('login')">Login</a>
@@ -203,7 +203,6 @@ nav {
         align-items: center;
         li {
             float: left;
-            margin-right: 40px;
             line-height: 78px;
             color: $white;
             font-family: $font-family-heading;
@@ -357,7 +356,7 @@ nav {
     }
 
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-        .ipad-view {
+        .auth-parent {
             padding: 0 15px 0 0;
 
             ul.auth-wrapper {

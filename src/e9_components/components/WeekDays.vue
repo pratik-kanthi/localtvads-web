@@ -11,6 +11,10 @@ export default {
         value: {
             type: Array,
             required: true
+        },
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -21,6 +25,7 @@ export default {
     },
     methods: {
         chooseDay(d) {
+            if (this.disabled) return;
             const index = this.clonedValue.indexOf(d);
             if (index > -1) {
                 this.clonedValue.splice(index, 1);

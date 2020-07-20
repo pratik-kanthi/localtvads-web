@@ -62,7 +62,8 @@ export const routes = [
         name: 'BookingFlow',
         component: () => {
             return import(/* webpackChunkName: "booking-flow" */'@/webapp/views/booking-flow/BookingFlow');
-        }
+        },
+        props: true 
     },
     {
         path: '/addons',
