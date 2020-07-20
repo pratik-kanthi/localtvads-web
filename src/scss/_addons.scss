@@ -92,31 +92,9 @@
         }
     }
 
-    .action {
-        padding: 56px 24px 20px;
-
-        .btn {
-            min-width: 250px !important;
-            margin-right: 20px;
-
-            &.border {
-                background: transparent;
-                border: 1px solid $error !important;
-                color: $error;
-            }
-        }
-    }
-
     @media (max-width: 767px) {
         .addons {
             margin: 0;
-
-            .action {
-                .btn {
-                    margin-bottom: 16px;
-                    min-width: 100% !important;
-                }
-            }
         }
     }
 

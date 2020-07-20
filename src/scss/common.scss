@@ -75,6 +75,15 @@ h3.section-title-2 {
     }
 }
 
+h3.page-heading {
+    font-size: 24px !important;
+    color: $brand-secondary;
+
+    @include media-breakpoint-up(md) {
+        font-size: 32px !important;
+    }
+}
+
 .underlined {
     height: 6px;
     width: 88px;
@@ -240,11 +249,17 @@ footer {
 }
 
 .t-xl {
-    font-size: 24px;
+    font-size: 18px;
+    @include media-breakpoint-up(md) {
+        font-size: 24px;
+    }
 }
 
 .t-l {
-    font-size: 16px;
+    font-size: 14px;
+    @include media-breakpoint-up(md) {
+        font-size: 16px;
+    }
 }
 
 .t-m {
