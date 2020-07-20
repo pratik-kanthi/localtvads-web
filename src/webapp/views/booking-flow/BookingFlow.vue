@@ -1,20 +1,21 @@
 <template>
     <div>
         <Stepper :steps="steps" :current="currentStep"></Stepper>
-        <div class="container">
-            <div class="book-ads mt32">
-                <div class="row">
-                    <div class="col-md-4 col-lg-6 booking-option booking-location">
-                        <label class="section-title brand-primary">Broadcast Location</label>
-                        <p for class="brand-secondary">{{ channel.Name }}</p>
+        <div class="bg--grey mt32 pt16 pb16">
+            <div class="container">
+                <div class="row selected-booking-options">
+                    <div class="col-md-6 col-lg-6 booking-option">
+                        <div class="booking-option-name brand-primary">Selected Channel</div>
+                        <div class="t-l">{{ channel.Name }}</div>
                     </div>
-                    <div class="col-md-3 col-lg-4 booking-option">
-                        <label for class="text-white mt8">Select days</label>
-                        <WeekDays :disabled="true" :value="daysSelected"></WeekDays>
+                    <div class="col-md-6 col-lg-4 booking-option">
+                        <div class="booking-option-name brand-primary">Selected Days</div>
+                        <div class="t-l">{{ getSelectedDays().join(',') }}</div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div>
             <component :is="currentStage" @advanceToPayment="goToPayment" @advanceToUpload="goToUpload" @advanceToAddOns="goToAddOns"></component>
         </div>
@@ -138,6 +139,12 @@ export default {
             }
             return 'Sure?';
         },
+        getSelectedDays() {
+            let days = ['', ' Monday', ' Tuesday', ' Wednesday', ' Thursday', ' Friday', ' Saturday', ' Sunday'];
+            return this.daysSelected.map(day => {
+                return days[day];
+            });
+        },
         ...mapGetters(['getIsVideoBeingUploaded'])
     },
     async created() {
@@ -179,4 +186,13 @@ export default {
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.selected-booking-options {
+    .booking-option-name {
+        font-size: 18px;
+        @include media-breakpoint-up(md) {
+            font-size: 24px;
+        }
+    }
+}
+</style>

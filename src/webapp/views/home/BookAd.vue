@@ -329,7 +329,7 @@ export default {
             position: absolute;
             bottom: 0;
             width: 100%;
-            margin: 20px auto -20px;
+            margin: 20px auto -64px;
             span {
                 font-size: 14px;
             }

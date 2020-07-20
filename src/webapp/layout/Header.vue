@@ -143,12 +143,12 @@ nav {
 .container-fluid {
     background-color: $brand-primary;
     position: fixed;
-    z-index: 1;
+    z-index: 5;
 }
 
 .nav-bar {
     min-height: 80px;
-    z-index: 3;
+    z-index: 4;
 
     /* iPad Pro Portrait */
     @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {

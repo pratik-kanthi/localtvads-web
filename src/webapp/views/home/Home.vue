@@ -38,7 +38,7 @@
                         </div>
                         <div class="col-4 d-none d-md-block">
                             <div class="float-right">
-                                <p class="mb0">If you do not have a video ad?</p>
+                                <p class="mb0">If you do not have a video ad</p>
                                 <div class="float-right">
                                     <router-link tag="a" to="/#addons" class="t-l mt8 white"> Click Here</router-link>
                                 </div>
@@ -131,7 +131,7 @@
                 <div class="container">
                     <h2 class="text-center brand-secondary section-heading">Don't have an ad?</h2>
                     <div class="t-xl section-subtitle text-center brand-secondary">
-                        <p>We have following options</p>
+                        <p>You can still get on TV using the our add-ons</p>
                     </div>
                     <div class="addons-parent mt32">
                         <div class="row addons-wrapper mb24" v-if="addons && addons.length > 0">
