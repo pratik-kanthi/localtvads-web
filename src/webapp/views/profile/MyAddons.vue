@@ -16,7 +16,7 @@
                     <b-pagination v-model="currentPage" :total-rows="addons.length" :per-page="perPage" first-text="First" prev-text="Prev" next-text="Next" last-text="Last" aria-controls="addons-table" align="right" class="pt0 pb16 pr16"></b-pagination>
                 </div>
 
-                <div class="d-block d-md-none" v-for="addon in addons">
+                <div class="d-block d-md-none" v-for="(addon, key) in addons" :key="key">
                     <b-card :title="addon.Name" class="mb-2">
                         <b-card-text>
                             <div class="d-flex flex-row justify-content-between ">

@@ -164,10 +164,7 @@ export default {
         },
         async getChannelPlans() {
             try {
-                this.channelPlans = await ChannelProductService._query({
-                    $filter: `Channel eq '${this.channelSelected}'`,
-                    $expand: 'ProductLength,ChannelSlots/Slot'
-                });
+                this.channelPlans = await ChannelProductService.getProductsOfChannel(this.channelSelected);
                 this.$parent.selectedPlan = {
                     ...this.channelPlans.find(function(item) {
                         return item.ProductLength.Name == '3 Months';
