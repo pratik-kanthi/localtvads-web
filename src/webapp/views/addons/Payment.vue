@@ -10,51 +10,25 @@
                             <hr class="mb24" />
                             <div class="d-flex justify-content-between t-l">
                                 <div>
-                                    <div>{{ this.$parent.selectedPlan.Channel.Name }} Ad Slot</div>
+                                    <div>{{ $parent.selectedPlan.Channel.Name }} Ad Slot</div>
                                 </div>
-                                <div>$1.53/week</div>
+                                <div>{{ $parent.clientAdPlan.PlanAmount | currency }}/week</div>
                             </div>
                             <div class="d-flex justify-content-between t-l mt48">
                                 <div>
                                     <div>
-                                        {{ this.$parent.serviceAddOn.Name }}
-                                        <span
-                                            class="t-s rounded p8 brand-primary-bg white"
-                                        >Add On</span>
+                                        {{ $parent.serviceAddOn.Name }}
+                                        <span class="t-s rounded p8 brand-primary-bg white">Add On</span>
 
                                         <div>
                                             <ul class="benefits t-s">
-                                                <li
-                                                    v-for="benefit in this.$parent.serviceAddOn.Benefits"
-                                                    :key="benefit"
-                                                >{{ benefit }}</li>
+                                                <li v-for="benefit in $parent.serviceAddOn.Benefits" :key="benefit">{{ benefit }}</li>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
-                                <div>{{ this.$parent.serviceAddOn.Amount | currency }}</div>
+                                <div>{{ $parent.clientAdPlan.AddonsAmount | currency }}</div>
                             </div>
-                            <!--div class="content">
-                                <h4 class="section-subtitle mb24 lh24 addon-title">
-                                    <span
-                                        class="brand-primary"
-                                        v-text="this.$parent.serviceAddOn.Name + ' '"
-                                    ></span>
-                                    <span
-                                        class="brand-secondary desc"
-                                        v-text="this.$parent.serviceAddOn.Description"
-                                    ></span>
-                                </h4>
-                                <div class="booking-items">
-                                    <h6 class="t-l medium brand-secondary mb16">Features</h6>
-                                    <ul class="benefits">
-                                        <li
-                                            v-for="benefit in this.$parent.serviceAddOn.Benefits"
-                                            :key="benefit"
-                                        >{{ benefit }}</li>
-                                    </ul>
-                                </div>
-                            </div-->
                             <div class="dashed-line mt32">
                                 <div class="line"></div>
                             </div>
@@ -63,34 +37,21 @@
                                     <div class="col-6 col-sm-6">
                                         <div class="taxes">
                                             <span>Taxes</span>
-                                            <i
-                                                class="material-icons"
-                                                @mouseover="showTaxInfo(true)"
-                                                @mouseout="showTaxInfo(false)"
-                                            >info</i>
+                                            <i class="material-icons" @mouseover="showTaxInfo(true)" @mouseout="showTaxInfo(false)">info</i>
                                             <div v-show="taxInfo" class="tooltip-info">
-                                                <div
-                                                    v-for="tax in this.$parent.taxes"
-                                                    :key="tax.Name"
-                                                >
+                                                <div v-for="tax in taxes" :key="tax.Name">
                                                     <div class="name">
                                                         {{ tax.Name }}
                                                         <span>({{ tax.Description }})</span>
                                                     </div>
-                                                    <div
-                                                        class="value text-right"
-                                                        v-if="tax.Type === 'PERCENTAGE'"
-                                                    >{{ tax.Value }}%</div>
-                                                    <div
-                                                        class="value text-right"
-                                                        v-else
-                                                    >{{ tax.Value | currency }}</div>
+                                                    <div class="value text-right" v-if="tax.Type === 'PERCENTAGE'">{{ tax.Value }}%</div>
+                                                    <div class="value text-right" v-else>{{ tax.Value | currency }}</div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-6 col-sm-6 text-right">
-                                        <p>{{ $parent.serviceAddOn.TaxAmount | currency }}</p>
+                                    <div class="col-6 col-sm-6 text-right" v-if="taxAmount">
+                                        <p>{{ taxAmount | currency }}</p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -98,9 +59,7 @@
                                         <h5>Total Amount</h5>
                                     </div>
                                     <div class="col-6 col-sm-6 text-right">
-                                        <h5
-                                            class="amount pull-right"
-                                        >{{ $parent.serviceAddOn.TotalAmount | currency }}</h5>
+                                        <h5 class="amount pull-right">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -116,35 +75,16 @@
                         <div class="cards-wrapper">
                             <div class="saved-cards" v-if="savedCards.length > 0">
                                 <div class="cards">
-                                    <div
-                                        class="card-title"
-                                        @click="togglePaymentOptions('SavedCards')"
-                                        :class="{ active: activeToggle === 'SavedCards' }"
-                                    >
+                                    <div class="card-title" @click="togglePaymentOptions('SavedCards')" :class="{ active: activeToggle === 'SavedCards' }">
                                         <div class="radio-btn-dot mr8">
-                                            <input
-                                                type="radio"
-                                                v-model="activeToggle"
-                                                value="SavedCards"
-                                            />
+                                            <input type="radio" v-model="activeToggle" value="SavedCards" />
                                             <label></label>
                                         </div>
                                         <span>Your saved cards</span>
                                     </div>
-                                    <div
-                                        v-for="(card, key) in savedCards"
-                                        :key="key"
-                                        class="card-info"
-                                        :class="{ active: existingCard === card._id }"
-                                        @click="selectExistingCard(card._id)"
-                                    >
+                                    <div v-for="(card, key) in savedCards" :key="key" class="card-info" :class="{ active: existingCard === card._id }" @click="selectExistingCard(card._id)">
                                         <div class="radio-btn-tick mr8">
-                                            <input
-                                                type="radio"
-                                                v-model="existingCard"
-                                                :value="card._id"
-                                                :disabled="activeToggle !== 'SavedCards'"
-                                            />
+                                            <input type="radio" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'" />
                                             <label></label>
                                         </div>
                                         <img :src="getImageUrl(card.Card.Vendor)" alt />
@@ -154,17 +94,9 @@
                             </div>
                             <div class="new-card">
                                 <form ref="form" class="p0">
-                                    <div
-                                        class="card-title"
-                                        @click="togglePaymentOptions('NewCard')"
-                                        :class="{ active: activeToggle === 'NewCard' }"
-                                    >
+                                    <div class="card-title" @click="togglePaymentOptions('NewCard')" :class="{ active: activeToggle === 'NewCard' }">
                                         <div class="radio-btn-dot mr8">
-                                            <input
-                                                type="radio"
-                                                v-model="activeToggle"
-                                                value="NewCard"
-                                            />
+                                            <input type="radio" v-model="activeToggle" value="NewCard" />
                                             <label></label>
                                         </div>
                                         <span>New credit and debit card</span>
@@ -173,62 +105,30 @@
                                     <div class="form-group">
                                         <label class="mb8">Card Number</label>
                                         <div class="input-card-number">
-                                            <input
-                                                name="number"
-                                                type="tel"
-                                                class="form-control"
-                                                v-model="cardNumber"
-                                                :disabled="activeToggle !== 'NewCard'"
-                                            />
+                                            <input name="number" type="tel" class="form-control" v-model="cardNumber" :disabled="activeToggle !== 'NewCard'" />
                                             <img :src="getCardType" alt class="pull-right" />
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for class="mb8">Cardholder Name</label>
-                                        <input
-                                            name="name"
-                                            type="text"
-                                            class="form-control"
-                                            v-model="name"
-                                            autocomplete="off"
-                                            :disabled="activeToggle !== 'NewCard'"
-                                        />
+                                        <input name="name" type="text" class="form-control" v-model="name" autocomplete="off" :disabled="activeToggle !== 'NewCard'" />
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label class="mb8">Expiry Date</label>
-                                                <input
-                                                    name="expiry"
-                                                    type="tel"
-                                                    class="form-control"
-                                                    v-model="expiry"
-                                                    placeholder="••/••••"
-                                                    :disabled="activeToggle !== 'NewCard'"
-                                                />
+                                                <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••" :disabled="activeToggle !== 'NewCard'" />
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label class="mb8">CVV</label>
-                                                <input
-                                                    name="cvc"
-                                                    type="password"
-                                                    class="form-control"
-                                                    v-model="cvv"
-                                                    :disabled="activeToggle !== 'NewCard'"
-                                                />
+                                                <input name="cvc" type="password" class="form-control" v-model="cvv" :disabled="activeToggle !== 'NewCard'" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="consents">
-                                        <input
-                                            type="checkbox"
-                                            id="save"
-                                            class="check"
-                                            v-model="save"
-                                            :disabled="activeToggle !== 'NewCard'"
-                                        />
+                                        <input type="checkbox" id="save" class="check" v-model="save" :disabled="activeToggle !== 'NewCard'" />
                                         <label for="save" class="check-label box mt8 mr8">
                                             <span></span>
                                         </label>
@@ -236,23 +136,14 @@
                                     </div>
                                 </form>
                             </div>
-                            <p
-                                class="mt16 mb16"
-                            >I have read and accept the terms of use,rules of Local TV Ads and privacy policy</p>
-                            <button
-                                type="button"
-                                class="btn btn-success btn-full"
-                                :disabled="!isProceedable && !existingCard"
-                                @click="generateToken"
-                            >Pay Now</button>
+                            <p class="mt16 mb16">I have read and accept the terms of use,rules of Local TV Ads and privacy policy</p>
+                            <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div v-else>
-                <h3
-                    class="section-title-2 mb8 text-center"
-                >Please login to continue with your booking.</h3>
+                <h3 class="section-title-2 mb8 text-center">Please login to continue with your booking.</h3>
             </div>
         </div>
         <div class="mt16 transaction-message" v-else>
@@ -264,6 +155,7 @@
 
 <script>
 import instance from '@/api';
+import TaxService from '@/services/TaxService';
 import { paymentMixin } from '@/mixins/payment';
 import Review from './Review';
 import SelectMedia from './SelectMedia';
@@ -272,6 +164,8 @@ export default {
     mixins: [paymentMixin],
     data() {
         return {
+            taxes: [],
+            taxAmount: 0,
             taxInfo: false
         };
     },
@@ -356,12 +250,20 @@ export default {
             }
         }
     },
-    created() {
+    async created() {
         window.scrollTo(0, 0);
         if (!this.isLoggedIn()) {
             this.$store.commit('DIALOG_CHOSEN', 'login');
         } else {
             this.getCards();
+            this.taxes = await TaxService._query();
+            for (let i = 0, len = this.taxes.length; i < len; i++) {
+                if (this.taxes[i].Type === 'PERCENTAGE') {
+                    this.taxAmount += (this.taxes[i].Value * (this.$parent.clientAdPlan.PlanAmount + this.$parent.clientAdPlan.AddonsAmount)) / 100;
+                } else {
+                    this.taxAmount += this.taxes[i].Value;
+                }
+            }
         }
         this.loadCardJS();
     }

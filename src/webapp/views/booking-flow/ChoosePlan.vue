@@ -14,9 +14,9 @@
                         <div class="t-l">This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
 
                         <div class="counter d-flex align-items-center mt24">
-                            <button @click="decrement()" :disabled="quantity < 2" class="btn btn-primary btn-circle">-</button>
-                            <div class="quantity t-l p16">{{ quantity }}</div>
-                            <button @click="increment()" :disabled="quantity > 2" class="btn btn-primary btn-circle">+</button>
+                            <button @click="decrement()" :disabled="$parent.clientAdPlan.ChannelProduct.ChannelSlots.length < 2" class="btn btn-primary btn-circle">-</button>
+                            <div class="quantity t-l p16">{{ $parent.clientAdPlan.ChannelProduct.ChannelSlots.length }}</div>
+                            <button @click="increment()" :disabled="$parent.clientAdPlan.ChannelProduct.ChannelSlots.length > 2" class="btn btn-primary btn-circle">+</button>
                         </div>
                     </div>
                 </div>
@@ -24,24 +24,38 @@
                     <div class="t-xl">Select you ad slots</div>
                     <div class="t-l">This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
                 </div>
-                <div class="slot-container mt24">
-                    <ChannelSlot v-for="index in quantity" :key="index" :no-of-days="$parent.daysSelected.length" :index="index" :slot-options="slotOptions" @done="handleSelect" :plan-length="$parent.selectedPlan.ProductLength.Duration"></ChannelSlot>
+                <div class="slot-container mt24" :key="slotsKey">
+                    <div class="slot border rounded p24 mt8" v-for="(channelSlot, slotIndex) in $parent.clientAdPlan.ChannelProduct.ChannelSlots" :key="slotIndex">
+                        <div class="row">
+                            <div class="col-sm-1">Slot {{ slotIndex + 1 }}</div>
+                            <div class="col-sm-4">
+                                <b-form-select @change="selectSlot($event, slotIndex)">
+                                    <b-form-select-option value="null" disabled>Select Your Slot</b-form-select-option>
+                                    <b-form-select-option v-for="(slotData, key) in $parent.selectedPlan.ChannelSlots" :key="key" :value="slotData">
+                                        <p class="slot-name">{{ slotData.Slot.Name }}</p>
+                                    </b-form-select-option>
+                                </b-form-select>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="slot-details" v-if="channelSlot.Slot">
+                                    <div class="medium">{{ 'Played on selected days between ' + channelSlot.Slot.StartTime + '-' + channelSlot.Slot.EndTime }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3" v-if="channelSlot.Slot">
+                                <div class="slot-price">You will be charged {{ (channelSlot.RatePerSecond * channelSlot.Duration * $parent.daysSelected.length) | currency }} <span class="duration t-m thin">/ week</span> from the day we go live with the ad.</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div v-if="selected.length > 0" class="pricing-info d-flex justify-content-between align-items-start mt24 border border-primary p32">
-                    <div>
-                        <div class="t-xl">Plan duration : {{ planLength }} months</div>
-                        <div v-if="planLength == 3" class="t-l mt16">You could save {{ totalSaving | currency }} on a 6 month plan:</div>
-                        <div v-if="planLength == 3" @click="changePlanLength" class="brand-primary t-l">Switch to 6 months plan</div>
-                        <div v-if="planLength == 6" @click="changePlanLength" class="brand-primary t-l">Switch to 3 months plan</div>
+                <div class="pricing-info d-flex justify-content-between align-items-start mt24 border border-primary p32">
+                    <div v-if="$parent.clientAdPlan && $parent.clientAdPlan.ChannelProduct.ProductLength">
+                        <div class="t-xl">Plan duration : {{ $parent.clientAdPlan.ChannelProduct.ProductLength.Duration }} months</div>
+                        <div v-for="(saving, key) in savings" :key="key" class="t-l brand-primary mt16">You could save {{ saving.Amount | currency }} on {{ saving.Plan.ProductLength.Name }} plan.</div>
                     </div>
                     <div class="text-right">
                         <div class="d-flex justify-content-between brand-primary t-xl">
                             <div>Total Payable:</div>
-                            <div>{{ (planTotal / 13.03) | currency }} / week</div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div>Total Plan Amount:</div>
-                            <div>{{ planTotal | currency }}</div>
+                            <div>{{ planTotal | currency }} / week</div>
                         </div>
                     </div>
                 </div>
@@ -57,15 +71,12 @@
 <script>
 import instance from '@/api';
 import ChannelProductService from '@/services/ChannelProductService';
-import ChannelSlot from './ChannelSlot';
 
 export default {
     name: 'ChoosePlan',
-    components: {
-        ChannelSlot
-    },
     data() {
         return {
+            slotsKey: 0,
             quantity: 1,
             availableSlots: {},
             channelslots: [],
@@ -78,6 +89,7 @@ export default {
             secondSelected: this.$route.query.seconds,
             selectedSlot: {},
             slotOptions: [],
+            clientAdPlan: this.$parent.clientAdPlan,
             selectedPlan: {},
             sliderEndDate: '',
             sliderStartDate: '',
@@ -91,10 +103,23 @@ export default {
     },
     methods: {
         increment() {
-            this.quantity++;
+            let adPlan = { ...this.$parent.clientAdPlan };
+            adPlan.ChannelProduct.ChannelSlots.push({
+                Slot: null,
+                RatePerSecond: null,
+                Duration: null
+            });
+            this.$parent.clientAdPlan = adPlan;
+        },
+        selectSlot(slot, index) {
+            let adPlan = { ...this.$parent.clientAdPlan };
+            adPlan.ChannelProduct.ChannelSlots[index] = slot;
+            this.$parent.clientAdPlan = adPlan;
         },
         decrement() {
-            this.quantity--;
+            let adPlan = { ...this.$parent.clientAdPlan };
+            adPlan.ChannelProduct.ChannelSlots.pop();
+            this.$parent.clientAdPlan = adPlan;
         },
         handleSelect(e, o) {
             if (!o) {
@@ -116,8 +141,7 @@ export default {
             this.planLength = this.planLength == 3 ? 6 : 3;
         },
         goToPayment() {
-            this.$parent.selectedPlan.slots = this.selected;
-            this.$parent.selectedPlan.planLength = this.planLength;
+            this.$parent.clientAdPlan.PlanAmount = this.planTotal;
             this.$emit('advanceToAddOns');
         },
         async getAvailableSlotsByChannel(isFirstTime) {
@@ -144,15 +168,23 @@ export default {
                     $filter: `Channel eq '${this.channelSelected}'`,
                     $expand: 'ProductLength,ChannelSlots/Slot'
                 });
-                this.$parent.selectedPlan = this.channelPlans.find(function(item) {
-                    return item.ProductLength.Name == '3 Months';
-                });
-                this.slotOptions = JSON.parse(JSON.stringify(this.$parent.selectedPlan.ChannelSlots));
+                this.$parent.selectedPlan = {
+                    ...this.channelPlans.find(function(item) {
+                        return item.ProductLength.Name == '3 Months';
+                    })
+                };
                 this.$parent.clientAdPlan.ChannelProduct = {
                     ProductLength: this.$parent.selectedPlan.ProductLength,
-                    ChannelSlots: []
+                    ChannelSlots: [
+                        {
+                            Slot: null,
+                            RatePerSecond: null,
+                            Duration: null
+                        }
+                    ]
                 };
                 this.$parent.isLoading = false;
+                this.clientAdPlan = this.$parent.clientAdPlan;
             } catch (err) {
                 this.$swal({
                     title: 'Error',
@@ -163,14 +195,42 @@ export default {
                 console.error(err);
             }
         },
-        selectSlot() {
-            this.selected.push();
-        },
         selectPlan(plan) {
             this.$parent.selectedPlan = plan;
+            this.$parent.clientAdPlan.ChannelProduct = {
+                ProductLength: this.$parent.selectedPlan.ProductLength,
+                ChannelSlots: [
+                    {
+                        Slot: null,
+                        RatePerSecond: null,
+                        Duration: null
+                    }
+                ]
+            };
+            this.slotsKey++;
         }
     },
     computed: {
+        savings() {
+            if (!this.planTotal) return [];
+            let savings = [];
+            let plans = this.channelPlans.filter(item => {
+                return item._id != this.$parent.selectedPlan._id;
+            });
+            for (let i = 0, len = plans.length; i < len; i++) {
+                let totalAmount = 0;
+                for (let j = 0, leng = this.$parent.clientAdPlan.ChannelProduct.ChannelSlots.length; j < leng; j++) {
+                    let planSlot = plans[i].ChannelSlots.find(item => {
+                        return this.$parent.clientAdPlan.ChannelProduct.ChannelSlots[j].Slot && item.Slot._id == this.$parent.clientAdPlan.ChannelProduct.ChannelSlots[j].Slot._id;
+                    });
+                    if (planSlot) totalAmount += planSlot.RatePerSecond * planSlot.Duration * this.$parent.daysSelected.length;
+                }
+                if (totalAmount != 0 && totalAmount < this.planTotal) {
+                    savings.push({ Plan: plans[i], Amount: this.planTotal - totalAmount });
+                }
+            }
+            return savings;
+        },
         checkStartDate() {
             return this.moment(this.sliderStartDate, 'YYYY-MM-DD').diff(this.moment(), 'days') >= 1;
         },
@@ -192,9 +252,10 @@ export default {
         },
         planTotal() {
             let total = 0;
-            this.selected.map(item => {
-                let t = this.planLength == 3 ? item.BaseAmount : item.BaseAmount2;
-                total += t;
+            this.$parent.clientAdPlan.ChannelProduct.ChannelSlots.map(item => {
+                if (item.Slot) {
+                    total += item.RatePerSecond * item.Duration * this.$parent.daysSelected.length;
+                }
             });
             return total;
         }
@@ -273,7 +334,6 @@ export default {
     .slot-details {
         .medium::before {
             content: '';
-            background-image: url('../../../assets/images/tick.svg');
             height: 16px;
             width: 16px;
             left: 0;
