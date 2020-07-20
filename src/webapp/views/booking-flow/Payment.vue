@@ -1,11 +1,7 @@
 <template>
     <div class="payment bg--grey">
         <div v-if="showCoupons">
-            <CoupnsModal
-                :show-coupons="showCoupons"
-                :options="{ channel: $route.query.channel, adSchedule: $parent.selectedPlan.adSchedule, startDate: $parent.selectedPlan.broadcastStartDate }"
-                @discountChosen="setDiscount"
-            ></CoupnsModal>
+            <CoupnsModal :show-coupons="showCoupons" :options="{ channel: $route.query.channel, adSchedule: $parent.selectedPlan.adSchedule, startDate: $parent.selectedPlan.broadcastStartDate }" @discountChosen="setDiscount"></CoupnsModal>
         </div>
         <div v-if="!paymentLoading">
             <div class="container">
@@ -22,35 +18,23 @@
                                 <div class="content">
                                     <div class="booking-items">
                                         <label>Channel</label>
-                                        <h6
-                                            class="hero-text"
-                                        >{{ $parent.selectedPlan.Channel.Name }}</h6>
+                                        <h6 class="hero-text">{{ $parent.selectedPlan.Channel.Name }}</h6>
                                     </div>
                                     <div class="booking-items">
                                         <label>Selected Slots</label>
-                                        <h6
-                                            class="hero-text"
-                                            v-for="slot in $parent.selectedPlan.slots"
-                                        >{{ slot.Name }} ( {{ slot.StartTime }} - {{ slot.EndTime }})</h6>
+                                        <h6 class="hero-text" :key="key" v-for="(slot, key) in $parent.selectedPlan.slots">{{ slot.Name }} ( {{ slot.StartTime }} - {{ slot.EndTime }})</h6>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="booking-items">
                                                 <label>Plan Duration</label>
-                                                <h6
-                                                    class="hero-text"
-                                                >{{ $parent.selectedPlan.planLength }} months</h6>
+                                                <h6 class="hero-text">{{ $parent.selectedPlan.planLength }} months</h6>
                                             </div>
                                         </div>
                                     </div>
-                                    <div
-                                        class="recurring mb40"
-                                        v-if="$parent.selectedPlan.isRenewal"
-                                    >
-                                        <h6 class="hero-text">
-                                            <i class="material-icons">done</i> Recurring Broadcast
-                                        </h6>
+                                    <div class="recurring mb40" v-if="$parent.selectedPlan.isRenewal">
+                                        <h6 class="hero-text"><i class="material-icons">done</i> Recurring Broadcast</h6>
                                     </div>
                                 </div>
                                 <div class="dashed-line">
@@ -67,43 +51,25 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-6 col-sm-6">
-                                            <p
-                                                v-if="discount"
-                                            >Discount {{ discount.AmountType === 'PERCENTAGE' ? '(' + discount.Amount + '%' + ')' : '' }}</p>
+                                            <p v-if="discount">Discount {{ discount.AmountType === 'PERCENTAGE' ? '(' + discount.Amount + '%' + ')' : '' }}</p>
                                         </div>
                                         <div class="col-6 col-sm-6 text-right">
-                                            <p
-                                                class="green"
-                                                v-if="discount"
-                                            >- {{ discountAmount | currency }}</p>
+                                            <p class="green" v-if="discount">- {{ discountAmount | currency }}</p>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-6 col-sm-6">
                                             <div class="taxes">
                                                 <span>Taxes</span>
-                                                <i
-                                                    class="material-icons"
-                                                    @mouseover="showTaxInfo(true)"
-                                                    @mouseout="showTaxInfo(false)"
-                                                >info</i>
+                                                <i class="material-icons" @mouseover="showTaxInfo(true)" @mouseout="showTaxInfo(false)">info</i>
                                                 <div v-show="taxInfo" class="tooltip-info">
-                                                    <div
-                                                        v-for="tax in this.$parent.selectedPlan.taxes"
-                                                        :key="tax.Name"
-                                                    >
+                                                    <div v-for="tax in this.$parent.selectedPlan.taxes" :key="tax.Name">
                                                         <div class="name">
                                                             {{ tax.Name }}
                                                             <span>({{ tax.Description }})</span>
                                                         </div>
-                                                        <div
-                                                            class="value text-right"
-                                                            v-if="tax.Type === 'PERCENTAGE'"
-                                                        >{{ tax.Value }}%</div>
-                                                        <div
-                                                            class="value text-right"
-                                                            v-else
-                                                        >{{ tax.Value | currency }}</div>
+                                                        <div class="value text-right" v-if="tax.Type === 'PERCENTAGE'">{{ tax.Value }}%</div>
+                                                        <div class="value text-right" v-else>{{ tax.Value | currency }}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -117,9 +83,7 @@
                                             <h5>Total Amount</h5>
                                         </div>
                                         <div class="col-6 col-sm-6 text-right">
-                                            <h5
-                                                class="amount pull-right"
-                                            >{{ getTotalAmount | currency }}</h5>
+                                            <h5 class="amount pull-right">{{ getTotalAmount | currency }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -135,35 +99,16 @@
                             <div class="cards-wrapper">
                                 <div class="saved-cards" v-if="savedCards.length > 0">
                                     <div class="cards">
-                                        <div
-                                            class="card-title mb24"
-                                            @click="togglePaymentOptions('SavedCards')"
-                                            :class="{ active: activeToggle === 'SavedCards' }"
-                                        >
+                                        <div class="card-title mb24" @click="togglePaymentOptions('SavedCards')" :class="{ active: activeToggle === 'SavedCards' }">
                                             <div class="radio-btn-dot mr8">
-                                                <input
-                                                    type="radio"
-                                                    v-model="activeToggle"
-                                                    value="SavedCards"
-                                                />
+                                                <input type="radio" v-model="activeToggle" value="SavedCards" />
                                                 <label></label>
                                             </div>
                                             <span>Your saved cards</span>
                                         </div>
-                                        <div
-                                            v-for="(card, key) in savedCards"
-                                            :key="key"
-                                            class="card-info"
-                                            :class="{ active: existingCard === card._id }"
-                                            @click="selectExistingCard(card._id)"
-                                        >
+                                        <div v-for="(card, key) in savedCards" :key="key" class="card-info" :class="{ active: existingCard === card._id }" @click="selectExistingCard(card._id)">
                                             <div class="radio-btn-tick mr8">
-                                                <input
-                                                    type="radio"
-                                                    v-model="existingCard"
-                                                    :value="card._id"
-                                                    :disabled="activeToggle !== 'SavedCards'"
-                                                />
+                                                <input type="radio" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'" />
                                                 <label></label>
                                             </div>
                                             <img :src="getImageUrl(card.Card.Vendor)" alt />
@@ -173,17 +118,9 @@
                                 </div>
                                 <div class="new-card">
                                     <form ref="form" class="p0">
-                                        <div
-                                            class="card-title"
-                                            @click="togglePaymentOptions('NewCard')"
-                                            :class="{ active: activeToggle === 'NewCard' }"
-                                        >
+                                        <div class="card-title" @click="togglePaymentOptions('NewCard')" :class="{ active: activeToggle === 'NewCard' }">
                                             <div class="radio-btn-dot mr8">
-                                                <input
-                                                    type="radio"
-                                                    v-model="activeToggle"
-                                                    value="NewCard"
-                                                />
+                                                <input type="radio" v-model="activeToggle" value="NewCard" />
                                                 <label></label>
                                             </div>
                                             <span>New credit and debit card</span>
@@ -192,76 +129,36 @@
                                         <div class="form-group">
                                             <label class="mb8">Card Number</label>
                                             <div class="input-card-number">
-                                                <input
-                                                    name="number"
-                                                    type="tel"
-                                                    class="form-control"
-                                                    v-model="cardNumber"
-                                                    :disabled="activeToggle !== 'NewCard'"
-                                                />
+                                                <input name="number" type="tel" class="form-control" v-model="cardNumber" :disabled="activeToggle !== 'NewCard'" />
                                                 <img :src="getCardType" alt class="pull-right" />
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for class="mb8">Cardholder Name</label>
-                                            <input
-                                                name="name"
-                                                type="text"
-                                                class="form-control"
-                                                v-model="name"
-                                                autocomplete="off"
-                                                :disabled="activeToggle !== 'NewCard'"
-                                            />
+                                            <input name="name" type="text" class="form-control" v-model="name" autocomplete="off" :disabled="activeToggle !== 'NewCard'" />
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
                                                     <label class="mb8">Expiry Date</label>
-                                                    <input
-                                                        name="expiry"
-                                                        type="tel"
-                                                        class="form-control"
-                                                        v-model="expiry"
-                                                        placeholder="••/••••"
-                                                        :disabled="activeToggle !== 'NewCard'"
-                                                    />
+                                                    <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••" :disabled="activeToggle !== 'NewCard'" />
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
                                                     <label class="mb8">CVV</label>
-                                                    <input
-                                                        name="cvc"
-                                                        type="password"
-                                                        class="form-control"
-                                                        v-model="cvv"
-                                                        :disabled="activeToggle !== 'NewCard'"
-                                                    />
+                                                    <input name="cvc" type="password" class="form-control" v-model="cvv" :disabled="activeToggle !== 'NewCard'" />
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="consents">
-                                            <input
-                                                type="checkbox"
-                                                id="save"
-                                                class="check"
-                                                v-model="save"
-                                                :disabled="(savedCards.length === 0 && $parent.selectedPlan.isRenewal) || activeToggle !== 'NewCard'"
-                                            />
+                                            <input type="checkbox" id="save" class="check" v-model="save" :disabled="(savedCards.length === 0 && $parent.selectedPlan.isRenewal) || activeToggle !== 'NewCard'" />
                                             <label for="save" class="check-label box mt8 mr8">
                                                 <span></span>
                                             </label>
                                             <span class="brand-primary medium">Save Card</span>
-                                            <i
-                                                class="material-icons"
-                                                v-if="savedCards.length === 0 && $parent.selectedPlan.isRenewal"
-                                                @mouseover="showInfo(true)"
-                                                @mouseout="showInfo(false)"
-                                            >info</i>
-                                            <span
-                                                v-show="tooltip"
-                                                class="tooltip-info"
-                                            >Your current plan is a recurring one and you don't have any saved cards. Saving a card is mandatory in this case.</span>
+                                            <i class="material-icons" v-if="savedCards.length === 0 && $parent.selectedPlan.isRenewal" @mouseover="showInfo(true)" @mouseout="showInfo(false)">info</i>
+                                            <span v-show="tooltip" class="tooltip-info">Your current plan is a recurring one and you don't have any saved cards. Saving a card is mandatory in this case.</span>
                                         </div>
                                     </form>
                                 </div>
@@ -272,33 +169,20 @@
                                     </div>
                                     <div class="action">
                                         <a @click="openCouponsModal" v-if="!discount">
-                                            <i
-                                                class="material-icons brand-primary"
-                                            >keyboard_arrow_right</i>
+                                            <i class="material-icons brand-primary">keyboard_arrow_right</i>
                                         </a>
                                         <a @click="setDiscount(undefined)" v-else>
                                             <i class="material-icons brand-primary">close</i>
                                         </a>
                                     </div>
                                 </div>
-                                <p
-                                    class="mt16 mb16"
-                                >By proceeding you agree that you have read and accept the terms of use, rules of Local TV Ads and privacy policy</p>
-                                <button
-                                    type="button"
-                                    class="btn btn-success btn-full"
-                                    :disabled="!isProceedable && !existingCard"
-                                    @click="generateToken"
-                                >Pay Now</button>
+                                <p class="mt16 mb16">By proceeding you agree that you have read and accept the terms of use, rules of Local TV Ads and privacy policy</p>
+                                <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable && !existingCard" @click="generateToken">Pay Now</button>
                             </div>
                         </div>
                         <div v-else class="col-sm-6 p24">
-                            <div
-                                class="t-xl d-none d-md-block"
-                            >Please login to continue with payment</div>
-                            <div
-                                class="t-l mt16 text-center d-block d-md-none"
-                            >Please login to continue with payment</div>
+                            <div class="t-xl d-none d-md-block">Please login to continue with payment</div>
+                            <div class="t-l mt16 text-center d-block d-md-none">Please login to continue with payment</div>
                         </div>
                     </div>
                 </div>
@@ -480,8 +364,7 @@ export default {
     },
     created() {
         window.scrollTo(0, 0);
-        if (!this.isLoggedIn()) {
-        } else {
+        if (this.isLoggedIn()) {
             this.getCards();
         }
         this.loadCardJS();

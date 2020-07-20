@@ -69,10 +69,12 @@ export default {
         },
         selectAddon(addon) {
             this.$parent.serviceAddOn = addon;
+            this.$parent.clientAdPlan.Addons = [addon];
         },
         saveAddOnOption() {
             if (this.isAddOn == 'addon') {
                 this.$parent.hasAddOn = true;
+                this.$parent.clientAdPlan.AddonsAmount = this.$parent.clientAdPlan.Addons[0].Amount;
                 this.$emit('advanceToPayment');
             } else {
                 this.$parent.hasAddOn = false;
@@ -84,8 +86,7 @@ export default {
         this.$parent.isLoading = true;
         try {
             let result = await instance.get('api/serviceaddons/all');
-            this.addons = result.data.addOns;
-            this.$parent.taxes = result.data.taxes;
+            this.addons = result.data;
             this.$parent.serviceAddOn = this.addons[0];
             this.$parent.isLoading = false;
         } catch (err) {
