@@ -1,7 +1,7 @@
 <template>
     <div class="book-ads">
         <div class="row mt-n8">
-            <div class="col-md-4 col-lg-6 booking-option booking-location">
+            <div class="col-md-4 col-lg-5 booking-option booking-location">
                 <label for class="text-white mt8">Broadcast location</label>
                 <select class="form-control" v-model="broadcastLocation" @change="loadLowestPrices">
                     <option style="text-color: #ccc" class="placeholder" selected value>Select Broadcast Location</option>
@@ -9,7 +9,7 @@
                 </select>
             </div>
 
-            <div class="col-md-3 col-lg-4 booking-option">
+            <div class="col-md-6 col-lg-5 booking-option">
                 <label for class="text-white mt8">Select days</label>
                 <WeekDays :value="daysSelected"></WeekDays>
             </div>
@@ -28,6 +28,7 @@
 <script>
 import WeekDays from '@/e9_components/components/WeekDays';
 import ChannelService from '@/services/ChannelService';
+import { query } from '@/services/ApiService';
 
 export default {
     name: 'BookAd',
@@ -131,7 +132,8 @@ export default {
     },
     async created() {
         try {
-            this.channels = await ChannelService._query({ $filter: 'Status eq \'LIVE\'' });
+            const result = await query('api/channel/all');
+            this.channels = result.data;
         } catch (err) {
             this.$swal({
                 title: 'Error',

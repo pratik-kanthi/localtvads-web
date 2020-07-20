@@ -1,10 +1,9 @@
 import BaseService from './BaseService';
-import {
-    get
-} from './ApiService';
+import { get } from './ApiService';
 
 export default class ChannelService extends BaseService {
     static _url = '/api/channels';
+
     static getLowestPrice(id) {
         return new Promise(async (resolve, reject) => {
             try {

@@ -2,37 +2,27 @@
     <section class="transactions bg--grey">
         <LoaderModal :showloader="isLoading" message="Loading..."></LoaderModal>
         <div class="container">
-            <h3 class="section-title-2 mb24">Transaction History</h3>
+            <h3 class=" brand-secondary">Transactions</h3>
+
+            <div class="table-wrapper d-none d-md-block">
+                <Table :items="transactions" :headings="fields" :pagination="pagination" :sort.sync="sort" table-class="table-responsive-xs table-responsive-stable-responsive-md">
+                    <template v-slot:DateTime="data">
+                        <div>{{ data.value.DateTime | formatDate('DD MMM YYYY') }}</div>
+                    </template>
+                    <template v-slot:Total="data">
+                        <div>{{ data.value.Total | currency }}</div>
+                    </template>
+                    <template v-slot:Action="data">
+                        <button @click="downloadReceipt(data.value.ReferenceID)" class="btn btn-sm btn-link pl0 pt0 pr0 t-m">
+                            Download Invoice
+                        </button>
+                    </template>
+                </Table>
+            </div>
+
             <div class="transactions-wrapper">
                 <div v-if="!isLoading && transactions.length === 0" class="no-data">
                     <p class="lead">No transactions found.</p>
-                </div>
-                <!--div class="transaction-table" v-else>
-                    <b-table striped hover :items="transactions" :fields="fields" :per-page="perPage" :current-page="currentPage" responsive id="transaction-table">
-                        <template v-slot:cell(Action)="data">
-                            <button @click="downloadReceipt(data.item.ReferenceID)" class="btn btn-sm btn-link pl0 pt0 pr0 t-m">
-                                Download
-                            </button>
-                        </template>
-                    </b-table>
-                    <b-pagination v-model="currentPage" :total-rows="transactions.length" :per-page="perPage" first-text="First" prev-text="Prev" next-text="Next" last-text="Last" aria-controls="transaction-table" align="right" class="pt0 pb16 pr16"></b-pagination>
-                </div-->
-                <div class="shadow-sm mt24 brand-secondary" v-for="transaction in transactions">
-                    <b-card :title="transaction.Details">
-                        <div class="d-flex flex-column justify-content-between">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <b-card-text>{{ new Date(transaction.DateTime) | formatDate('DD MMMM YYYY') }}</b-card-text>
-                                    <div class="t-l">Total Amount:</div>
-                                    <div class="t-xl">{{ transaction.Total }}</div>
-                                </div>
-                                <b-card-text class="green"><i class="material-icons align-bottom">check_circle</i>&nbsp;&nbsp;{{ (transaction.Status = 'Succeeded' ? 'Successful' : 'Failed') }}</b-card-text>
-                            </div>
-                            <div class="b-t mt24 pt24 d-flex justify-content-between align-items-center">
-                                <a @click="downloadReceipt(transaction.ReferenceID)" class="brand-primary card-link">Download Invoice</a>
-                            </div>
-                        </div>
-                    </b-card>
                 </div>
             </div>
         </div>
@@ -43,18 +33,51 @@
 import { mapGetters } from 'vuex';
 import instance from '@/api';
 import axios from 'axios';
-
 import VueCookies from 'vue-cookies';
+import Table from '@/e9_components/components/Table';
 
 export default {
     name: 'Transactions',
+    components: {
+        Table
+    },
     data() {
         return {
             isLoading: false,
-            fields: ['DateTime', 'Details', 'Status', 'Total', 'Action'],
+            fields: [
+                {
+                    key: 'Details',
+                    sortable: true
+                },
+                {
+                    key: 'DateTime',
+                    label: 'Transaction Date',
+                    sortable: true
+                },
+                {
+                    key: 'Status',
+                    sortable: true
+                },
+                {
+                    key: 'Total',
+                    sortable: true
+                },
+                {
+                    key: 'Action',
+                    label: ' '
+                }
+            ],
             transactions: [],
             perPage: 15,
-            currentPage: 1
+            currentPage: 1,
+            pagination: {
+                currentPage: 1,
+                perPage: 10
+            },
+            sort: {
+                name: 'Name',
+                value: 'asc'
+            }
         };
     },
     methods: {
@@ -80,9 +103,8 @@ export default {
                 return {
                     DateTime: item.DateTime,
                     ReferenceID: item.ReferenceId,
-                    Details: item.ChannelPlan && item.ChannelPlan.Channel ? item.ChannelPlan.Channel.Name + ', ' + item.ChannelPlan.AdSchedule.Name : 'Add On - ' + item.ServiceAddOn.Name,
                     Status: item.Status.substring(0, 1).toUpperCase() + item.Status.substring(1),
-                    Total: '£' + item.TotalAmount.toFixed(2)
+                    Total: item.TotalAmount
                 };
             });
             this.isLoading = false;
