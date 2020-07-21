@@ -700,3 +700,21 @@ footer {
         width: 100%;
     }
 }
+
+/* Components */
+
+.tag {
+    color: $white;
+    background: $brand-primary;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 5px;
+
+    &-sm {
+        color: $white;
+        border-radius: 5px;
+        background: $brand-primary;
+        font-size: 12px;
+        padding: 6px;
+    }
+}
