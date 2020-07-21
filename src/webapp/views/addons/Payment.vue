@@ -8,36 +8,45 @@
                         <div class="booking-details">
                             <h6 class="t-l medium text-center brand-secondary">Booking Receipt</h6>
                             <hr class="mb24" />
-                            <div class="d-flex justify-content-between t-l">
-                                <div>
-                                    <div class="brand-primary t-l">Ad Plan:</div>
-                                    <div class="t-m">Length: {{ $parent.clientAdPlan.ChannelProduct.ProductLength.Name }}</div>
-                                    <div class="t-m d-block d-md-none">Days: {{ getSelectedDays(true) }}</div>
-                                    <div class="t-m d-none d-md-block">Days: {{ getSelectedDays(false) }}</div>
-                                </div>
-                                <div>
-                                    <div class="d-flex mt8 justify-content-end">Total: {{ $parent.clientAdPlan.PlanAmount | currency }}/week</div>
-                                    <div class="t-s d-flex justify-content-end" :key="key" v-for="(slot, key) in $parent.clientAdPlan.ChannelProduct.ChannelSlots">{{ slot.Slot.Name }} - {{ (slot.RatePerSecond * slot.Duration * $parent.daysSelected.length) | currency }}</div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between t-l mt48" v-if="$parent.clientAdPlan.Addons && $parent.clientAdPlan.Addons.length > 0">
-                                <div>
-                                    <div>
-                                        <span class="brand-primary"> {{ $parent.clientAdPlan.Addons[0].Name }}</span>
-                                        <span class="t-s rounded p8 brand-primary-bg white">Add On</span>
 
-                                        <div>
-                                            <ul class="benefits t-s">
-                                                <li v-for="benefit in $parent.clientAdPlan.Addons[0].Benefits" :key="benefit">{{ benefit }}</li>
-                                            </ul>
+                            <div class="row plan-items">
+                                <div class="col-md-8 col-6"><div class="brand-primary t-l">Channel Ad Plan</div></div>
+                                <div class="col-md-4 col-6">
+                                    <div class="black text-right">
+                                        <div class="d-flex justify-content-end">
+                                            <div>{{ $parent.clientAdPlan.PlanAmount | currency }}/week</div>
+                                            <div class="pointer"><i class="ml8 material-icons brand-primary t-xl" @mouseover="showPriceBreakdown(true)" @mouseout="showPriceBreakdown(false)">info</i></div>
+                                        </div>
+                                        <div v-show="priceBreakDown" class="tooltip-info">
+                                            <div class="t-s" :key="key" v-for="(slot, key) in $parent.clientAdPlan.ChannelProduct.ChannelSlots">{{ slot.Slot.Name }} - {{ (slot.RatePerSecond * slot.Duration * $parent.daysSelected.length) | currency }}</div>
                                         </div>
                                     </div>
                                 </div>
-                                <div>{{ $parent.clientAdPlan.AddonsAmount | currency }}</div>
+
+                                <div class="col-md-8">
+                                    <div class="t-m">
+                                        Plan Length: <span class="bold">{{ $parent.clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
+                                    </div>
+                                    <div class="t-s d-block d-md-none">Days: {{ getSelectedDays(true) }}</div>
+                                    <div class="t-m d-none d-md-block">
+                                        Days: <span class="bold">{{ getSelectedDays(false) }}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="dashed-line mt32">
-                                <div class="line"></div>
+
+                            <div class="d-flex justify-content-between t-l mt48" v-if="$parent.clientAdPlan.Addons && $parent.clientAdPlan.Addons.length > 0">
+                                <div>
+                                    <div>
+                                        <div class="brand-primary d-flex flex-column flex-md-row align-items-md-end">
+                                            <div>{{ $parent.clientAdPlan.Addons[0].Name }}</div>
+                                            <div class="ml-md-2"><span class="tag-sm">Add On</span></div>
+                                        </div>
+                                        <div class="t-s mt8" v-for="benefit in $parent.clientAdPlan.Addons[0].Benefits" :key="benefit">{{ benefit }}</div>
+                                    </div>
+                                </div>
+                                <div class="black">{{ $parent.clientAdPlan.AddonsAmount | currency }}</div>
                             </div>
+                            <hr class="mb24" />
                             <div class="total mt24">
                                 <div class="row">
                                     <div class="col-6 col-sm-6">
@@ -45,8 +54,8 @@
                                             <span class="t-xl">Net Amount</span>
                                         </div>
                                     </div>
-                                    <div class="col-6 col-sm-6 text-right mt8">
-                                        <p>{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount) | currency }}</p>
+                                    <div class="col-6 col-sm-6 text-right">
+                                        <div class="t-xl black">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount) | currency }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -69,7 +78,7 @@
                                         </div>
                                     </div>
                                     <div class="col-6 col-sm-6 text-right" v-if="taxAmount">
-                                        <p>{{ taxAmount | currency }}</p>
+                                        <div class="black">{{ taxAmount | currency }}</div>
                                     </div>
                                 </div>
                                 <div class="dashed-line mt16">
@@ -80,7 +89,7 @@
                                         <h5 class="t-xl">Total Amount</h5>
                                     </div>
                                     <div class="col-6 col-sm-6 text-right">
-                                        <h5 class="amount pull-right">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</h5>
+                                        <h5 class="amount t-xl black pull-right">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -187,7 +196,8 @@ export default {
         return {
             taxes: [],
             taxAmount: 0,
-            taxInfo: false
+            taxInfo: false,
+            priceBreakDown: false
         };
     },
     methods: {
@@ -290,6 +300,9 @@ export default {
         showTaxInfo(isDisplay) {
             this.taxInfo = isDisplay;
         },
+        showPriceBreakdown(isDisplay) {
+            this.priceBreakDown = isDisplay;
+        },
         togglePaymentOptions(option) {
             if (option === 'SavedCards' && this.savedCards.length > 0) {
                 this.activeToggle = option;
@@ -340,6 +353,41 @@ export default {
             left: 0;
             width: 100%;
             height: 32px;
+        }
+
+        .plan-items {
+            i {
+                position: relative;
+                top: 4px;
+                left: 4px;
+                font-size: 18px;
+                color: $brand-primary;
+                cursor: pointer;
+            }
+        }
+        .tooltip-info {
+            width: 200px;
+            text-align: left;
+            position: absolute;
+            right: 32px;
+            color: $base;
+            bottom: 8px;
+            border-radius: 6px;
+            background: #fff;
+            padding: 8px 12px;
+            box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
+            font-size: 14px;
+            z-index: 10;
+
+            .name {
+                display: inline-block;
+                width: 80%;
+            }
+
+            .value {
+                display: inline-block;
+                width: 20%;
+            }
         }
 
         img {
@@ -432,6 +480,7 @@ export default {
                     padding: 8px 12px;
                     box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
                     font-size: 12px;
+                    z-index: 10;
 
                     .name {
                         display: inline-block;

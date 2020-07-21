@@ -1,7 +1,7 @@
 <template>
     <div>
         <Stepper :steps="steps" :current="currentStep"></Stepper>
-        <div v-if="currentStage == !4" class="bg--grey mt32 pt16 pb16">
+        <div v-if="currentStep != 4" class="bg--grey mt32 pt16 pb16">
             <div class="container">
                 <div class="row selected-booking-options">
                     <div class="col-md-6 col-lg-6 booking-option">
