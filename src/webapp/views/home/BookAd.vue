@@ -20,7 +20,7 @@
         </div>
         <div class="ad-views d-flex align-items-center justify-content-center" v-if="broadcastLocation && lowestValue">
             <i class="material-icons">local_offer</i>
-            <span class="t-l">Prices as low as {{ lowestValue | currency }} per week</span>
+            <span class="t-l">Prices as low as {{ lowestValue | currency }} / week</span>
         </div>
     </div>
 </template>

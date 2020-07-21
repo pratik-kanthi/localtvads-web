@@ -61,10 +61,17 @@
                         </div>
                         <div class="col-md-6">
                             <div class="brand-primary t-xl d-flex justify-content-start justify-content-md-end ">
-                                <div>Total Payable:</div>
-                                <div>&nbsp;{{ planTotal | currency }} / week</div>
+                                <div>Weekly Amount:</div>
+                                <div>&nbsp;{{ weekTotal | currency }}</div>
+                            </div>
+                            <div class="t-m d-flex justify-content-start justify-content-md-end ">
+                                <div>Total Amount for {{ noOfWeeks }} weeks:</div>
+                                <div>&nbsp;~{{ (weekTotal * noOfWeeks) | currency }}</div>
                             </div>
                         </div>
+                    </div>
+                    <div class="t-m italic mt16 mb0">
+                        Note: You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing.
                     </div>
                 </div>
 
@@ -153,7 +160,7 @@ export default {
             this.$parent.clientAdPlan.ChannelProduct.ChannelSlots = this.$parent.clientAdPlan.ChannelProduct.ChannelSlots.filter(function(item) {
                 return item.Slot;
             });
-            this.$parent.clientAdPlan.PlanAmount = this.planTotal;
+            this.$parent.clientAdPlan.PlanAmount = this.weekTotal;
             this.$emit('advanceToAddOns');
         },
         async getAvailableSlotsByChannel(isFirstTime) {
@@ -223,7 +230,7 @@ export default {
     },
     computed: {
         savings() {
-            if (!this.planTotal) return [];
+            if (!this.weekTotal) return [];
             let savings = [];
             let plans = this.channelPlans.filter(item => {
                 return item._id != this.$parent.selectedPlan._id;
@@ -236,8 +243,8 @@ export default {
                     });
                     if (planSlot) totalAmount += planSlot.RatePerSecond * planSlot.Duration * this.$parent.daysSelected.length;
                 }
-                if (totalAmount != 0 && totalAmount < this.planTotal) {
-                    savings.push({ Plan: plans[i], Amount: this.planTotal - totalAmount });
+                if (totalAmount != 0 && totalAmount < this.weekTotal) {
+                    savings.push({ Plan: plans[i], Amount: this.weekTotal - totalAmount });
                 }
             }
             return savings;
@@ -261,7 +268,7 @@ export default {
 
             return pricing1 - pricing2;
         },
-        planTotal() {
+        weekTotal() {
             let total = 0;
             this.$parent.clientAdPlan.ChannelProduct.ChannelSlots.map(item => {
                 if (item.Slot) {
@@ -269,6 +276,12 @@ export default {
                 }
             });
             return total;
+        },
+        noOfWeeks() {
+            let noOfWeeks = this.moment()
+                .add(this.$parent.clientAdPlan.ChannelProduct.ProductLength.Duration, 'months')
+                .diff(this.moment(), 'week');
+            return noOfWeeks;
         }
     },
     created() {

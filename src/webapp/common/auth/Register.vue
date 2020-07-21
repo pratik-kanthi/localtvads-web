@@ -68,7 +68,7 @@ export default {
                 this.$store.commit('LOGIN_LOADER', true);
                 await instance.post('api/auth/clientregister', this.user);
                 this.$store.commit('LOGIN_LOADER', false);
-                this.$store.commit('DIALOG', false);
+                this.$store.commit('DIALOG_CHOSEN', 'login');
                 this.$swal({
                     title: 'Registration successful',
                     text: 'Thank you for registering with Local TV ads. Please check your email to confirm.',

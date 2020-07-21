@@ -10,38 +10,37 @@
                 <h3 class="brand-secondary mt64 mb48">My Ad Plans</h3>
                 <div></div>
             </div>
-            <div v-if="!isLoading && clientAds.length === 0">
+            <div v-if="!isLoading && clientAdPlans.length === 0">
                 <p class="lead">You haven't purchased any ad plans</p>
             </div>
-            <div v-else-if="clientAds.length > 0">
+            <div v-else-if="clientAdPlans.length > 0">
                 <div class="table-wrapper d-none d-md-block">
-                    <Table :items="clientAds" :headings="fields" :pagination="pagination" :sort.sync="sort" table-class="table-responsive-xs table-responsive-stable-responsive-md">
+                    <Table :items="clientAdPlans" :headings="fields" :pagination="pagination" :sort.sync="sort" table-class="table-responsive-xs table-responsive-stable-responsive-md">
+                        <template v-slot:Channel="data">
+                            <div>{{ data.value.Channel.Name }}</div>
+                        </template>
+                        <template v-slot:PurchaseDate="data">
+                            <div>{{ data.value.BookedDate | formatDate('DD/MM/YYYY') }}</div>
+                        </template>
                         <template v-slot:Name="data">
                             <div>{{ data.value.Name }}</div>
+                        </template>
+                        <template v-slot:WeeklySchedule="data">
+                            <div>{{ getSelectedDays(data.value.Days) }}</div>
                         </template>
                         <template v-slot:Status="data">
                             <div>{{ data.value.Status }}</div>
                         </template>
                         <template v-slot:SlotsBooked="data">
-                            <div>
-                                <div v-for="(slot, key) in data.value.ChannelProduct.ChannelSlots" :key="key">{{ slot.Slot.Name }} ( {{ slot.Slot.StartTime }} - {{ slot.Slot.EndTime }})</div>
-                            </div>
+                            <div v-for="(slot, key) in data.value.ChannelProduct.ChannelSlots" :key="key">{{ slot.Slot.Name }} ( {{ slot.Slot.StartTime }} - {{ slot.Slot.EndTime }})</div>
                         </template>
                         <template v-slot:PlanDuration="data">
                             <div>{{ data.value.ChannelProduct.ProductLength.Name }}</div>
                         </template>
-                        <template v-slot:Action="data">
-                            <div v-if="data.value.ClientAd">
-                                <button @click="openVideo(data.value.ClientAd.VideoUrl)" class="t-s btn btn-sm btn-link pl0 pr0">View Ad</button>
-                            </div>
-                            <div v-else>
-                                <button @click="goToVideoUpload(data.value._id)" class="t-s btn btn-sm btn-link pl0 pr0 error">Finish Setup</button>
-                            </div>
-                        </template>
                     </Table>
                 </div>
 
-                <div class="d-block d-md-none" v-for="(ad, key) in clientAds" :key="key">
+                <div class="d-block d-md-none" v-for="(ad, key) in clientAdPlans" :key="key">
                     <b-card :title="ad.Name" class="mb-2">
                         <b-card-text>
                             <div class="d-flex flex-row justify-content-between">
@@ -83,33 +82,29 @@ export default {
     data() {
         return {
             displayAdVideo: false,
-            clientAds: [],
+            clientAdPlans: [],
             videoUrl: '',
             fields: [
-                {
-                    key: 'Name'
-                },
-                {
-                    key: 'Status'
-                },
-
                 {
                     key: 'Channel'
                 },
                 {
-                    key: 'SlotsBooked',
-                    label: 'Slots Selected'
+                    key: 'Status'
                 },
                 {
-                    key: 'Weekly Schedule'
+                    key: 'PurchaseDate',
+                    label: 'Purchase Date'
                 },
                 {
                     key: 'PlanDuration',
                     label: 'Plan Duration'
                 },
                 {
-                    key: 'Action',
-                    label: ' '
+                    key: 'WeeklySchedule'
+                },
+                {
+                    key: 'SlotsBooked',
+                    label: 'Slots Selected'
                 }
             ],
             isLoading: true,
@@ -118,12 +113,21 @@ export default {
                 perPage: 10
             },
             sort: {
-                name: 'Name',
+                name: 'BookedDate',
                 value: 'asc'
             }
         };
     },
     methods: {
+        getSelectedDays(selectedDays, isMobile) {
+            let days = ['', ' Monday', ' Tuesday', ' Wednesday', ' Thursday', ' Friday', ' Saturday', ' Sunday'];
+            if (isMobile) days = ['', ' Mon', ' Tue', ' Wed', ' Thu', ' Fri', ' Sat', ' Sun'];
+            return selectedDays
+                .map(day => {
+                    return days[day];
+                })
+                .join(',');
+        },
         filterTable(row, filter) {
             if (row.Name.toLowerCase().includes(filter)) {
                 return row;
@@ -140,13 +144,7 @@ export default {
         },
         async getClientAds() {
             try {
-                let result = await ClientAdService._query({
-                    $filter: `Client eq '${this.getUser().Owner._id}' && Description ne null`,
-                    $expand: 'ClientAd, ChannelProduct/ProductLength,ChannelProduct/ChannelSlots/Slot,AddOns'
-                });
-                this.clientAds = result.filter(clientAd => {
-                    return clientAd.Description != null && clientAd.ChannelProduct.ChannelSlots.length > 0;
-                });
+                this.clientAdPlans = await ClientAdService.getAllPlans(this.$store.getters.getUser.Owner._id);
                 this.isLoading = false;
             } catch (err) {
                 this.$swal({
