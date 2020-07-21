@@ -1,7 +1,7 @@
 <template>
     <div>
         <Stepper :steps="steps" :current="currentStep"></Stepper>
-        <div class="bg--grey mt32 pt16 pb16">
+        <div v-if="currentStage == !4" class="bg--grey mt32 pt16 pb16">
             <div class="container">
                 <div class="row selected-booking-options">
                     <div class="col-md-6 col-lg-6 booking-option">
@@ -30,11 +30,13 @@ import ChoosePlan from './ChoosePlan';
 import Review from './Review';
 import Payment from './Payment';
 import AdDetails from './AdDetails';
+import Confirmation from './Confirmation';
 import ChooseAddons from '../addons/ChooseAddon';
 import AddOnPayment from '../addons/Payment';
 import Stepper from '@/e9_components/components/Stepper';
 import ChannelService from '@/services/ChannelService';
 import WeekDays from '@/e9_components/components/WeekDays';
+
 export default {
     name: 'BookingFlow',
     components: {
@@ -67,16 +69,8 @@ export default {
                     index: 3
                 },
                 {
-                    name: 'Ad Details',
+                    name: 'Confirmation',
                     index: 4
-                },
-                {
-                    name: 'Upload Your Ad',
-                    index: 5
-                },
-                {
-                    name: 'Verification',
-                    index: 6
                 }
             ]
         };
@@ -111,6 +105,9 @@ export default {
                     });
                     console.error(err);
                 }
+            } else if (this.$route.query.confirmation) {
+                this.currentStep = 4;
+                this.currentStage = Confirmation;
             } else {
                 this.currentStep = 1;
                 this.currentStage = ChoosePlan;
@@ -189,7 +186,7 @@ export default {
 <style scoped lang="scss">
 .selected-booking-options {
     .booking-option-name {
-        font-size: 18px;
+        font-size: 16px;
         @include media-breakpoint-up(md) {
             font-size: 24px;
         }

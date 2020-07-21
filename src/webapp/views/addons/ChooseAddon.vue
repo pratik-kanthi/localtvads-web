@@ -9,9 +9,9 @@
         </b-form-group>
 
         <div v-if="isAddOn == 'addon'">
-            <h4 class="brand-secondary mt64 mb48">Select Your Add On</h4>
-
-            <div class="addons-wrapper mb24">
+            <h4 class="brand-secondary page-heading">Select Your Add On</h4>
+            <div class="mt24 t-xl">You can choose one add-on along with you ad-slot booking.</div>
+            <div class="addons-wrapper mb24 mt24">
                 <div class="addon-container" v-for="addon in addons" :key="addon._key">
                     <div class="addon" :class="{ 'active-addon': $parent.serviceAddOn._id === addon._id }">
                         <div class="name">
@@ -28,7 +28,7 @@
                             </ul>
                         </div>
                         <div class="selectaddon">
-                            <button class="btn btn-primary btn-full" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.serviceAddOn._id === addon._id }">
+                            <button class="btn btn-secondary btn-full" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.serviceAddOn._id === addon._id }">
                                 <span v-if="$parent.serviceAddOn._id === addon._id">Selected</span>
                                 <span v-else>Choose this Addon</span>
                             </button>
@@ -130,29 +130,55 @@ export default {
 
                 h5 {
                     font-weight: 500;
-                    font-size: 24px;
+                    font-size: 18px;
                     color: $brand-primary;
                     margin-bottom: 4px;
+
+                    @include media-breakpoint-up(md) {
+                        font-weight: 500;
+                        font-size: 24px;
+                        color: $brand-primary;
+                        margin-bottom: 4px;
+                    }
                 }
 
                 .desc {
-                    font-size: 16px;
+                    font-size: 14px;
                     font-family: $font-family-heading;
                     font-weight: 400;
                     margin-bottom: 0;
                     opacity: 0.6;
+
+                    @include media-breakpoint-up(md) {
+                        font-size: 16px;
+                        font-family: $font-family-heading;
+                        font-weight: 400;
+                        margin-bottom: 0;
+                        opacity: 0.6;
+                    }
                 }
             }
 
             .price {
-                padding: 12px 16px;
+                padding: 0 16px;
                 border-bottom: 1px solid #ddd;
+
+                @include media-breakpoint-up(md) {
+                    padding: 12px 16px;
+                }
 
                 .amount {
                     font-weight: 500;
-                    font-size: 36px;
+                    font-size: 32px;
                     margin-bottom: 4px;
                     color: $brand-secondary;
+
+                    @include media-breakpoint-up(md) {
+                        font-weight: 500;
+                        font-size: 36px;
+                        margin-bottom: 4px;
+                        color: $brand-secondary;
+                    }
                 }
             }
 
@@ -164,7 +190,7 @@ export default {
 
                     li {
                         font-family: $font-family-heading;
-                        font-size: 14px;
+                        font-size: 13px;
                         color: $base;
                         text-align: left;
                         margin-bottom: 16px;
@@ -172,6 +198,10 @@ export default {
                         cursor: pointer !important;
                         padding-left: 32px;
                         position: relative;
+
+                        @include media-breakpoint-up(md) {
+                            font-size: 14px;
+                        }
 
                         &:last-child {
                             margin-bottom: 0;
@@ -198,7 +228,7 @@ export default {
                 z-index: 2;
 
                 .btn-selected {
-                    background-color: $brand-secondary !important;
+                    background-color: $brand-primary !important;
                     border: none;
                 }
             }
