@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="$store.state.auth.showDialog" centered hide-header hide-footer id="auth-modal">
+    <b-modal v-model="$store.state.auth.showDialog" no-close-on-backdrop centered hide-header hide-footer id="auth-modal">
         <div class="user-login">
             <div class="tabs">
                 <ul>

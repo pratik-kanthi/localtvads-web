@@ -267,28 +267,12 @@ export default {
             this.showCoupons = true;
         },
         async payNow(token, client) {
-            let clientAdPlanName = this.$parent.selectedPlan.Channel.Name;
-            this.$parent.selectedPlan.slots.map(slot => {
-                clientAdPlanName += '_' + slot.Name;
-            });
-
-            this.$parent.selectedPlan.Channel = this.$parent.selectedPlan.Channel._id;
-            this.$parent.selectedPlan.slots = this.$parent.selectedPlan.slots.map(slot => {
-                return slot._id;
-            });
-
+            this.$parent.clientAdPlan.Client = client;
             let obj = {
                 save: this.save,
-                clientadplan: {
-                    Name: clientAdPlanName,
-                    Client: client
-                },
-                channelplan: this.$parent.selectedPlan,
+                clientAdPlan: this.$parent.clientAdPlan,
                 cardid: this.existingCard,
-                addons: [],
-                token: token,
-                client: client,
-                coupon: this.discount ? this.discount.CouponCode : ''
+                token: token
             };
             let result;
             try {

@@ -152,7 +152,7 @@ export default {
                 .map(function(item) {
                     return parseInt(item);
                 });
-            this.channel = (await ChannelService._get(this.$route.query.channel)).data;
+            this.channel = await ChannelService.getChannel(this.$route.query.channel);
             this.currentStage = ChoosePlan;
         } catch (err) {
             this.$swal({

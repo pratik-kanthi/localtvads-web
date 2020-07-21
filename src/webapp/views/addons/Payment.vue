@@ -157,8 +157,6 @@
 import instance from '@/api';
 import TaxService from '@/services/TaxService';
 import { paymentMixin } from '@/mixins/payment';
-import Review from './Review';
-import SelectMedia from './SelectMedia';
 export default {
     name: 'Payment',
     mixins: [paymentMixin],
@@ -195,37 +193,31 @@ export default {
             }
         },
         async payNow(token, client) {
+            this.$parent.clientAdPlan.Client = client;
             let obj = {
                 save: this.save,
-                addon: this.$parent.serviceAddOn,
+                clientAdPlan: this.$parent.clientAdPlan,
                 cardid: this.existingCard,
-                token: token,
-                client: client
+                token: token
             };
+            let result;
             try {
-                let result = await instance.post('api/serviceaddons/save', obj);
-                this.$parent.clientServiceAddOn = result.data;
-                this.paymentLoading = false;
+                result = await instance.post('api/clientad/new', obj);
+                this.$router.push(
+                    {
+                        name: 'BookingFlow',
+                        query: {
+                            clientadplan: result.data._id
+                        }
+                    },
+                    () => {}
+                );
                 this.$swal({
                     title: 'Successful',
-                    text: 'Payment has been successful. You are now being redirected to upload',
+                    text: 'Payment has been successful. You are now being redirected to ad details and video upload',
                     type: 'success'
-                }).then(() => {
-                    if (this.$parent.serviceAddOn.IsUploadRequired) {
-                        this.$parent.currentStage = SelectMedia;
-                    } else {
-                        this.$parent.currentStage = Review;
-                    }
-                    this.$router.push(
-                        {
-                            name: 'Addons',
-                            query: {
-                                clientaddon: result.data._id
-                            }
-                        },
-                        () => {}
-                    );
                 });
+                await this.$parent.fetchClientAdPlan(result.data._id);
             } catch (err) {
                 this.paymentLoading = false;
                 this.$swal({

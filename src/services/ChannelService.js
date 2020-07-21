@@ -1,5 +1,7 @@
 import BaseService from './BaseService';
-import { get } from './ApiService';
+import {
+    get
+} from './ApiService';
 
 export default class ChannelService extends BaseService {
     static _url = '/api/channels';
@@ -8,6 +10,16 @@ export default class ChannelService extends BaseService {
         return new Promise(async (resolve, reject) => {
             try {
                 let _res = await get('api/channel/lowestprice?id=' + id);
+                resolve(_res.data);
+            } catch (err) {
+                return reject(err);
+            }
+        });
+    }
+    static getChannel(id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let _res = await get('api/channel/' + id);
                 resolve(_res.data);
             } catch (err) {
                 return reject(err);
