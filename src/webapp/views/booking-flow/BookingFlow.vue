@@ -17,7 +17,7 @@
         </div>
 
         <div>
-            <component :is="currentStage" @advanceToPayment="goToPayment" @advanceToUpload="goToUpload" @advanceToAddOns="goToAddOns"></component>
+            <component :is="currentStage" @advanceToPayment="goToPayment" @advanceToConfirmation="advanceToConfirmation" @advanceToUpload="goToUpload" @advanceToAddOns="goToAddOns"></component>
         </div>
         <LoaderModal :showloader="isLoading" :message="loaderMessage + '...'"></LoaderModal>
     </div>
@@ -115,6 +115,10 @@ export default {
         goToAddOns() {
             this.currentStep = 2;
             this.currentStage = ChooseAddons;
+        },
+        advanceToConfirmation() {
+            this.currentStep = 4;
+            this.currentStage = Confirmation;
         },
         goToPayment() {
             this.currentStep = 3;

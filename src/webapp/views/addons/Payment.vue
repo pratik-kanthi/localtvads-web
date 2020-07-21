@@ -257,7 +257,7 @@ export default {
                     text: 'Payment has been successful. You are now being redirected to ad details and video upload',
                     type: 'success'
                 });
-                await this.$parent.fetchClientAdPlan(result.data._id);
+                this.$emit('advanceToConfirmation');
             } catch (err) {
                 this.paymentLoading = false;
                 if (err.status == 402) {

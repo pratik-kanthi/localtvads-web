@@ -2,11 +2,11 @@
     <div class="container">
         <h3 class="mt64 page-heading">Step 2 : Choose AddOns</h3>
         <div class="mt24 t-xl">Do you have your own ad as a video file? If not, our team of specialists will create one for you</div>
-        <div class="channel-plans-wrapper d-flex mt24 justify-content-start">
-            <div class="channel-plan" :class="!isAddOn ? 'active' : ''" @click="setAddon(false)">
+        <div class="channel-plans-wrapper d-flex flex-column flex-md-row  mt32 justify-content-start">
+            <div class="channel-plan text-center mb-3 mb-md-0" :class="!isAddOn ? 'active' : ''" @click="setAddon(false)">
                 <span>I have my own ad.</span>
             </div>
-            <div class="channel-plan" :class="isAddOn ? 'active' : ''" @click="setAddon(true)">
+            <div class="channel-plan text-center" :class="isAddOn ? 'active' : ''" @click="setAddon(true)">
                 <span>I don't have an ad</span>
             </div>
         </div>
@@ -30,7 +30,7 @@
                             </ul>
                         </div>
                         <div class="selectaddon">
-                            <button class="btn btn-primary btn-full" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.clientAdPlan.Addons[0]._id === addon._id }">
+                            <button class="btn btn-secondary btn-full" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.clientAdPlan.Addons[0]._id === addon._id }">
                                 <span v-if="$parent.clientAdPlan.Addons[0]._id === addon._id">Selected</span>
                                 <span v-else>Choose this Addon</span>
                             </button>
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div class="action mt48 mb64 d-flex justify-content-center">
+        <div class="action mt80 mb64 d-flex justify-content-center">
             <button class="btn btn-white w-25 border" @click="cancel">Cancel</button>
             <button class="btn btn-primary w-25 ml16" @click="saveAddOnOption">Proceed</button>
         </div>
@@ -113,14 +113,13 @@ export default {
     }
 };
 </script>
-
 <style lang="scss" scoped>
 .channel-plans-wrapper {
     .channel-plan {
         padding: 8px 48px;
         border: 1px solid #eee;
-        font-size: 14px;
         margin-right: 8px;
+        font-size: 16px;
         cursor: pointer;
         &.active {
             color: $brand-primary;
@@ -130,74 +129,84 @@ export default {
         @include media-breakpoint-up(md) {
             margin-right: 16px;
             padding: 8px 64px;
-            font-size: 18px;
+            font-size: 24px;
         }
     }
 }
 .addons-wrapper {
     display: flex;
     overflow-x: auto;
-
     .addon-container {
         min-width: 280px;
         margin: 8px;
-
         &::-webkit-scrollbar {
             display: none;
         }
-
         .addon {
             background-color: $white;
             border: 1px solid #ddd;
             border-radius: 6px;
             text-align: center;
-
             &.active-addon {
                 box-shadow: 0 0 8px 0 rgba(255, 101, 0, 0.5);
                 border: 1px solid $brand-primary;
             }
-
             .name {
                 padding: 12px 16px;
                 border-bottom: 1px solid #ddd;
-
                 h5 {
                     font-weight: 500;
-                    font-size: 24px;
+                    font-size: 18px;
                     color: $brand-primary;
                     margin-bottom: 4px;
+                    @include media-breakpoint-up(md) {
+                        font-weight: 500;
+                        font-size: 24px;
+                        color: $brand-primary;
+                        margin-bottom: 4px;
+                    }
                 }
-
                 .desc {
-                    font-size: 16px;
+                    font-size: 14px;
                     font-family: $font-family-heading;
                     font-weight: 400;
                     margin-bottom: 0;
                     opacity: 0.6;
+                    @include media-breakpoint-up(md) {
+                        font-size: 16px;
+                        font-family: $font-family-heading;
+                        font-weight: 400;
+                        margin-bottom: 0;
+                        opacity: 0.6;
+                    }
                 }
             }
-
             .price {
-                padding: 12px 16px;
+                padding: 0 16px;
                 border-bottom: 1px solid #ddd;
-
+                @include media-breakpoint-up(md) {
+                    padding: 12px 16px;
+                }
                 .amount {
                     font-weight: 500;
-                    font-size: 36px;
+                    font-size: 32px;
                     margin-bottom: 4px;
                     color: $brand-secondary;
+                    @include media-breakpoint-up(md) {
+                        font-weight: 500;
+                        font-size: 36px;
+                        margin-bottom: 4px;
+                        color: $brand-secondary;
+                    }
                 }
             }
-
             .benefits {
                 padding: 16px 36px;
-
                 ul {
                     @include list-unstyled();
-
                     li {
                         font-family: $font-family-heading;
-                        font-size: 14px;
+                        font-size: 13px;
                         color: $base;
                         text-align: left;
                         margin-bottom: 16px;
@@ -205,11 +214,12 @@ export default {
                         cursor: pointer !important;
                         padding-left: 32px;
                         position: relative;
-
+                        @include media-breakpoint-up(md) {
+                            font-size: 14px;
+                        }
                         &:last-child {
                             margin-bottom: 0;
                         }
-
                         &:before {
                             content: '';
                             background-image: url('../../../assets/images/tick.svg');
@@ -224,14 +234,12 @@ export default {
                     }
                 }
             }
-
             .selectaddon {
                 padding: 0 32px 24px;
                 opacity: 1;
                 z-index: 2;
-
                 .btn-selected {
-                    background-color: $brand-secondary !important;
+                    background-color: $brand-primary !important;
                     border: none;
                 }
             }
@@ -246,13 +254,12 @@ export default {
         background: $brand-primary;
         border: none;
     }
-
     .custom-control-label::before {
         margin-top: -3px;
     }
-
     .custom-control-label::after {
         margin-top: -3px;
     }
 }
 </style>
+Collapse

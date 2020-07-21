@@ -18,15 +18,18 @@
                         <div class="t-xl bold text-center">Order Summary</div>
                         <hr />
                         <div class="d-flex justify-content-between">
-                            <div>Ad Slot</div>
-                            <div>£ 00.00</div>
+                            <div>
+                                <div class="brand-primary t-l">Ad Plan:</div>
+                                <div class="t-m">Length: {{ $parent.clientAdPlan.ChannelProduct.ProductLength.Name }}</div>
+                            </div>
+                            <div>{{ $parent.clientAdPlan.PlanAmount | currency }}</div>
                         </div>
                         <div class="dashed-line mt24">
                             <div class="line"></div>
                         </div>
                         <div class="d-flex justify-content-between mt24">
                             <div class="bold">Total Amount</div>
-                            <div class="bold">£ 00.00</div>
+                            <div>{{ $parent.clientAdPlan.TotalAmount | currency }}</div>
                         </div>
                         <div class=" mt32">
                             <button @click="downloadReceipt" class="btn btn-primary-small">Download Receipt</button>
