@@ -28,10 +28,9 @@ import { mapGetters } from 'vuex';
 import instance from '@/api';
 import ChoosePlan from './ChoosePlan';
 import Review from './Review';
-import Payment from './Payment';
+import Payment from '../addons/Payment';
 import AdDetails from './AdDetails';
 import ChooseAddons from '../addons/ChooseAddon';
-import AddOnPayment from '../addons/Payment';
 import Stepper from '@/e9_components/components/Stepper';
 import ChannelService from '@/services/ChannelService';
 import WeekDays from '@/e9_components/components/WeekDays';
@@ -67,16 +66,8 @@ export default {
                     index: 3
                 },
                 {
-                    name: 'Ad Details',
+                    name: 'Confirmation',
                     index: 4
-                },
-                {
-                    name: 'Upload Your Ad',
-                    index: 5
-                },
-                {
-                    name: 'Verification',
-                    index: 6
                 }
             ]
         };
@@ -122,11 +113,7 @@ export default {
         },
         goToPayment() {
             this.currentStep = 3;
-            if (this.hasAddOn) {
-                this.currentStage = AddOnPayment;
-            } else {
-                this.currentStage = Payment;
-            }
+            this.currentStage = Payment;
         },
         goToUpload(val) {
             this.currentStep = 4;
@@ -149,12 +136,15 @@ export default {
     },
     async created() {
         try {
+            this.isLoading = true;
             setTimeout(() => $('.v-stepper__step__step').text(''));
             this.daysSelected = atob(this.$route.query.daysSelected)
                 .split(',')
                 .map(function(item) {
                     return parseInt(item);
                 });
+            this.clientAdPlan.Days = this.daysSelected;
+            this.clientAdPlan.Channel = this.$route.query.channel;
             this.channel = await ChannelService.getChannel(this.$route.query.channel);
             this.currentStage = ChoosePlan;
         } catch (err) {

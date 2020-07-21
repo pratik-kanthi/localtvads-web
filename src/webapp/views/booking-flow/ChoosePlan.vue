@@ -36,17 +36,19 @@
                                 <b-form-select @change="selectSlot($event, slotIndex)">
                                     <b-form-select-option value="null" disabled>Select Your Slot</b-form-select-option>
                                     <b-form-select-option v-for="(slotData, key) in $parent.selectedPlan.ChannelSlots" :key="key" :value="slotData">
-                                        <p class="slot-name">{{ slotData.Slot.Name }}</p>
+                                        <p class="slot-name">{{ slotData.Slot.Name + ' (' + slotData.Slot.StartTime + '-' + slotData.Slot.EndTime + ')' }}</p>
                                     </b-form-select-option>
                                 </b-form-select>
                             </div>
                             <div class="col-sm-3">
                                 <div class="mt8 slot-details" v-if="channelSlot.Slot">
-                                    <div class="t-s brand-primary">{{ 'Played on selected days between ' + channelSlot.Slot.StartTime + '-' + channelSlot.Slot.EndTime }}</div>
+                                    <div class="t-s brand-primary">You will need to upload a video of {{ channelSlot.Duration }} seconds</div>
                                 </div>
                             </div>
                             <div class="mt8 col-sm-3" v-if="channelSlot.Slot">
-                                <div class="slot-price">You will be charged {{ (channelSlot.RatePerSecond * channelSlot.Duration * $parent.daysSelected.length) | currency }} <span class="duration t-m thin">/ week</span> from the day we go live with the ad.</div>
+                                <div class="slot-price">
+                                    You will be charged <span class="brand-primary">{{ (channelSlot.RatePerSecond * channelSlot.Duration * $parent.daysSelected.length) | currency }} / week</span> from the day we go live with the ad.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -58,7 +60,7 @@
                             <div v-for="(saving, key) in savings" :key="key" class="t-l brand-primary">You could save {{ saving.Amount | currency }} on {{ saving.Plan.ProductLength.Name }} plan.</div>
                         </div>
                         <div class="col-md-6">
-                            <div class="mt16 brand-primary t-xl d-flex justify-content-start justify-content-md-end ">
+                            <div class="brand-primary t-xl d-flex justify-content-start justify-content-md-end ">
                                 <div>Total Payable:</div>
                                 <div>&nbsp;{{ planTotal | currency }} / week</div>
                             </div>
@@ -68,7 +70,7 @@
 
                 <div class="action mt48 mb64 d-flex justify-content-center">
                     <button class="btn btn-white w-25 border" @click="cancel">Cancel</button>
-                    <button class="btn btn-primary w-25 ml16" @click="goToPayment">Proceed</button>
+                    <button class="btn btn-primary w-25 ml16" @click="goToPayment" :disabled="!$parent.clientAdPlan.ChannelProduct.ChannelSlots[0].Slot">Proceed</button>
                 </div>
             </div>
         </div>
@@ -148,6 +150,9 @@ export default {
             this.planLength = this.planLength == 3 ? 6 : 3;
         },
         goToPayment() {
+            this.$parent.clientAdPlan.ChannelProduct.ChannelSlots = this.$parent.clientAdPlan.ChannelProduct.ChannelSlots.filter(function(item) {
+                return item.Slot;
+            });
             this.$parent.clientAdPlan.PlanAmount = this.planTotal;
             this.$emit('advanceToAddOns');
         },
@@ -178,6 +183,7 @@ export default {
                     })
                 };
                 this.$parent.clientAdPlan.ChannelProduct = {
+                    _id: this.$parent.selectedPlan._id,
                     ProductLength: this.$parent.selectedPlan.ProductLength,
                     ChannelSlots: [
                         {
@@ -202,6 +208,7 @@ export default {
         selectPlan(plan) {
             this.$parent.selectedPlan = plan;
             this.$parent.clientAdPlan.ChannelProduct = {
+                _id: plan._id,
                 ProductLength: this.$parent.selectedPlan.ProductLength,
                 ChannelSlots: [
                     {
@@ -265,10 +272,10 @@ export default {
         }
     },
     created() {
+        this.$parent.isLoading = true;
         if (!this.$route.query.channel) {
             this.$router.push('/', () => {});
         } else {
-            this.$parent.isLoading = true;
             this.getChannelPlans();
         }
     }

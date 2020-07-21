@@ -10,19 +10,25 @@
                             <hr class="mb24" />
                             <div class="d-flex justify-content-between t-l">
                                 <div>
-                                    <div>{{ $parent.selectedPlan.Channel.Name }} Ad Slot</div>
+                                    <div class="brand-primary t-l">Ad Plan:</div>
+                                    <div class="t-m">Length: {{ $parent.clientAdPlan.ChannelProduct.ProductLength.Name }}</div>
+                                    <div class="t-m d-block d-md-none">Days: {{ getSelectedDays(true) }}</div>
+                                    <div class="t-m d-none d-md-block">Days: {{ getSelectedDays(false) }}</div>
                                 </div>
-                                <div>{{ $parent.clientAdPlan.PlanAmount | currency }}/week</div>
+                                <div>
+                                    <div class="d-flex mt8 justify-content-end">Total: {{ $parent.clientAdPlan.PlanAmount | currency }}/week</div>
+                                    <div class="t-s d-flex justify-content-end" :key="key" v-for="(slot, key) in $parent.clientAdPlan.ChannelProduct.ChannelSlots">{{ slot.Slot.Name }} - {{ (slot.RatePerSecond * slot.Duration * $parent.daysSelected.length) | currency }}</div>
+                                </div>
                             </div>
-                            <div class="d-flex justify-content-between t-l mt48">
+                            <div class="d-flex justify-content-between t-l mt48" v-if="$parent.clientAdPlan.Addons && $parent.clientAdPlan.Addons.length > 0">
                                 <div>
                                     <div>
-                                        {{ $parent.serviceAddOn.Name }}
+                                        <span class="brand-primary"> {{ $parent.clientAdPlan.Addons[0].Name }}</span>
                                         <span class="t-s rounded p8 brand-primary-bg white">Add On</span>
 
                                         <div>
                                             <ul class="benefits t-s">
-                                                <li v-for="benefit in $parent.serviceAddOn.Benefits" :key="benefit">{{ benefit }}</li>
+                                                <li v-for="benefit in $parent.clientAdPlan.Addons[0].Benefits" :key="benefit">{{ benefit }}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -32,11 +38,23 @@
                             <div class="dashed-line mt32">
                                 <div class="line"></div>
                             </div>
-                            <div class="total mt32 mb32">
+                            <div class="total mt24">
                                 <div class="row">
                                     <div class="col-6 col-sm-6">
                                         <div class="taxes">
-                                            <span>Taxes</span>
+                                            <span class="t-xl">Net Amount</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-sm-6 text-right mt8">
+                                        <p>{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount) | currency }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="total mb32">
+                                <div class="row">
+                                    <div class="col-6 col-sm-6">
+                                        <div class="taxes">
+                                            <span class="t-l">Taxes</span>
                                             <i class="material-icons" @mouseover="showTaxInfo(true)" @mouseout="showTaxInfo(false)">info</i>
                                             <div v-show="taxInfo" class="tooltip-info">
                                                 <div v-for="tax in taxes" :key="tax.Name">
@@ -54,9 +72,12 @@
                                         <p>{{ taxAmount | currency }}</p>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="dashed-line mt16">
+                                    <div class="line"></div>
+                                </div>
+                                <div class="row mt32">
                                     <div class="col-6 col-sm-6">
-                                        <h5>Total Amount</h5>
+                                        <h5 class="t-xl">Total Amount</h5>
                                     </div>
                                     <div class="col-6 col-sm-6 text-right">
                                         <h5 class="amount pull-right">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</h5>
@@ -88,7 +109,8 @@
                                             <label></label>
                                         </div>
                                         <img :src="getImageUrl(card.Card.Vendor)" alt />
-                                        <span>xxxx xxxx xxxx {{ card.Card.LastFour }}</span>
+                                        <span class="card-number">xxxx xxxx xxxx {{ card.Card.LastFour }}</span>
+                                        <p class="red t-s mt0 mb0">{{ card._error }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -127,13 +149,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="consents">
+                                    <p class="red t-s mb0">{{ newCardError }}</p>
+                                    <!-- <div class="consents">
                                         <input type="checkbox" id="save" class="check" v-model="save" :disabled="activeToggle !== 'NewCard'" />
                                         <label for="save" class="check-label box mt8 mr8">
                                             <span></span>
                                         </label>
                                         <span class="brand-primary medium">Save Card</span>
-                                    </div>
+                                    </div> -->
                                 </form>
                             </div>
                             <p class="mt16 mb16">I have read and accept the terms of use,rules of Local TV Ads and privacy policy</p>
@@ -168,6 +191,15 @@ export default {
         };
     },
     methods: {
+        getSelectedDays(isMobile) {
+            let days = ['', ' Monday', ' Tuesday', ' Wednesday', ' Thursday', ' Friday', ' Saturday', ' Sunday'];
+            if (isMobile) days = ['', ' Mon', ' Tue', ' Wed', ' Thu', ' Fri', ' Sat', ' Sun'];
+            return this.$parent.daysSelected
+                .map(day => {
+                    return days[day];
+                })
+                .join(',');
+        },
         async getCards() {
             try {
                 this.$parent.isLoading = true;
@@ -193,11 +225,19 @@ export default {
             }
         },
         async payNow(token, client) {
-            this.$parent.clientAdPlan.Client = client;
             let obj = {
                 save: this.save,
-                clientAdPlan: this.$parent.clientAdPlan,
-                cardid: this.existingCard,
+                clientAdPlan: {
+                    Client: client,
+                    Channel: this.$parent.clientAdPlan.Channel,
+                    Days: this.$parent.clientAdPlan.Days,
+                    ChannelProduct: this.$parent.clientAdPlan.ChannelProduct._id,
+                    ChannelSlots: this.$parent.clientAdPlan.ChannelProduct.ChannelSlots.map(function(item) {
+                        return item.Slot._id;
+                    }),
+                    Addons: this.$parent.clientAdPlan.Addons && this.$parent.clientAdPlan.Addons.length > 0 ? [this.$parent.clientAdPlan.Addons[0]._id] : []
+                },
+                cardId: this.existingCard,
                 token: token
             };
             let result;
@@ -220,11 +260,30 @@ export default {
                 await this.$parent.fetchClientAdPlan(result.data._id);
             } catch (err) {
                 this.paymentLoading = false;
-                this.$swal({
-                    title: 'Error',
-                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error'
-                });
+                if (err.status == 402) {
+                    if (this.existingCard) {
+                        this.newCardError = '';
+                        for (let i = 0, len = this.savedCards.length; i < len; i++) {
+                            if (this.savedCards[i]._id == this.existingCard) {
+                                this.savedCards[i]._error = err.data;
+                            } else {
+                                this.savedCards[i]._error = '';
+                            }
+                        }
+                    } else {
+                        this.newCardError = err.data;
+                    }
+                    this.$swal({
+                        title: 'Payment Error',
+                        text: err.error,
+                        type: 'error'
+                    });
+                } else
+                    this.$swal({
+                        title: 'Error',
+                        text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        type: 'error'
+                    });
                 console.error(err);
             }
         },
@@ -248,13 +307,13 @@ export default {
             this.$store.commit('DIALOG_CHOSEN', 'login');
         } else {
             this.getCards();
-            this.taxes = await TaxService._query();
-            for (let i = 0, len = this.taxes.length; i < len; i++) {
-                if (this.taxes[i].Type === 'PERCENTAGE') {
-                    this.taxAmount += (this.taxes[i].Value * (this.$parent.clientAdPlan.PlanAmount + this.$parent.clientAdPlan.AddonsAmount)) / 100;
-                } else {
-                    this.taxAmount += this.taxes[i].Value;
-                }
+        }
+        this.taxes = await TaxService.getAllTaxes();
+        for (let i = 0, len = this.taxes.length; i < len; i++) {
+            if (this.taxes[i].Type === 'PERCENTAGE') {
+                this.taxAmount += (this.taxes[i].Value * (this.$parent.clientAdPlan.PlanAmount + this.$parent.clientAdPlan.AddonsAmount)) / 100;
+            } else {
+                this.taxAmount += this.taxes[i].Value;
             }
         }
         this.loadCardJS();
@@ -446,7 +505,7 @@ export default {
                         top: 4px;
                     }
 
-                    span {
+                    span.card-number {
                         letter-spacing: 2px;
                     }
 

@@ -2,25 +2,27 @@
     <div class="container">
         <h3 class="mt64 page-heading">Step 2 : Choose AddOns</h3>
         <div class="mt24 t-xl">Do you have your own ad as a video file? If not, our team of specialists will create one for you</div>
-
-        <b-form-group class="mt48">
-            <b-form-radio class="t-xl" v-model="isAddOn" value="clientad">I have my own ad.</b-form-radio>
-            <b-form-radio class="t-xl mt32" v-model="isAddOn" value="addon">I don't have an ad.</b-form-radio>
-        </b-form-group>
-
-        <div v-if="isAddOn == 'addon'">
+        <div class="channel-plans-wrapper d-flex mt24 justify-content-start">
+            <div class="channel-plan" :class="!isAddOn ? 'active' : ''" @click="setAddon(false)">
+                <span>I have my own ad.</span>
+            </div>
+            <div class="channel-plan" :class="isAddOn ? 'active' : ''" @click="setAddon(true)">
+                <span>I don't have an ad</span>
+            </div>
+        </div>
+        <div v-if="isAddOn">
             <h4 class="brand-secondary mt64 mb48">Select Your Add On</h4>
 
             <div class="addons-wrapper mb24">
                 <div class="addon-container" v-for="addon in addons" :key="addon._key">
-                    <div class="addon" :class="{ 'active-addon': $parent.serviceAddOn._id === addon._id }">
+                    <div class="addon" :class="{ 'active-addon': $parent.clientAdPlan.Addons[0]._id === addon._id }">
                         <div class="name">
                             <h5>{{ addon.Name }}</h5>
                             <p class="desc">{{ addon.Description }}</p>
                         </div>
                         <div class="price">
                             <p class="lead brand-primary mb0">Now for just</p>
-                            <h4 class="amount">{{ addon.TotalAmount | currency }}</h4>
+                            <h4 class="amount">{{ addon.Amount | currency }}</h4>
                         </div>
                         <div class="benefits">
                             <ul class="mb8">
@@ -28,8 +30,8 @@
                             </ul>
                         </div>
                         <div class="selectaddon">
-                            <button class="btn btn-primary btn-full" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.serviceAddOn._id === addon._id }">
-                                <span v-if="$parent.serviceAddOn._id === addon._id">Selected</span>
+                            <button class="btn btn-primary btn-full" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.clientAdPlan.Addons[0]._id === addon._id }">
+                                <span v-if="$parent.clientAdPlan.Addons[0]._id === addon._id">Selected</span>
                                 <span v-else>Choose this Addon</span>
                             </button>
                         </div>
@@ -58,6 +60,16 @@ export default {
         };
     },
     methods: {
+        setAddon(value) {
+            this.isAddOn = value;
+            if (this.isAddOn) {
+                this.$parent.clientAdPlan.Addons = [this.addons[0]];
+                this.$parent.clientAdPlan.AddonsAmount = this.addons[0].Amount;
+            } else {
+                this.$parent.clientAdPlan.Addons = [];
+                this.$parent.clientAdPlan.AddonsAmount = 0;
+            }
+        },
         goBack() {
             this.$parent.currentStep = 1;
             this.$parent.currentStage = ChoosePlan;
@@ -66,11 +78,13 @@ export default {
             this.$router.push('/', () => {});
         },
         selectAddon(addon) {
-            this.$parent.serviceAddOn = addon;
-            this.$parent.clientAdPlan.Addons = [addon];
+            let plan = { ...this.$parent.clientAdPlan };
+            plan.Addons = [addon];
+            plan.AddonsAmount = addon.Amount;
+            this.$parent.clientAdPlan = plan;
         },
         saveAddOnOption() {
-            if (this.isAddOn == 'addon') {
+            if (this.isAddOn) {
                 this.$parent.hasAddOn = true;
                 this.$parent.clientAdPlan.AddonsAmount = this.$parent.clientAdPlan.Addons[0].Amount;
                 this.$emit('advanceToPayment');
@@ -84,8 +98,8 @@ export default {
         this.$parent.isLoading = true;
         try {
             let result = await instance.get('api/serviceaddons/all');
+            this.$parent.clientAdPlan.AddonsAmount = 0;
             this.addons = result.data;
-            this.$parent.serviceAddOn = this.addons[0];
             this.$parent.isLoading = false;
         } catch (err) {
             this.$parent.isLoading = false;
@@ -101,6 +115,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.channel-plans-wrapper {
+    .channel-plan {
+        padding: 8px 48px;
+        border: 1px solid #eee;
+        font-size: 14px;
+        margin-right: 8px;
+        cursor: pointer;
+        &.active {
+            color: $brand-primary;
+            border: 1px solid $brand-primary;
+        }
+
+        @include media-breakpoint-up(md) {
+            margin-right: 16px;
+            padding: 8px 64px;
+            font-size: 18px;
+        }
+    }
+}
 .addons-wrapper {
     display: flex;
     overflow-x: auto;
