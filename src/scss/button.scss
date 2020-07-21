@@ -26,10 +26,37 @@
         }
     }
 
+    &.btn-secondary {
+        background: $brand-secondary !important;
+        color: $white;
+        border: none;
+        min-height: 42px;
+        &.btn-bordered {
+            background: transparent !important;
+            color: $brand-primary !important;
+            border: 2px solid $brand-primary;
+        }
+    }
+
+    &.btn-secondary-small {
+        background: $brand-secondary !important;
+        color: $white;
+        font-size: 14px;
+        height: 32px;
+        border: none;
+        &.btn-bordered {
+            background: transparent !important;
+            color: $brand-primary !important;
+            border: 2px solid $brand-primary;
+        }
+    }
+
     &.btn-primary-small {
         background: $brand-primary !important;
         color: $white;
         border: none;
+        font-size: 14px;
+        height: 32px;
         &.btn-bordered {
             background: transparent !important;
             color: $brand-primary !important;

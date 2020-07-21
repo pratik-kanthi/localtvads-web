@@ -131,7 +131,7 @@
                 <div class="container">
                     <h2 class="text-center brand-secondary section-heading">Don't have an ad?</h2>
                     <div class="t-xl section-subtitle text-center brand-secondary">
-                        <p>You can still get on TV using the our add-ons</p>
+                        <p>You can still get on Local TV using our add-ons</p>
                     </div>
                     <div class="addons-parent mt32">
                         <div class="row addons-wrapper mb24" v-if="addons && addons.length > 0">

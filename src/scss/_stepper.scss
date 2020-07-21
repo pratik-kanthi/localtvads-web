@@ -111,7 +111,7 @@ $stepper-bg: rgba(100, 100, 100, 0.1);
 }
 @media (max-width: 767px) {
     .stepper {
-        font-size: 0.75rem;
+        font-size: 0.5rem;
         &-item {
             &-bar {
                 &-number {
@@ -120,9 +120,6 @@ $stepper-bg: rgba(100, 100, 100, 0.1);
                     line-height: 24px;
                     top: -12px;
                 }
-            }
-            &-name {
-                display: none;
             }
         }
     }

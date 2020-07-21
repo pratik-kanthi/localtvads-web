@@ -305,9 +305,8 @@ export default {
 .choose-plan {
     .slot-container {
         .slot {
-            -webkit-box-shadow: -11px 9px 9px -7px rgba(204, 204, 204, 1);
-            -moz-box-shadow: -11px 9px 9px -7px rgba(204, 204, 204, 1);
-            box-shadow: -11px 9px 9px -7px rgba(204, 204, 204, 1);
+            box-shadow: 0 0 8px 0 rgba(100, 100, 100, 0.1);
+            border: 1px solid rgba(100, 100, 100, 0.1);
         }
     }
     .counter {

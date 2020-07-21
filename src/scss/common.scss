@@ -78,9 +78,22 @@ h3.section-title-2 {
 h3.page-heading {
     font-size: 24px !important;
     color: $brand-secondary;
+    margin-top: 24px !important;
 
     @include media-breakpoint-up(md) {
         font-size: 32px !important;
+        margin-top: 64px !important;
+    }
+}
+
+h4.page-heading {
+    font-size: 18px !important;
+    color: $brand-secondary;
+    margin-top: 24px !important;
+
+    @include media-breakpoint-up(md) {
+        font-size: 24px !important;
+        margin-top: 64px !important;
     }
 }
 
@@ -249,7 +262,7 @@ footer {
 }
 
 .t-xl {
-    font-size: 18px;
+    font-size: 16px;
     @include media-breakpoint-up(md) {
         font-size: 24px;
     }
