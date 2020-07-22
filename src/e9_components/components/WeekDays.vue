@@ -72,6 +72,7 @@ export default {
 }
 
 .table-mode {
+    flex: 0;
     .day {
         display: flex;
         cursor: pointer;
@@ -85,7 +86,7 @@ export default {
         align-items: center;
         justify-content: center;
         padding: 12px;
-
+        margin-right: 4px;
         &.selected {
             background-color: $brand-primary;
             color: $white;

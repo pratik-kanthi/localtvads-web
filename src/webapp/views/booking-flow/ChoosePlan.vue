@@ -41,11 +41,11 @@
                                 </b-form-select>
                             </div>
                             <div class="col-sm-3">
-                                <div class="mt8 slot-details" v-if="channelSlot.Slot">
+                                <div class="mt8 slot-details" v-if="channelSlot && channelSlot.Slot">
                                     <div class="t-s brand-primary">You will need to upload a video of {{ channelSlot.Duration }} seconds</div>
                                 </div>
                             </div>
-                            <div class="mt8 col-sm-3" v-if="channelSlot.Slot">
+                            <div class="mt8 col-sm-3" v-if="channelSlot && channelSlot.Slot">
                                 <div class="slot-price">
                                     You will be charged <span class="brand-primary">{{ (channelSlot.RatePerSecond * channelSlot.Duration * $parent.daysSelected.length) | currency }} / week</span> from the day we go live with the ad.
                                 </div>
@@ -71,7 +71,7 @@
                             </div>
                             <div class="t-m d-flex justify-content-start justify-content-md-end ">
                                 <div>Total Amount for {{ noOfWeeks }} weeks:</div>
-                                <div>&nbsp;~{{ (weekTotal * noOfWeeks) | currency }}</div>
+                                <div>&nbsp;&asymp;{{ (weekTotal * noOfWeeks) | currency }}</div>
                             </div>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
 
                 <div class="action mt48 mb64 d-flex justify-content-center">
                     <button class="btn btn-white w-25 border" @click="cancel">Cancel</button>
-                    <button class="btn btn-primary w-25 ml16" @click="goToPayment" :disabled="!$parent.clientAdPlan.ChannelProduct.ChannelSlots[0].Slot">Proceed</button>
+                    <button class="btn btn-primary w-25 ml16" @click="goToPayment" :disabled="!$parent.clientAdPlan.ChannelProduct.ChannelSlots || $parent.clientAdPlan.ChannelProduct.ChannelSlots.length == 0 || !$parent.clientAdPlan.ChannelProduct.ChannelSlots[0].Slot">Proceed</button>
                 </div>
             </div>
         </div>
@@ -235,7 +235,7 @@ export default {
                     Duration: null
                 }
             ];
-            if (currentSlots) {
+            if (currentSlots && currentSlots.length>0) {
                 slots = [];
                 for (let i = 0, len = currentSlots.length; i < len; i++) {
                     slots.push(

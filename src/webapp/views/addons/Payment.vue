@@ -256,20 +256,12 @@ export default {
             let result;
             try {
                 result = await instance.post('api/clientad/new', obj);
-                this.$router.push(
-                    {
-                        name: 'BookingFlow',
-                        query: {
-                            clientadplan: result.data._id
-                        }
-                    },
-                    () => {}
-                );
                 this.$swal({
                     title: 'Successful',
-                    text: 'Payment has been successful. You are now being redirected to ad details and video upload',
+                    text: 'Payment has been successful.',
                     type: 'success'
                 });
+                this.$parent.transaction = result.data;
                 this.$emit('advanceToConfirmation');
             } catch (err) {
                 this.paymentLoading = false;

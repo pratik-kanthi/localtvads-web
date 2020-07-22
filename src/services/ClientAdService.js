@@ -1,5 +1,7 @@
 import BaseService from './BaseService';
-import { get } from './ApiService';
+import {
+    get
+} from './ApiService';
 export default class ClientAdService extends BaseService {
     static _url = '/api/clientadplans';
 
@@ -14,10 +16,10 @@ export default class ClientAdService extends BaseService {
         });
     }
 
-    static getPlanDetails(planId, clientId) {
+    static getPlanDetails(planId) {
         return new Promise(async (resolve, reject) => {
             try {
-                let _res = await get(`api/clientplans/${planId}?clientId=${clientId}`);
+                let _res = await get(`api/clientplans/${planId}`);
                 resolve(_res.data);
             } catch (err) {
                 return reject(err);

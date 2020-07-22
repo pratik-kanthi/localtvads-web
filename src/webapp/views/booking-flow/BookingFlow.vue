@@ -44,6 +44,7 @@ export default {
     },
     data() {
         return {
+            transaction: null,
             currentStep: 1,
             currentStage: null,
             daysSelected: [],

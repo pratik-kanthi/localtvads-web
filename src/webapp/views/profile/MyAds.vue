@@ -13,7 +13,7 @@
             </div>
             <div v-else-if="clientAdPlans.length > 0">
                 <div class="table-wrapper">
-                    <Table :on-row-click="openAdPlanDetails" :items="clientAdPlans" :headings="fields" :pagination="pagination" :sort.sync="sort" table-class="table-responsive-xs ">
+                    <Table responsive :on-row-click="openAdPlanDetails" :items="clientAdPlans" :headings="fields" :pagination="pagination" :sort.sync="sort" table-class="table-responsive-xs ">
                         <template v-slot:Channel="data">
                             <div>{{ data.value.Channel.Name }}</div>
                         </template>

@@ -143,7 +143,7 @@
                                     </div>
                                     <div class="price">
                                         <p class="lead brand-primary mb0">Now for just</p>
-                                        <h4 class="amount">{{ addon.TotalAmount | currency }}</h4>
+                                        <h4 class="amount">{{ addon.Amount | currency }}</h4>
                                     </div>
                                     <div class="benefits">
                                         <ul class="mb8">

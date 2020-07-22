@@ -100,22 +100,24 @@
                                 </div>
                             </div>
 
-                            <div class=" mt32">
+                            <!-- <div class=" mt32">
                                 <button @click="downloadReceipt" class="btn btn-primary-small">Download Receipt</button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="col-md-6 mt16">
                         <div class="confirmation-box h-100 p24  mt16 rounded-right">
-                            <div class="t-xl bold text-center">Next Steps</div>
-                            <hr />
-                            <div class="t-l mt24 d-flex flex-column justify-content-between align-items-start">
-                                <div>
-                                    <div class="t-l">To continue building your ad, go to <router-link tag="a" to="/ads">My Ads</router-link> and select the ad you just booked</div>
-                                    <div class="t-l">You can upload your ad video ( and other assets if you bought an add-on )</div>
-                                    <div class="t-l">Once you have provided the video and other required details, our team will review your ad and get back to you.</div>
+                            <div class="t-l d-flex h-100 flex-column justify-content-between">
+                                <div class="">
+                                    <div class="t-xl bold text-center">Next Steps</div>
+                                    <hr />
+                                    <ol>
+                                        <li class="t-l mt24">To continue building your ad, go to <router-link tag="a" to="/ads">My Ads</router-link> and select the ad you just booked</li>
+                                        <li class="t-l mt24">You can upload your ad video ( and other assets if you bought an add-on )</li>
+                                        <li class="t-l mt24">Once you have provided the video and other required details, our team will review your ad and get back to you.</li>
+                                    </ol>
                                 </div>
-                                <div class="h-100 t-l bold">
+                                <div class="t-l bold">
                                     For any help, please reach out to us on
                                     <a href="mailto:support@localtvads.com">support@localtvads.com</a>
                                 </div>
@@ -137,11 +139,15 @@ export default {
             taxes: [],
             taxAmount: 0,
             taxInfo: false,
+            isDisplay: false,
             priceBreakDown: false
         };
     },
     methods: {
-        downloadReceipt() {}
+        downloadReceipt() {},
+        showTaxInfo(isDisplay) {
+            this.taxInfo = isDisplay;
+        }
     },
     async created() {
         this.taxes = await TaxService.getAllTaxes();
@@ -164,10 +170,8 @@ export default {
             height: 100%;
         }
     }
-
     .confirmation-box {
         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-
         i {
             position: relative;
             top: 4px;
@@ -175,6 +179,30 @@ export default {
             font-size: 18px;
             color: $brand-primary;
             cursor: pointer;
+        }
+        .tooltip-info {
+            width: 250px;
+            text-align: left;
+            position: absolute;
+            left: 80px;
+            color: $base;
+            bottom: 8px;
+            border-radius: 6px;
+            background: #fff;
+            padding: 8px 12px;
+            box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
+            font-size: 14px;
+            z-index: 10;
+
+            .name {
+                display: inline-block;
+                width: 80%;
+            }
+
+            .value {
+                display: inline-block;
+                width: 20%;
+            }
         }
     }
     .dashed-line {

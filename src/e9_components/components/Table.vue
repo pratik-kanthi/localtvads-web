@@ -1,39 +1,29 @@
 <template>
     <div class="table-wrapper">
         <div class="table-options" v-if="options">
-            <a v-show="options.export" @click="exportData">Export</a>
-            <a v-show="options.arrange" @click="arrangeColumns">Arrange</a>
-            <a v-show="options.reset" @click="resetTable">Reset</a>
+            <a v-show="options.export" @click="exportData">
+                Export
+            </a>
+            <a v-show="options.arrange" @click="arrangeColumns">
+                Arrange
+            </a>
+            <a v-show="options.reset" @click="resetTable">
+                Reset
+            </a>
         </div>
-        <table
-            :class="[tableClass, { 'table-responsive-xs table-responsive-sm table-responsive-md': $attrs.hasOwnProperty('responsive') }]"
-            :style="{ 'border-spacing': '0px ' + ($attrs.hasOwnProperty('spacing') ? $attrs.spacing + 'px' : '0px'), 'border-collapse': 'separate' }"
-            v-if="clonedHeadings"
-        >
+        <table :class="[tableClass, { 'table-responsive-xs table-responsive-sm table-responsive-md': $attrs.hasOwnProperty('responsive') }]" :style="{ 'border-spacing': '0px ' + ($attrs.hasOwnProperty('spacing') ? $attrs.spacing + 'px' : '0px'), 'border-collapse': 'separate' }" v-if="clonedHeadings">
             <thead>
                 <tr>
-                    <th
-                        v-for="(header, hKey) in clonedHeadings"
-                        :key="hKey"
-                        :class="[theadThClass, typeof header.class == 'string' ? header.class : '']"
-                    >
+                    <th v-for="(header, hKey) in clonedHeadings" :key="hKey" :class="[theadThClass, typeof header.class == 'string' ? header.class : '']">
                         <span v-if="$scopedSlots[header.key + '(head)']">
                             <slot :name="header.key + '(head)'"></slot>
                         </span>
-                        <span v-else class="d-flex">
+                        <span v-else>
+                            {{ header.label || header.key || '' }}
                             <span class="sort" v-if="sortBy[header.key]">
-                                <i
-                                    class="material-icons"
-                                    :class="{ active: currentSort && currentSort.name === header.key && currentSort.value === 'asc' }"
-                                    @click="changeSort(header.key, 'asc')"
-                                >arrow_drop_up</i>
-                                <i
-                                    class="material-icons"
-                                    :class="{ active: currentSort && currentSort.name === header.key && currentSort.value === 'desc' }"
-                                    @click="changeSort(header.key, 'desc')"
-                                >arrow_drop_down</i>
+                                <i class="material-icons" :class="{ active: currentSort && currentSort.name === header.key && currentSort.value === 'asc' }" @click="changeSort(header.key, 'asc')">arrow_drop_up</i>
+                                <i class="material-icons" :class="{ active: currentSort && currentSort.name === header.key && currentSort.value === 'desc' }" @click="changeSort(header.key, 'desc')">arrow_drop_down</i>
                             </span>
-                            <span>{{ header.label || header.key || '' }}</span>
                         </span>
                     </th>
                 </tr>
@@ -42,23 +32,14 @@
                 </tr>
             </thead>
             <tbody v-if="clonedItems.length">
-                <tr
-                    v-for="(row, key) in clonedItems"
-                    :key="key"
-                    :class="tbodyTrClass"
-                    @click="actionWrapper($event, row)"
-                >
-                    <td
-                        v-for="(header, hKey) in clonedHeadings"
-                        :key="hKey"
-                        :class="setTdClasses(header, row)"
-                    >
+                <tr v-for="(row, key) in clonedItems" :key="key" :class="tbodyTrClass" @click="actionWrapper($event, row)">
+                    <td v-for="(header, hKey) in clonedHeadings" :key="hKey" :class="setTdClasses(header, row)">
                         <span v-if="$scopedSlots[header.key]">
                             <slot :name="header.key" :value="row"></slot>
                         </span>
-                        <span
-                            v-else
-                        >{{ header.formatter ? header.formatter(row[header.key]) : row[header.key] }}</span>
+                        <span v-else>
+                            {{ header.formatter ? header.formatter(row[header.key]) : row[header.key] }}
+                        </span>
                     </td>
                 </tr>
                 <tr v-if="isLoading" class="overlay"></tr>
@@ -73,38 +54,21 @@
         <div class="pagination" v-if="pagination && clonedItems.length">
             <p>Showing {{ (pagination.currentPage - 1) * pagination.perPage + 1 }} - {{ Math.min(...[pagination.currentPage * pagination.perPage, pagination.totalItems]) }} of {{ pagination.totalItems }} results.</p>
             <ul v-show="pagination.totalItems > pagination.perPage" class="mb0 float-right">
-                <li
-                    v-if="pagination.currentPage !== 1 && pagination.showJumpToFirst"
-                    @click="changePage(1)"
-                >
+                <li v-if="pagination.currentPage !== 1 && pagination.showJumpToFirst" @click="changePage(1)">
                     <!--eslint-disable-next-line-->
                     <span>{{ '<<' }}</span>
                 </li>
-                <li
-                    v-if="pagination.currentPage !== 1"
-                    @click="changePage(--pagination.currentPage)"
-                >
+                <li v-if="pagination.currentPage !== 1" @click="changePage(--pagination.currentPage)">
                     <!--eslint-disable-next-line-->
                     <span>{{ '<' }}</span>
                 </li>
-                <li
-                    v-for="(val, key) in totalPages"
-                    :key="key"
-                    :class="{ active: pagination.currentPage === val }"
-                    @click="changePage(val)"
-                >
+                <li v-for="(val, key) in totalPages" :key="key" :class="{ active: pagination.currentPage === val }" @click="changePage(val)">
                     <span>{{ val }}</span>
                 </li>
-                <li
-                    v-if="clonedItems.length === pagination.perPage && pagination.currentPage !== totalPages.length"
-                    @click="changePage(++pagination.currentPage)"
-                >
+                <li v-if="clonedItems.length === pagination.perPage && pagination.currentPage !== totalPages.length" @click="changePage(++pagination.currentPage)">
                     <span>{{ '>' }}</span>
                 </li>
-                <li
-                    v-if="clonedItems.length === pagination.perPage && pagination.showJumpToLast"
-                    @click="changePage(Math.ceil(pagination.totalItems / pagination.perPage))"
-                >
+                <li v-if="clonedItems.length === pagination.perPage && pagination.showJumpToLast" @click="changePage(Math.ceil(pagination.totalItems / pagination.perPage))">
                     <span>{{ '>>' }}</span>
                 </li>
             </ul>
@@ -115,12 +79,10 @@
             <div class="arrange__box">
                 <h6 class="arrange__box__title">Arrange Columns</h6>
                 <div class="arrange__box__body">
-                    <div
-                        class="arrange__box__body__option"
-                        v-for="(prop, key) in tempHeadings"
-                        :key="key"
-                    >
-                        <div class="arrange__box__body__option__name">{{ prop.label || prop.key }}</div>
+                    <div class="arrange__box__body__option" v-for="(prop, key) in tempHeadings" :key="key">
+                        <div class="arrange__box__body__option__name">
+                            {{ prop.label || prop.key }}
+                        </div>
                         <div class="arrange__box__body__option__value">
                             <label :for="prop.key" class="checkbox">
                                 <input :id="prop.key" type="checkbox" v-model="prop.selected" />
@@ -129,13 +91,7 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <Button
-                            type="success"
-                            size="sm"
-                            :action="saveColumns"
-                            text="Save"
-                            custom-class="inline-block"
-                        ></Button>
+                        <Button type="success" size="sm" :action="saveColumns" text="Save" custom-class="inline-block"></Button>
                     </div>
                 </div>
             </div>
