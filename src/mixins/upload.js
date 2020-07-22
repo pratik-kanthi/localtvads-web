@@ -3,7 +3,7 @@ export const uploadMixin = {
         return {
             config: {
                 maxSize: 250,
-                allowedExtensions: ['mp4', 'webm', 'avi', 'mpv', 'mpg', 'flv']
+                allowedExtensions: ['mp4', 'webm', 'avi', 'mpv', 'mpg', 'flv', 'mov']
             },
             isValid: false,
             upload: {
@@ -20,17 +20,11 @@ export const uploadMixin = {
             this.isValid = false;
             this.upload.chosen = this.$refs.fileUpload.files[0];
             window.URL = window.URL || window.webkitURL;
-            let duration,
-                video = document.createElement('video');
+            let video = document.createElement('video');
             video.preload = 'auto';
             video.onloadedmetadata = () => {
                 window.URL.revokeObjectURL(video.src);
-                duration = video.duration;
-                if (this.$parent.clientAdPlan && duration > this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds) {
-                    this.$swal('Warning', 'Video duration exceeds ' + this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds + ' seconds. Please keep it within allowed duration', 'warning');
-                    this.upload.chosen = null;
-                    return;
-                }
+
                 if (this.config.maxSize && this.upload.chosen.size > 1024 * 1024 * this.config.maxSize) {
                     this.$swal('Warning', 'File exceeds the minimum size of ' + this.config.maxSize + ' MB', 'warning');
                     this.upload.chosen = null;
