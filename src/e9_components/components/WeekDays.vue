@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper rounded d-flex">
-        <div class="day-wrapper" v-for="(i, key) in 7" :key="key" @click="chooseDay(i)">
+        <div :class="{ 'table-mode': mode === 'table' }" class="day-wrapper" v-for="(i, key) in 7" :key="key" @click="chooseDay(i)">
             <span class="day" :class="{ selected: clonedValue.indexOf(i) > -1 }">{{ days[i] | trucateChars(2) }}</span>
         </div>
     </div>
@@ -17,6 +17,9 @@ export default {
         disabled: {
             type: Boolean,
             default: false
+        },
+        mode: {
+            type: String
         }
     },
     data() {
@@ -50,6 +53,7 @@ export default {
     flex: 1;
     padding: 0 2px;
 }
+
 .day {
     display: flex;
     cursor: pointer;
@@ -64,6 +68,28 @@ export default {
     &.selected {
         background-color: $brand-primary;
         color: $white;
+    }
+}
+
+.table-mode {
+    .day {
+        display: flex;
+        cursor: pointer;
+        height: 14px;
+        width: 14px;
+        border-radius: 50%;
+        background: $white;
+        border: 1px solid $brand-primary;
+        color: $brand-primary;
+        font-size: 12px;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+
+        &.selected {
+            background-color: $brand-primary;
+            color: $white;
+        }
     }
 }
 </style>
