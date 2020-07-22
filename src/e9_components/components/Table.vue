@@ -11,7 +11,7 @@
                 Reset
             </a>
         </div>
-        <table :class="[tableClass, { 'table-responsive-xs table-responsive-sm table-responsive-md': $attrs.hasOwnProperty('responsive') }]" :style="{ 'border-spacing': '0px ' + ($attrs.hasOwnProperty('spacing') ? $attrs.spacing + 'px' : '0px'), 'border-collapse': 'separate' }" v-if="clonedHeadings">
+        <table :class="[tableClass, { 'table-responsive-xs table-responsive-sm table-responsive-md': $attrs.hasOwnProperty('responsive') }]" :style="{ 'border-spacing': '0px 16px' + ($attrs.hasOwnProperty('spacing') ? $attrs.spacing + 'px' : '0px'), 'border-collapse': 'separate' }" v-if="clonedHeadings">
             <thead>
                 <tr>
                     <th v-for="(header, hKey) in clonedHeadings" :key="hKey" :class="[theadThClass, typeof header.class == 'string' ? header.class : '']">
