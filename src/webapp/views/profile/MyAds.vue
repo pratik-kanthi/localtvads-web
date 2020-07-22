@@ -6,61 +6,38 @@
 
         <LoaderModal :showloader="isLoading" message="Please wait while we fetch the data..."></LoaderModal>
         <div class="container table-container pm-24">
-            <div class="d-flex justify-content-between align-items-center">
-                <h3 class="brand-secondary mt64 mb48">My Ad Plans</h3>
-                <div></div>
-            </div>
+            <h3 class="brand-secondary mt64 mb48">My Ad Plans</h3>
+
             <div v-if="!isLoading && clientAdPlans.length === 0">
                 <p class="lead">You haven't purchased any ad plans</p>
             </div>
             <div v-else-if="clientAdPlans.length > 0">
-                <div class="table-wrapper d-none d-md-block">
-                    <Table :items="clientAdPlans" :headings="fields" :pagination="pagination" :sort.sync="sort" table-class="table-responsive-xs table-responsive-stable-responsive-md">
+                <div class="table-wrapper">
+                    <Table :on-row-click="openAdPlanDetails" :items="clientAdPlans" :headings="fields" :pagination="pagination" :sort.sync="sort" table-class="table-responsive-xs ">
                         <template v-slot:Channel="data">
                             <div>{{ data.value.Channel.Name }}</div>
                         </template>
                         <template v-slot:PurchaseDate="data">
-                            <div>{{ data.value.BookedDate | formatDate('DD/MM/YYYY') }}</div>
+                            <div>{{ data.value.BookedDate | formatDate('DD MMMM YYYY') }}</div>
                         </template>
                         <template v-slot:Name="data">
                             <div>{{ data.value.Name }}</div>
                         </template>
                         <template v-slot:WeeklySchedule="data">
-                            <div>{{ getSelectedDays(data.value.Days) }}</div>
+                            <div><WeekDays mode="table" :value="data.value.Days"></WeekDays></div>
                         </template>
                         <template v-slot:Status="data">
-                            <div>{{ data.value.Status }}</div>
+                            <div :class="getStatusClass(data.value.Status)">{{ data.value.Status }}</div>
                         </template>
                         <template v-slot:SlotsBooked="data">
-                            <div v-for="(slot, key) in data.value.ChannelProduct.ChannelSlots" :key="key">{{ slot.Slot.Name }} ( {{ slot.Slot.StartTime }} - {{ slot.Slot.EndTime }})</div>
+                            <div class="d-flex flex-row flex-md-column">
+                                <div v-for="(slot, key) in data.value.ChannelProduct.ChannelSlots" :key="key">{{ slot.Slot.Name }} ( {{ slot.Slot.StartTime }} - {{ slot.Slot.EndTime }})</div>
+                            </div>
                         </template>
                         <template v-slot:PlanDuration="data">
                             <div>{{ data.value.ChannelProduct.ProductLength.Name }}</div>
                         </template>
                     </Table>
-                </div>
-
-                <div class="d-block d-md-none" v-for="(ad, key) in clientAdPlans" :key="key">
-                    <b-card :title="ad.Name" class="mb-2">
-                        <b-card-text>
-                            <div class="d-flex flex-row justify-content-between">
-                                <div>
-                                    <div>Schedule:</div>
-                                </div>
-                                <div>
-                                    <div>Channel:</div>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-column justify-content-center mt16">
-                                <div v-if="ad.ClientAd">
-                                    <button @click="openVideo(ad.ClientAd.VideoUrl)" class="btn btn-sm btn-link pl0 pr0">View Ad</button>
-                                </div>
-                                <div v-else>
-                                    <button @click="goToVideoUpload(ad._id)" class="btn btn-sm btn-link pl0 pr0 error">Finish Setup</button>
-                                </div>
-                            </div>
-                        </b-card-text>
-                    </b-card>
                 </div>
             </div>
         </div>
@@ -72,12 +49,14 @@ import { mapGetters } from 'vuex';
 import ClientAdService from '@/services/ClientAdService';
 import VideoModal from '@/webapp/common/modals/VideoModal';
 import Table from '@/e9_components/components/Table';
+import WeekDays from '@/e9_components/components/WeekDays';
 
 export default {
     name: 'MyAds',
     components: {
         VideoModal,
-        Table
+        Table,
+        WeekDays
     },
     data() {
         return {
@@ -100,7 +79,8 @@ export default {
                     label: 'Plan Duration'
                 },
                 {
-                    key: 'WeeklySchedule'
+                    key: 'WeeklySchedule',
+                    label: 'Weekly Schedule'
                 },
                 {
                     key: 'SlotsBooked',
@@ -167,11 +147,13 @@ export default {
                 }
             });
         },
-        ...mapGetters(['getUser']),
-        openVideo(url) {
-            this.displayAdVideo = true;
-            this.videoUrl = this.GOOGLE_BUCKET_ENDPOINT + url;
-        }
+        openAdPlanDetails(clientadplan) {
+            this.$router.push({ name: 'AdPlanDetails', query: { id: clientadplan._id } });
+        },
+        getStatusClass(status) {
+            return status.toLowerCase();
+        },
+        ...mapGetters(['getUser'])
     },
     created() {
         this.getClientAds();

@@ -52,9 +52,6 @@
                                     <router-link tag="li" to="ads">My Ads</router-link>
                                 </span>
                                 <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="my-addons">My Addons</router-link>
-                                </span>
-                                <span @click="toggleSubMenu">
                                     <router-link tag="li" to="transactions">Transactions</router-link>
                                 </span>
                                 <li @click="logout">

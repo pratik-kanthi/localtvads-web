@@ -718,3 +718,17 @@ footer {
         padding: 6px;
     }
 }
+
+/* Status Colors */
+
+.paid {
+    color: $brand-primary;
+}
+
+.live {
+    color: $green;
+}
+
+.expired {
+    color: $red;
+}

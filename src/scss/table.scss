@@ -67,6 +67,9 @@
                 border-spacing: 0 1em;
                 border: 1px solid $brand-secondary;
                 box-shadow: 0 2px 4px 0 rgba(46, 91, 255, 0.08);
+                min-height: 100px;
+                height: 100px;
+                cursor: pointer;
 
                 td {
                     padding: 8px 0;
