@@ -34,8 +34,8 @@
                             <div class="mt8 col-sm-1">Slot {{ slotIndex + 1 }}</div>
                             <div class="mt8 col-sm-4">
                                 <b-form-select @change="selectSlot($event, slotIndex)">
-                                    <b-form-select-option value="null" disabled>Select Your Slot</b-form-select-option>
-                                    <b-form-select-option v-for="(slotData, key) in $parent.selectedPlan.ChannelSlots" :key="key" :value="slotData">
+                                    <b-form-select-option value="null">Select Your Slot</b-form-select-option>
+                                    <b-form-select-option v-for="(slotData, key) in $parent.selectedPlan.ChannelSlots" :key="key" :value="slotData.Slot._id">
                                         <p class="slot-name">{{ slotData.Slot.Name + ' (' + slotData.Slot.StartTime + '-' + slotData.Slot.EndTime + ')' }}</p>
                                     </b-form-select-option>
                                 </b-form-select>
@@ -57,7 +57,12 @@
                     <div class="row">
                         <div class="col-md-6" v-if="$parent.clientAdPlan && $parent.clientAdPlan.ChannelProduct.ProductLength">
                             <div class="t-xl">Plan duration : {{ $parent.clientAdPlan.ChannelProduct.ProductLength.Duration }} months</div>
-                            <div v-for="(saving, key) in savings" :key="key" class="t-l brand-primary">You could save {{ saving.Amount | currency }} on {{ saving.Plan.ProductLength.Name }} plan.</div>
+                            <div v-for="(saving, key) in savings" :key="key" class="t-l brand-primary">
+                                You could save {{ saving.Amount | currency }} on
+                                <a href="" @click.prevent="selectPlan(saving.Plan)">
+                                    <u class="italic">{{ saving.Plan.ProductLength.Name + ' plan' }}</u>
+                                </a>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <div class="brand-primary t-xl d-flex justify-content-start justify-content-md-end ">
@@ -127,9 +132,11 @@ export default {
             });
             this.$parent.clientAdPlan = adPlan;
         },
-        selectSlot(slot, index) {
+        selectSlot(slotId, index) {
             let adPlan = { ...this.$parent.clientAdPlan };
-            adPlan.ChannelProduct.ChannelSlots[index] = slot;
+            adPlan.ChannelProduct.ChannelSlots[index] = this.$parent.selectedPlan.ChannelSlots.find(function(item) {
+                return item.Slot._id == slotId;
+            });
             this.$parent.clientAdPlan = adPlan;
         },
         decrement() {
@@ -213,19 +220,37 @@ export default {
             }
         },
         selectPlan(plan) {
+            let tempPlan = { ...this.$parent.clientAdPlan };
             this.$parent.selectedPlan = plan;
-            this.$parent.clientAdPlan.ChannelProduct = {
+            let currentSlots = [];
+            this.$parent.clientAdPlan.ChannelProduct.ChannelSlots.map(function(item) {
+                if (item.Slot) {
+                    currentSlots.push(item.Slot._id);
+                }
+            });
+            let slots = [
+                {
+                    Slot: null,
+                    RatePerSecond: null,
+                    Duration: null
+                }
+            ];
+            if (currentSlots) {
+                slots = [];
+                for (let i = 0, len = currentSlots.length; i < len; i++) {
+                    slots.push(
+                        plan.ChannelSlots.find(function(item) {
+                            return item.Slot._id == currentSlots[i];
+                        })
+                    );
+                }
+            }
+            tempPlan.ChannelProduct = {
                 _id: plan._id,
-                ProductLength: this.$parent.selectedPlan.ProductLength,
-                ChannelSlots: [
-                    {
-                        Slot: null,
-                        RatePerSecond: null,
-                        Duration: null
-                    }
-                ]
+                ProductLength: plan.ProductLength,
+                ChannelSlots: slots
             };
-            this.slotsKey++;
+            this.$parent.clientAdPlan = tempPlan;
         }
     },
     computed: {

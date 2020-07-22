@@ -86,19 +86,22 @@
                                 </div>
                                 <div class="row mt32">
                                     <div class="col-6 col-sm-6">
-                                        <h5 class="t-xl">Total Amount</h5>
+                                        <h5 class="t-xl">Total Payable</h5>
                                     </div>
                                     <div class="col-6 col-sm-6 text-right">
                                         <h5 class="amount t-xl black pull-right">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</h5>
                                     </div>
                                 </div>
+                                <div class="t-m italic mt16 mb0">
+                                    Note: Total payable includes first week's charge plus any addons if selected.
+                                </div>
                             </div>
                             <div class="dashed-line">
                                 <div class="line"></div>
                             </div>
-                            <p class="mt32">
-                                <small>*All tax inclusive</small>
-                            </p>
+                            <div class="t-m italic mt16 mb0">
+                                Note: You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing.
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-5 mt-xs16">
