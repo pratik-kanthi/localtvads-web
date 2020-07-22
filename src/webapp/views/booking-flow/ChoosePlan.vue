@@ -58,7 +58,7 @@
                         <div class="col-md-6" v-if="$parent.clientAdPlan && $parent.clientAdPlan.ChannelProduct.ProductLength">
                             <div class="t-xl">Plan duration : {{ $parent.clientAdPlan.ChannelProduct.ProductLength.Duration }} months</div>
                             <div v-for="(saving, key) in savings" :key="key" class="t-l brand-primary">
-                                You could save {{ saving.Amount | currency }} on
+                                You could save {{ saving.Amount | currency }} / week on
                                 <a href="" @click.prevent="selectPlan(saving.Plan)">
                                     <u class="italic">{{ saving.Plan.ProductLength.Name + ' plan' }}</u>
                                 </a>
@@ -235,7 +235,7 @@ export default {
                     Duration: null
                 }
             ];
-            if (currentSlots && currentSlots.length>0) {
+            if (currentSlots && currentSlots.length > 0) {
                 slots = [];
                 for (let i = 0, len = currentSlots.length; i < len; i++) {
                     slots.push(

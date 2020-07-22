@@ -43,7 +43,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="t-l black">Weekly Schedule</div>
-                                <WeekDays mode="table" :value="clientAdPlan.Days"></WeekDays>
+                                <WeekDays disabled="true" mode="table" :value="clientAdPlan.Days"></WeekDays>
                             </div>
                         </div>
 
