@@ -16,6 +16,10 @@ export const init = router => {
     $http.interceptors.request.use(
         config => {
             config.headers['Authorization'] = 'bearer ' + VueCookies.get('token');
+            if (config.url.indexOf(':clientid')) {
+                let clientId = VueCookies.get('clientId');
+                config.url = config.url.replace(':clientid', clientId);
+            }
             return config;
         },
         error => {

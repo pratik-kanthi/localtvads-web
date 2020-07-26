@@ -5,10 +5,10 @@ import {
 export default class ClientAdService extends BaseService {
     static _url = '/api/clientadplans';
 
-    static getAllPlans(clientId) {
+    static getAllPlans() {
         return new Promise(async (resolve, reject) => {
             try {
-                let _res = await get('api/clientplans/all?clientId=' + clientId);
+                let _res = await get('api/:clientid/clientadplans/all?clientId=');
                 resolve(_res.data);
             } catch (err) {
                 return reject(err);
@@ -19,7 +19,7 @@ export default class ClientAdService extends BaseService {
     static getPlanDetails(planId) {
         return new Promise(async (resolve, reject) => {
             try {
-                let _res = await get(`api/clientplans/${planId}`);
+                let _res = await get(`api/:clientid/clientadplans/${planId}`);
                 resolve(_res.data);
             } catch (err) {
                 return reject(err);
