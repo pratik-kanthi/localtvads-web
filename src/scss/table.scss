@@ -55,11 +55,13 @@ $default-content-padding: 5px;
                     text-align: left;
                     border: none;
                     padding: 0 0.25rem;
+                    padding-right: 16px;
+                    padding-left: 16px;
                     font-size: 0.875rem;
                     text-transform: uppercase;
                     font-weight: $font-weight-bold;
 
-                    >div {
+                    > div {
                         display: inline-flex;
                         align-items: center;
                         justify-content: flex-start;
@@ -126,7 +128,7 @@ $default-content-padding: 5px;
             }
         }
 
-        >div {
+        > div {
             position: relative;
         }
 
@@ -170,7 +172,6 @@ $default-content-padding: 5px;
                         &:last-child {
                             border-bottom-right-radius: $table-border-radius;
                         }
-
                     }
                 }
             }
@@ -350,7 +351,7 @@ $default-content-padding: 5px;
                         background-color: $light;
                     }
 
-                    .checkbox input:checked~.checkmark {
+                    .checkbox input:checked ~ .checkmark {
                         background-color: $light;
                     }
 
@@ -360,7 +361,7 @@ $default-content-padding: 5px;
                         display: none;
                     }
 
-                    .checkbox input:checked~.checkmark:after {
+                    .checkbox input:checked ~ .checkmark:after {
                         display: block;
                     }
 

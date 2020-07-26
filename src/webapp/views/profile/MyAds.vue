@@ -1,5 +1,5 @@
 <template>
-    <section class="myads vh-100 pt24">
+    <section class="myads pt24">
         <div v-if="displayAdVideo">
             <VideoModal class="promo" :show-video="displayAdVideo" :video-url="videoUrl" @close="closeVideo"></VideoModal>
         </div>
@@ -13,7 +13,7 @@
             </div>
             <div v-else-if="clientAdPlans.length > 0">
                 <div class="table-wrapper">
-                    <Table responsive :on-row-click="openAdPlanDetails" :items="clientAdPlans" :headings="fields" :pagination="pagination" :sort.sync="sort" table-class="table-responsive-xs ">
+                    <Table :on-row-click="openAdPlanDetails" :items="clientAdPlans" :headings="fields" :pagination="pagination" :sort.sync="sort" table-class="table-responsive-xs ">
                         <template v-slot:Channel="data">
                             <div>{{ data.value.Channel.Name }}</div>
                         </template>

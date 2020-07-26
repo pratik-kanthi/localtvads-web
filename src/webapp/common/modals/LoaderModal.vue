@@ -3,6 +3,7 @@
         <div class="overlay"></div>
         <div class="content d-flex flex-column justify-content-center align-items-center" v-scroll-lock="showloader">
             <img src="@/assets/images/loader.svg" height="120" />
+            <div class="message t-xl brand-primary">{{ message }}</div>
         </div>
     </div>
 </template>
@@ -39,7 +40,7 @@ export default {
         img {
             z-index: 999;
         }
-        p {
+        .message {
             font-size: 18px;
             z-index: 3;
         }

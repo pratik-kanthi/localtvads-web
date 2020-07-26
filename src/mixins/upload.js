@@ -72,6 +72,20 @@ export const uploadMixin = {
                     this.uploadFile();
                 }
             });
+        },
+        uploadAddOnVideo() {
+            this.$swal({
+                title: 'Are you sure?',
+                text: 'Video will be uploaded and submitted for review.',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Confirm',
+                closeOnConfirm: false
+            }).then(isConfirm => {
+                if (isConfirm.value) {
+                    this.uploadAddOnFile();
+                }
+            });
         }
     }
 };

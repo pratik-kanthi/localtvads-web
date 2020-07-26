@@ -1,7 +1,5 @@
 import BaseService from './BaseService';
-import {
-    get
-} from './ApiService';
+import { get } from './ApiService';
 
 export default class TaxService extends BaseService {
     static _url = '/api/taxes';

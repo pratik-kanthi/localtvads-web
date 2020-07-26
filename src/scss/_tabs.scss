@@ -1,0 +1,58 @@
+.horizontal-tabs {
+    .tabs {
+        .nav {
+            border: none;
+            .nav-item {
+                .nav-link {
+                    color: $brand-secondary;
+                    padding: 0px;
+                    padding-bottom: 8px;
+                    margin-right: 48px;
+                    font-size: 18px;
+                    &:hover {
+                        border: none;
+                    }
+                    &.active {
+                        color: $brand-primary;
+                        border: none;
+                        border-bottom: 2px solid $brand-primary;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.vertical-tabs {
+    @extend .shadow;
+    border: none;
+    min-height: 600px;
+    .tabs {
+        .nav {
+            border: none;
+            padding: 0;
+            height: 100%;
+
+            .nav-item {
+                width: 156px;
+                margin-top: 16px;
+                .nav-link {
+                    border-radius: 0;
+                    padding: 8px 0;
+                    color: $brand-secondary;
+                    margin-right: 0px;
+                    font-size: 16px;
+                    text-align: center;
+                    &:hover {
+                        border: none;
+                    }
+                    &.active {
+                        background: $brand-primary;
+                        color: $white;
+                        border: none;
+                    }
+                }
+            }
+        }
+    }
+}
