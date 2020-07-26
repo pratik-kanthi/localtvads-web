@@ -27,6 +27,11 @@ section {
         overflow: visible;
     }
 }
+
+.pointer {
+    cursor: pointer;
+}
+
 /* Heading Styles
 ------------------------------------
 */
@@ -549,8 +554,12 @@ footer {
     color: $error !important;
 }
 
-.success {
+.succeeded {
     color: $success !important;
+}
+
+.failed {
+    color: $red !important;
 }
 
 .links {

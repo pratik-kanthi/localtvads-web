@@ -1,21 +1,36 @@
 <template>
     <section class="transactions bg--grey">
-        <LoaderModal :showloader="isLoading" message="Loading..."></LoaderModal>
+        <LoaderModal :showloader="isLoading" :message="isLoadingMessage"></LoaderModal>
         <div class="container">
-            <h3 class=" brand-secondary">Transactions</h3>
+            <h3 class="brand-secondary">Transactions</h3>
 
-            <div class="table-wrapper d-none d-md-block">
-                <Table :items="transactions" :headings="fields" :pagination="pagination" :sort.sync="sort" table-class="table-responsive-xs table-responsive-stable-responsive-md">
+            <div class="table-wrapper">
+                <Table
+                    :items="transactions"
+                    :headings="fields"
+                    :pagination="pagination"
+                    :sort.sync="sort"
+                    responsive
+                    table-class="table-responsive-xs table-responsive-stable-responsive-md"
+                >
+                    <template v-slot:Status="data">
+                        <div
+                            class="bold"
+                            :class="data.value.Status.toLowerCase()"
+                        >{{ data.value.Status }}</div>
+                    </template>
                     <template v-slot:DateTime="data">
                         <div>{{ data.value.DateTime | formatDate('DD MMM YYYY') }}</div>
                     </template>
-                    <template v-slot:Total="data">
-                        <div>{{ data.value.Total | currency }}</div>
+                    <template v-slot:TotalAmount="data">
+                        <div>{{ data.value.TotalAmount | currency }}</div>
                     </template>
                     <template v-slot:Action="data">
-                        <button @click="downloadReceipt(data.value.ReferenceID)" class="btn btn-sm btn-link pl0 pt0 pr0 t-m">
-                            Download Invoice
-                        </button>
+                        <div
+                            v-if="data.value.Status == 'SUCCEEDED'"
+                            class="brand-primary pointer"
+                            @click="downloadReceipt(data.value._id)"
+                        >Download Receipt</div>
                     </template>
                 </Table>
             </div>
@@ -31,93 +46,81 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import instance from '@/api';
-import axios from 'axios';
-import VueCookies from 'vue-cookies';
 import Table from '@/e9_components/components/Table';
+import TransactionService from '@/services/TransactionService';
 
 export default {
     name: 'Transactions',
     components: {
-        Table
+        Table,
     },
     data() {
         return {
-            isLoading: false,
+            isLoading: true,
+            isLoadingMessage: '',
             fields: [
-                {
-                    key: 'Details',
-                    sortable: true
-                },
                 {
                     key: 'DateTime',
                     label: 'Transaction Date',
-                    sortable: true
                 },
                 {
                     key: 'Status',
-                    sortable: true
                 },
                 {
-                    key: 'Total',
-                    sortable: true
+                    key: 'TotalAmount',
+                    label: 'Total Amount',
+                },
+                {
+                    key: 'ReferenceId',
+                    label: 'Reference ID',
                 },
                 {
                     key: 'Action',
-                    label: ' '
-                }
+                    label: ' ',
+                },
             ],
             transactions: [],
             perPage: 15,
             currentPage: 1,
             pagination: {
                 currentPage: 1,
-                perPage: 10
+                perPage: 10,
             },
             sort: {
                 name: 'Name',
-                value: 'asc'
-            }
+                value: 'asc',
+            },
         };
     },
     methods: {
         async downloadReceipt(transaction) {
             this.isLoading = true;
-            let result = await axios.get(window.endpoint + 'api/client/transaction/' + transaction, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: 'bearer ' + VueCookies.get('token')
-                }
-            });
-            window.open(result.data);
+            this.isLoadingMessage = 'Generating your receipt';
+
+            const result = await TransactionService.downloadReceipt(transaction);
+            window.open(result);
+
             this.isLoading = false;
+            this.isLoadingMessage = '';
         },
-        ...mapGetters(['getUser'])
+        ...mapGetters(['getUser']),
     },
     async created() {
         this.isLoading = true;
         try {
-            let result = await instance.get('api/client/transactions?client=' + this.getUser().Owner._id);
-            this.transactions = result.data.map(item => {
-                return {
-                    DateTime: item.DateTime,
-                    ReferenceID: item.ReferenceId,
-                    Status: item.Status.substring(0, 1).toUpperCase() + item.Status.substring(1),
-                    Total: item.TotalAmount
-                };
-            });
+            this.transactions = await TransactionService.getTransactions(this.getUser().Owner._id);
             this.isLoading = false;
         } catch (err) {
             this.isLoading = false;
+
             this.$swal({
                 title: 'Error',
                 text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                type: 'error'
+                type: 'error',
             });
             console.error(err);
         }
-    }
+    },
 };
 </script>
 
