@@ -154,18 +154,18 @@ export default {
         async uploadCropped() {
             this.$parent.isLoading = true;
             this.data.name = this.$refs.fileUpload.files[0].name;
+            this.data.cropx = this.position.left;
+            this.data.cropy = this.position.top;
+            this.data.cropw = this.position.width;
+            this.data.croph = this.position.height;
+
             let formData = new window.FormData();
             formData.append('file', this.upload.chosen);
             let bodyObj = {
                 ...this.data
             };
             let t = new URLSearchParams(bodyObj).toString();
-            this.config.api = this.config.api + '&' + t;
-            this.config.api += '&cropx=' + this.position.left;
-            this.config.api += '&cropy=' + this.position.top;
-            this.config.api += '&cropw=' + this.position.width;
-            this.config.api += '&croph=' + this.position.height;
-
+            this.config.api = this.config.api + '?&' + t;
             formData.append('document', JSON.stringify(bodyObj));
             try {
                 let result = await this.callAPI(formData);
