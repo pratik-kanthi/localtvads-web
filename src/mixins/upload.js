@@ -111,8 +111,7 @@ export const uploadMixin = {
                 this.$store.commit('VIDEO_BEING_UPLOADED', false);
             });
 
-            this.socket.on('PROCESS_FINISHED', () => {
-
+            this.socket.on('PROCESS_FINISHED', (data) => {
                 setTimeout(() => {
                     this.$swal({
                         title: 'Uploaded',
@@ -124,7 +123,7 @@ export const uploadMixin = {
                     this.processing = false;
                     this.$store.commit('VIDEO_BEING_UPLOADED', false);
                     this.socket.disconnect();
-                    this.closeUpload();
+                    this.closeUpload(data);
 
                 }, 1000);
             });

@@ -1,27 +1,31 @@
 <template>
     <div class="container">
         <ImageUpload v-if="showUploadImageModal" @close="closeImageUploadModal" :show="true" :config="config" :data="{ ownerid: getUser().Owner._id }"></ImageUpload>
-        <VideoUpload v-if="showVideoUploadModal" @close="closeVideUploadModal"></VideoUpload>
+
+        <div v-if="showVideoUploadModal">
+            <VideoUpload :show="showVideoUploadModal" @done="closeVideUploadModal" @close="cancelVideUploadModal"></VideoUpload>
+        </div>
+
         <VideoModal :show-video="showvideo" :video-url="videourl" @close="closeVideoPlayer"></VideoModal>
         <LoaderModal :showloader="isLoading"></LoaderModal>
         <div v-if="lightBoxItems.length > 0">
-            <CoolLightBox :items="lightBoxItems" :index="lightboxIndex" loop @close="lightboxIndex = null"> </CoolLightBox>
+            <CoolLightBox :items="lightBoxItems" :index="lightboxIndex" loop @close="lightboxIndex = null"></CoolLightBox>
         </div>
 
         <h3 class="mt64 page-heading">Your Assets</h3>
-        <div class="t-l brand-secondary mt24  light-grey">This section allows you to manage all your assets. You can use these assets in your ad videos</div>
+        <div class="t-l brand-secondary mt24 light-grey">This section allows you to manage all your assets. You can use these assets in your ad videos</div>
         <div class="horizontal-tabs mt24">
             <b-tabs>
                 <b-tab title="Videos">
+                    <button @click="addVideo" class="btn btn-primary-small mt24">Add Video</button>
                     <div v-if="clientVideos.length == 0" class="mt24">
                         <div class="t-l">You have not uploaded any videos</div>
                     </div>
-                    <div v-else class="videos-wrapper d-flex">
-                        <div class="video-container mt32" v-for="(video, key) in clientVideos" :key="key">
+                    <div v-else class="videos-wrapper row">
+                        <div class="video-container col-md-4 mt32" v-for="(video, key) in clientVideos" :key="key">
                             <video @click="openVideo(video.ResourceUrl)" class="video pointer" :id="video._id" :src="GOOGLE_BUCKET_ENDPOINT + video.ResourceUrl" width="100%" height="100%" @loadedmetadata="forwardVideo(video._id)"></video>
                         </div>
                     </div>
-                    <button @click="addVideo" class="btn btn-primary-small mt24">Add Video</button>
                 </b-tab>
                 <b-tab title="Images">
                     <button @click="addImage" class="btn btn-primary-small mt24">Add Image</button>
@@ -94,6 +98,9 @@ export default {
         cancelImageUploadModal() {
             this.showUploadImageModal = false;
         },
+        cancelVideUploadModal() {
+            this.showVideoUploadModal = false;
+        },
         closeImageUploadModal(data) {
             this.showUploadImageModal = false;
             this.clientImages.push(data);
@@ -105,7 +112,7 @@ export default {
         },
         closeVideUploadModal(data) {
             this.showVideoUploadModal = false;
-            this.clientVideos.push(data);
+            if (data) this.clientVideos.push(data);
         },
         forwardVideo(id) {
             let elem = document.getElementById(id);
@@ -152,15 +159,8 @@ export default {
 <style lang="scss" scoped>
 .images-wrapper {
     .image-container {
-        &:first-child {
-            margin-left: 0 !important;
-        }
-        margin-left: 24px;
-
         .image {
             border-radius: 6px;
-            height: 150px;
-            width: 150px;
             background-size: cover;
             background-position: center center;
         }
@@ -168,17 +168,9 @@ export default {
 }
 .videos-wrapper {
     .video-container {
-        height: 80;
-        width: 150px;
         border-radius: 6px;
-        &:first-child {
-            margin-left: 0 !important;
-        }
-        margin-left: 24px;
 
         .video {
-            height: 80;
-            width: 150px;
             border-radius: 6px;
             position: relative;
             display: flex;

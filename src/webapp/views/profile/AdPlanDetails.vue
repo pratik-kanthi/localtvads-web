@@ -8,7 +8,7 @@
         </div>
 
         <div v-if="attachimages">
-            <AttachImages :plan-images="clientResources" @close="closeAttachImages" @imagesselected="handleAttachImages"></AttachImages>
+            <AttachImages :plan-assets="planAssets" @close="closeAttachImages" @done="handleAttachAssets"></AttachImages>
         </div>
 
         <VideoModal :show-video="showvideo" :video-url="videourl" @close="closeVideoPlayer"></VideoModal>
@@ -84,28 +84,42 @@
                                             </div>
                                             <div class="row mt24">
                                                 <div class="col">
+                                                    <button @click="showImageSelector" class="btn btn-primary-small">Attach Assets</button>
                                                     <div class="d-flex justify-content-between mt24">
                                                         <div class="t-l black">Images</div>
-                                                        <button @click="showImageSelector" class="btn btn-primary-small">Add Images</button>
                                                     </div>
-                                                    <div class="row mt16">
+                                                    <div class="row ">
                                                         <div
-                                                            v-for="(image, key) in clientResources.filter(resource => {
+                                                            v-for="(image, key) in planAssets.filter(resource => {
                                                                 return resource.ResourceType == 'IMAGE';
                                                             })"
                                                             :key="key"
-                                                            class="col-sm-2"
+                                                            class="col-sm-3 mt16"
                                                         >
-                                                            <div class="image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + image.ResourceUrl + ')' }"></div>
+                                                            <div class="image ml8" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + image.ResourceUrl + ')' }"></div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div v-if="clientAdPlan.Addons[0].IsUploadRequired" class="row mt24">
+                                            <div class="row mt24">
                                                 <div class="col">
-                                                    <div class="d-flex justify-content-between mt24">
+                                                    <div class=" mt24">
                                                         <div class="t-l black">Videos</div>
-                                                        <button @click="showVideoSelector" class="btn btn-primary-small">Add Videos</button>
+                                                        <div class="row mt16">
+                                                            <div
+                                                                class="col-sm-4 ad-video"
+                                                                v-for="(video, key) in planAssets.filter(resource => {
+                                                                    return resource.ResourceType == 'VIDEO';
+                                                                })"
+                                                                :key="key"
+                                                            >
+                                                                <div class="video">
+                                                                    <video :id="video._id" width="100%" height="100%" preload="metadata" @loadedmetadata="forwardVideo(video._id)">
+                                                                        <source :src="GOOGLE_BUCKET_ENDPOINT + video.ResourceUrl" type="video/webm" />
+                                                                    </video>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -212,6 +226,7 @@ import ImageUpload from '@/e9_components/components/ImageUpload';
 import AttachVideo from '@/webapp/common/modals/AttachVideo';
 import AttachImages from '@/webapp/common/modals/AttachImages';
 import VideoModal from '@/webapp/common/modals/VideoModal';
+import ResourceService from '@/services/ResourceService';
 
 export default {
     name: 'AdPlanDetails',
@@ -271,7 +286,7 @@ export default {
                 maxSize: 5,
                 aspectRatio: 1
             },
-            clientResources: [],
+            planAssets: [],
             imagesSelected: [],
             showvideo: false,
             attachimages: false,
@@ -312,7 +327,7 @@ export default {
         },
         closeImageUploadModal(data) {
             this.showUploadImageModal = false;
-            this.clientResources.push(data);
+            this.planAssets.push(data);
         },
         async uploadAddOnFile() {
             this.isLoading = true;
@@ -405,11 +420,11 @@ export default {
                 }
             }
         },
-        async handleAttachImages(images) {
-            if (images.length > 0) {
+        async handleAttachAssets(assets) {
+            if (assets.length > 0) {
                 try {
                     this.isLoading = true;
-                    ClientAdService.attachImages(this.$route.query.id, images);
+                    ClientAdService.attachImages(this.$route.query.id, assets);
                     this.$swal({
                         title: 'Added',
                         text: 'Images added to your add successfully',
@@ -442,7 +457,8 @@ export default {
     async created() {
         try {
             this.clientAdPlan = await ClientAdService.getPlanDetails(this.$route.query.id);
-            this.clientResources = this.clientAdPlan.AddOnAssets;
+            this.planAssets = this.clientAdPlan.AddOnAssets;
+            this.clientResources = await ResourceService.getResources();
             this.getPlanTransactions();
             this.config.api = '/api/' + this.getUser().Owner._id + '/clientresource/image';
             this.isLoading = false;
@@ -466,5 +482,13 @@ export default {
         width: auto;
         border-radius: 5px;
     }
+}
+
+.image {
+    width: 278px;
+    height: 134px;
+    border-radius: 6px;
+    background-position: center center;
+    background-size: cover;
 }
 </style>

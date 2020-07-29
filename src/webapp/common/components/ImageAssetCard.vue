@@ -1,10 +1,7 @@
 <template>
     <div v-if="imageUrl" class="image-container">
         <div class="image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + imageUrl + ')' }"></div>
-        <div class="image-overlay d-flex justify-content-around align-items-center">
-            <i @click="openImage" class="option material-icons t-xxl white pointer">zoom_in</i>
-            <i @click="deleteImage" class="option material-icons t-xxl white pointer">delete</i>
-        </div>
+        <div class="image-overlay d-flex justify-content-center align-items-center"><i @click="openImage" class="option material-icons t-xxl white pointer">zoom_in</i></div>
     </div>
 </template>
 

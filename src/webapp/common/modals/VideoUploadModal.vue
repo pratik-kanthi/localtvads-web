@@ -47,17 +47,22 @@ import { uploadMixin } from '@/mixins/upload';
 
 export default {
     name: 'VideUpload',
+    props: {
+        show: {
+            type: Boolean,
+            required: true
+        }
+    },
     mixins: [uploadMixin],
     data() {
         return {
             //flags
-            isLoading: false,
-            show: true
+            isLoading: false
         };
     },
     methods: {
-        closeUpload() {
-            this.$emit('close');
+        closeUpload(data) {
+            this.$emit('done', data);
         }
     }
 };
