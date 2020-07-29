@@ -59,25 +59,19 @@
                                     <WeekDays :disabled="true" mode="table" :value="clientAdPlan.Days"></WeekDays>
                                 </div>
                             </div>
-                        </div>
-                        <div class="p32 shadow mt32">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="t-l black">Your video</div>
-                                    <div v-if="clientAdPlan.AdVideo" class="ad-video mt16">
-                                        <video @click="openVideo(clientAdPlan.AdVideo.ResourceUrl)" class="video pointer" :id="clientAdPlan.AdVideo._id" :src="GOOGLE_BUCKET_ENDPOINT + clientAdPlan.AdVideo.ResourceUrl" width="100%" height="100%" @loadedmetadata="forwardVideo(clientAdPlan.AdVideo._id)"></video>
-                                    </div>
-                                    <div v-else>
-                                        <div class="t-s mt16">Please upload your ad video by clicking the below button.</div>
-                                        <button @click="showVideoSelector" class="btn btn-primary-small mt16">Add Video</button>
-                                    </div>
-                                </div>
+                            <div class="t-l black mt32">Ad video</div>
+                            <div v-if="clientAdPlan.AdVideo" class="ad-video mt16">
+                                <video @click="openVideo(clientAdPlan.AdVideo.ResourceUrl)" class="video pointer" :id="clientAdPlan.AdVideo._id" :src="GOOGLE_BUCKET_ENDPOINT + clientAdPlan.AdVideo.ResourceUrl" width="100%" height="100%" @loadedmetadata="forwardVideo(clientAdPlan.AdVideo._id)"></video>
+                            </div>
+                            <div v-else>
+                                <div class="t-s">Please attach your ad video by clicking the below button. You can select from already uploaded videos.</div>
+                                <button @click="showVideoSelector" class="btn btn-primary-small mt16">Attach Video</button>
                             </div>
                         </div>
                         <div class="row mt32 mb32">
                             <div class="col">
                                 <div>
-                                    <div class="t-l black">Purchased Add On :</div>
+                                    <div class="t-l black">Add On:</div>
                                     <div v-if="clientAdPlan.Addons.length > 0">
                                         <div v-for="(addon, key) in clientAdPlan.Addons" :key="key" class="plan-addon shadow rounded p32 mt24">
                                             <div class="row">
@@ -85,11 +79,10 @@
                                                     <div class="t-l black bold">{{ addon.Name }}</div>
                                                     <div class="t-m mt8 brand-primary">Features:</div>
                                                     <div class="t-s" v-for="(benefit, bkey) in addon.Benefits" :key="bkey">{{ benefit }}</div>
-                                                    <div v-if="clientAdPlan.Addons[0].IsUploadRequired" class="mt16 t-l brand-primary">This add on requires you to upload your videos and images</div>
-                                                    <div v-else class="mt16 t-l brand-primary">This add on does not require any uploads</div>
+                                                    <div class="mt16 t-l brand-primary">This add on requires you to upload your videos and images</div>
                                                 </div>
                                             </div>
-                                            <div v-if="clientAdPlan.Addons[0].IsUploadRequired" class="row mt24">
+                                            <div class="row mt24">
                                                 <div class="col">
                                                     <div class="d-flex justify-content-between mt24">
                                                         <div class="t-l black">Images</div>
