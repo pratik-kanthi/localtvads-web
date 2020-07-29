@@ -1,5 +1,11 @@
 <template>
-    <b-modal size="xl" v-model="show" title="Attach assets to your add-on" hide-footer centered no-close-on-esc no-close-on-backdrop>
+    <b-modal size="xl" hide-footer v-model="show">
+        <div slot="modal-header">
+            <strong>Attach assets to your add-on</strong>
+            <button class="close float-right" type="button" @click="close">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
         <div class="t-l d-flex justify-content-between">
             <div>Select assets to attach to your ad</div>
             <div>{{ selectedImages.length + selectedVideos.length }} assets(s) selected</div>
@@ -14,6 +20,7 @@
                     </label>
                 </div>
             </div>
+            <div class="col light-grey" v-if="!clientImages || clientImages.length == 0">No images uploaded. You can upload images from "My Assets" section.</div>
         </div>
 
         <div class="t-xl black mt24">Videos</div>
@@ -30,9 +37,9 @@
                 </div>
             </div>
         </div>
-        <div class="footer d-flex justify-content-end">
-            <button class="btn btn-secondary-small">Cancel</button>
-            <button @click="attachImages" class="btn btn-primary-small ml16">Confirm</button>
+        <div class="footer">
+            <button class="btn btn-secondary-small" @click="close">Cancel</button>
+            <button @click="attachImages" class="btn btn-primary-small ml16 float-right">Confirm</button>
         </div>
     </b-modal>
 </template>
@@ -45,12 +52,16 @@ export default {
     props: {
         planAssets: {
             type: Array
+        },
+        show: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
             //flags
-            show: true,
+
             selectedImages: [],
             selectedVideos: [],
 
@@ -60,6 +71,9 @@ export default {
         };
     },
     methods: {
+        close() {
+            this.$emit('closed', this.operatingSystem);
+        },
         attachImages() {
             this.$emit('done', [...this.selectedImages, ...this.selectedVideos]);
         },

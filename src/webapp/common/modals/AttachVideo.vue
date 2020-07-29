@@ -1,7 +1,6 @@
 <template>
     <b-modal size="lg" v-model="show" title="Attach video to your ad" centered hide-footer no-close-on-esc no-close-on-backdrop>
-        <div class="t-l">Select a video to attch to your ad</div>
-        <div class="video-strip row mt16">
+        <div class="video-strip row">
             <div class="video col-md-4" v-for="(video, key) in clientVideos" :key="key">
                 <video @click="selectVideo(video)" class="video pointer" :id="video._id" :src="GOOGLE_BUCKET_ENDPOINT + video.ResourceUrl" width="100%" height="100%" @loadedmetadata="forwardVideo(video._id)"></video>
             </div>
@@ -57,4 +56,9 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+video {
+    width: 400px;
+    border-radius: 5px;
+}
+</style>
