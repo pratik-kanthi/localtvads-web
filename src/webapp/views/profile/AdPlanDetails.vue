@@ -128,7 +128,7 @@
                         </div>
                     </b-tab>
                     <b-tab title="Billing & Transactions">
-                        <div class="mt32 payment-info">
+                        <div class="mt32 payment-info" v-if="planTransactions.length > 0">
                             <div class="t-l black">Payment Information</div>
                             <div class="mt24">
                                 <div class="row">
@@ -167,10 +167,18 @@
                                 <div class="total mb32">
                                     <div class="row mt32">
                                         <div class="col-6 col-sm-6">
+                                            <div class="t-l">Taxes</div>
+                                        </div>
+                                        <div class="col-6 col-sm-6 text-right">
+                                            <div class="amount t-l black pull-right">{{ (getTotalAmount() - (clientAdPlan.WeeklyAmount + clientAdPlan.AddonsAmount)) | currency }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt32">
+                                        <div class="col-6 col-sm-6">
                                             <h5 class="t-xl">Total Amount</h5>
                                         </div>
                                         <div class="col-6 col-sm-6 text-right">
-                                            <h5 class="amount t-xl black pull-right">{{ (clientAdPlan.WeeklyAmount + clientAdPlan.AddonsAmount) | currency }}</h5>
+                                            <h5 class="amount t-xl black pull-right">{{ getTotalAmount() | currency }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -181,7 +189,7 @@
                             </div>
                         </div>
                         <hr />
-                        <div class="table-wrapper">
+                        <div class="table-wrapper" v-if="planTransactions.length > 0">
                             <div class="t-l black">Transactions</div>
                             <Table :items="planTransactions" :headings="fields" :pagination="pagination" :sort.sync="sort" responsive table-class="mt16 table-responsive-xs table-responsive-stable-responsive-md">
                                 <template v-slot:Status="data">
@@ -190,6 +198,9 @@
 
                                 <template v-slot:DateTime="data">
                                     <div>{{ data.value.DateTime | formatDate('DD MMM YYYY') }}</div>
+                                </template>
+                                <template v-slot:Taxes="data">
+                                    <div>{{ (getTotalAmount() - (clientAdPlan.WeeklyAmount + clientAdPlan.AddonsAmount)) | currency }}</div>
                                 </template>
                                 <template v-slot:TotalAmount="data">
                                     <div>{{ data.value.TotalAmount | currency }}</div>
@@ -255,6 +266,10 @@ export default {
                     key: 'Status'
                 },
                 {
+                    key: 'Taxes',
+                    label: 'Taxes'
+                },
+                {
                     key: 'TotalAmount',
                     label: 'Total Amount'
                 },
@@ -297,6 +312,16 @@ export default {
             this.showvideo = false;
             this.videourl = '';
         },
+        async downloadReceipt(transaction) {
+            this.isLoading = true;
+            this.isLoadingMessage = 'Generating your receipt';
+
+            const result = await TransactionService.downloadReceipt(transaction);
+            window.open(result);
+
+            this.isLoading = false;
+            this.isLoadingMessage = '';
+        },
         getStatusClass(status) {
             return status.toLowerCase();
         },
@@ -326,6 +351,21 @@ export default {
         closeImageUploadModal(data) {
             this.showUploadImageModal = false;
             this.planAssets.push(data);
+        },
+        getTotalAmount() {
+            let taxes = this.planTransactions[0].TaxBreakdown;
+            let totalValue = 0;
+            let netAmount = this.clientAdPlan.WeeklyAmount + this.clientAdPlan.AddonsAmount;
+
+            taxes.map(tax => {
+                if (tax.Type == 'PERCENTAGE') {
+                    totalValue += netAmount + (netAmount * tax.Value) / 100;
+                } else if (tax.Type == 'FIXED') {
+                    totalValue += tax.Value;
+                }
+            });
+
+            return totalValue;
         },
         async uploadAddOnFile() {
             this.isLoading = true;
