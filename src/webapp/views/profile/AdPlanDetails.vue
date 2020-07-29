@@ -1,13 +1,22 @@
 <template>
     <div>
         <LoaderModal :showloader="isLoading"></LoaderModal>
+        <ImageUpload v-if="showUploadImageModal" @cancel="cancelImageUploadModal" @close="closeImageUploadModal" :show="true" :config="config" :data="{ ownerid: getUser().Owner._id }"></ImageUpload>
+
+        <div v-if="attachvideo">
+            <AttachVideo @close="closeVideoSelector" @videoselected="handleAttachVideo"></AttachVideo>
+        </div>
+
+        <div v-if="attachimages">
+            <AttachImages :plan-images="clientResources" @close="closeAttachImages" @imagesselected="handleAttachImages"></AttachImages>
+        </div>
+
+        <VideoModal :show-video="showvideo" :video-url="videourl" @close="closeVideoPlayer"></VideoModal>
+
         <div class="container" v-if="clientAdPlan">
             <h3 class="brand-secondary mt64">
                 {{ clientAdPlan.Channel.Name }} - {{ clientAdPlan.ChannelProduct.ProductLength.Name }}
-                <span
-                    :class="getStatusClass(clientAdPlan.Status)"
-                    class="t-l mb16"
-                >{{ clientAdPlan.Status }}</span>
+                <span :class="getStatusClass(clientAdPlan.Status)" class="t-l mb16">{{ clientAdPlan.Status }}</span>
             </h3>
             <div class="mt32 horizontal-tabs">
                 <b-tabs>
@@ -20,25 +29,18 @@
                                 </div>
                                 <div class="plan-info col-md-4">
                                     <div class="t-l black">Plan Duration</div>
-                                    <div
-                                        class="t-l"
-                                    >{{ clientAdPlan.ChannelProduct.ProductLength.Duration }} months</div>
+                                    <div class="t-l">{{ clientAdPlan.ChannelProduct.ProductLength.Duration }} months</div>
                                 </div>
                                 <div class="plan-info col-md-4">
                                     <div class="t-l black">Booked date</div>
-                                    <div
-                                        class="t-l"
-                                    >{{ clientAdPlan.BookedDate | formatDate('DD MMM YYYY') }}</div>
+                                    <div class="t-l">{{ clientAdPlan.BookedDate | formatDate('DD MMM YYYY') }}</div>
                                 </div>
                             </div>
 
                             <div class="mt48 row">
                                 <div class="col-md-4">
                                     <div class="t-l black">Start Date</div>
-                                    <div
-                                        v-if="clientAdPlan.StartDate"
-                                        class="t-l"
-                                    >{{ clientAdPlan.StartDate | formatDate('DD MMM YYYY') }}</div>
+                                    <div v-if="clientAdPlan.StartDate" class="t-l">{{ clientAdPlan.StartDate | formatDate('DD MMM YYYY') }}</div>
                                     <div v-else class="brand-primary t-l">
                                         The start date for your ad broadcast
                                         <br />will be available once your ad is approved
@@ -47,241 +49,81 @@
                                 <div class="col-md-4 mt-sm-2">
                                     <div class="t-l black">Slots Selected</div>
                                     <div>
-                                        <span
-                                            class
-                                            v-for="(slot, key) in clientAdPlan.ChannelProduct.ChannelSlots"
-                                            :key="key"
-                                        >
-                                            <span
-                                                class="t-l"
-                                            >{{ slot.Slot.Name }} ( {{ slot.Slot.StartTime }} - {{ slot.Slot.EndTime }})</span>
+                                        <span class v-for="(slot, key) in clientAdPlan.ChannelProduct.ChannelSlots" :key="key">
+                                            <span class="t-l">{{ slot.Slot.Name }} ( {{ slot.Slot.StartTime }} - {{ slot.Slot.EndTime }})</span>
                                         </span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="t-l black">Weekly Schedule</div>
-                                    <WeekDays
-                                        :disabled="true"
-                                        mode="table"
-                                        :value="clientAdPlan.Days"
-                                    ></WeekDays>
+                                    <WeekDays :disabled="true" mode="table" :value="clientAdPlan.Days"></WeekDays>
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <div class="row mt32 mb32">
+                        <div class="p32 shadow mt32">
+                            <div class="row">
                                 <div class="col-md-6">
-                                    <div>
-                                        <div class="t-l black">Add Ons Purchased</div>
-                                        <div v-if="clientAdPlan.Addons.length > 0">
-                                            <div
-                                                v-for="(addon, key) in clientAdPlan.Addons"
-                                                :key="key"
-                                                class="plan-addon shadow rounded p32 mt16"
-                                            >
-                                                <div class="t-l black bold">{{ addon.Name }}</div>
-                                                <div class="t-m mt8 brand-primary">Features:</div>
-                                                <div
-                                                    class="t-s"
-                                                    v-for="(benefit, bkey) in addon.Benefits"
-                                                    :key="bkey"
-                                                >{{ benefit }}</div>
-                                                <div v-if="addon.IsUploadRequired">
-                                                    <div
-                                                        class="mt16 t-s italic brand-primary"
-                                                    >This add on requires you to upload your videos and images</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div v-else>
-                                            <div
-                                                class="t-l mt24"
-                                            >You have not purchased any add ons for this plan.</div>
-                                        </div>
+                                    <div class="t-l black">Your video</div>
+                                    <div v-if="clientAdPlan.AdVideo" class="ad-video mt16">
+                                        <video @click="openVideo(clientAdPlan.AdVideo.ResourceUrl)" class="video pointer" :id="clientAdPlan.AdVideo._id" :src="GOOGLE_BUCKET_ENDPOINT + clientAdPlan.AdVideo.ResourceUrl" width="100%" height="100%" @loadedmetadata="forwardVideo(clientAdPlan.AdVideo._id)"></video>
+                                    </div>
+                                    <div v-else>
+                                        <div class="t-s mt16">Please upload your ad video by clicking the below button.</div>
+                                        <button @click="showVideoSelector" class="btn btn-primary-small mt16">Add Video</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </b-tab>
-
-                    <b-tab title="Video & Assets">
-                        <div
-                            class="t-l brand-secondary mt24"
-                        >This section allows you to manage the assets that go into your final video production</div>
-                        <b-card no-body class="mt32 vertical-tabs">
-                            <b-tabs pills card vertical>
-                                <b-tab
-                                    v-if="clientAdPlan.Addons.length == 0"
-                                    title="Ad Video"
-                                    active
-                                >
-                                    <div class="upload-wrapper p48">
-                                        <div
-                                            v-if="clientAdPlan && !clientAdPlan.AdVideo && !upload.chosen && progress === 0"
-                                            class="upload-box"
-                                        >
-                                            <h4 class="bold">You can upload your Ad's Video here</h4>
-                                            <p
-                                                class="text-muted mb0"
-                                            >Click on the upload button or drag and drop your upload file here.</p>
-                                            <p
-                                                class="brand-primary"
-                                            >(please upload a video in any of these formats: {{ config.allowedExtensions.join(', ') }} )</p>
-
-                                            <input
-                                                id="fileUpload"
-                                                class="hidden"
-                                                type="file"
-                                                @change="fileUploaded"
-                                                accept="video/mp4, video/x-m4v, video/*"
-                                                ref="fileUpload"
-                                            />
-                                            <button
-                                                class="btn btn-primary upload mt16"
-                                                @click="chooseFile"
-                                                :disabled="isLoading"
-                                            >
-                                                <img src="@/assets/images/upload.svg" />
-                                                <span class="button-text">Upload Video</span>
-                                            </button>
-                                        </div>
-
-                                        <div
-                                            v-if="clientAdPlan && clientAdPlan.AdVideo && !upload.chosen"
-                                        >
-                                            <div class="t-l black">Your ad video</div>
-                                            <div class="video-wrapper mt24">
-                                                <video controls class="mb24">
-                                                    <source
-                                                        :src="GOOGLE_BUCKET_ENDPOINT + clientAdPlan.AdVideo.AssetUrl"
-                                                        type="video/mp4"
-                                                    />
-                                                </video>
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            class="video-wrapper"
-                                            v-if="progress === 0 && upload.chosen"
-                                        >
-                                            <video controls class="mb24">
-                                                <source :src="videoUrl" type="video/mp4" />
-                                            </video>
-                                            <div class="action text-center">
-                                                <button
-                                                    class="btn btn-secondary btn-bordered m-xs0 mr16"
-                                                    @click="cancelUpload"
-                                                >Cancel</button>
-                                                <button
-                                                    class="btn btn-primary"
-                                                    @click="uploadVideo"
-                                                >Submit</button>
-                                            </div>
-                                        </div>
-
-                                        <div class="upload-progress" v-else-if="progress > 0">
-                                            <div class="details white-bg">
-                                                <div class="pull-left">
-                                                    <strong class="t-l" v-text="upload.chosen.name"></strong>&nbsp;
-                                                    <span class="text-muted">is uploading...</span>
+                        <div class="row mt32 mb32">
+                            <div class="col">
+                                <div>
+                                    <div class="t-l black">Purchased Add On :</div>
+                                    <div v-if="clientAdPlan.Addons.length > 0">
+                                        <div v-for="(addon, key) in clientAdPlan.Addons" :key="key" class="plan-addon shadow rounded p32 mt24">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="t-l black bold">{{ addon.Name }}</div>
+                                                    <div class="t-m mt8 brand-primary">Features:</div>
+                                                    <div class="t-s" v-for="(benefit, bkey) in addon.Benefits" :key="bkey">{{ benefit }}</div>
+                                                    <div v-if="clientAdPlan.Addons[0].IsUploadRequired" class="mt16 t-l brand-primary">This add on requires you to upload your videos and images</div>
+                                                    <div v-else class="mt16 t-l brand-primary">This add on does not require any uploads</div>
                                                 </div>
-                                                <div class="pull-right">
-                                                    <strong v-text="progress + ' %'"></strong>
+                                            </div>
+                                            <div v-if="clientAdPlan.Addons[0].IsUploadRequired" class="row mt24">
+                                                <div class="col">
+                                                    <div class="d-flex justify-content-between mt24">
+                                                        <div class="t-l black">Images</div>
+                                                        <button @click="showImageSelector" class="btn btn-primary-small">Add Images</button>
+                                                    </div>
+                                                    <div class="row mt16">
+                                                        <div
+                                                            v-for="(image, key) in clientResources.filter(resource => {
+                                                                return resource.ResourceType == 'IMAGE';
+                                                            })"
+                                                            :key="key"
+                                                            class="col-sm-2"
+                                                        >
+                                                            <div class="image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + image.ResourceUrl + ')' }"></div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <br class="clearfix" />
-                                                <div class="loader">
-                                                    <div
-                                                        class="value"
-                                                        :style="{ width: progress + '%' }"
-                                                    ></div>
+                                            </div>
+                                            <div v-if="clientAdPlan.Addons[0].IsUploadRequired" class="row mt24">
+                                                <div class="col">
+                                                    <div class="d-flex justify-content-between mt24">
+                                                        <div class="t-l black">Videos</div>
+                                                        <button @click="showVideoSelector" class="btn btn-primary-small">Add Videos</button>
+                                                    </div>
                                                 </div>
-                                                <br class="clearfix" />
                                             </div>
                                         </div>
                                     </div>
-                                </b-tab>
-
-                                <b-tab
-                                    v-if="clientAdPlan && clientAdPlan.Addons.length > 0"
-                                    title="Videos"
-                                >
-                                    <div class="p24">
-                                        <div class="t-l black">Add On Videos</div>
-
-                                        <div class="row mt24">
-                                            <div
-                                                class="col-md-3 video-wrapper"
-                                                v-for="(asset, key) in clientAdPlan.AddOnAssets"
-                                                :key="key"
-                                            >
-                                                <video
-                                                    :src="GOOGLE_BUCKET_ENDPOINT + asset.AssetUrl"
-                                                    width="100%"
-                                                    height="100%"
-                                                ></video>
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            class="video-wrapper"
-                                            v-if="progress === 0 && upload.chosen"
-                                        >
-                                            <video controls class="mb24">
-                                                <source :src="videoUrl" type="video/mp4" />
-                                            </video>
-                                            <div class="action text-center">
-                                                <button
-                                                    class="btn btn-secondary btn-bordered m-xs0 mr16"
-                                                    @click="cancelUpload"
-                                                >Cancel</button>
-                                                <button
-                                                    class="btn btn-primary"
-                                                    @click="uploadAddOnVideo"
-                                                >Submit</button>
-                                            </div>
-                                        </div>
-
-                                        <div class="upload-wrapper">
-                                            <input
-                                                id="fileUpload"
-                                                class="hidden"
-                                                type="file"
-                                                @change="fileUploaded"
-                                                accept="video/mp4, video/x-m4v, video/*"
-                                                ref="fileUpload"
-                                            />
-                                            <button
-                                                class="btn btn-primary-small upload mt16"
-                                                @click="chooseFile"
-                                                :disabled="isLoading"
-                                            >
-                                                <span class="button-text">Add Video</span>
-                                            </button>
-                                        </div>
+                                    <div v-else>
+                                        <div class="t-l mt24">You have not purchased any add ons for this plan.</div>
                                     </div>
-                                </b-tab>
-
-                                <b-tab
-                                    v-if="clientAdPlan && clientAdPlan.Addons.length > 0"
-                                    title="Images"
-                                >
-                                    <div class="p24">
-                                        <div class="t-l black">You can upload your images here</div>
-                                    </div>
-                                </b-tab>
-
-                                <b-tab
-                                    v-if="clientAdPlan && clientAdPlan.Addons.length > 0"
-                                    title="Text"
-                                >
-                                    <div class="p24">
-                                        <div
-                                            class="t-l black"
-                                        >You can provide text related to your ad here</div>
-                                    </div>
-                                </b-tab>
-                            </b-tabs>
-                        </b-card>
+                                </div>
+                            </div>
+                        </div>
                     </b-tab>
 
                     <b-tab title="Billing & Transactions">
@@ -293,29 +135,20 @@
                                         <div class="brand-primary t-l">Channel Ad Plan</div>
                                     </div>
                                     <div class="col-md-4 col-6">
-                                        <div
-                                            class="black text-right t-l"
-                                        >{{ clientAdPlan.WeeklyAmount | currency }} / week</div>
+                                        <div class="black text-right t-l">{{ clientAdPlan.WeeklyAmount | currency }} / week</div>
                                     </div>
 
                                     <div class="col-md-8">
                                         <div class="t-m">
                                             Plan Length:
-                                            <span
-                                                class="bold"
-                                            >{{ clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
+                                            <span class="bold">{{ clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div
-                                    class="d-flex justify-content-between t-l mt48"
-                                    v-if="clientAdPlan.Addons && clientAdPlan.Addons.length > 0"
-                                >
+                                <div class="d-flex justify-content-between t-l mt48" v-if="clientAdPlan.Addons && clientAdPlan.Addons.length > 0">
                                     <div>
                                         <div>
-                                            <div
-                                                class="brand-primary d-flex flex-column flex-lg-row align-items-lg-end"
-                                            >
+                                            <div class="brand-primary d-flex flex-column flex-lg-row align-items-lg-end">
                                                 <div>{{ clientAdPlan.Addons[0].Name }}</div>
                                                 <div class="ml-md-2">
                                                     <span class="tag-sm">Add On</span>
@@ -336,9 +169,7 @@
                                             <h5 class="t-xl">Total Amount</h5>
                                         </div>
                                         <div class="col-6 col-sm-6 text-right">
-                                            <h5
-                                                class="amount t-xl black pull-right"
-                                            >{{ (clientAdPlan.WeeklyAmount + clientAdPlan.AddonsAmount) | currency }}</h5>
+                                            <h5 class="amount t-xl black pull-right">{{ (clientAdPlan.WeeklyAmount + clientAdPlan.AddonsAmount) | currency }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -353,19 +184,9 @@
 
                         <div class="table-wrapper mt24">
                             <div class="black t-l">Transactions</div>
-                            <Table
-                                :items="planTransactions"
-                                :headings="fields"
-                                :pagination="pagination"
-                                :sort.sync="sort"
-                                responsive
-                                table-class="mt48 table-responsive-xs table-responsive-stable-responsive-md"
-                            >
+                            <Table :items="planTransactions" :headings="fields" :pagination="pagination" :sort.sync="sort" responsive table-class="mt48 table-responsive-xs table-responsive-stable-responsive-md">
                                 <template v-slot:Status="data">
-                                    <div
-                                        class="bold"
-                                        :class="data.value.Status.toLowerCase()"
-                                    >{{ data.value.Status }}</div>
+                                    <div class="bold" :class="data.value.Status.toLowerCase()">{{ data.value.Status }}</div>
                                 </template>
 
                                 <template v-slot:DateTime="data">
@@ -375,11 +196,7 @@
                                     <div>{{ data.value.TotalAmount | currency }}</div>
                                 </template>
                                 <template v-slot:Action="data">
-                                    <div
-                                        v-if="data.value.Status == 'SUCCEEDED'"
-                                        class="brand-primary pointer"
-                                        @click="downloadReceipt(data.value._id)"
-                                    >Download Receipt</div>
+                                    <div v-if="data.value.Status == 'SUCCEEDED'" class="brand-primary pointer" @click="downloadReceipt(data.value._id)">Download Receipt</div>
                                 </template>
                             </Table>
                         </div>
@@ -398,12 +215,20 @@ import '@/plugins/socket.io';
 import { uploadMixin } from '@/mixins/upload';
 import TransactionService from '@/services/TransactionService';
 import Table from '@/e9_components/components/Table';
+import ImageUpload from '@/e9_components/components/ImageUpload';
+import AttachVideo from '@/webapp/common/modals/AttachVideo';
+import AttachImages from '@/webapp/common/modals/AttachImages';
+import VideoModal from '@/webapp/common/modals/VideoModal';
 
 export default {
     name: 'AdPlanDetails',
     components: {
         WeekDays,
         Table,
+        ImageUpload,
+        AttachVideo,
+        AttachImages,
+        VideoModal
     },
     mixins: [uploadMixin],
     data() {
@@ -415,96 +240,86 @@ export default {
             isLoading: true,
             clientAdPlan: null,
             processing: false,
+            attachvideo: false,
             fields: [
                 {
                     key: 'DateTime',
-                    label: 'Transaction Date',
+                    label: 'Transaction Date'
                 },
                 {
-                    key: 'Status',
+                    key: 'Status'
                 },
                 {
                     key: 'TotalAmount',
-                    label: 'Total Amount',
+                    label: 'Total Amount'
                 },
                 {
                     key: 'ReferenceId',
-                    label: 'Reference ID',
+                    label: 'Reference ID'
                 },
                 {
                     key: 'Action',
-                    label: ' ',
-                },
+                    label: ' '
+                }
             ],
             perPage: 15,
             currentPage: 1,
             pagination: {
                 currentPage: 1,
-                perPage: 10,
+                perPage: 10
             },
             sort: {
                 name: 'Name',
-                value: 'asc',
+                value: 'asc'
             },
+            showUploadImageModal: false,
+            config: {
+                api: null,
+                maxSize: 5,
+                aspectRatio: 1
+            },
+            clientResources: [],
+            imagesSelected: [],
+            showvideo: false,
+            attachimages: false,
+            videourl: ''
         };
     },
     methods: {
+        closeVideoPlayer() {
+            this.showvideo = false;
+            this.videourl = '';
+        },
         getStatusClass(status) {
             return status.toLowerCase();
         },
         showTaxInfo(isDisplay) {
             this.taxInfo = isDisplay;
         },
-        async uploadFile() {
-            this.$store.commit('VIDEO_BEING_UPLOADED', true);
-            let counter = 1;
-            let chunkSize = 100000;
-            this.socket = this.io(window.socketendpoint, {
-                query: {
-                    token: this.$cookies.get('token'),
-                },
-            });
-            let start = 0;
-            let chunk = this.upload.chosen.slice(start, chunkSize);
-            this.sendSocket(chunk, counter, chunkSize, this.clientAdPlan, 'UPLOAD_CHUNK');
-            this.socket.on('UPLOAD_CHUNK_FINISHED', (data) => {
-                this.progress = (((data * 100000) / this.upload.chosen.size) * 100).toFixed(0);
-                ++counter;
-                start = start + chunkSize;
-                if (start - chunkSize < this.upload.chosen.size) {
-                    chunk = this.upload.chosen.slice(start, start + chunkSize);
-                    this.sendSocket(chunk, counter, chunkSize, this.clientAdPlan, 'UPLOAD_CHUNK');
-                }
-            });
 
-            this.socket.on('UPLOAD_FINISHED', () => {
-                this.progress = 100;
-                this.processing = true;
-            });
-            this.socket.on('UPLOAD_ERROR', () => {
-                this.$swal({
-                    title: 'Error',
-                    text: 'There was an error while uploading the video',
-                    type: 'error',
-                });
-                this.socket.disconnect();
-                this.isLoading = false;
-                this.$store.commit('VIDEO_BEING_UPLOADED', false);
-            });
-            this.socket.on('PROCESS_FINISHED', () => {
-                setTimeout(() => {
-                    this.$swal({
-                        title: 'Uploaded',
-                        text: 'Ad has been uploaded successfully',
-                        type: 'success',
-                        confirmButtonColor: '#ff6500',
-                    });
-                    this.progress = 0;
-                    this.processing = false;
-                    this.$store.commit('VIDEO_BEING_UPLOADED', false);
-                    this.socket.disconnect();
-                }, 1000);
-            });
+        showVideoSelector() {
+            this.attachvideo = true;
+        },
+        closeVideoSelector() {
+            this.attachvideo = false;
+        },
+
+        showImageSelector() {
+            this.attachimages = true;
+        },
+        addImage() {
+            this.showUploadImageModal = true;
+        },
+
+        closeAttachImages() {
+            this.attachimages = false;
+        },
+        cancelImageUploadModal() {
+            this.showUploadImageModal = false;
+        },
+        closeImageUploadModal(data) {
+            this.showUploadImageModal = false;
+            this.clientResources.push(data);
         },
         async uploadAddOnFile() {
             this.isLoading = true;
@@ -513,13 +328,13 @@ export default {
             let chunkSize = 100000;
             this.socket = this.io(window.socketendpoint, {
                 query: {
-                    token: this.$cookies.get('token'),
-                },
+                    token: this.$cookies.get('token')
+                }
             });
             let start = 0;
             let chunk = this.upload.chosen.slice(start, chunkSize);
             this.sendSocket(chunk, counter, chunkSize, this.clientAdPlan, 'UPLOAD_RESOURCE_CHUNK');
-            this.socket.on('UPLOAD_CHUNK_FINISHED', (data) => {
+            this.socket.on('UPLOAD_CHUNK_FINISHED', data => {
                 this.progress = (((data * 100000) / this.upload.chosen.size) * 100).toFixed(0);
                 ++counter;
                 start = start + chunkSize;
@@ -529,14 +344,14 @@ export default {
                 }
             });
 
-            this.socket.on('ADDON_UPLOAD_FINISHED', (data) => {
+            this.socket.on('ADDON_UPLOAD_FINISHED', data => {
                 this.progress = 100;
                 setTimeout(() => {
                     this.$swal({
                         title: 'Uploaded',
                         text: 'Ad has been uploaded successfully',
                         type: 'success',
-                        confirmButtonColor: '#ff6500',
+                        confirmButtonColor: '#ff6500'
                     });
                     this.progress = 0;
                     this.isLoading = false;
@@ -550,7 +365,7 @@ export default {
                 this.$swal({
                     title: 'Error',
                     text: 'There was an error while uploading the video',
-                    type: 'error',
+                    type: 'error'
                 });
                 this.socket.disconnect();
                 this.isLoading = false;
@@ -563,82 +378,100 @@ export default {
                 this.$swal({
                     title: 'Error',
                     text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                    type: 'error',
+                    type: 'error'
                 });
                 console.error(err);
                 this.isLoading = false;
             }
         },
-        ...mapGetters(['getUser']),
+        async handleAttachVideo(video) {
+            if (video) {
+                try {
+                    this.isLoading = true;
+                    const result = await ClientAdService.attachVideo(this.$route.query.id, video._id);
+                    const added_video = this.clientResources.find(item => {
+                        return item._id == result.AdVideo;
+                    });
+                    this.clientAdPlan.AdVideo = added_video;
+                    this.$swal({
+                        title: 'Added',
+                        text: 'Video added to your add successfully',
+                        type: 'success',
+                        confirmButtonColor: '#ff6500'
+                    });
+                    this.attachvideo = false;
+                    this.isLoading = false;
+                } catch (err) {
+                    this.$swal({
+                        title: 'Error',
+                        text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        type: 'error'
+                    });
+                    console.error(err);
+                    this.isLoading = false;
+                }
+            }
+        },
+        async handleAttachImages(images) {
+            if (images.length > 0) {
+                try {
+                    this.isLoading = true;
+                    ClientAdService.attachImages(this.$route.query.id, images);
+                    this.$swal({
+                        title: 'Added',
+                        text: 'Images added to your add successfully',
+                        type: 'success',
+                        confirmButtonColor: '#ff6500'
+                    });
+                    this.attachimages = false;
+                    this.isLoading = false;
+                } catch (err) {
+                    this.$swal({
+                        title: 'Error',
+                        text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        type: 'error'
+                    });
+                    console.error(err);
+                    this.isLoading = false;
+                }
+            }
+        },
+        openVideo(url) {
+            this.showvideo = true;
+            this.videourl = this.GOOGLE_BUCKET_ENDPOINT + url;
+        },
+        forwardVideo(id) {
+            let elem = document.getElementById(id);
+            elem.currentTime = 2;
+        },
+        ...mapGetters(['getUser'])
     },
     async created() {
         try {
             this.clientAdPlan = await ClientAdService.getPlanDetails(this.$route.query.id);
+            this.clientResources = this.clientAdPlan.AddOnAssets;
             this.getPlanTransactions();
-
+            this.config.api = '/api/' + this.getUser().Owner._id + '/clientresource/image';
             this.isLoading = false;
         } catch (err) {
             this.$swal({
                 title: 'Error',
                 text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                type: 'error',
+                type: 'error'
             });
             console.error(err);
             this.isLoading = false;
         }
-    },
+    }
 };
 </script>
 
 <style scoped lang="scss">
-.video-wrapper {
-    height: auto;
+.ad-video {
     video {
-        height: 120px;
-        object-fit: cover;
-        background: $black;
-    }
-}
-
-.upload-wrapper {
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    .upload-box {
-        background: $white;
-        border-radius: 10px;
-        text-align: center;
-        .upload {
-            padding-left: 8px !important;
-            height: 48px;
-            box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.3);
-            &:focus {
-                border: none;
-                outline: 0;
-            }
-            img {
-                top: 3px;
-                position: relative;
-                padding-right: 8px;
-            }
-            .button-text {
-                border-left: 1px solid $light-grey;
-                padding-top: 2px;
-                padding-bottom: 2px;
-                padding-left: 20px;
-                padding-right: 8px;
-                font-size: 14px;
-                font-weight: 500;
-            }
-        }
-    }
-    .video-wrapper {
-        height: auto;
-        video {
-            height: 400px;
-            object-fit: contain;
-            background: #000;
-        }
+        height: 134px;
+        width: auto;
+        border-radius: 5px;
     }
 }
 </style>

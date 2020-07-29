@@ -8,7 +8,7 @@
 .check *,
 .check *:after,
 .check *:before,
-.check + label.check-label {
+.check+label.check-label {
 	box-sizing: border-box;
 }
 
@@ -18,11 +18,11 @@
 .check *::selection,
 .check *:after::selection,
 .check *:before::selection,
-.check + label.check-label::selection {
+.check+label.check-label::selection {
 	background: none;
 }
 
-.check + label.check-label {
+.check+label.check-label {
 	outline: 0;
 	display: block;
 	margin-top: 5px;
@@ -33,8 +33,8 @@
 	user-select: none;
 }
 
-.check + label.check-label:after,
-.check + label.check-label:before {
+.check+label.check-label:after,
+.check+label.check-label:before {
 	position: relative;
 	display: block;
 	content: "";
@@ -42,51 +42,53 @@
 	height: 100%;
 }
 
-.check + label.check-label:after {
+.check+label.check-label:after {
 	left: 0;
 }
 
-.check + label.check-label:before {
+.check+label.check-label:before {
 	display: none;
 }
 
-.check:checked + label.check-label:after {
+.check:checked+label.check-label:after {
 	left: 50%;
 }
 
-.check + label.check-label {
+.check+label.check-label {
 	background: #d8d8d8;
 	border-radius: 2em;
 	padding: 2px;
 	transition: all .4s ease;
 }
 
-.check + label.check-label:after {
+.check+label.check-label:after {
 	border-radius: 50%;
 	background: #fff;
 	transition: all .2s ease;
 }
 
-.check:checked + label.check-label {
+.check:checked+label.check-label {
 	background: $brand-primary !important;
 }
 
-.check:disabled + label {
-	opacity: 0.6 !important;
+.check:disabled+label {
+	opacity: 0.8 !important;
 }
 
 //Style for box
-.check + label.check-label.box {
+.check+label.check-label.box {
 	margin: 0;
 	background: none !important;
 	display: inline-block;
 	height: auto;
 	width: auto;
 	padding: 0;
+
 	&:after {
 		display: none;
 	}
-	> span {
+
+	>span {
 		display: block;
 		margin-top: -3px;
 		position: relative;
@@ -103,7 +105,7 @@
 	}
 }
 
-.check:checked + label.check-label.box span {
+.check:checked+label.check-label.box span {
 	background: url('../assets/images/checked.png');
 	background-size: 11px;
 	background-position: center;
