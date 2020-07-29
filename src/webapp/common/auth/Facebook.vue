@@ -36,73 +36,69 @@ export default {
             );
         },
         onSignInSuccess(token) {
-            FB.api('/me?fields=name,email,picture&token=' + token.accessToken,
-                async profile => {
-                    let body = {
-                        Name: profile.name,
-                        ImageUrl: profile.picture ? profile.picture.data.url : undefined,
-                        Email: profile.email,
-                        token: token.accessToken,
-                        AuthorisationScheme: 'Facebook'
-                    };
-                    try {
-                        this.isError = false;
-                        let result = await instance.post(this.api, body);
-                        this.$cookies.set('token', result.data.TokenString, result.data.iat - Math.floor(Date.now() / 1000) + 's');
-                        delete result.data.TokenString;
-                        localStorage.setItem('user', JSON.stringify(result.data));
-                        this.$store.dispatch('loginSuccess');
-                    } catch (err) {
-                        if (err.status === 409) {
-                            this.$swal({
-                                title: 'Error',
-                                text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                                type: 'warning',
-                                confirmButtonColor: '#ff6500'
-                            });
-                        } else if (err.status === 404) {
-                            this.$swal({
-                                title: 'Error',
-                                text: 'Account not found. Would you like to create one?',
-                                type: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#ff6500',
-                                confirmButtonText: 'Yes',
-                                cancelButtonColor: '#ccc',
-                                cancelButtonText: 'No'
-                            }).then(async isConfirm => {
-                                if (isConfirm.value) {
-                                    try {
-                                        let result = await instance.post('api/auth/clientsocialregister', body);
-                                        this.$cookies.set(
-                                            'token',
-                                            result.data.TokenString,
-                                            result.data.iat - Math.floor(Date.now() / 1000) + 's'
-                                        );
-                                        delete result.data.TokenString;
-                                        localStorage.setItem('user', JSON.stringify(result.data));
-                                        this.$store.dispatch('loginSuccess');
-                                        this.$store.commit('LOGIN_LOADER', false);
-                                    } catch (err) {
-                                        this.$store.commit('DIALOG', false);
-                                        this.$swal({
-                                            title: 'Error',
-                                            text: err.error,
-                                            type: 'warning',
-                                            confirmButtonColor: '#ff6500',
-                                        });
-                                        console.error(err);
-                                    }
+            FB.api('/me?fields=name,email,picture&token=' + token.accessToken, async profile => {
+                let body = {
+                    Name: profile.name,
+                    ImageUrl: profile.picture ? profile.picture.data.url : undefined,
+                    Email: profile.email,
+                    token: token.accessToken,
+                    AuthorisationScheme: 'Facebook'
+                };
+                try {
+                    this.isError = false;
+                    let result = await instance.post(this.api, body);
+                    this.$cookies.set('token', result.data.TokenString, result.data.iat - Math.floor(Date.now() / 1000) + 's');
+                    this.$cookies.set('clientId', result.data.Owner._id, result.data.iat - Math.floor(Date.now() / 1000) + 's');
+                    delete result.data.TokenString;
+                    localStorage.setItem('user', JSON.stringify(result.data));
+                    this.$store.dispatch('loginSuccess');
+                } catch (err) {
+                    if (err.status === 409) {
+                        this.$swal({
+                            title: 'Error',
+                            text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                            type: 'warning',
+                            confirmButtonColor: '#ff6500'
+                        });
+                    } else if (err.status === 404) {
+                        this.$swal({
+                            title: 'Error',
+                            text: 'Account not found. Would you like to create one?',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#ff6500',
+                            confirmButtonText: 'Yes',
+                            cancelButtonColor: '#ccc',
+                            cancelButtonText: 'No'
+                        }).then(async isConfirm => {
+                            if (isConfirm.value) {
+                                try {
+                                    let result = await instance.post('api/auth/clientsocialregister', body);
+                                    this.$cookies.set('token', result.data.TokenString, result.data.iat - Math.floor(Date.now() / 1000) + 's');
+                                    this.$cookies.set('clientId', result.data.Owner._id, result.data.iat - Math.floor(Date.now() / 1000) + 's');
+                                    delete result.data.TokenString;
+                                    localStorage.setItem('user', JSON.stringify(result.data));
+                                    this.$store.dispatch('loginSuccess');
+                                    this.$store.commit('LOGIN_LOADER', false);
+                                } catch (err) {
+                                    this.$store.commit('DIALOG', false);
+                                    this.$swal({
+                                        title: 'Error',
+                                        text: err.error,
+                                        type: 'warning',
+                                        confirmButtonColor: '#ff6500'
+                                    });
+                                    console.error(err);
                                 }
-                            });
-                        }
-                        this.isError = true;
-                        this.errMessage = err && err.data && err.data.message ? err.data.message : 'Some error occurred';
-                        this.$store.commit('LOGIN_LOADER', false);
-                        console.error(err);
+                            }
+                        });
                     }
+                    this.isError = true;
+                    this.errMessage = err && err.data && err.data.message ? err.data.message : 'Some error occurred';
+                    this.$store.commit('LOGIN_LOADER', false);
+                    console.error(err);
                 }
-            );
+            });
         },
         onSignInError(error) {
             console.error(error);
@@ -131,26 +127,26 @@ export default {
 </script>
 
 <style scoped lang="scss">
-    .btn-facebook {
-        width: 100%;
-        background-color: #3b5998;
-        color: #ffffff !important;
-        border: none !important;
-        text-transform: capitalize !important;
-        position: relative;
-        font-weight: 500 !important;
-        height: 42px;
-        margin-bottom: 20px;
-        &:hover {
-            background: #3b5998 !important;
-            color: #fff !important;
-        }
+.btn-facebook {
+    width: 100%;
+    background-color: #3b5998;
+    color: #ffffff !important;
+    border: none !important;
+    text-transform: capitalize !important;
+    position: relative;
+    font-weight: 500 !important;
+    height: 42px;
+    margin-bottom: 20px;
+    &:hover {
+        background: #3b5998 !important;
+        color: #fff !important;
     }
+}
 
-    img {
-        position: absolute;
-        width: 24px;
-        left: 8px;
-        top: 8px;
-    }
+img {
+    position: absolute;
+    width: 24px;
+    left: 8px;
+    top: 8px;
+}
 </style>

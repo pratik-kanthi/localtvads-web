@@ -170,7 +170,7 @@
                                             <div class="t-l">Taxes</div>
                                         </div>
                                         <div class="col-6 col-sm-6 text-right">
-                                            <div class="amount t-l black pull-right">{{ (getTotalAmount() - (clientAdPlan.WeeklyAmount + clientAdPlan.AddonsAmount)) | currency }}</div>
+                                            <div class="amount t-l black pull-right">{{ planTransactions[0].TaxAmount | currency }}</div>
                                         </div>
                                     </div>
                                     <div class="row mt32">
@@ -178,7 +178,7 @@
                                             <h5 class="t-xl">Total Amount</h5>
                                         </div>
                                         <div class="col-6 col-sm-6 text-right">
-                                            <h5 class="amount t-xl black pull-right">{{ getTotalAmount() | currency }}</h5>
+                                            <h5 class="amount t-xl black pull-right">{{ planTransactions[0].TotalAmount | currency }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -200,7 +200,10 @@
                                     <div>{{ data.value.DateTime | formatDate('DD MMM YYYY') }}</div>
                                 </template>
                                 <template v-slot:Taxes="data">
-                                    <div>{{ (getTotalAmount() - (clientAdPlan.WeeklyAmount + clientAdPlan.AddonsAmount)) | currency }}</div>
+                                    <div>{{ planTransactions.TotalAmount | currency }}</div>
+                                </template>
+                                <template v-slot:Amount="data">
+                                    <div>{{ planTransactions.Amount | currency }}</div>
                                 </template>
                                 <template v-slot:TotalAmount="data">
                                     <div>{{ data.value.TotalAmount | currency }}</div>
@@ -266,16 +269,20 @@ export default {
                     key: 'Status'
                 },
                 {
-                    key: 'Taxes',
+                    key: 'ReferenceId',
+                    label: 'Reference ID'
+                },
+                {
+                    key: 'Amount',
+                    label: 'Amount'
+                },
+                {
+                    key: 'TaxAmount',
                     label: 'Taxes'
                 },
                 {
                     key: 'TotalAmount',
                     label: 'Total Amount'
-                },
-                {
-                    key: 'ReferenceId',
-                    label: 'Reference ID'
                 },
                 {
                     key: 'Action',
@@ -351,21 +358,6 @@ export default {
         closeImageUploadModal(data) {
             this.showUploadImageModal = false;
             this.planAssets.push(data);
-        },
-        getTotalAmount() {
-            let taxes = this.planTransactions[0].TaxBreakdown;
-            let totalValue = 0;
-            let netAmount = this.clientAdPlan.WeeklyAmount + this.clientAdPlan.AddonsAmount;
-
-            taxes.map(tax => {
-                if (tax.Type == 'PERCENTAGE') {
-                    totalValue += netAmount + (netAmount * tax.Value) / 100;
-                } else if (tax.Type == 'FIXED') {
-                    totalValue += tax.Value;
-                }
-            });
-
-            return totalValue;
         },
         async uploadAddOnFile() {
             this.isLoading = true;

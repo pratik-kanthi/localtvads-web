@@ -90,6 +90,7 @@ export default {
                     this.isError = false;
                     let result = await instance.post(this.api, body);
                     this.$cookies.set('token', result.data.TokenString, result.data.iat - Math.floor(Date.now() / 1000) + 's');
+                    this.$cookies.set('clientId', result.data.Owner._id, result.data.iat - Math.floor(Date.now() / 1000) + 's');
                     delete result.data.TokenString;
                     localStorage.setItem('user', JSON.stringify(result.data));
                     this.$store.dispatch('loginSuccess');
@@ -117,6 +118,7 @@ export default {
                                 try {
                                     let result = await instance.post('api/auth/clientsocialregister', body);
                                     this.$cookies.set('token', result.data.TokenString, result.data.iat - Math.floor(Date.now() / 1000) + 's');
+                                    this.$cookies.set('clientId', result.data.Owner._id, result.data.iat - Math.floor(Date.now() / 1000) + 's');
                                     delete result.data.TokenString;
                                     localStorage.setItem('user', JSON.stringify(result.data));
                                     this.$store.dispatch('loginSuccess');
