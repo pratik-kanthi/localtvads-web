@@ -46,16 +46,16 @@
                             </a>
                             <ul class="" :class="{ 'profile-menu': showProfile }">
                                 <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="profile">My Account</router-link>
+                                    <router-link tag="li" to="/profile">My Account</router-link>
                                 </span>
                                 <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="ads">My Ads</router-link>
+                                    <router-link tag="li" to="/ads">My Ads</router-link>
                                 </span>
                                 <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="assets">My Assets</router-link>
+                                    <router-link tag="li" to="/assets">My Assets</router-link>
                                 </span>
                                 <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="transactions">Transactions</router-link>
+                                    <router-link tag="li" to="/transactions">Transactions</router-link>
                                 </span>
                                 <li @click="logout">
                                     <a>Logout</a>

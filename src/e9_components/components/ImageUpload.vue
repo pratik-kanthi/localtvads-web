@@ -1,6 +1,11 @@
 <template>
-    <b-modal v-model="showCropper" title="Upload Images" width="700" persistent no-close-on-esc no-close-on-backdrop hide-footer data-app size="lg">
-        <button slot="modal-header-close" @click="cancel" class="close">×</button>
+    <b-modal v-model="showCropper" width="700" persistent no-close-on-esc no-close-on-backdrop hide-footer data-app size="lg">
+        <div slot="modal-header">
+            <strong>Upload images</strong>
+            <button class="close float-right" type="button" @click="cancel">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
         <div>
             <h4 class="section-subtitle mt0 mb8">1. Choose File</h4>
             <input type="file" @change="fileUploaded" accept="image/*" ref="fileUpload" />

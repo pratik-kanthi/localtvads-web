@@ -17,6 +17,7 @@
         @include box-shadow(0 0 9px rgba(191, 191, 191, 0.36) !important);
         border: 0;
         @include border-radius(6px);
+        font-family: $font-family-body;
 
         .modal-header {
             .loading-img {

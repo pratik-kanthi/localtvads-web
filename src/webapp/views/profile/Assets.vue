@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <ImageUpload v-if="showUploadImageModal" @close="closeImageUploadModal" :show="true" :config="config" :data="{ ownerid: getUser().Owner._id }"></ImageUpload>
+        <ImageUpload v-if="showUploadImageModal" @cancel="cancelImageUploadModal" @close="closeImageUploadModal" :show="true" :config="config" :data="{ ownerid: getUser().Owner._id }"></ImageUpload>
 
         <div v-if="showVideoUploadModal">
             <VideoUpload :show="showVideoUploadModal" @done="closeVideUploadModal" @close="cancelVideUploadModal"></VideoUpload>

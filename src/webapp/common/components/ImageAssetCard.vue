@@ -42,6 +42,16 @@ export default {
 
 <style lang="scss" scoped>
 .image-container {
+    @include media-breakpoint-down(sm) {
+        width: 340px;
+        height: 180px;
+    }
+
+    @include media-breakpoint-down(md) {
+        width: 166px;
+        height: 134px;
+    }
+
     width: 278px;
     height: 134px;
     position: relative;

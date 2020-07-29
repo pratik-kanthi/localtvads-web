@@ -80,6 +80,13 @@ export default {
         async getClientAssets() {
             try {
                 let result = await ResourceService.getResources();
+                let usedAssets = this.planAssets.map(asset => {
+                    return asset._id;
+                });
+
+                result = result.filter(asset => {
+                    return usedAssets.indexOf(asset._id) == -1;
+                });
                 result.map(resource => {
                     if (resource.ResourceType == 'IMAGE') {
                         this.clientImages.push(resource);

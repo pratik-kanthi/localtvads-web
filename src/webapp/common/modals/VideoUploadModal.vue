@@ -1,5 +1,11 @@
 <template>
-    <b-modal v-model="show" size="lg" title="Upload Video" centered hide-footer no-close-on-esc no-close-on-backdrop>
+    <b-modal v-model="show" size="lg" centered hide-footer no-close-on-esc no-close-on-backdrop>
+        <div slot="modal-header">
+            <strong>Upload video</strong>
+            <button class="close float-right" type="button" @click="close">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
         <div class="upload-wrapper p48">
             <div class="upload-box" v-if="!upload.chosen && progress === 0">
                 <h4 class="bold">Upload your video</h4>
@@ -63,6 +69,9 @@ export default {
     methods: {
         closeUpload(data) {
             this.$emit('done', data);
+        },
+        close() {
+            this.$emit('close');
         }
     }
 };

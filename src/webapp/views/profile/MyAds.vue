@@ -148,7 +148,7 @@ export default {
             });
         },
         openAdPlanDetails(clientadplan) {
-            this.$router.push({ name: 'AdPlanDetails', query: { id: clientadplan._id } });
+            this.$router.push({ name: 'AdPlanDetails', params: { planid: clientadplan._id } });
         },
         getStatusClass(status) {
             return status.toLowerCase();

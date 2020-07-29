@@ -13,6 +13,11 @@
         <div v-if="showvideo">
             <VideoModal :show-video="showvideo" :video-url="videourl" @close="closeVideoPlayer"></VideoModal>
         </div>
+
+        <div v-if="lightBoxItems.length > 0">
+            <CoolLightBox :items="lightBoxItems" :index="lightboxIndex" loop @close="lightboxIndex = null"></CoolLightBox>
+        </div>
+
         <div class="container" v-if="clientAdPlan">
             <h3 class="brand-secondary mt64">
                 {{ clientAdPlan.Channel.Name }} - {{ clientAdPlan.ChannelProduct.ProductLength.Name }}
@@ -61,10 +66,7 @@
                             </div>
                             <div class="t-l black mt32">Ad video</div>
                             <div v-if="clientAdPlan.AdVideo" class="ad-video mt16" @click="openVideo(clientAdPlan.AdVideo.ResourceUrl)">
-                                <video class="video pointer" :id="clientAdPlan.AdVideo._id" :src="GOOGLE_BUCKET_ENDPOINT + clientAdPlan.AdVideo.ResourceUrl" width="100%" height="100%" @loadedmetadata="forwardVideo(clientAdPlan.AdVideo._id)"></video>
-                                <div class="video-bg" style="width:400px;">
-                                    <img src="@/assets/images/player_button.png" alt="play" />
-                                </div>
+                                <VideoCard :id="clientAdPlan.AdVideo._id" :video-url="clientAdPlan.AdVideo.ResourceUrl"></VideoCard>
                             </div>
                             <div v-else>
                                 <div class="t-s">Please attach your ad video by clicking the below button. You can select from already uploaded videos.</div>
@@ -93,7 +95,7 @@
                                                     </div>
                                                     <div class="row">
                                                         <div v-for="(image, key) in images" :key="key" class="col-sm-3 mt16">
-                                                            <div class="image ml8" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + image.ResourceUrl + ')' }"></div>
+                                                            <div class="image ml8 pointer" @click="lightboxIndex = key" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + image.ResourceUrl + ')' }"></div>
                                                         </div>
                                                         <div class="col">
                                                             <span class="light-grey" v-if="!images || images.length == 0">No images attached</span>
@@ -106,15 +108,8 @@
                                                     <div class=" mt24">
                                                         <div class="t-l black">Videos</div>
                                                         <div class="row">
-                                                            <div class="col-sm-4 ad-video" v-for="(video, key) in videos" :key="key" @click="openVideo(video.ResourceUrl)">
-                                                                <div class="video">
-                                                                    <video :id="video._id" width="100%" height="100%" preload="metadata" @loadedmetadata="forwardVideo(video._id)">
-                                                                        <source :src="GOOGLE_BUCKET_ENDPOINT + video.ResourceUrl" type="video/webm" />
-                                                                    </video>
-                                                                </div>
-                                                                <div class="video-bg">
-                                                                    <img src="@/assets/images/player_button.png" alt="play" />
-                                                                </div>
+                                                            <div class="col-sm-3" v-for="(video, key) in videos" :key="key" @click="openVideo(video.ResourceUrl)">
+                                                                <VideoCard :video-url="video.ResourceUrl" :id="video._id"></VideoCard>
                                                             </div>
                                                             <div class="col">
                                                                 <span class="light-grey" v-if="!videos || videos.length == 0">No videos attached</span>
@@ -224,6 +219,9 @@ import AttachVideo from '@/webapp/common/modals/AttachVideo';
 import AttachImages from '@/webapp/common/modals/AttachImages';
 import VideoModal from '@/webapp/common/modals/VideoModal';
 import ResourceService from '@/services/ResourceService';
+import CoolLightBox from 'vue-cool-lightbox';
+import VideoCard from '@/webapp/common/components/VideoCard';
+import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css';
 
 export default {
     name: 'AdPlanDetails',
@@ -233,7 +231,9 @@ export default {
         ImageUpload,
         AttachVideo,
         AttachImages,
-        VideoModal
+        VideoModal,
+        CoolLightBox,
+        VideoCard
     },
     mixins: [uploadMixin],
     data() {
@@ -287,7 +287,9 @@ export default {
             imagesSelected: [],
             showvideo: false,
             attachimages: false,
-            videourl: ''
+            videourl: '',
+            lightBoxItems: [],
+            lightboxIndex: null
         };
     },
     methods: {
@@ -377,7 +379,7 @@ export default {
         },
         async getPlanTransactions() {
             try {
-                this.planTransactions = await TransactionService.getTransactions(this.getUser().Owner._id, this.$route.query.id);
+                this.planTransactions = await TransactionService.getTransactions(this.getUser().Owner._id, this.$route.params.planid);
             } catch (err) {
                 this.$swal({
                     title: 'Error',
@@ -392,7 +394,7 @@ export default {
             if (video) {
                 try {
                     this.isLoading = true;
-                    const result = await ClientAdService.attachVideo(this.$route.query.id, video._id);
+                    const result = await ClientAdService.attachVideo(this.$route.params.planid, video._id);
                     const added_video = this.clientResources.find(item => {
                         return item._id == result.AdVideo;
                     });
@@ -420,7 +422,16 @@ export default {
             if (assets.length > 0) {
                 try {
                     this.isLoading = true;
-                    ClientAdService.attachImages(this.$route.query.id, assets);
+                    ClientAdService.attachImages(this.$route.params.planid, assets);
+
+                    for (let i = 0; i < this.clientResources.length; i++) {
+                        assets.map(asset => {
+                            if (asset == this.clientResources[i]._id) {
+                                this.planAssets.push(this.clientResources[i]);
+                            }
+                        });
+                    }
+
                     this.$swal({
                         title: 'Added',
                         text: 'Assets attached successfully',
@@ -464,9 +475,19 @@ export default {
     },
     async created() {
         try {
-            this.clientAdPlan = await ClientAdService.getPlanDetails(this.$route.query.id);
+            this.clientAdPlan = await ClientAdService.getPlanDetails(this.$route.params.planid);
             this.planAssets = this.clientAdPlan.AddOnAssets;
             this.clientResources = await ResourceService.getResources();
+            this.lightBoxItems = this.planAssets.filter(asset => {
+                return asset.ResourceType == 'IMAGE';
+            });
+
+            this.lightBoxItems = this.lightBoxItems.map(asset => {
+                let tmp = {};
+                tmp.src = this.GOOGLE_BUCKET_ENDPOINT + asset.ResourceUrl;
+                return tmp;
+            });
+
             this.getPlanTransactions();
             this.config.api = '/api/' + this.getUser().Owner._id + '/clientresource/image';
             this.isLoading = false;
@@ -484,35 +505,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.ad-video {
-    cursor: pointer;
-    position: relative;
-    .video-bg {
-        background-color: #0000005c;
-        border-radius: 5px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        img {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            height: 40px;
-            width: 40px;
-            margin-left: -20px;
-            margin-top: -20px;
-        }
-    }
-    video {
-        width: 400px;
-        border-radius: 5px;
-    }
-}
-
 .image {
-    width: 278px;
+    width: auto;
     height: 134px;
     border-radius: 6px;
     background-position: center center;

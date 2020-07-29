@@ -58,7 +58,7 @@ export const routes = [{
     }
 },
 {
-    path: '/plandetails',
+    path: '/plandetails/:planid',
     name: 'AdPlanDetails',
     component: () => {
         return import( /* webpackChunkName: "post-login" */ '@/webapp/views/profile/AdPlanDetails');
