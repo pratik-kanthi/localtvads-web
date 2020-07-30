@@ -69,8 +69,9 @@
                                 </div>
                             </div>
                             <div class="t-l black mt32">Ad video</div>
+                            <span class="t-m"> This is the video which will be aired it is approved.</span>
                             <div v-if="clientAdPlan.AdVideo" class="ad-video mt16" @click="openVideo(clientAdPlan.AdVideo.ResourceUrl)">
-                                <VideoCard :id="clientAdPlan.AdVideo._id" :video-url="clientAdPlan.AdVideo.ResourceUrl"></VideoCard>
+                                <VideoCard :id="clientAdPlan.AdVideo._id" :auto-height="true" :video-url="clientAdPlan.AdVideo.ResourceUrl"></VideoCard>
                             </div>
                             <div v-else>
                                 <div class="t-s">Please attach your ad video by clicking the below button. You can select from already uploaded videos.</div>
@@ -97,18 +98,17 @@
                                                     <div class="d-flex justify-content-between mt24">
                                                         <div class="t-l black">Images</div>
                                                     </div>
-                                                    <div class="row">
+                                                    <p class="light-grey mb0" v-if="!images || images.length == 0">No images attached</p>
+                                                    <div class="row mt16">
                                                         <div class="col-sm-3">
-                                                            <div @click="addImage" class="pointer border p32 image mt16 d-flex flex-column justify-content-center align-items-center">
+                                                            <div @click="addImage" class="pointer border image d-flex flex-column justify-content-center align-items-center">
                                                                 <img class="p8" src="@/assets/images/add_asset.png" height="64px" alt />
                                                                 <div class="brand-primary">Upload Image</div>
                                                             </div>
                                                         </div>
-                                                        <div v-for="(image, key) in images" :key="key" class="col-sm-3 mt16">
+                                                        <div v-for="(image, key) in images" :key="key" class="col-sm-3 image-box">
+                                                            <i class="image-delete-icon material-icons" @click="removeAddonResource(image._id)">delete</i>
                                                             <div class="image ml8 pointer" @click="lightboxIndex = key" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + image.ResourceUrl + ')' }"></div>
-                                                        </div>
-                                                        <div class="col">
-                                                            <span class="light-grey" v-if="!images || images.length == 0">No images attached</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -117,19 +117,19 @@
                                                 <div class="col">
                                                     <div class="mt24">
                                                         <div class="t-l black">Videos</div>
-                                                        <div class="row">
-                                                            <div class="col-sm-3">
-                                                                <div @click="addVideo" class="pointer border p32 image mt16 d-flex flex-column justify-content-center align-items-center">
+                                                        <p class="light-grey mb0" v-if="!videos || videos.length == 0">No videos attached</p>
+                                                        <div class="row mt16">
+                                                            <div class="col-sm-4">
+                                                                <div @click="addVideo" class="pointer border image d-flex flex-column justify-content-center align-items-center">
                                                                     <img class="p8" src="@/assets/images/add_asset.png" height="64px" alt />
                                                                     <div class="brand-primary">Upload Video</div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-sm-3" v-for="(video, key) in videos" :key="key" @click="openVideo(video.ResourceUrl)">
-                                                                <VideoCard :video-url="video.ResourceUrl" :id="video._id"></VideoCard>
+                                                            <div class="col-sm-4 image-box" v-for="(video, key) in videos" :key="key">
+                                                                <i class="image-delete-icon material-icons" @click="removeAddonResource(video._id)">delete</i>
+                                                                <VideoCard :video-url="video.ResourceUrl" :id="video._id" @click="openVideo(video.ResourceUrl)"></VideoCard>
                                                             </div>
-                                                            <div class="col">
-                                                                <span class="light-grey" v-if="!videos || videos.length == 0">No videos attached</span>
-                                                            </div>
+                                                            <div class="col"></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -145,7 +145,8 @@
                     </b-tab>
                     <b-tab title="Billing & Transactions">
                         <div class="mt32 payment-info" v-if="planTransactions.length > 0">
-                            <div class="t-l black">Payment Information</div>
+                            <div class="t-xl black">Initial Payment</div>
+                            <span class="t-m">Details of initial payment made for you plan.</span>
                             <div class="mt24">
                                 <div class="row">
                                     <div class="col-md-8 col-6">
@@ -202,7 +203,8 @@
                         </div>
                         <hr />
                         <div class="table-wrapper" v-if="planTransactions.length > 0">
-                            <div class="t-l black">Transactions</div>
+                            <div class="t-xl black">Transactions</div>
+                            <span class="t-m">Details of all the transactions for this plan</span>
                             <Table :items="planTransactions" :headings="fields" :pagination="pagination" :sort.sync="sort" responsive table-class="mt16 table-responsive-xs table-responsive-stable-responsive-md">
                                 <template v-slot:Status="data">
                                     <div class="bold" :class="data.value.Status.toLowerCase()">{{ data.value.Status }}</div>
@@ -361,6 +363,39 @@ export default {
         },
         closeVideoSelector() {
             this.attachvideo = false;
+        },
+        async removeAddonResource(resourceId) {
+            try {
+                this.$swal({
+                    title: 'Are you sure?',
+                    text: 'Asset will be removed from the plan',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirm',
+                    closeOnConfirm: false
+                }).then(async isConfirm => {
+                    if (isConfirm.value) {
+                        await ClientAdService.removeAddonResource(this.$route.params.planid, resourceId);
+                        this.planAssets = this.planAssets.filter(function(item) {
+                            return item._id != resourceId;
+                        });
+                        this.$swal({
+                            title: 'Removed',
+                            text: 'Asset has been removed from Ad Plan successfully',
+                            type: 'success',
+                            confirmButtonColor: '#ff6500'
+                        });
+                    }
+                });
+            } catch (err) {
+                this.$swal({
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
+                });
+                console.error(err);
+                this.isLoading = false;
+            }
         },
         closeVideUploadModal() {
             this.showVideoUploadModal = false;
@@ -573,11 +608,31 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.image-box {
+    .image-delete-icon {
+        z-index: 1;
+        position: absolute;
+        right: 20px;
+        cursor: pointer;
+        color: white;
+        top: 8px;
+        display: none;
+    }
+    .image {
+        width: auto;
+        height: 200px;
+        border-radius: 6px;
+        background-position: center center;
+        background-size: cover;
+    }
+    &:hover {
+        .image-delete-icon {
+            display: block;
+        }
+    }
+}
 .image {
     width: auto;
-    height: 134px;
-    border-radius: 6px;
-    background-position: center center;
-    background-size: cover;
+    height: 200px;
 }
 </style>

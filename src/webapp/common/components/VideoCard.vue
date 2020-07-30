@@ -1,5 +1,5 @@
 <template>
-    <div v-if="videoUrl" class="video-container pointer">
+    <div v-if="videoUrl" class="video-container pointer" :style="{ height: autoHeight ? 'auto' : '200px' }">
         <video :id="id" class="video" :src="GOOGLE_BUCKET_ENDPOINT + videoUrl" width="100%" height="100%" @loadedmetadata="forwardVideo(id)"></video>
         <div class="video-bg">
             <img src="@/assets/images/player_button.png" alt="play" />
@@ -11,6 +11,9 @@
 export default {
     name: 'VideoCard',
     props: {
+        autoHeight: {
+            type: Boolean
+        },
         videoUrl: {
             type: String,
             required: true
@@ -21,6 +24,9 @@ export default {
         }
     },
     methods: {
+        removeVideo() {
+            this.$emit('remove', this.id);
+        },
         forwardVideo(id) {
             let elem = document.getElementById(id);
             elem.currentTime = 2;
@@ -41,11 +47,15 @@ export default {
         left: 0;
         bottom: 0;
         right: 0;
-        width: 400px;
-        @include media-breakpoint-down(sm) {
-            width: 290px;
+        .video-delete-icon {
+            z-index: 100;
+            position: absolute;
+            right: 20px;
+            cursor: pointer;
+            color: white;
+            top: 8px;
+            display: none;
         }
-
         img {
             position: absolute;
             top: 50%;
@@ -56,13 +66,15 @@ export default {
             margin-top: -20px;
         }
     }
-    video {
-        width: 400px;
-        border-radius: 5px;
-
-        @include media-breakpoint-down(sm) {
-            width: 290px;
+    &:hover {
+        .video-delete-icon {
+            display: block;
         }
+    }
+
+    video {
+        border-radius: 5px;
+        object-fit: cover;
     }
 }
 </style>

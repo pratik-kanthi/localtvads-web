@@ -1,7 +1,8 @@
 import BaseService from './BaseService';
 import {
     get,
-    post
+    post,
+    remove
 } from './ApiService';
 export default class ClientAdService extends BaseService {
     static _url = '/api/clientadplans';
@@ -45,6 +46,16 @@ export default class ClientAdService extends BaseService {
                 let _res = await post(`api/:clientid/clientadplans/${planId}/attachimages`, {
                     images: resources
                 });
+                resolve(_res.data);
+            } catch (err) {
+                return reject(err);
+            }
+        });
+    }
+    static removeAddonResource(planId, resourceId) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let _res = await remove(`api/:clientid/addonresources?planId=${planId}&id=${resourceId}`);
                 resolve(_res.data);
             } catch (err) {
                 return reject(err);

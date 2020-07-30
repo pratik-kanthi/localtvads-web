@@ -40,7 +40,7 @@
                 <b-tab title="Images">
                     <button @click="addImage" class="btn btn-primary-small mt24">Add Image</button>
                     <div v-if="clientImages.length == 0" class="mt24">
-                        <div class="t-l">LocalTV Ads management images</div>
+                        <div class="t-l">You have not uploaded any images</div>
                     </div>
                     <div v-else class="row images-wrapper mt24">
                         <div v-for="(image, key) in clientImages" :key="key" class="col-md-3 mt16 image-container">
@@ -144,13 +144,13 @@ export default {
                 let result = await ResourceService.getResources();
                 result.map(resource => {
                     if (resource.ResourceType == 'IMAGE') {
-                        if (resource.ByManagement) {
+                        if (resource.Management) {
                             this.adminImages.push(resource);
                         } else {
                             this.clientImages.push(resource);
                         }
                     } else {
-                        if (resource.ByManagement) {
+                        if (resource.Management) {
                             this.adminVideos.push(resource);
                         } else {
                             this.clientVideos.push(resource);
