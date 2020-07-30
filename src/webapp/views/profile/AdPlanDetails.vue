@@ -68,15 +68,6 @@
                                     <WeekDays :disabled="true" mode="table" :value="clientAdPlan.Days"></WeekDays>
                                 </div>
                             </div>
-                            <div class="t-l black mt32">Ad video</div>
-                            <span class="t-m"> This is the video which will be aired it is approved.</span>
-                            <div v-if="clientAdPlan.AdVideo" class="ad-video mt16" @click="openVideo(clientAdPlan.AdVideo.ResourceUrl)">
-                                <VideoCard :id="clientAdPlan.AdVideo._id" :auto-height="true" :video-url="clientAdPlan.AdVideo.ResourceUrl"></VideoCard>
-                            </div>
-                            <div v-else>
-                                <div class="t-s">Please attach your ad video by clicking the below button. You can select from already uploaded videos.</div>
-                                <button @click="showVideoSelector" class="btn btn-primary-small mt16">Attach Video</button>
-                            </div>
                         </div>
                         <div class="row mt32 mb32">
                             <div class="col">
@@ -225,6 +216,18 @@
                                     <div v-if="data.value.Status == 'SUCCEEDED'" class="brand-primary pointer" @click="downloadReceipt(data.value._id)">Download Receipt</div>
                                 </template>
                             </Table>
+                        </div>
+                    </b-tab>
+                    <b-tab title="Your Ad">
+                        <h4 class="mt-4">Ad video</h4>
+                        <span class="t-l">Your final Ad video will appear here. If you have chosen an Addon, our team of professionals will create and upload it here for you.</span>
+                        <div v-if="clientAdPlan.AdVideo" class="ad-video mt16" @click="openVideo(clientAdPlan.AdVideo.ResourceUrl)">
+                            <VideoCard :id="clientAdPlan.AdVideo._id" :auto-height="true" :video-url="clientAdPlan.AdVideo.ResourceUrl"></VideoCard>
+                        </div>
+                        <div v-if="!clientAdPlan.Addons || (clientAdPlan.Addons && clientAdPlan.Addons.length === 0)">
+                            <span class="t-l">Please add your video by pressing the "Attach Video" button.</span>
+                            <br />
+                            <button @click="showVideoSelector" class="btn btn-primary-small mt16">Attach Video</button>
                         </div>
                     </b-tab>
                 </b-tabs>

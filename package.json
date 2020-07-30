@@ -118,6 +118,9 @@
         ]
     },
     "stylelint": {
-        "extends": "@e9ine/eslint-config-vue-style"
+        "extends": "@e9ine/eslint-config-vue-style",
+        "rules": {
+          "indentation": 4
+        }
     }
 }
