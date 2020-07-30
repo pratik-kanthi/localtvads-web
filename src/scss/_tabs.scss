@@ -2,6 +2,7 @@
     .tabs {
         .nav {
             border: none;
+
             .nav-item {
                 .nav-link {
                     color: $brand-secondary;
@@ -9,9 +10,15 @@
                     padding-bottom: 8px;
                     margin-right: 48px;
                     font-size: 18px;
+
+                    @include media-breakpoint-down(sm) {
+                        font-size: 14px;
+                    }
+
                     &:hover {
                         border: none;
                     }
+
                     &.active {
                         color: $brand-primary;
                         border: none;
@@ -28,11 +35,14 @@
     border: none;
     min-height: 600px;
     height: 600px;
+
     .tabs {
         height: 100%;
+
         .col-auto {
             height: 100%;
         }
+
         .nav {
             border: none;
             padding: 0;
@@ -42,10 +52,13 @@
             .nav-item {
                 width: 156px;
                 display: inline-block;
-                *display: inline; /*IE7*/
-                *zoom: 1; /*IE7*/
+                *display: inline;
+                /*IE7*/
+                *zoom: 1;
+                /*IE7*/
                 color: white;
                 margin-right: 10px;
+
                 .nav-link {
                     border-radius: 0;
                     padding: 8px 0;
@@ -53,9 +66,11 @@
                     margin-right: 0px;
                     font-size: 16px;
                     text-align: center;
+
                     &:hover {
                         border: none;
                     }
+
                     &.active {
                         background: $brand-primary;
                         color: $white;
