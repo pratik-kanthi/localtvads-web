@@ -182,10 +182,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- <div class="mt32">
-                                            <button @click="downloadReceipt" class="btn btn-primary-small">Download Receipt</button>
-                                </div>-->
                             </div>
                         </div>
                         <hr />
@@ -195,15 +191,14 @@
                                 <template v-slot:Status="data">
                                     <div class="bold" :class="data.value.Status.toLowerCase()">{{ data.value.Status }}</div>
                                 </template>
-
                                 <template v-slot:DateTime="data">
                                     <div>{{ data.value.DateTime | formatDate('DD MMM YYYY') }}</div>
                                 </template>
-                                <template v-slot:Taxes="data">
-                                    <div>{{ planTransactions.TotalAmount | currency }}</div>
-                                </template>
                                 <template v-slot:Amount="data">
-                                    <div>{{ planTransactions.Amount | currency }}</div>
+                                    <div>{{ data.value.Amount | currency }}</div>
+                                </template>
+                                <template v-slot:TaxAmount="data">
+                                    <div>{{ data.value.TaxAmount | currency }}</div>
                                 </template>
                                 <template v-slot:TotalAmount="data">
                                     <div>{{ data.value.TotalAmount | currency }}</div>
