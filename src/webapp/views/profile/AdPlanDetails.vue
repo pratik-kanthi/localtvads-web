@@ -18,6 +18,10 @@
             <CoolLightBox :items="lightBoxItems" :index="lightboxIndex" loop @close="lightboxIndex = null"></CoolLightBox>
         </div>
 
+        <div v-if="showVideoUploadModal">
+            <VideoUpload :show="showVideoUploadModal" @done="closeImageUploadModal" @close="cancelVideUploadModal"></VideoUpload>
+        </div>
+
         <div class="container" v-if="clientAdPlan">
             <h3 class="brand-secondary mt64">
                 {{ clientAdPlan.Channel.Name }} - {{ clientAdPlan.ChannelProduct.ProductLength.Name }}
@@ -94,6 +98,12 @@
                                                         <div class="t-l black">Images</div>
                                                     </div>
                                                     <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div @click="addImage" class="pointer border p32 image mt16 d-flex flex-column justify-content-center align-items-center">
+                                                                <img class="p8" src="@/assets/images/add_asset.png" height="64px" alt />
+                                                                <div class="brand-primary">Upload Image</div>
+                                                            </div>
+                                                        </div>
                                                         <div v-for="(image, key) in images" :key="key" class="col-sm-3 mt16">
                                                             <div class="image ml8 pointer" @click="lightboxIndex = key" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + image.ResourceUrl + ')' }"></div>
                                                         </div>
@@ -105,9 +115,15 @@
                                             </div>
                                             <div class="row mt16">
                                                 <div class="col">
-                                                    <div class=" mt24">
+                                                    <div class="mt24">
                                                         <div class="t-l black">Videos</div>
                                                         <div class="row">
+                                                            <div class="col-sm-3">
+                                                                <div @click="addVideo" class="pointer border p32 image mt16 d-flex flex-column justify-content-center align-items-center">
+                                                                    <img class="p8" src="@/assets/images/add_asset.png" height="64px" alt />
+                                                                    <div class="brand-primary">Upload Video</div>
+                                                                </div>
+                                                            </div>
                                                             <div class="col-sm-3" v-for="(video, key) in videos" :key="key" @click="openVideo(video.ResourceUrl)">
                                                                 <VideoCard :video-url="video.ResourceUrl" :id="video._id"></VideoCard>
                                                             </div>
@@ -229,6 +245,7 @@ import AttachImages from '@/webapp/common/modals/AttachImages';
 import VideoModal from '@/webapp/common/modals/VideoModal';
 import ResourceService from '@/services/ResourceService';
 import CoolLightBox from 'vue-cool-lightbox';
+import VideoUpload from '@/webapp/common/modals/VideoUploadModal';
 import VideoCard from '@/webapp/common/components/VideoCard';
 import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css';
 
@@ -242,7 +259,8 @@ export default {
         AttachImages,
         VideoModal,
         CoolLightBox,
-        VideoCard
+        VideoCard,
+        VideoUpload
     },
     mixins: [uploadMixin],
     data() {
@@ -306,10 +324,17 @@ export default {
             attachimages: false,
             videourl: '',
             lightBoxItems: [],
-            lightboxIndex: null
+            lightboxIndex: null,
+            showVideoUploadModal: false
         };
     },
     methods: {
+        addVideo() {
+            this.showVideoUploadModal = true;
+        },
+        cancelVideUploadModal() {
+            this.showVideoUploadModal = false;
+        },
         closeVideoPlayer() {
             this.showvideo = false;
             this.videourl = '';
@@ -337,7 +362,9 @@ export default {
         closeVideoSelector() {
             this.attachvideo = false;
         },
-
+        closeVideUploadModal() {
+            this.showVideoUploadModal = false;
+        },
         showImageSelector() {
             this.attachimages = true;
         },
@@ -350,9 +377,23 @@ export default {
         cancelImageUploadModal() {
             this.showUploadImageModal = false;
         },
-        closeImageUploadModal(data) {
-            this.showUploadImageModal = false;
-            this.planAssets.push(data);
+        async closeImageUploadModal(data) {
+            try {
+                this.isLoading = true;
+                await ClientAdService.attachImages(this.$route.params.planid, [data._id]);
+                this.showUploadImageModal = false;
+                this.showVideoUploadModal = false;
+                this.planAssets.push(data);
+                this.isLoading = false;
+            } catch (err) {
+                this.$swal({
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
+                });
+                console.error(err);
+                this.isLoading = false;
+            }
         },
         async uploadAddOnFile() {
             this.isLoading = true;
