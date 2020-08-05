@@ -2,7 +2,6 @@ import BaseService from './BaseService';
 import {
     get,
     post,
-    remove
 } from './ApiService';
 export default class ClientAdService extends BaseService {
     static _url = '/api/clientadplans';
@@ -55,7 +54,18 @@ export default class ClientAdService extends BaseService {
     static removeAddonResource(planId, resourceId) {
         return new Promise(async (resolve, reject) => {
             try {
-                let _res = await remove(`api/:clientid/addonresources?planId=${planId}&id=${resourceId}`);
+                let _res = await post(`api/:clientid/addonresources?planId=${planId}&id=${resourceId}`);
+                resolve(_res.data);
+            } catch (err) {
+                return reject(err);
+            }
+        });
+    }
+
+    static updatePlan(planId, plan) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let _res = await post(`api/:clientid/clientadplans/${planId}`, plan);
                 resolve(_res.data);
             } catch (err) {
                 return reject(err);

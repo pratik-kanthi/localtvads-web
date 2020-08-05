@@ -120,7 +120,7 @@
     "stylelint": {
         "extends": "@e9ine/eslint-config-vue-style",
         "rules": {
-          "indentation": 4
+            "indentation": 4
         }
     }
 }

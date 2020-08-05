@@ -1,13 +1,13 @@
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
     configureWebpack: {
         devtool: process.env.NODE_ENV === 'development' ? 'eval' : 'none',
-        plugins: [new BundleAnalyzerPlugin()],
         resolve: {
-            alias: { moment: 'moment/src/moment' }
+            alias: {
+                moment: 'moment/src/moment'
+            }
         }
     },
     chainWebpack(config) {

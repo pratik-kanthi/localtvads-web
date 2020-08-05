@@ -725,13 +725,7 @@ footer {
     display: none;
 }
 
-@for $i from 0 through 3 {
-    $i: $i + 1;
 
-    .text-clamp-#{$i} {
-        @include text-clamp($i);
-    }
-}
 
 .mob-only {
     display: none !important;
@@ -781,4 +775,16 @@ footer {
 
 .expired {
     color: $red;
+}
+
+
+/* inputs */
+
+.input-large {
+    font-size: 18px !important;
+}
+
+.input-small {
+    font-size: 14px !important;
+    height: 32px !important;
 }

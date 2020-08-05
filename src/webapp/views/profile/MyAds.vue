@@ -65,6 +65,9 @@ export default {
             videoUrl: '',
             fields: [
                 {
+                    key: 'Name'
+                },
+                {
                     key: 'Channel'
                 },
                 {

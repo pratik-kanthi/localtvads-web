@@ -3,6 +3,32 @@
         <div v-if="!paymentLoading">
             <div v-if="isLoggedIn" class="payment-wrapper">
                 <h3 class="mt64 brand-secondary">Step 3 : Payment</h3>
+
+                <div class="row mt48">
+                    <div class="col">
+                        <div class="business-info booking-details">
+                            <div class="t-l black">Please provide the following information</div>
+                            <div class="row mt24">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="t-l">Business Name</label>
+                                        <input v-model="name" class="form-control input-small" type="text" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="t-l">Your VAT Number</label>
+                                        <input v-model="vat" class="form-control input-small" type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="t-l">Billing Address</label>
+                                        <AddressFinder :address.sync="this.address" :google="google"></AddressFinder>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row mt48">
                     <div class="col-lg-7">
                         <div class="booking-details">
@@ -10,12 +36,16 @@
                             <hr class="mb24" />
 
                             <div class="row plan-items">
-                                <div class="col-md-8 col-6"><div class="brand-primary t-l">Channel Ad Plan</div></div>
+                                <div class="col-md-8 col-6">
+                                    <div class="brand-primary t-l">Channel Ad Plan</div>
+                                </div>
                                 <div class="col-md-4 col-6">
                                     <div class="black text-right">
                                         <div class="d-flex justify-content-end">
                                             <div>{{ $parent.clientAdPlan.PlanAmount | currency }}/week</div>
-                                            <div class="pointer"><i class="ml8 material-icons brand-primary t-xl" @mouseover="showPriceBreakdown(true)" @mouseout="showPriceBreakdown(false)">info</i></div>
+                                            <div class="pointer">
+                                                <i class="ml8 material-icons brand-primary t-xl" @mouseover="showPriceBreakdown(true)" @mouseout="showPriceBreakdown(false)">info</i>
+                                            </div>
                                         </div>
                                         <div v-show="priceBreakDown" class="tooltip-info">
                                             <div class="t-s" :key="key" v-for="(slot, key) in $parent.clientAdPlan.ChannelProduct.ChannelSlots">{{ slot.Slot.Name }} - {{ (slot.RatePerSecond * slot.Duration * $parent.daysSelected.length) | currency }}</div>
@@ -25,11 +55,13 @@
 
                                 <div class="col-md-8">
                                     <div class="t-m">
-                                        Plan Length: <span class="bold">{{ $parent.clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
+                                        Plan Length:
+                                        <span class="bold">{{ $parent.clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
                                     </div>
                                     <div class="t-s d-block d-md-none">Days: {{ getSelectedDays(true) }}</div>
                                     <div class="t-m d-none d-md-block">
-                                        Days: <span class="bold">{{ getSelectedDays(false) }}</span>
+                                        Days:
+                                        <span class="bold">{{ getSelectedDays(false) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -39,7 +71,9 @@
                                     <div>
                                         <div class="brand-primary d-flex flex-column flex-md-row align-items-md-end">
                                             <div>{{ $parent.clientAdPlan.Addons[0].Name }}</div>
-                                            <div class="ml-md-2"><span class="tag-sm">Add On</span></div>
+                                            <div class="ml-md-2">
+                                                <span class="tag-sm">Add On</span>
+                                            </div>
                                         </div>
                                         <div class="t-s mt8" v-for="benefit in $parent.clientAdPlan.Addons[0].Benefits" :key="benefit">{{ benefit }}</div>
                                     </div>
@@ -51,11 +85,11 @@
                                 <div class="row">
                                     <div class="col-6 col-sm-6">
                                         <div class="taxes">
-                                            <span class="t-xl">Net Amount</span>
+                                            <span class="t-l">Subtotal</span>
                                         </div>
                                     </div>
                                     <div class="col-6 col-sm-6 text-right">
-                                        <div class="t-xl black">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount) | currency }}</div>
+                                        <div class="t-l black">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount) | currency }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -92,16 +126,12 @@
                                         <h5 class="amount t-xl black pull-right">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</h5>
                                     </div>
                                 </div>
-                                <div class="t-m italic mt16 mb0">
-                                    Note: Total payable includes first week's charge plus any addons if selected.
-                                </div>
+                                <div class="t-s mt16 mb0">Note: Total payable includes first week's charge plus any addons if selected.</div>
                             </div>
                             <div class="dashed-line">
                                 <div class="line"></div>
                             </div>
-                            <div class="t-m italic mt16 mb0">
-                                Note: You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing.
-                            </div>
+                            <div class="t-s mt16 mb0">Note: You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing.</div>
                         </div>
                     </div>
                     <div class="col-lg-5 mt-xs16">
@@ -168,7 +198,7 @@
                                             <span></span>
                                         </label>
                                         <span class="brand-primary medium">Save Card</span>
-                                    </div> -->
+                                    </div>-->
                                 </form>
                             </div>
                             <p class="mt16 mb16">I have read and accept the terms of use,rules of Local TV Ads and privacy policy</p>
@@ -192,15 +222,24 @@
 import instance from '@/api';
 import TaxService from '@/services/TaxService';
 import { paymentMixin } from '@/mixins/payment';
+import AddressFinder from '@/e9_components/components/AddressFinder';
+
 export default {
     name: 'Payment',
+    components: {
+        AddressFinder
+    },
     mixins: [paymentMixin],
     data() {
         return {
             taxes: [],
             taxAmount: 0,
             taxInfo: false,
-            priceBreakDown: false
+            priceBreakDown: false,
+            vat: '',
+            name: '',
+            address: {},
+            google: window.google
         };
     },
     methods: {
@@ -242,6 +281,8 @@ export default {
                 save: this.save,
                 clientAdPlan: {
                     Client: client,
+                    Name: this.name,
+                    VAT: this.vat,
                     Channel: this.$parent.clientAdPlan.Channel,
                     Days: this.$parent.clientAdPlan.Days,
                     ChannelProduct: this.$parent.clientAdPlan.ChannelProduct._id,

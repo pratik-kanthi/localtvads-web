@@ -53,6 +53,7 @@ $dark-grey: lighten(#000, 20%); // #333
 $grey: lighten(#000, 33.5%); // #555
 $light-grey: rgba(100, 100, 100, 0.5);
 $lighter-grey: rgba(100, 100, 100, 0.1);
+$line-color: lighten($dark-grey, 65%);
 
 /* Base Style
 ------------------------------------
@@ -66,8 +67,10 @@ $base: $body-text;
 ------------------------------------
 */
 
-$font-family-heading: 'azo-sans-web', sans-serif;
-$font-family-body: 'azo-sans-web', sans-serif;
+$font-family-heading: 'azo-sans-web',
+sans-serif;
+$font-family-body: 'azo-sans-web',
+sans-serif;
 
 $font-size-h1: floor($base-font-size * 3.444); // ~62px
 $font-size-h2: ceil($base-font-size * 2.889); // ~52px

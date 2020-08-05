@@ -6,6 +6,10 @@
             <VideoUpload :show="showVideoUploadModal" @done="closeVideUploadModal" @close="cancelVideUploadModal"></VideoUpload>
         </div>
 
+        <div v-if="showDocumentUploadModal">
+            <DocumentUpload :show="showDocumentUploadModal" @close="cancelDocumentUploadModal"></DocumentUpload>
+        </div>
+
         <VideoModal :show-video="showvideo" :video-url="videourl" @close="closeVideoPlayer"></VideoModal>
         <LoaderModal :showloader="isLoading"></LoaderModal>
         <div v-if="lightBoxItems.length > 0">
@@ -57,6 +61,13 @@
                         </div>
                     </div>
                 </b-tab>
+
+                <b-tab title="Documents">
+                    <button @click="showDocumentUploadModal = true" class="btn btn-primary-small mt24">Upload Document</button>
+                    <div v-if="clientDocuments.length == 0" class="mt24">
+                        <div class="t-l">You have not uploaded any documentss</div>
+                    </div>
+                </b-tab>
             </b-tabs>
         </div>
     </div>
@@ -68,6 +79,7 @@ import { mapGetters } from 'vuex';
 import { uploadMixin } from '@/mixins/upload';
 import ImageUpload from '@/e9_components/components/ImageUpload';
 import VideoUpload from '@/webapp/common/modals/VideoUploadModal';
+import DocumentUpload from '@/webapp/common/modals/DocumentUpload';
 import VideoModal from '@/webapp/common/modals/VideoModal';
 import ResourceService from '@/services/ResourceService';
 import ImageAssetCard from '@/webapp/common/components/ImageAssetCard';
@@ -81,7 +93,8 @@ export default {
         VideoUpload,
         VideoModal,
         ImageAssetCard,
-        CoolLightBox
+        CoolLightBox,
+        DocumentUpload
     },
     mixins: [uploadMixin],
     data() {
@@ -91,12 +104,14 @@ export default {
             showUploadImageModal: false,
             showVideoUploadModal: false,
             showvideo: false,
+            showDocumentUploadModal: false,
 
             //data
             clientVideos: [],
             adminVideos: [],
             clientImages: [],
             adminImages: [],
+            clientDocuments: [],
             lightBoxItems: [],
             videourl: '',
             lightboxIndex: null,
@@ -121,6 +136,9 @@ export default {
         },
         cancelVideUploadModal() {
             this.showVideoUploadModal = false;
+        },
+        cancelDocumentUploadModal() {
+            this.showDocumentUploadModal = false;
         },
         closeImageUploadModal(data) {
             this.showUploadImageModal = false;

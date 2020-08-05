@@ -71,11 +71,15 @@ export default {
         };
     },
     methods: {
-        close() {
-            this.$emit('closed', this.operatingSystem);
-        },
         attachImages() {
             this.$emit('done', [...this.selectedImages, ...this.selectedVideos]);
+        },
+        close() {
+            this.$emit('closed');
+        },
+        forwardVideo(id) {
+            let elem = document.getElementById(id);
+            elem.currentTime = 2;
         },
         async getClientAssets() {
             try {
@@ -102,10 +106,6 @@ export default {
                 });
                 console.error(err);
             }
-        },
-        forwardVideo(id) {
-            let elem = document.getElementById(id);
-            elem.currentTime = 2;
         },
         selectImage(img) {
             let index = this.selectedImages.indexOf(img._id);

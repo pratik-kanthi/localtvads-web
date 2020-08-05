@@ -23,15 +23,32 @@
         </div>
 
         <div class="container" v-if="clientAdPlan">
-            <h3 class="brand-secondary mt64">
-                {{ clientAdPlan.Channel.Name }} - {{ clientAdPlan.ChannelProduct.ProductLength.Name }}
-                <span :class="getStatusClass(clientAdPlan.Status)" class="t-l mb16">{{ clientAdPlan.Status }}</span>
-            </h3>
+            <div class="d-flex justify-content-between mt64">
+                <div v-if="displayMode == 'VIEW'">
+                    <h3 class="brand-secondary">
+                        {{ clientAdPlan.Name }}
+                    </h3>
+                </div>
+                <div class="row" v-else>
+                    <div class="form-group ">
+                        <input class="w-100 form-control input-lg heading-input" id="inputlg" type="text" v-model="clientAdPlan.Name" />
+                    </div>
+                </div>
+                <!--div class="t-l ml16" :class="getStatusClass(clientAdPlan.Status)">{{ clientAdPlan.Status }}</div-->
+                <div>
+                    <button v-if="displayMode == 'VIEW'" @click="displayMode = 'EDIT'" class="btn btn-link">Edit</button>
+                </div>
+                <div v-if="displayMode == 'EDIT'">
+                    <button @click="upateClientAdPlan" class="btn btn-primary-small">Save</button>
+                    <button @click="displayMode = 'VIEW'" class="ml16 btn btn-secondary-small">Cancel</button>
+                </div>
+            </div>
+
             <div class="mt32 horizontal-tabs">
                 <b-tabs>
                     <b-tab title="Plan Information" active>
-                        <div class="p32 shadow mt32">
-                            <div class="row">
+                        <div class="p32 shadow-sm mt32">
+                            <div class="row mt">
                                 <div class="plan-info col-md-4">
                                     <div class="t-l black">Channel</div>
                                     <div class="t-l">{{ clientAdPlan.Channel.Name }}</div>
@@ -74,7 +91,7 @@
                                 <div>
                                     <div class="t-l black">Add On:</div>
                                     <div v-if="clientAdPlan.Addons.length > 0">
-                                        <div v-for="(addon, key) in clientAdPlan.Addons" :key="key" class="plan-addon shadow rounded p32 mt24">
+                                        <div v-for="(addon, key) in clientAdPlan.Addons" :key="key" class="plan-addon shadow-sm      rounded p32 mt24">
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="t-l black bold">{{ addon.Name }}</div>
@@ -131,6 +148,30 @@
                                         <div class="t-l mt24">You have not purchased any add ons for this plan.</div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </b-tab>
+                    <b-tab title="Your Ad">
+                        <h4 class="mt-4">Ad video</h4>
+                        <span class="t-l">Your final Ad video will appear here. If you have chosen an Addon, our team of professionals will create and upload it here for you.</span>
+                        <div v-if="clientAdPlan.AdVideo" class="ad-video mt16" @click="openVideo(clientAdPlan.AdVideo.ResourceUrl)">
+                            <VideoCard :id="clientAdPlan.AdVideo._id" :auto-height="true" :video-url="clientAdPlan.AdVideo.ResourceUrl"></VideoCard>
+                        </div>
+                        <div v-if="!clientAdPlan.Addons || (clientAdPlan.Addons && clientAdPlan.Addons.length === 0)">
+                            <span class="t-l">Please add your video by pressing the "Attach Video" button.</span>
+                            <br />
+                            <button @click="showVideoSelector" class="btn btn-primary-small mt16">Attach Video</button>
+                        </div>
+                    </b-tab>
+                    <b-tab title="Ad Text">
+                        <div class="mt32">
+                            <div class="t-l">You can provide any additional details about your ad in the form of text using this section.</div>
+
+                            <div class="ad-script mt24">
+                                <textarea placeholder="Provide additional information about your ad here" rows="8" class="p24 form-control" v-model="clientAdPlan.Comments"></textarea>
+                            </div>
+                            <div class="action mt24 mb64 d-flex justify-content-start">
+                                <button :disabled="clientAdPlan.Comments == null" @click="upateClientAdPlan" class="w-25 btn btn-full btn-primary">Save</button>
                             </div>
                         </div>
                     </b-tab>
@@ -216,18 +257,6 @@
                                     <div v-if="data.value.Status == 'SUCCEEDED'" class="brand-primary pointer" @click="downloadReceipt(data.value._id)">Download Receipt</div>
                                 </template>
                             </Table>
-                        </div>
-                    </b-tab>
-                    <b-tab title="Your Ad">
-                        <h4 class="mt-4">Ad video</h4>
-                        <span class="t-l">Your final Ad video will appear here. If you have chosen an Addon, our team of professionals will create and upload it here for you.</span>
-                        <div v-if="clientAdPlan.AdVideo" class="ad-video mt16" @click="openVideo(clientAdPlan.AdVideo.ResourceUrl)">
-                            <VideoCard :id="clientAdPlan.AdVideo._id" :auto-height="true" :video-url="clientAdPlan.AdVideo.ResourceUrl"></VideoCard>
-                        </div>
-                        <div v-if="!clientAdPlan.Addons || (clientAdPlan.Addons && clientAdPlan.Addons.length === 0)">
-                            <span class="t-l">Please add your video by pressing the "Attach Video" button.</span>
-                            <br />
-                            <button @click="showVideoSelector" class="btn btn-primary-small mt16">Attach Video</button>
                         </div>
                     </b-tab>
                 </b-tabs>
@@ -330,7 +359,8 @@ export default {
             videourl: '',
             lightBoxItems: [],
             lightboxIndex: null,
-            showVideoUploadModal: false
+            showVideoUploadModal: false,
+            displayMode: 'VIEW'
         };
     },
     methods: {
@@ -557,6 +587,28 @@ export default {
                 }
             }
         },
+        async upateClientAdPlan() {
+            try {
+                this.isLoading = true;
+                await ClientAdService.updatePlan(this.$route.params.planid, this.clientAdPlan);
+                this.$swal({
+                    title: 'Updated',
+                    text: 'Details updated successfully',
+                    type: 'success',
+                    confirmButtonColor: '#ff6500'
+                });
+                this.isLoading = false;
+                this.displayMode = 'VIEW';
+            } catch (err) {
+                this.$swal({
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
+                });
+                console.error(err);
+                this.isLoading = false;
+            }
+        },
         openVideo(url) {
             this.showvideo = true;
             this.videourl = this.GOOGLE_BUCKET_ENDPOINT + url;
@@ -611,6 +663,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.heading-input {
+    font-size: 32px;
+    font-weight: bold;
+    color: $brand-secondary;
+    width: 600px;
+    background: linear-gradient(#ccc, #ccc) center bottom 0px / calc(100%) 1px no-repeat;
+    border: none;
+    padding-bottom: 24px;
+}
+
 .image-box {
     .image-delete-icon {
         z-index: 1;
