@@ -64,8 +64,23 @@
 
                 <b-tab title="Documents">
                     <button @click="showDocumentUploadModal = true" class="btn btn-primary-small mt24">Upload Document</button>
-                    <div v-if="clientDocuments.length == 0" class="mt24">
+
+                    <div v-if="clientDocuments.length == 0" class="mt24 row">
                         <div class="t-l">You have not uploaded any documentss</div>
+                    </div>
+                    <div v-else class="mt24 row">
+                        <div v-for="(doc, key) in clientDocuments" :key="key" class="col-md-3 mt16">
+                            <div @click="openDocument(doc)" class="document-container p24 border rounded">
+                                <div class="d-flex  justify-content-start align-items-center">
+                                    <div>
+                                        <i class="material-icons t-xxl">insert_drive_file</i>
+                                    </div>
+                                    <div class="ml16">
+                                        <div class="t-l black">{{ doc.ResourceName }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </b-tab>
             </b-tabs>
@@ -167,12 +182,14 @@ export default {
                         } else {
                             this.clientImages.push(resource);
                         }
-                    } else {
+                    } else if (resource.ResourceType == 'VIDEO') {
                         if (resource.Management) {
                             this.adminVideos.push(resource);
                         } else {
                             this.clientVideos.push(resource);
                         }
+                    } else {
+                        this.clientDocuments.push(resource);
                     }
                 });
                 this.lightBoxItems = this.clientImages.map(image => {
@@ -194,6 +211,9 @@ export default {
         openVideo(url) {
             this.showvideo = true;
             this.videourl = this.GOOGLE_BUCKET_ENDPOINT + url;
+        },
+        openDocument(doc) {
+            window.open(this.GOOGLE_BUCKET_ENDPOINT + doc.ResourceUrl);
         },
         ...mapGetters(['getUser'])
     },
@@ -243,5 +263,9 @@ export default {
             max-width: 150px;
         }
     }
+}
+
+.document-container {
+    height: 80px;
 }
 </style>

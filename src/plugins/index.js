@@ -3,10 +3,24 @@ import VueCookies from 'vue-cookies';
 import io from 'socket.io-client';
 import VueAgile from 'vue-agile';
 import VueCarousel from 'vue-carousel';
-import { ModalPlugin } from 'bootstrap-vue';
-import { TablePlugin } from 'bootstrap-vue';
-import { PaginationPlugin } from 'bootstrap-vue';
-import { TabsPlugin, CardPlugin, InputGroupPlugin, FormSelectPlugin, FormGroupPlugin, FormRadioPlugin } from 'bootstrap-vue';
+import {
+    ModalPlugin
+} from 'bootstrap-vue';
+import {
+    TablePlugin
+} from 'bootstrap-vue';
+import {
+    PaginationPlugin
+} from 'bootstrap-vue';
+import {
+    TabsPlugin,
+    CardPlugin,
+    InputGroupPlugin,
+    FormSelectPlugin,
+    FormGroupPlugin,
+    FormRadioPlugin,
+    CollapsePlugin
+} from 'bootstrap-vue';
 import VScrollLock from 'v-scroll-lock';
 import VueSweetalert2 from 'vue-sweetalert2';
 import VueAnalytics from 'vue-analytics';
@@ -28,6 +42,7 @@ Vue.use(CardPlugin);
 Vue.use(VScrollLock);
 Vue.use(VueSweetalert2);
 Vue.use(VueTelInput);
+Vue.use(CollapsePlugin);
 
 Vue.use(VueAnalytics, {
     id: 'UA-166794218-1',

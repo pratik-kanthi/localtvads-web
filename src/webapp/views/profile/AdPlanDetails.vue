@@ -22,6 +22,10 @@
             <VideoUpload :show="showVideoUploadModal" @done="closeImageUploadModal" @close="cancelVideUploadModal"></VideoUpload>
         </div>
 
+        <div v-if="showDocumentUploadModal">
+            <DocumentUpload :show="showDocumentUploadModal" @close="handleDocumentUploadModal"></DocumentUpload>
+        </div>
+
         <div class="container" v-if="clientAdPlan">
             <div class="d-flex justify-content-between mt64">
                 <div v-if="displayMode == 'VIEW'">
@@ -136,6 +140,29 @@
                                                             <div class="col-sm-4 image-box" v-for="(video, key) in videos" :key="key">
                                                                 <i class="image-delete-icon material-icons" @click="removeAddonResource(video._id)">delete</i>
                                                                 <VideoCard :video-url="video.ResourceUrl" :id="video._id" @click="openVideo(video.ResourceUrl)"></VideoCard>
+                                                            </div>
+                                                            <div class="col"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt16">
+                                                <div class="col">
+                                                    <div class="mt24">
+                                                        <div class="t-l black">Documents</div>
+                                                        <p class="light-grey mb0" v-if="!documents || documents.length == 0">No documents attached</p>
+                                                        <div class="row mt16">
+                                                            <div class="col-sm-3">
+                                                                <div @click="addDocument" class="mt16 pointer border document-box d-flex flex-column justify-content-center align-items-center">
+                                                                    <img class="p8" src="@/assets/images/add_asset.png" height="48px" alt />
+                                                                    <div class="brand-primary">Upload Document</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-3 mt16 document-box" v-for="(doc, key) in documents" :key="key">
+                                                                <div class="border p24 d-flex justify-content-start align-items-center">
+                                                                    <div><i class="material-icons t-xxl">insert_drive_file</i></div>
+                                                                    <div class="t-l ml16 black">{{ doc.ResourceName }}</div>
+                                                                </div>
                                                             </div>
                                                             <div class="col"></div>
                                                         </div>
@@ -274,6 +301,7 @@ import { uploadMixin } from '@/mixins/upload';
 import TransactionService from '@/services/TransactionService';
 import Table from '@/e9_components/components/Table';
 import ImageUpload from '@/e9_components/components/ImageUpload';
+import DocumentUpload from '@/webapp/common/modals/DocumentUpload';
 import AttachVideo from '@/webapp/common/modals/AttachVideo';
 import AttachImages from '@/webapp/common/modals/AttachImages';
 import VideoModal from '@/webapp/common/modals/VideoModal';
@@ -294,7 +322,8 @@ export default {
         VideoModal,
         CoolLightBox,
         VideoCard,
-        VideoUpload
+        VideoUpload,
+        DocumentUpload
     },
     mixins: [uploadMixin],
     data() {
@@ -360,6 +389,7 @@ export default {
             lightBoxItems: [],
             lightboxIndex: null,
             showVideoUploadModal: false,
+            showDocumentUploadModal: false,
             displayMode: 'VIEW'
         };
     },
@@ -435,6 +465,32 @@ export default {
         },
         showImageSelector() {
             this.attachimages = true;
+        },
+        addDocument() {
+            this.showDocumentUploadModal = true;
+        },
+        async handleDocumentUploadModal(data) {
+            this.showDocumentUploadModal = false;
+            data = JSON.parse(data);
+
+            if (data) {
+                try {
+                    this.isLoading = true;
+                    await ClientAdService.attachImages(this.$route.params.planid, [data._id]);
+                    this.showUploadImageModal = false;
+                    this.showVideoUploadModal = false;
+                    this.planAssets.push(data);
+                    this.isLoading = false;
+                } catch (err) {
+                    this.$swal({
+                        title: 'Error',
+                        text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                        type: 'error'
+                    });
+                    console.error(err);
+                    this.isLoading = false;
+                }
+            }
         },
         addImage() {
             this.showUploadImageModal = true;
@@ -629,6 +685,11 @@ export default {
             return this.planAssets.filter(resource => {
                 return resource.ResourceType == 'VIDEO';
             });
+        },
+        documents() {
+            return this.planAssets.filter(resource => {
+                return resource.ResourceType == 'DOCUMENT';
+            });
         }
     },
     async created() {
@@ -671,6 +732,10 @@ export default {
     background: linear-gradient(#ccc, #ccc) center bottom 0px / calc(100%) 1px no-repeat;
     border: none;
     padding-bottom: 24px;
+}
+
+.document-box {
+    height: 80px;
 }
 
 .image-box {

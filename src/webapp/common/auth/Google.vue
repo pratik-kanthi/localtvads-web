@@ -33,8 +33,8 @@ export default {
                 gapi.load('client:auth2', () => {
                     this.$store.commit('LOGIN_LOADER', true);
                     gapi.client.init({
-                        apiKey: window.google.apiKey,
-                        clientId: window.google.clientId,
+                        apiKey: window.googleCredentials.apiKey,
+                        clientId: window.googleCredentials.clientId,
                         scope: 'https://www.googleapis.com/auth/userinfo.profile'
                     });
                     gapi.auth2

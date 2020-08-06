@@ -8,13 +8,19 @@
         </div>
         <div class="p24">
             <div>
+                <div class="t-l black">Provide a name for your document</div>
+                <div class="form-group">
+                    <input type="text" v-model="docName" class="form-control mt8" />
+                </div>
+            </div>
+            <div class="mt32">
                 <h4 class="section-subtitle mt0 mb8"></h4>
                 <input type="file" @change="fileUploaded" accept="*/*" ref="fileUpload" />
             </div>
         </div>
         <div class="footer">
             <button class="btn btn-secondary-small" @click="close">Cancel</button>
-            <button class="btn btn-primary-small ml16 float-right" @click="uploadDocument">Confirm</button>
+            <button :disabled="!this.docName" class="btn btn-primary-small ml16 float-right" @click="uploadDocument">Confirm</button>
         </div>
     </b-modal>
 </template>
@@ -31,14 +37,15 @@ export default {
     data() {
         return {
             maxSize: 4,
-            document: new Document(),
             upload: {},
+            docName: null,
             data: {
                 name: ''
             },
+            allowedExtenstions: ['pdf', 'docx', 'ppt', 'xlsx'],
             config: {
                 method: 'POST',
-                api: ''
+                api: `/api/${this.$store.getters.getUser.Owner._id}/clientresource/document`
             }
         };
     },
@@ -82,10 +89,16 @@ export default {
 
                 let formData = new window.FormData();
                 if (this.$refs.fileUpload && this.$refs.fileUpload.files && this.$refs.fileUpload.files[0]) {
-                    this.data.name = this.$refs.fileUpload.files[0].name;
-                    formData.append('file', this.upload.chosen);
+                    formData.append('file', this.$refs.fileUpload.files[0]);
                 }
-                formData.append('document', JSON.stringify(this.document));
+
+                let document = JSON.stringify({
+                    Name: this.docName,
+                    Owner: this.$store.getters.getUser.Owner._id,
+                    OwnerType: 'Client'
+                });
+
+                formData.append('document', document);
                 result = await this.callAPI(formData);
 
                 this.$swal({

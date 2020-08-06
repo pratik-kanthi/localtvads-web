@@ -780,6 +780,17 @@ footer {
 
 /* inputs */
 
+.form-group {
+    label {
+        margin-left: 0px !important;
+        font-size: 14px !important;
+    }
+
+    .form-control {
+        border: 1px solid $lighter-grey;
+    }
+}
+
 .input-large {
     font-size: 18px !important;
 }

@@ -36,6 +36,24 @@
                     </label>
                 </div>
             </div>
+            <div class="col light-grey" v-if="!clientVideos || clientVideos.length == 0">No videos uploaded. You can upload videos from "My Assets" section.</div>
+        </div>
+
+        <div class="t-xl black mt24">Documents</div>
+        <div class="row mt16 mb16">
+            <div class="col-sm-3 mt8" v-for="(document, key) in clientDocuments" :key="key">
+                <div class="document">
+                    <div class="border p24 d-flex justify-content-start align-items-center">
+                        <div><i class="material-icons t-xxl">insert_drive_file</i></div>
+                        <div class="t-l ml16 black">{{ document.ResourceName }}</div>
+                    </div>
+                    <input :id="document._id" type="checkbox" class="check" v-model="selectedDocuments" :value="document._id" />
+                    <label :for="document._id" class="check-label box mb8 mr8" @click="selectDocuments(document)">
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="col light-grey" v-if="!clientDocuments || clientDocuments.length == 0">No documents uploaded. You can upload documents from "My Assets" section.</div>
         </div>
         <div class="footer">
             <button class="btn btn-secondary-small" @click="close">Cancel</button>
@@ -64,15 +82,17 @@ export default {
 
             selectedImages: [],
             selectedVideos: [],
+            selectedDocuments: [],
 
             //data
             clientImages: [],
-            clientVideos: []
+            clientVideos: [],
+            clientDocuments: []
         };
     },
     methods: {
         attachImages() {
-            this.$emit('done', [...this.selectedImages, ...this.selectedVideos]);
+            this.$emit('done', [...this.selectedImages, ...this.selectedVideos, ...this.selectedDocuments]);
         },
         close() {
             this.$emit('closed');
@@ -96,6 +116,8 @@ export default {
                         this.clientImages.push(resource);
                     } else if (resource.ResourceType == 'VIDEO') {
                         this.clientVideos.push(resource);
+                    } else {
+                        this.clientDocuments.push(resource);
                     }
                 });
             } catch (err) {
@@ -116,6 +138,11 @@ export default {
             let index = this.selectedVideos.indexOf(img._id);
             if (index > -1) this.selectedVideos.splice(index, 1);
             else this.selectedVideos.push(img._id);
+        },
+        selectDocuments(img) {
+            let index = this.selectedDocuments.indexOf(img._id);
+            if (index > -1) this.selectedDocuments.splice(index, 1);
+            else this.selectedDocuments.push(img._id);
         }
     },
     created() {
@@ -125,6 +152,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.document {
+    .check-label {
+        position: absolute;
+        bottom: 8px;
+        right: 18px;
+    }
+
+    .check:disabled + label {
+        opacity: 1 !important;
+    }
+}
 .image {
     height: 184px;
     background-size: cover;
