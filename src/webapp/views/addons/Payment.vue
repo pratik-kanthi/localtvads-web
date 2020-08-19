@@ -1,11 +1,11 @@
 <template>
     <div class="container">
-        <div>
+        <div v-show="!paymentLoading">
             <div v-if="isLoggedIn" class="payment-wrapper">
-                <h3 class="mt64 brand-secondary">Step 3 : Payment</h3>
+                <h3 class="mt64 brand-secondary">Payment</h3>
                 <div class="row mt24">
                     <div class="col-md-8">
-                        <div class="t-xl black">Billing Information</div>
+                        <div class="t-xl brand-secondary">Billing Information</div>
                         <div class="method-wrapper mt16">
                             <div class="row">
                                 <div class="col-md-6">
@@ -64,7 +64,7 @@
                             </div>
                         </div>
 
-                        <div class="t-xl black mt24">Select a Payment Method</div>
+                        <div class="t-xl brand-secondary mt24">Select a Payment Method</div>
                         <div class="cards-wrapper">
                             <div class="method-wrapper saved-cards mt16" v-if="savedCards.length > 0">
                                 <div class="cards" :class="{ 'selection-card-option': activeToggle == 'SavedCards' }">
@@ -132,7 +132,7 @@
 
                         <div class="row mt24">
                             <div class="col-md-6">
-                                <button @click="payStripe" :disabled="!isCardValid" class="btn btn-success btn-icon form-control">
+                                <button @click="payStripe" class="btn btn-success btn-icon form-control">
                                     <i class="material-icons">lock</i>
                                     Confirm Payment of
                                     <strong>{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</strong>
@@ -142,7 +142,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <div class="booking-details">
+                        <div class="booking-details mt40">
                             <h6 class="t-l medium text-center brand-secondary">Booking Receipt</h6>
                             <hr class="mb24" />
                             <div class="row plan-items">
@@ -242,7 +242,7 @@
                 <h3 class="section-title-2 mb8 text-center">Please login to continue with your booking.</h3>
             </div>
         </div>
-        <div class="mt16 transaction-message">
+        <div v-show="paymentLoading" class="mt16 transaction-message">
             <p>Your transaction is being processed...</p>
             <p class="bold">Please do not click back or refresh</p>
         </div>
@@ -273,12 +273,12 @@ export default {
             name: '',
             address: new Address(),
             google: window.google,
-            paymentTabStatus: false,
-            billingTabStatus: true,
-            cardTabStatus: false,
-            isCardValid: true,
+            isCardValid: false,
+            //eslint-disable-next-line
             elements: stripe.elements(),
-            cardElement: null
+            cardElement: null,
+            existingCard: null,
+            paymentLoading: false
         };
     },
     methods: {
@@ -316,10 +316,20 @@ export default {
         },
         async payStripe() {
             try {
-                const paymentMethod = await stripe.createPaymentMethod({
-                    type: 'card',
-                    card: this.cardElement
-                });
+                this.paymentLoading = true;
+                let paymentMethod;
+                if (!this.existingCard) {
+                    try {
+                        //eslint-disable-next-line
+                        paymentMethod = await stripe.createPaymentMethod({
+                            type: 'card',
+                            card: this.cardElement
+                        });
+                        paymentMethod.Name = 'Card Holder';
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }
 
                 let obj = {
                     clientAdPlan: {
@@ -335,11 +345,15 @@ export default {
                         Addons: this.$parent.clientAdPlan.Addons && this.$parent.clientAdPlan.Addons.length > 0 ? [this.$parent.clientAdPlan.Addons[0]._id] : [],
                         BillingAddress: this.address
                     },
-                    paymentMethod: paymentMethod
+                    newCard: paymentMethod ? paymentMethod : null,
+                    savedCard: this.existingCard ? this.existingCard : null
                 };
                 await ClientAdService.createSubscription(obj);
+
+                this.paymentLoading = false;
                 this.$emit('advanceToConfirmation');
             } catch (err) {
+                this.paymentLoading = false;
                 console.error(err);
             }
         },
@@ -348,10 +362,6 @@ export default {
         },
         showPriceBreakdown(isDisplay) {
             this.priceBreakDown = isDisplay;
-        },
-        showPaymentMethods() {
-            this.billingTabStatus = false;
-            this.paymentTabStatus = true;
         },
         togglePaymentOptions(option) {
             if (option === 'SavedCards' && this.savedCards.length > 0) {
@@ -369,12 +379,6 @@ export default {
         }
     },
     mounted() {
-        let fontSource = {
-            family: 'azo-sans-web',
-            src: 'url(https://use.typekit.net/xrc3emd.css)',
-            weight: '500'
-        };
-
         let style = {
             base: {
                 color: '#',
@@ -396,21 +400,16 @@ export default {
             showIcon: true,
             iconStyle: 'solid',
             placeholder: 'Credit/Debit Card Number',
-            style: style,
-            CustomFontSource: fontSource
+            style: style
         });
 
         this.cardElement = cardNumberElement;
-
         let cardExpiryElement = this.elements.create('cardExpiry', {
-            style: style,
-            CustomFontSource: fontSource
+            style: style
         });
         let cardCvcElement = this.elements.create('cardCvc', {
-            style: style,
-            CustomFontSource: fontSource
+            style: style
         });
-
         cardNumberElement.mount(this.$refs.cardNumber);
         cardExpiryElement.mount(this.$refs.cardExpiry);
         cardCvcElement.mount(this.$refs.cardCvc);
@@ -425,6 +424,7 @@ export default {
         } else {
             this.getCards();
         }
+
         this.taxes = await TaxService.getAllTaxes();
         for (let i = 0, len = this.taxes.length; i < len; i++) {
             if (this.taxes[i].Type === 'PERCENTAGE') {

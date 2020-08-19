@@ -13,8 +13,7 @@
 
         <transition name="addon">
             <div v-if="isAddOn">
-                <h4 class="brand-secondary mt64 mb48">Select Your Add On</h4>
-
+                <div class="t-xl mt24 mb24">Select your add-on</div>
                 <div class="addons-wrapper mb24">
                     <div class="addon-container" v-for="addon in addons" :key="addon._id">
                         <div class="addon" :class="{ 'active-addon': $parent.clientAdPlan.Addons[0]._id === addon._id }">
@@ -32,7 +31,7 @@
                                 </ul>
                             </div>
                             <div class="selectaddon">
-                                <button class="btn btn-primary-small" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.clientAdPlan.Addons[0]._id === addon._id }">
+                                <button class="btn btn-full btn-primary" @click="selectAddon(addon)" :class="{ 'btn-secondary': $parent.clientAdPlan.Addons[0]._id === addon._id }">
                                     <span v-if="$parent.clientAdPlan.Addons[0]._id === addon._id">Selected</span>
                                     <span v-else>Choose this Addon</span>
                                 </button>

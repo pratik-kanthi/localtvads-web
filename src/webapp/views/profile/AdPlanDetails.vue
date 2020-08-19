@@ -29,12 +29,10 @@
         <div class="container" v-if="clientAdPlan">
             <div class="d-flex justify-content-between mt64">
                 <div v-if="displayMode == 'VIEW'">
-                    <h3 class="brand-secondary">
-                        {{ clientAdPlan.Name }}
-                    </h3>
+                    <h3 class="brand-secondary">{{ clientAdPlan.Name }}</h3>
                 </div>
                 <div class="row" v-else>
-                    <div class="form-group ">
+                    <div class="form-group">
                         <input class="w-100 form-control input-lg heading-input" id="inputlg" type="text" v-model="clientAdPlan.Name" />
                     </div>
                 </div>
@@ -95,7 +93,7 @@
                                 <div>
                                     <div class="t-l black">Add On:</div>
                                     <div v-if="clientAdPlan.Addons.length > 0">
-                                        <div v-for="(addon, key) in clientAdPlan.Addons" :key="key" class="plan-addon shadow-sm      rounded p32 mt24">
+                                        <div v-for="(addon, key) in clientAdPlan.Addons" :key="key" class="plan-addon shadow-sm rounded p32 mt24">
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="t-l black bold">{{ addon.Name }}</div>
@@ -160,7 +158,9 @@
                                                             </div>
                                                             <div class="col-sm-3 mt16 document-box" v-for="(doc, key) in documents" :key="key">
                                                                 <div class="border p24 d-flex justify-content-start align-items-center">
-                                                                    <div><i class="material-icons t-xxl">insert_drive_file</i></div>
+                                                                    <div>
+                                                                        <i class="material-icons t-xxl">insert_drive_file</i>
+                                                                    </div>
                                                                     <div class="t-l ml16 black">{{ doc.ResourceName }}</div>
                                                                 </div>
                                                             </div>
@@ -203,68 +203,83 @@
                         </div>
                     </b-tab>
                     <b-tab title="Billing & Transactions">
-                        <div class="mt32 payment-info" v-if="planTransactions.length > 0">
-                            <div class="t-xl black">Initial Payment</div>
-                            <span class="t-m">Details of initial payment made for you plan.</span>
-                            <div class="mt24">
-                                <div class="row">
-                                    <div class="col-md-8 col-6">
-                                        <div class="brand-primary t-l">Channel Ad Plan</div>
-                                    </div>
-                                    <div class="col-md-4 col-6">
-                                        <div class="black text-right t-l">{{ clientAdPlan.WeeklyAmount | currency }} / week</div>
-                                    </div>
+                        <div class="row mt32">
+                            <div class="col-md-8" v-if="planTransactions.length > 0">
+                                <div class="col-md-12 border shadow-sm p24">
+                                    <div class="t-xl black">Initial Payment</div>
+                                    <span class="t-m">Details of initial payment made for you plan.</span>
+                                    <div class="mt24">
+                                        <div class="row">
+                                            <div class="col-md-8 col-6">
+                                                <div class="brand-primary t-l">Channel Ad Plan</div>
+                                            </div>
+                                            <div class="col-md-4 col-6">
+                                                <div class="black text-right t-l">{{ clientAdPlan.WeeklyAmount | currency }}</div>
+                                            </div>
 
-                                    <div class="col-md-8">
-                                        <div class="t-m">
-                                            Plan Length:
-                                            <span class="bold">{{ clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
+                                            <div class="col-md-8">
+                                                <div class="t-m">
+                                                    Plan Length:
+                                                    <span class="bold">{{ clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-between t-l mt48" v-if="clientAdPlan.Addons && clientAdPlan.Addons.length > 0">
-                                    <div>
-                                        <div>
-                                            <div class="brand-primary d-flex flex-column flex-lg-row align-items-lg-end">
-                                                <div>{{ clientAdPlan.Addons[0].Name }}</div>
-                                                <div class="ml-md-2">
-                                                    <span class="tag-sm">Add On</span>
+                                        <div class="d-flex justify-content-between t-l mt32" v-if="clientAdPlan.Addons && clientAdPlan.Addons.length > 0">
+                                            <div>
+                                                <div>
+                                                    <div class="brand-primary d-flex flex-column flex-lg-row align-items-lg-end">
+                                                        <div>{{ clientAdPlan.Addons[0].Name }}</div>
+                                                        <div class="ml-md-2">
+                                                            <span class="tag-sm">Add On</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="black">{{ clientAdPlan.AddonsAmount | currency }}</div>
+                                        </div>
+
+                                        <div class="dashed-line">
+                                            <div class="line"></div>
+                                        </div>
+
+                                        <div class="total ">
+                                            <div class="row mt32">
+                                                <div class="col-6 col-sm-6">
+                                                    <div class="t-l">Taxes</div>
+                                                </div>
+                                                <div class="col-6 col-sm-6 text-right">
+                                                    <div class="amount t-l black pull-right">{{ planTransactions[0].TaxAmount | currency }}</div>
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            <div class="row mt24">
+                                                <div class="col-6 col-sm-6">
+                                                    <h5 class="t-l black">Total Amount</h5>
+                                                </div>
+                                                <div class="col-6 col-sm-6 text-right">
+                                                    <h5 class="amount t-xl black pull-right">{{ planTransactions[0].TotalAmount | currency }}</h5>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="black">{{ clientAdPlan.AddonsAmount | currency }}</div>
                                 </div>
-
-                                <div class="dashed-line">
-                                    <div class="line"></div>
-                                </div>
-
-                                <div class="total mb32">
-                                    <div class="row mt32">
-                                        <div class="col-6 col-sm-6">
-                                            <div class="t-l">Taxes</div>
-                                        </div>
-                                        <div class="col-6 col-sm-6 text-right">
-                                            <div class="amount t-l black pull-right">{{ planTransactions[0].TaxAmount | currency }}</div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt32">
-                                        <div class="col-6 col-sm-6">
-                                            <h5 class="t-xl">Total Amount</h5>
-                                        </div>
-                                        <div class="col-6 col-sm-6 text-right">
-                                            <h5 class="amount t-xl black pull-right">{{ planTransactions[0].TotalAmount | currency }}</h5>
-                                        </div>
+                            </div>
+                            <div class="col-md-4 ">
+                                <div class="col-md-12 border shadow-sm p24 h-100">
+                                    <div class="t-xl black">Payment Method</div>
+                                    <span class="t-m">Payments for this plan are collected automatically on this card</span>
+                                    <div class="t-l black mt24 ">
+                                        <img class="mr16" :src="getImageUrl(clientAdPlan.PaymentMethod.Card.Vendor)" />
+                                        XXXX XXXX XXXX {{ clientAdPlan.PaymentMethod.Card.LastFour }}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <hr />
-                        <div class="table-wrapper" v-if="planTransactions.length > 0">
+
+                        <div class="table-wrapper mt32" v-if="planTransactions.length > 0">
                             <div class="t-xl black">Transactions</div>
                             <span class="t-m">Details of all the transactions for this plan</span>
-                            <Table :items="planTransactions" :headings="fields" :pagination="pagination" :sort.sync="sort" responsive table-class="mt16 table-responsive-xs table-responsive-stable-responsive-md">
+                            <Table :items="planTransactions" :headings="fields" :pagination="pagination" :sort.sync="sort" responsive table-class="mt16 table-light table-responsive-xs table-responsive-stable-responsive-md">
                                 <template v-slot:Status="data">
                                     <div class="bold" :class="data.value.Status.toLowerCase()">{{ data.value.Status }}</div>
                                 </template>
@@ -672,6 +687,9 @@ export default {
         forwardVideo(id) {
             let elem = document.getElementById(id);
             elem.currentTime = 2;
+        },
+        getImageUrl(vendor) {
+            return require('@/assets/images/cards/' + vendor.toUpperCase() + '.svg');
         },
         ...mapGetters(['getUser'])
     },

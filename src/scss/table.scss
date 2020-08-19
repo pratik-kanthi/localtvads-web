@@ -39,6 +39,41 @@ $default-content-padding: 5px;
             }
         }
 
+        &.table-light {
+            tbody {
+                tr {
+                    td {
+                        background-color: $white;
+                        padding: 0.25rem;
+                        padding: 24px 16px;
+                        border: none;
+                        border-top: $table-border-width solid #eee;
+                        border-bottom: $table-border-width solid #eee;
+
+                        &:last-child {
+                            border-right: $table-border-width solid #eee;
+                        }
+
+                        &:first-child {
+                            border-left: $table-border-width solid #eee;
+                        }
+                    }
+
+                    &:last-child {
+                        td {
+                            &:first-child {
+                                border-bottom-left-radius: $table-border-radius;
+                            }
+
+                            &:last-child {
+                                border-bottom-right-radius: $table-border-radius;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         &.table-hover {
             tbody {
                 tr:hover {
@@ -61,7 +96,7 @@ $default-content-padding: 5px;
                     text-transform: uppercase;
                     font-weight: $font-weight-bold;
 
-                    > div {
+                    >div {
                         display: inline-flex;
                         align-items: center;
                         justify-content: flex-start;
@@ -128,7 +163,7 @@ $default-content-padding: 5px;
             }
         }
 
-        > div {
+        >div {
             position: relative;
         }
 
@@ -351,7 +386,7 @@ $default-content-padding: 5px;
                         background-color: $light;
                     }
 
-                    .checkbox input:checked ~ .checkmark {
+                    .checkbox input:checked~.checkmark {
                         background-color: $light;
                     }
 
@@ -361,7 +396,7 @@ $default-content-padding: 5px;
                         display: none;
                     }
 
-                    .checkbox input:checked ~ .checkmark:after {
+                    .checkbox input:checked~.checkmark:after {
                         display: block;
                     }
 

@@ -21,7 +21,7 @@ export const paymentMixin = {
     },
     methods: {
         getImageUrl(vendor) {
-            return require('@/assets/images/cards/' + vendor + '.svg');
+            return require('@/assets/images/cards/' + vendor.toUpperCase() + '.svg');
         },
         generateToken() {
             this.$swal({

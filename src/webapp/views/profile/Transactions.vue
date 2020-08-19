@@ -5,32 +5,18 @@
             <h3 class="brand-secondary">Transactions</h3>
 
             <div class="table-wrapper">
-                <Table
-                    :items="transactions"
-                    :headings="fields"
-                    :pagination="pagination"
-                    :sort.sync="sort"
-                    responsive
-                    table-class="table-responsive-xs table-responsive-stable-responsive-md"
-                >
+                <Table :items="transactions" :headings="fields" :pagination="pagination" :sort.sync="sort" responsive table-class="table-responsive-xs table-responsive-stable-responsive-md">
                     <template v-slot:Status="data">
-                        <div
-                            class="bold"
-                            :class="data.value.Status.toLowerCase()"
-                        >{{ data.value.Status }}</div>
+                        <div class="bold" :class="data.value.Status.toLowerCase()">{{ data.value.Status }}</div>
                     </template>
                     <template v-slot:DateTime="data">
                         <div>{{ data.value.DateTime | formatDate('DD MMM YYYY') }}</div>
                     </template>
                     <template v-slot:TotalAmount="data">
-                        <div>{{ data.value.TotalAmount | currency }}</div>
+                        <div class="text-right">{{ data.value.TotalAmount | currency }}</div>
                     </template>
                     <template v-slot:Action="data">
-                        <div
-                            v-if="data.value.Status == 'SUCCEEDED'"
-                            class="brand-primary pointer"
-                            @click="downloadReceipt(data.value._id)"
-                        >Download Receipt</div>
+                        <div v-if="data.value.Status == 'SUCCEEDED'" class="brand-primary pointer" @click="downloadReceipt(data.value._id)">Download Receipt</div>
                     </template>
                 </Table>
             </div>
@@ -52,7 +38,7 @@ import TransactionService from '@/services/TransactionService';
 export default {
     name: 'Transactions',
     components: {
-        Table,
+        Table
     },
     data() {
         return {
@@ -60,36 +46,40 @@ export default {
             isLoadingMessage: '',
             fields: [
                 {
-                    key: 'DateTime',
-                    label: 'Transaction Date',
+                    key: 'ReceiptNo',
+                    field: 'Receipt Number'
                 },
                 {
-                    key: 'Status',
+                    key: 'DateTime',
+                    label: 'Transaction Date'
+                },
+                {
+                    key: 'Status'
                 },
                 {
                     key: 'TotalAmount',
-                    label: 'Total Amount',
+                    label: 'Total Amount'
                 },
                 {
                     key: 'ReferenceId',
-                    label: 'Reference ID',
+                    label: 'Reference ID'
                 },
                 {
                     key: 'Action',
-                    label: ' ',
-                },
+                    label: ' '
+                }
             ],
             transactions: [],
             perPage: 15,
             currentPage: 1,
             pagination: {
                 currentPage: 1,
-                perPage: 10,
+                perPage: 10
             },
             sort: {
                 name: 'Name',
-                value: 'asc',
-            },
+                value: 'asc'
+            }
         };
     },
     methods: {
@@ -103,7 +93,7 @@ export default {
             this.isLoading = false;
             this.isLoadingMessage = '';
         },
-        ...mapGetters(['getUser']),
+        ...mapGetters(['getUser'])
     },
     async created() {
         this.isLoading = true;
@@ -116,11 +106,11 @@ export default {
             this.$swal({
                 title: 'Error',
                 text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                type: 'error',
+                type: 'error'
             });
             console.error(err);
         }
-    },
+    }
 };
 </script>
 

@@ -1,26 +1,35 @@
 <template>
     <div>
-        <div class="d-flex align-items-center justify-content-center">
+        <div class="d-flex align-items-center justify-content-center pb32">
             <Stepper :steps="steps" :current="currentStep"></Stepper>
         </div>
-        <div v-if="false">
+        <div v-if="currentStep < 3" class="bg--grey">
             <div class="container">
-                <div class="row selected-booking-options p24">
+                <div class="row selected-booking-options pt24 pb24">
                     <div class="col-md-6 col-lg-6 booking-option">
                         <div class="brand-secondary">
-                            <i class="material-icons align-baseline pt8">live_tv</i>
-                            <span>Channel</span>
+                            <span>Selected Channel</span>
                         </div>
                         <div class="mt8 t-xl brand-primary">{{ channel.Name }}</div>
                     </div>
+
                     <div class="col-md-6 col-lg-4 booking-option">
-                        <div class="black">{{ getSelectedDays().join(',') }}</div>
+                        <div class="brand-secondary">
+                            <span>Selected Schedule</span>
+                        </div>
+                        <div class="mt8 t-xl brand-primary">{{ getSelectedDays().join(',') }}</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <component :is="currentStage" @advanceToPayment="goToPayment" @advanceToConfirmation="advanceToConfirmation" @advanceToUpload="goToUpload" @advanceToAddOns="goToAddOns"></component>
+        <component
+            :is="currentStage"
+            @advanceToPayment="goToPayment"
+            @advanceToConfirmation="advanceToConfirmation"
+            @advanceToUpload="goToUpload"
+            @advanceToAddOns="goToAddOns"
+        ></component>
         <LoaderModal :showloader="isLoading" :message="loaderMessage + '...'"></LoaderModal>
     </div>
 </template>
@@ -42,7 +51,7 @@ export default {
     name: 'BookingFlow',
     components: {
         Stepper,
-        WeekDays
+        WeekDays,
     },
     data() {
         return {
@@ -60,21 +69,21 @@ export default {
             steps: [
                 {
                     name: 'Create your plan',
-                    index: 1
+                    index: 1,
                 },
                 {
                     name: 'Choose Add On',
-                    index: 2
+                    index: 2,
                 },
                 {
                     name: 'Payment',
-                    index: 3
+                    index: 3,
                 },
                 {
                     name: 'Confirmation',
-                    index: 4
-                }
-            ]
+                    index: 4,
+                },
+            ],
         };
     },
     methods: {
@@ -103,7 +112,7 @@ export default {
                     this.$swal({
                         title: 'Error',
                         text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                        type: 'error'
+                        type: 'error',
                     });
                     console.error(err);
                 }
@@ -140,11 +149,11 @@ export default {
         },
         getSelectedDays() {
             let days = ['', ' Monday', ' Tuesday', ' Wednesday', ' Thursday', ' Friday', ' Saturday', ' Sunday'];
-            return this.daysSelected.map(day => {
+            return this.daysSelected.map((day) => {
                 return days[day];
             });
         },
-        ...mapGetters(['getIsVideoBeingUploaded'])
+        ...mapGetters(['getIsVideoBeingUploaded']),
     },
     async created() {
         try {
@@ -152,7 +161,7 @@ export default {
             setTimeout(() => $('.v-stepper__step__step').text(''));
             this.daysSelected = atob(this.$route.query.daysSelected)
                 .split(',')
-                .map(function(item) {
+                .map(function (item) {
                     return parseInt(item);
                 });
             this.clientAdPlan.Days = this.daysSelected;
@@ -163,7 +172,7 @@ export default {
             this.$swal({
                 title: 'Error',
                 text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                type: 'error'
+                type: 'error',
             });
         }
     },
@@ -173,27 +182,23 @@ export default {
     beforeDestroy() {
         window.removeEventListener('beforeunload', this.preventNav);
     },
-    beforeRouteLeave: function(to, from, next) {
+    beforeRouteLeave: function (to, from, next) {
         if (this.getIsVideoBeingUploaded()) {
             this.$swal({
                 title: 'Upload pending',
                 text: 'You have a pending upload, hence you will not be allowed to leave until upload finishes',
-                type: 'warning'
+                type: 'warning',
             });
             next(false);
         } else {
             next();
         }
-    }
+    },
 };
 </script>
 
 <style scoped lang="scss">
 .selected-booking-options {
-    background: $white;
-    box-shadow: 0 4px 8px -4px rgba(18, 18, 19, 0.2);
-    border-radius: 5px;
-
     .booking-option-name {
         font-size: 16px;
         @include media-breakpoint-up(md) {
