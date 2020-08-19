@@ -1,44 +1,47 @@
 <template>
     <div class="container">
-        <h3 class="mt64 page-heading">Step 2 : Choose AddOns</h3>
+        <h3 class="mt64 page-heading">Choose AddOns</h3>
         <div class="mt24 t-xl">Do you have your own ad as a video file? If not, our team of specialists will create one for you</div>
-        <div class="channel-plans-wrapper d-flex flex-column flex-md-row  mt32 justify-content-start">
-            <div class="channel-plan text-center mb-3 mb-md-0" :class="!isAddOn ? 'active' : ''" @click="setAddon(false)">
-                <span>I have my own ad.</span>
+        <div class="addon-options-wrapper d-flex mt24">
+            <div class="addon-option mt24 rounded" :class="!isAddOn ? 'active' : ''" @click="setAddon(false)">
+                <span class="black">I have my own ad.</span>
             </div>
-            <div class="channel-plan text-center" :class="isAddOn ? 'active' : ''" @click="setAddon(true)">
-                <span>I don't have an ad</span>
+            <div class="addon-option mt24 rounded" :class="isAddOn ? 'active' : ''" @click="setAddon(true)">
+                <span class="black">I don't have an ad</span>
             </div>
         </div>
-        <div v-if="isAddOn">
-            <h4 class="brand-secondary mt64 mb48">Select Your Add On</h4>
 
-            <div class="addons-wrapper mb24">
-                <div class="addon-container" v-for="addon in addons" :key="addon._key">
-                    <div class="addon" :class="{ 'active-addon': $parent.clientAdPlan.Addons[0]._id === addon._id }">
-                        <div class="name">
-                            <h5>{{ addon.Name }}</h5>
-                            <p class="desc">{{ addon.Description }}</p>
-                        </div>
-                        <div class="price">
-                            <p class="lead brand-primary mb0">Now for just</p>
-                            <h4 class="amount">{{ addon.Amount | currency }}</h4>
-                        </div>
-                        <div class="benefits">
-                            <ul class="mb8">
-                                <li v-for="benefit in addon.Benefits" :key="benefit">{{ benefit }}</li>
-                            </ul>
-                        </div>
-                        <div class="selectaddon">
-                            <button class="btn btn-secondary btn-full" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.clientAdPlan.Addons[0]._id === addon._id }">
-                                <span v-if="$parent.clientAdPlan.Addons[0]._id === addon._id">Selected</span>
-                                <span v-else>Choose this Addon</span>
-                            </button>
+        <transition name="addon">
+            <div v-if="isAddOn">
+                <h4 class="brand-secondary mt64 mb48">Select Your Add On</h4>
+
+                <div class="addons-wrapper mb24">
+                    <div class="addon-container" v-for="addon in addons" :key="addon._id">
+                        <div class="addon" :class="{ 'active-addon': $parent.clientAdPlan.Addons[0]._id === addon._id }">
+                            <div class="name">
+                                <h5>{{ addon.Name }}</h5>
+                                <p class="desc">{{ addon.Description }}</p>
+                            </div>
+                            <div class="price">
+                                <p class="lead brand-primary mb0">Now for just</p>
+                                <h4 class="amount">{{ addon.Amount | currency }}</h4>
+                            </div>
+                            <div class="benefits">
+                                <ul class="mb8">
+                                    <li v-for="benefit in addon.Benefits" :key="benefit">{{ benefit }}</li>
+                                </ul>
+                            </div>
+                            <div class="selectaddon">
+                                <button class="btn btn-primary-small" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.clientAdPlan.Addons[0]._id === addon._id }">
+                                    <span v-if="$parent.clientAdPlan.Addons[0]._id === addon._id">Selected</span>
+                                    <span v-else>Choose this Addon</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </transition>
 
         <div class="action mt80 mb64 d-flex justify-content-center">
             <button class="btn btn-white w-25 border" @click="cancel">Cancel</button>
@@ -56,16 +59,19 @@ export default {
     data() {
         return {
             addons: [],
-            isAddOn: false
+            isAddOn: false,
+            activeToggle: 'IsAd'
         };
     },
     methods: {
         setAddon(value) {
             this.isAddOn = value;
             if (this.isAddOn) {
+                this.activeToggle = 'IsAddon';
                 this.$parent.clientAdPlan.Addons = [this.addons[0]];
                 this.$parent.clientAdPlan.AddonsAmount = this.addons[0].Amount;
             } else {
+                this.activeToggle = 'IsAd';
                 this.$parent.clientAdPlan.Addons = [];
                 this.$parent.clientAdPlan.AddonsAmount = 0;
             }
@@ -114,28 +120,37 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.channel-plans-wrapper {
-    .channel-plan {
-        padding: 8px 48px;
+.addon-options-wrapper {
+    .addon-option {
+        padding: 32px;
         border: 1px solid #eee;
         margin-right: 8px;
         font-size: 16px;
         cursor: pointer;
         &.active {
-            color: $brand-primary;
-            border: 1px solid $brand-primary;
+            background: #ff65000d;
+            border: 1px solid #fbd8b4;
         }
 
         @include media-breakpoint-up(md) {
-            margin-right: 16px;
-            padding: 8px 64px;
+            padding: 32px;
             font-size: 24px;
         }
     }
 }
+
+.addon-enter-active,
+.addon-leave-active {
+    transition: all 1s;
+}
+.addon-enter, .addon-leave-to /* .list-leave-active below version 2.1.8 */ {
+    opacity: 0;
+    transform: translateY(30px);
+}
 .addons-wrapper {
     display: flex;
     overflow-x: auto;
+
     .addon-container {
         min-width: 280px;
         margin: 8px;
@@ -149,7 +164,7 @@ export default {
             text-align: center;
             &.active-addon {
                 box-shadow: 0 0 8px 0 rgba(255, 101, 0, 0.5);
-                border: 1px solid $brand-primary;
+                border: 1px solid #fbd8b4;
             }
             .name {
                 padding: 12px 16px;

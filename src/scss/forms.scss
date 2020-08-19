@@ -3,6 +3,7 @@ select,
 textarea {
     font-family: $font-family-heading;
 }
+
 input[type='text'],
 input[type='email'],
 textarea,
@@ -17,6 +18,7 @@ input[type='password'] {
     line-height: 19px;
     font-size: 16px;
     position: relative;
+
     label {
         float: left;
         margin-left: 12px;
@@ -26,6 +28,7 @@ input[type='password'] {
             font-size: 14px;
         }
     }
+
     .form-control {
         width: 100%;
         height: 48px;
@@ -34,9 +37,11 @@ input[type='password'] {
         box-shadow: none;
         -webkit-appearance: none;
         color: $base;
+
         &:focus {
             outline: none;
         }
+
         &::-webkit-input-placeholder {
             /* Chrome/Opera/Safari */
             text-transform: capitalize;
@@ -44,6 +49,7 @@ input[type='password'] {
             font-family: $font-family-heading !important;
             font-weight: 400;
         }
+
         &::-moz-placeholder {
             /* Firefox 19+ */
             color: lighten($body-text, 15%);
@@ -51,6 +57,7 @@ input[type='password'] {
             font-family: $font-family-heading !important;
             font-weight: 400;
         }
+
         &:-ms-input-placeholder {
             /* IE 10+ */
             color: lighten($body-text, 15%);
@@ -58,6 +65,7 @@ input[type='password'] {
             font-family: $font-family-heading !important;
             font-weight: 400;
         }
+
         &:-moz-placeholder {
             /* Firefox 18- */
             color: lighten($body-text, 15%);
@@ -65,9 +73,11 @@ input[type='password'] {
             font-family: $font-family-heading !important;
             font-weight: 400;
         }
+
         &.no-border {
             border: none;
         }
+
         &.datepicker {
             background-image: url('../assets/images/datepicker.svg');
             background-repeat: no-repeat;
@@ -82,15 +92,18 @@ input[type='password'] {
             font-size: 16px;
         }
     }
+
     textarea {
         width: 100%;
         height: 150px !important;
         font-family: $font-family-body;
         resize: none;
+
         &:focus {
             border-color: $light-grey;
         }
     }
+
     select {
         height: 48px;
         width: 100%;
@@ -108,9 +121,11 @@ input[type='password'] {
         background-position: right 13px center;
         box-shadow: none;
         -webkit-appearance: none;
+
         &:focus {
             outline: none;
         }
+
         option {
             color: $base !important;
             // &:first {
@@ -123,8 +138,10 @@ input[type='password'] {
         }
     }
 }
+
 input[type='file'] {
     background: transparent;
+
     &:before {
         padding: 0 10px !important;
     }
@@ -136,10 +153,12 @@ input[type='file'] {
     margin-top: 4px;
     margin-bottom: 10px;
     height: 40px;
+
     &::-webkit-file-upload-button {
         visibility: hidden !important;
         -webkit-appearance: none;
     }
+
     &::before {
         content: 'Choose File';
         display: inline-block;
@@ -156,12 +175,14 @@ input[type='file'] {
         font-size: 11px;
         outline: 0 !important;
     }
+
     &:hover {
         &::before {
             border-color: $black;
         }
     }
 }
+
 .radio-btn-dot {
     position: relative;
     display: inline-block;
@@ -169,6 +190,7 @@ input[type='file'] {
     height: 20px;
     left: 0;
     top: 0;
+
     label {
         &:after {
             width: 20px;
@@ -187,13 +209,16 @@ input[type='file'] {
             transition: all 200ms ease-in;
         }
     }
-    input:checked ~ label {
+
+    input:checked~label {
         color: #fff;
+
         &:after {
             border-color: #1b6ed0;
             background-image: url('../assets/images/dot.svg');
         }
     }
+
     input {
         width: 20px;
         height: 20px;
@@ -205,6 +230,7 @@ input[type='file'] {
         visibility: hidden;
     }
 }
+
 .radio-btn-tick {
     position: relative;
     display: inline-block;
@@ -212,32 +238,37 @@ input[type='file'] {
     height: 20px;
     left: 0;
     top: 0;
+
     label {
         &:after {
-            width: 20px;
-            height: 20px;
+            width: 14px;
+            height: 14px;
             content: '';
             border: 2px solid #9b9b9b;
             background-color: #fff;
             background-repeat: no-repeat;
-            background-position: 1px 3px;
+            background-position: 0px 2px;
+            background-size: contain;
             border-radius: 50%;
             z-index: 0;
             position: absolute;
             left: 0;
-            top: 0;
+            top: 4px;
             cursor: pointer;
             transition: all 200ms ease-in;
         }
     }
-    input:checked ~ label {
+
+    input:checked~label {
         color: #fff;
+
         &:after {
             background-color: $brand-primary;
             border-color: $brand-primary;
             background-image: url('../assets/images/check.svg');
         }
     }
+
     input {
         width: 20px;
         height: 20px;
@@ -257,6 +288,7 @@ input[type='file'] {
     height: 20px;
     left: 0;
     top: 0;
+
     label {
         &:after {
             width: 20px;
@@ -275,6 +307,7 @@ input[type='file'] {
             transition: all 200ms ease-in;
         }
     }
+
     input {
         width: 20px;
         height: 20px;

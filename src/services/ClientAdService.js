@@ -72,4 +72,15 @@ export default class ClientAdService extends BaseService {
             }
         });
     }
+
+    static createSubscription(plan) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let _res = await post('api/:clientid/createplan', plan);
+                resolve(_res.data);
+            } catch (err) {
+                return reject(err);
+            }
+        });
+    }
 }

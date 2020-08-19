@@ -1,24 +1,26 @@
 <template>
     <div>
-        <Stepper :steps="steps" :current="currentStep"></Stepper>
-        <div v-if="currentStep != 4" class="bg--grey mt32 pt16 pb16">
+        <div class="d-flex align-items-center justify-content-center">
+            <Stepper :steps="steps" :current="currentStep"></Stepper>
+        </div>
+        <div v-if="false">
             <div class="container">
-                <div class="row selected-booking-options">
+                <div class="row selected-booking-options p24">
                     <div class="col-md-6 col-lg-6 booking-option">
-                        <div class="booking-option-name brand-primary">Selected Channel</div>
-                        <div class="t-l">{{ channel.Name }}</div>
+                        <div class="brand-secondary">
+                            <i class="material-icons align-baseline pt8">live_tv</i>
+                            <span>Channel</span>
+                        </div>
+                        <div class="mt8 t-xl brand-primary">{{ channel.Name }}</div>
                     </div>
                     <div class="col-md-6 col-lg-4 booking-option">
-                        <div class="booking-option-name brand-primary">Selected Days</div>
-                        <div class="t-l">{{ getSelectedDays().join(',') }}</div>
+                        <div class="black">{{ getSelectedDays().join(',') }}</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div>
-            <component :is="currentStage" @advanceToPayment="goToPayment" @advanceToConfirmation="advanceToConfirmation" @advanceToUpload="goToUpload" @advanceToAddOns="goToAddOns"></component>
-        </div>
+        <component :is="currentStage" @advanceToPayment="goToPayment" @advanceToConfirmation="advanceToConfirmation" @advanceToUpload="goToUpload" @advanceToAddOns="goToAddOns"></component>
         <LoaderModal :showloader="isLoading" :message="loaderMessage + '...'"></LoaderModal>
     </div>
 </template>
@@ -188,6 +190,10 @@ export default {
 
 <style scoped lang="scss">
 .selected-booking-options {
+    background: $white;
+    box-shadow: 0 4px 8px -4px rgba(18, 18, 19, 0.2);
+    border-radius: 5px;
+
     .booking-option-name {
         font-size: 16px;
         @include media-breakpoint-up(md) {

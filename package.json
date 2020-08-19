@@ -88,7 +88,7 @@
         "semi": true,
         "tabWidth": 4,
         "singleQuote": true,
-        "printWidth": 800,
+        "printWidth": 1200,
         "jsxBracketSameLine": true
     },
     "postcss": {

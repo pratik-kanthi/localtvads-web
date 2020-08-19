@@ -1,167 +1,150 @@
 <template>
     <div class="container">
-        <div v-if="!paymentLoading">
+        <div>
             <div v-if="isLoggedIn" class="payment-wrapper">
                 <h3 class="mt64 brand-secondary">Step 3 : Payment</h3>
+                <div class="row mt24">
+                    <div class="col-md-8">
+                        <div class="t-xl black">Billing Information</div>
+                        <div class="method-wrapper mt16">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="t-m">Business Name</label>
+                                        <input v-model="name" class="form-control input-small" type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="t-m">VAT Number</label>
+                                        <input v-model="vat" class="form-control input-small" type="text" />
+                                    </div>
+                                </div>
+                            </div>
 
-                <div class="row mt48">
-                    <div class="col-md-8" role="tablist">
-                        <b-card no-body class="mb-1 w-100">
-                            <b-card-header header-tag="header" block v-b-toggle.accordion-1 class="pointer brand-primary-bg p16" role="tab">
-                                <div class="t-l white">Your Billing Information</div>
-                            </b-card-header>
-                            <b-collapse id="accordion-1" :visible="billingTabStatus" accordion="my-accordion" role="tabpanel">
-                                <div class="business-info booking-details">
-                                    <div class="t-l black">Please provide the following information</div>
+                            <div class="t-m black">Billing Address</div>
+                            <div class="form-groupm mt16">
+                                <AddressFinder :address.sync="address" :google="google"></AddressFinder>
+                                <div v-if="address">
                                     <div class="row">
-                                        <div class="col-md-6 mt24">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="t-m">Business Name</label>
-                                                <input v-model="name" class="form-control input-small" type="text" />
+                                                <label for="line1">Line1</label>
+                                                <input type="text" id="line1" v-model="address.Line1" class="form-control input-small" />
                                             </div>
                                         </div>
-                                        <div class="col-md-6 mt24">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="t-m">VAT Number</label>
-                                                <input v-model="vat" class="form-control input-small" type="text" />
+                                                <label for="line1">Line2</label>
+                                                <input type="text" id="line1" v-model="address.Line2" class="form-control input-small" />
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="t-m black">Billing Address</div>
-                                    <div class="form-groupm mt16">
-                                        <AddressFinder :address.sync="address" :google="google"></AddressFinder>
-                                        <div v-if="address">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="line1">Line1</label>
-                                                        <input type="text" id="line1" v-model="address.Line1" class="form-control input-small" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="line1">Line2</label>
-                                                        <input type="text" id="line1" v-model="address.Line2" class="form-control input-small" />
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="town">Town/City</label>
-                                                        <input type="text" id="town" v-model="address.TownCity" class="form-control input-small" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="postcode">PostCode</label>
-                                                        <input type="text" id="postcode" v-model="address.PostCode" class="form-control input-small" />
-                                                    </div>
-                                                </div>
-                                            </div>
-
+                                    <div class="row">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="country">Country</label>
-                                                <input type="text" id="country" v-model="address.Country" class="form-control input-small" />
+                                                <label for="town">Town/City</label>
+                                                <input type="text" id="town" v-model="address.TownCity" class="form-control input-small" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="postcode">PostCode</label>
+                                                <input type="text" id="postcode" v-model="address.PostCode" class="form-control input-small" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="country">Country</label>
+                                        <input type="text" id="country" v-model="address.Country" class="form-control input-small" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="t-xl black mt24">Select a Payment Method</div>
+                        <div class="cards-wrapper">
+                            <div class="method-wrapper saved-cards mt16" v-if="savedCards.length > 0">
+                                <div class="cards" :class="{ 'selection-card-option': activeToggle == 'SavedCards' }">
+                                    <div class="method-title" @click="togglePaymentOptions('SavedCards')" :class="{ active: activeToggle === 'SavedCards' }">
+                                        <div class="radio-btn-tick mr8">
+                                            <input type="radio" v-model="activeToggle" value="SavedCards" />
+                                            <label></label>
+                                        </div>
+                                        <span class="t-l black">Your Saved Cards</span>
+                                    </div>
+                                    <div v-show="activeToggle == 'SavedCards'" v-for="(card, key) in savedCards" :key="key" class="p16 card-info mt16" :class="{ active: existingCard === card._id }" @click="selectExistingCard(card._id)">
+                                        <div class="d-flex">
+                                            <div class="radio-btn-tick mr8">
+                                                <input type="radio" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'" />
+                                                <label></label>
                                             </div>
 
-                                            <div class="form-group">
-                                                <button @click="showPaymentMethods" :disabled="!this.address || !this.name || !this.vat" class="btn btn-primary-small">Proceed</button>
+                                            <div class="w-100 d-flex justify-content-between">
+                                                <div class="d-flex">
+                                                    <img :src="getImageUrl(card.Card.Vendor)" alt />
+                                                    <div class="card-number">xxxx xxxx xxxx {{ card.Card.LastFour }}</div>
+                                                </div>
+                                                <div class="card-number black">{{ card.Card.Name }}</div>
+                                                <div class="card-number black">{{ card.Card.ExpiryMonth }} / {{ card.Card.ExpiryYear }}</div>
+                                            </div>
+                                        </div>
+                                        <p class="red t-s mt0 mb0">{{ card._error }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="method-wrapper mt16" :class="{ 'selection-card-option': activeToggle == 'NewCard' }">
+                                <div class="method-title" @click="togglePaymentOptions('NewCard')" :class="{ active: activeToggle === 'NewCard' }">
+                                    <div class="radio-btn-tick mr8">
+                                        <input type="radio" v-model="activeToggle" value="NewCard" />
+                                        <label></label>
+                                    </div>
+                                    <span class="t-l black">Credit or Debit Card</span>
+                                    <!--div v-show="activeToggle == 'NewCard'" class="mt16 form-control" ref="card"></div-->
+                                    <div v-show="activeToggle == 'NewCard'" class="mt16">
+                                        <div class="form-group">
+                                            <div class="form-control" ref="cardNumber"></div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" />
+                                        </div>
+
+                                        <div class="row mt16">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <div class="form-control" ref="cardExpiry"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <div class="form-control" ref="cardCvc"></div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </b-collapse>
-                        </b-card>
+                            </div>
+                        </div>
 
-                        <b-card no-body class="mb-1">
-                            <b-card-header header-tag="header" block v-b-toggle.accordion-2 class="pointer brand-primary-bg p16" role="tab">
-                                <div class="t-l white">Payment Method</div>
-                            </b-card-header>
-                            <b-collapse id="accordion-2" :visible="paymentTabStatus" accordion="my-accordion" role="tabpanel">
-                                <div class="row mt48">
-                                    <div class="col-lg mt-xs16">
-                                        <div class="cards-wrapper">
-                                            <div class="saved-cards" v-if="savedCards.length > 0">
-                                                <div class="cards">
-                                                    <div class="card-title" @click="togglePaymentOptions('SavedCards')" :class="{ active: activeToggle === 'SavedCards' }">
-                                                        <div class="radio-btn-dot mr8">
-                                                            <input type="radio" v-model="activeToggle" value="SavedCards" />
-                                                            <label></label>
-                                                        </div>
-                                                        <span>Your saved cards</span>
-                                                    </div>
-                                                    <div v-for="(card, key) in savedCards" :key="key" class="card-info" :class="{ active: existingCard === card._id }" @click="selectExistingCard(card._id)">
-                                                        <div class="radio-btn-tick mr8">
-                                                            <input type="radio" v-model="existingCard" :value="card._id" :disabled="activeToggle !== 'SavedCards'" />
-                                                            <label></label>
-                                                        </div>
-                                                        <img :src="getImageUrl(card.Card.Vendor)" alt />
-                                                        <span class="card-number">xxxx xxxx xxxx {{ card.Card.LastFour }}</span>
-                                                        <p class="red t-s mt0 mb0">{{ card._error }}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="new-card">
-                                                <form ref="form" class="p0">
-                                                    <div class="card-title" @click="togglePaymentOptions('NewCard')" :class="{ active: activeToggle === 'NewCard' }">
-                                                        <div class="radio-btn-dot mr8">
-                                                            <input type="radio" v-model="activeToggle" value="NewCard" />
-                                                            <label></label>
-                                                        </div>
-                                                        <span>New credit and debit card</span>
-                                                    </div>
-                                                    <div class="hidden-container"></div>
-                                                    <div class="form-group">
-                                                        <label class="mb8">Card Number</label>
-                                                        <div class="input-card-number">
-                                                            <input name="number" type="tel" class="form-control" v-model="cardNumber" :disabled="activeToggle !== 'NewCard'" />
-                                                            <img :src="getCardType" alt class="pull-right" />
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for class="mb8">Cardholder Name</label>
-                                                        <input name="name" type="text" class="form-control" v-model="name" autocomplete="off" :disabled="activeToggle !== 'NewCard'" />
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-sm-6">
-                                                            <div class="form-group">
-                                                                <label class="mb8">Expiry Date</label>
-                                                                <input name="expiry" type="tel" class="form-control" v-model="expiry" placeholder="••/••••" :disabled="activeToggle !== 'NewCard'" />
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                            <div class="form-group">
-                                                                <label class="mb8">CVV</label>
-                                                                <input name="cvc" type="password" class="form-control" v-model="cvv" :disabled="activeToggle !== 'NewCard'" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <p class="red t-s mb0">{{ newCardError }}</p>
-                                                    <!-- <div class="consents">
-                                        <input type="checkbox" id="save" class="check" v-model="save" :disabled="activeToggle !== 'NewCard'" />
-                                        <label for="save" class="check-label box mt8 mr8">
-                                            <span></span>
-                                        </label>
-                                        <span class="brand-primary medium">Save Card</span>
-                                    </div>-->
-                                                </form>
-                                            </div>
-                                            <p class="mt16 mb16">I have read and accept the terms of use,rules of Local TV Ads and privacy policy</p>
-                                            <button type="button" class="btn btn-success btn-full" :disabled="!isProceedable || !existingCard || !vat || !name" @click="generateToken">Pay Now</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </b-collapse>
-                        </b-card>
+                        <div class="row mt24">
+                            <div class="col-md-6">
+                                <button @click="payStripe" :disabled="!isCardValid" class="btn btn-success btn-icon form-control">
+                                    <i class="material-icons">lock</i>
+                                    Confirm Payment of
+                                    <strong>{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</strong>
+                                </button>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="col-md-4">
                         <div class="booking-details">
                             <h6 class="t-l medium text-center brand-secondary">Booking Receipt</h6>
                             <hr class="mb24" />
-
                             <div class="row plan-items">
                                 <div class="col-md-8 col-6">
                                     <div class="brand-primary t-l">Channel Ad Plan</div>
@@ -179,7 +162,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="col-md-8">
                                     <div class="t-m">
                                         Plan Length:
@@ -192,7 +174,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="d-flex justify-content-between t-l mt48" v-if="$parent.clientAdPlan.Addons && $parent.clientAdPlan.Addons.length > 0">
                                 <div>
                                     <div>
@@ -252,7 +233,7 @@
                                 </div>
                             </div>
                             <div class="t-s mt16 mb0">Note: Total payable includes first week's charge plus any addons if selected.</div>
-                            <div class="t-s  mb0">Note: You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing.</div>
+                            <div class="t-s mb0">Note: You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing.</div>
                         </div>
                     </div>
                 </div>
@@ -261,7 +242,7 @@
                 <h3 class="section-title-2 mb8 text-center">Please login to continue with your booking.</h3>
             </div>
         </div>
-        <div class="mt16 transaction-message" v-else>
+        <div class="mt16 transaction-message">
             <p>Your transaction is being processed...</p>
             <p class="bold">Please do not click back or refresh</p>
         </div>
@@ -271,6 +252,7 @@
 <script>
 import instance from '@/api';
 import TaxService from '@/services/TaxService';
+import ClientAdService from '@/services/ClientAdService';
 import { paymentMixin } from '@/mixins/payment';
 import Address from '@/models/Address';
 import AddressFinder from '@/e9_components/components/AddressFinder';
@@ -292,7 +274,11 @@ export default {
             address: new Address(),
             google: window.google,
             paymentTabStatus: false,
-            billingTabStatus: true
+            billingTabStatus: true,
+            cardTabStatus: false,
+            isCardValid: true,
+            elements: stripe.elements(),
+            cardElement: null
         };
     },
     methods: {
@@ -310,7 +296,6 @@ export default {
                 this.$parent.isLoading = true;
                 let result = await instance.get('api/client/cards?client=' + this.$store.state.user.Owner._id);
                 this.savedCards = result.data;
-
                 if (this.savedCards.length > 0 && !this.activeToggle) {
                     this.activeToggle = 'SavedCards';
                     this.existingCard = this.savedCards.find(s => s.IsPreferred)._id;
@@ -329,61 +314,32 @@ export default {
                 console.error(err);
             }
         },
-        async payNow(token, client) {
-            let obj = {
-                save: this.save,
-                clientAdPlan: {
-                    Client: client,
-                    Name: this.name,
-                    VAT: this.vat,
-                    Channel: this.$parent.clientAdPlan.Channel,
-                    Days: this.$parent.clientAdPlan.Days,
-                    ChannelProduct: this.$parent.clientAdPlan.ChannelProduct._id,
-                    ChannelSlots: this.$parent.clientAdPlan.ChannelProduct.ChannelSlots.map(function(item) {
-                        return item.Slot._id;
-                    }),
-                    Addons: this.$parent.clientAdPlan.Addons && this.$parent.clientAdPlan.Addons.length > 0 ? [this.$parent.clientAdPlan.Addons[0]._id] : [],
-                    BillingAddress: this.address
-                },
-                cardId: this.existingCard,
-                token: token
-            };
-            let result;
+        async payStripe() {
             try {
-                result = await instance.post('api/clientad/new', obj);
-                this.$swal({
-                    title: 'Successful',
-                    text: 'Payment has been successful.',
-                    type: 'success'
+                const paymentMethod = await stripe.createPaymentMethod({
+                    type: 'card',
+                    card: this.cardElement
                 });
-                this.$parent.transaction = result.data;
+
+                let obj = {
+                    clientAdPlan: {
+                        Client: this.$store.state.user.Owner._id,
+                        Name: this.name,
+                        VAT: this.vat,
+                        Channel: this.$parent.clientAdPlan.Channel,
+                        Days: this.$parent.clientAdPlan.Days,
+                        ChannelProduct: this.$parent.clientAdPlan.ChannelProduct._id,
+                        ChannelSlots: this.$parent.clientAdPlan.ChannelProduct.ChannelSlots.map(function(item) {
+                            return item.Slot._id;
+                        }),
+                        Addons: this.$parent.clientAdPlan.Addons && this.$parent.clientAdPlan.Addons.length > 0 ? [this.$parent.clientAdPlan.Addons[0]._id] : [],
+                        BillingAddress: this.address
+                    },
+                    paymentMethod: paymentMethod
+                };
+                await ClientAdService.createSubscription(obj);
                 this.$emit('advanceToConfirmation');
             } catch (err) {
-                this.paymentLoading = false;
-                if (err.status == 402) {
-                    if (this.existingCard) {
-                        this.newCardError = '';
-                        for (let i = 0, len = this.savedCards.length; i < len; i++) {
-                            if (this.savedCards[i]._id == this.existingCard) {
-                                this.savedCards[i]._error = err.data;
-                            } else {
-                                this.savedCards[i]._error = '';
-                            }
-                        }
-                    } else {
-                        this.newCardError = err.data;
-                    }
-                    this.$swal({
-                        title: 'Payment Error',
-                        text: err.error,
-                        type: 'error'
-                    });
-                } else
-                    this.$swal({
-                        title: 'Error',
-                        text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                        type: 'error'
-                    });
                 console.error(err);
             }
         },
@@ -400,7 +356,6 @@ export default {
         togglePaymentOptions(option) {
             if (option === 'SavedCards' && this.savedCards.length > 0) {
                 this.activeToggle = option;
-                this.existingCard = this.savedCards.find(s => s.IsPreferred)._id;
             } else {
                 this.existingCard = null;
                 this.activeToggle = option;
@@ -412,6 +367,56 @@ export default {
         isProceedable() {
             return this.address.PostCode ? true : false;
         }
+    },
+    mounted() {
+        let fontSource = {
+            family: 'azo-sans-web',
+            src: 'url(https://use.typekit.net/xrc3emd.css)',
+            weight: '500'
+        };
+
+        let style = {
+            base: {
+                color: '#',
+                fontFamily: '"azo-sans-web", sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '18px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                },
+                border: '1px solid #646464'
+            },
+            invalid: {
+                color: '#ff65000',
+                iconColor: '#fa755a'
+            }
+        };
+
+        let cardNumberElement = this.elements.create('cardNumber', {
+            showIcon: true,
+            iconStyle: 'solid',
+            placeholder: 'Credit/Debit Card Number',
+            style: style,
+            CustomFontSource: fontSource
+        });
+
+        this.cardElement = cardNumberElement;
+
+        let cardExpiryElement = this.elements.create('cardExpiry', {
+            style: style,
+            CustomFontSource: fontSource
+        });
+        let cardCvcElement = this.elements.create('cardCvc', {
+            style: style,
+            CustomFontSource: fontSource
+        });
+
+        cardNumberElement.mount(this.$refs.cardNumber);
+        cardExpiryElement.mount(this.$refs.cardExpiry);
+        cardCvcElement.mount(this.$refs.cardCvc);
+    },
+    destroyed() {
+        this.cardElement.destroy();
     },
     async created() {
         window.scrollTo(0, 0);
@@ -604,21 +609,19 @@ export default {
         }
     }
 
-    .cards-wrapper {
-        background-color: $white;
-        border-radius: 8px;
+    .method-wrapper {
         padding: 24px;
-        height: 100%;
-        border: solid 1.4px #cecece;
+        border: 1px solid #b7b7b7bf;
+        border-radius: 6px;
+    }
 
+    .cards-wrapper {
         .saved-cards {
-            border: 1px solid #4a90e2;
             border-radius: 6px;
-            padding: 16px;
             margin-bottom: 8px;
 
             .cards {
-                max-height: 158px;
+                max-height: 300px;
                 overflow-y: auto;
                 overflow-x: hidden;
 
@@ -626,24 +629,16 @@ export default {
                     margin-left: 1px;
                 }
 
-                .card-title {
-                    margin-bottom: 20px;
+                .method-title {
+                    margin-bottom: 0px;
                     cursor: pointer;
 
                     .radio-btn-dot {
                         top: 2px;
                     }
-
-                    span {
-                        font-family: $font-family-heading;
-                        font-size: 16px;
-                        font-weight: 500;
-                        color: rgba(0, 0, 0, 0.87);
-                    }
                 }
 
                 .card-info {
-                    margin-bottom: 24px;
                     opacity: 0.5;
                     border-radius: 6px;
                     cursor: pointer;
@@ -658,92 +653,20 @@ export default {
                     }
 
                     img {
-                        width: 56px;
+                        width: 32px;
                         margin-right: 16px;
                     }
 
                     &.active {
                         opacity: 1;
+                        background: #fcf5ee;
+                        border: 1px solid #fbd8b4;
 
                         span {
                             font-weight: 600;
                         }
                     }
                 }
-            }
-        }
-
-        .new-card {
-            border: 1px solid #4a90e2;
-            padding: 16px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-
-            form {
-                padding: 16px 0;
-
-                .card-title {
-                    margin-bottom: 20px;
-                    cursor: pointer;
-
-                    .radio-btn-dot {
-                        top: 2px;
-                    }
-
-                    span {
-                        font-family: $font-family-heading;
-                        font-size: 16px;
-                        font-weight: 500;
-                        color: rgba(0, 0, 0, 0.87);
-                    }
-                }
-
-                label {
-                    font-size: 14px;
-                    font-weight: 300;
-                }
-
-                .consents {
-                    position: relative;
-
-                    i {
-                        position: relative;
-                        top: 3px;
-                        left: 6px;
-                        font-size: 18px;
-                        color: $brand-primary;
-                        cursor: pointer;
-                    }
-
-                    .tooltip-info {
-                        width: 250px;
-                        position: absolute;
-                        left: 126px;
-                        top: -80px;
-                        border-radius: 6px;
-                        background: #fff;
-                        padding: 8px 12px;
-                        box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
-                    }
-                }
-            }
-
-            .input-card-number {
-                width: 100%;
-                position: relative;
-
-                img {
-                    position: absolute;
-                    right: 10px;
-                    width: 40px;
-                    top: 36px;
-                    overflow: auto;
-                    z-index: 2 !important;
-                }
-            }
-
-            .hidden-container {
-                display: none;
             }
         }
     }
