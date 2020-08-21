@@ -161,6 +161,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-3 mt16 document-box" v-for="(doc, key) in documents" :key="key">
+                                                                <i class="image-delete-icon material-icons" @click="removeAddonResource(doc._id)">delete</i>
                                                                 <div class="border p24 d-flex justify-content-start align-items-center">
                                                                     <div>
                                                                         <i class="material-icons t-xxl">insert_drive_file</i>
@@ -773,6 +774,19 @@ export default {
 
 .document-box {
     height: 80px;
+    .image-delete-icon {
+        z-index: 1;
+        position: absolute;
+        right: 20px;
+        cursor: pointer;
+        top: 8px;
+        display: none;
+    }
+    &:hover {
+        .image-delete-icon {
+            display: block;
+        }
+    }
 }
 
 .image-box {

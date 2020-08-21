@@ -31,7 +31,7 @@
                                 </ul>
                             </div>
                             <div class="selectaddon">
-                                <button class="btn btn-full btn-primary" @click="selectAddon(addon)" :class="{ 'btn-secondary': $parent.clientAdPlan.Addons[0]._id === addon._id }">
+                                <button class="btn btn-full btn-secondary" @click="selectAddon(addon)" :class="{ 'btn-selected': $parent.clientAdPlan.Addons[0]._id === addon._id }">
                                     <span v-if="$parent.clientAdPlan.Addons[0]._id === addon._id">Selected</span>
                                     <span v-else>Choose this Addon</span>
                                 </button>

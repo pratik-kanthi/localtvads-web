@@ -20,7 +20,7 @@
         </div>
         <div class="footer">
             <button class="btn btn-secondary-small" @click="close">Cancel</button>
-            <button :disabled="!sdocName" class="btn btn-primary-small ml16 float-right" @click="uploadDocument">Confirm</button>
+            <button :disabled="!docName" class="btn btn-primary-small ml16 float-right" @click="uploadDocument">Confirm</button>
         </div>
     </b-modal>
 </template>

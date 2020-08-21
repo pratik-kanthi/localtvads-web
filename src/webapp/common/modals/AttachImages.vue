@@ -13,8 +13,8 @@
         <div class="t-xl black mt24">Images</div>
         <div class="row">
             <div class="col-sm-4 mt24" v-for="(img, key) in clientImages" :key="key">
-                <div class="image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + img.ResourceUrl + ')' }" @click="selectImage(img)">
-                    <input :id="img._id" type="checkbox" class="check" v-model="selectedImages" :value="img._id" :disabled="true" />
+                <div class="image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + img.ResourceUrl + ')' }" @click="selectImage(key)">
+                    <input :id="img._id" type="checkbox" class="check" v-model="image.selected" :value="img._id" :disabled="true" />
                     <label :for="img._id" class="check-label box mb8 mr8">
                         <span></span>
                     </label>
@@ -30,8 +30,8 @@
                     <video :id="video._id" width="100%" height="100%" preload="metadata" @loadedmetadata="forwardVideo(video._id)">
                         <source :src="GOOGLE_BUCKET_ENDPOINT + video.ResourceUrl" type="video/webm" />
                     </video>
-                    <input :id="video._id" type="checkbox" class="check" v-model="selectedVideos" :value="video._id" />
-                    <label :for="video._id" class="check-label box mb8 mr8" @click="selectVideo(video)">
+                    <input :id="video._id" type="checkbox" class="check" v-model="video.selected" :value="video._id" />
+                    <label :for="video._id" class="check-label box mb8 mr8" @click="selectVideo(key)">
                         <span></span>
                     </label>
                 </div>
@@ -47,8 +47,8 @@
                         <div><i class="material-icons t-xxl">insert_drive_file</i></div>
                         <div class="t-l ml16 black">{{ document.ResourceName }}</div>
                     </div>
-                    <input :id="document._id" type="checkbox" class="check" v-model="selectedDocuments" :value="document._id" />
-                    <label :for="document._id" class="check-label box mb8 mr8" @click="selectDocuments(document)">
+                    <input :id="document._id" type="checkbox" class="check" v-model="document.selected" :value="document._id" />
+                    <label :for="document._id" class="check-label box mb8 mr8" @click="selectDocuments(key)">
                         <span></span>
                     </label>
                 </div>
@@ -112,6 +112,7 @@ export default {
                     return usedAssets.indexOf(asset._id) == -1;
                 });
                 result.map(resource => {
+                    resource.selected = false;
                     if (resource.ResourceType == 'IMAGE') {
                         this.clientImages.push(resource);
                     } else if (resource.ResourceType == 'VIDEO') {
@@ -129,20 +130,23 @@ export default {
                 console.error(err);
             }
         },
-        selectImage(img) {
-            let index = this.selectedImages.indexOf(img._id);
-            if (index > -1) this.selectedImages.splice(index, 1);
-            else this.selectedImages.push(img._id);
+        selectImage(index) {
+            let images = { ...this.clientImages };
+            images[index].selected = !images[index].selected;
+            this.clientImages = { ...images };
+            this.selectedImages.push(images[index]._id);
         },
-        selectVideo(img) {
-            let index = this.selectedVideos.indexOf(img._id);
-            if (index > -1) this.selectedVideos.splice(index, 1);
-            else this.selectedVideos.push(img._id);
+        selectVideo(index) {
+            let videos = { ...this.clientVideos };
+            videos[index].selected = !videos[index].selected;
+            this.clientVideos = { ...videos };
+            this.selectedVideos.push(videos[index]._id);
         },
-        selectDocuments(img) {
-            let index = this.selectedDocuments.indexOf(img._id);
-            if (index > -1) this.selectedDocuments.splice(index, 1);
-            else this.selectedDocuments.push(img._id);
+        selectDocuments(index) {
+            let documents = { ...this.clientDocuments };
+            documents[index].selected = !documents[index].selected;
+            this.clientDocuments = { ...documents };
+            this.selectedDocuments.push(documents[index]._id);
         }
     },
     created() {
