@@ -47,7 +47,7 @@ export default {
             fields: [
                 {
                     key: 'ReceiptNo',
-                    field: 'Receipt Number'
+                    label: 'Receipt Number'
                 },
                 {
                     key: 'DateTime',

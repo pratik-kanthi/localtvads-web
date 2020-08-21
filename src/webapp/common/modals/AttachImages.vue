@@ -6,9 +6,9 @@
                 <i class="material-icons">close</i>
             </button>
         </div>
-        <div class="t-l d-flex justify-content-between">
+        <div class="t-l d-flex flex-column flex-md-row justify-content-between">
             <div>Select assets to attach to your ad</div>
-            <div>{{ selectedImages.length + selectedVideos.length }} assets(s) selected</div>
+            <div>{{ selectedImages.length + selectedVideos.length }} asset(s) selected</div>
         </div>
         <div class="t-xl black mt24">Images</div>
         <div class="row">

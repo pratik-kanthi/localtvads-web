@@ -134,114 +134,118 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 shadow-border rounded p24 d-flex flex-column justify-content-between">
-                        <div class="booking-details">
-                            <h6 class="t-l medium text-center brand-secondary">Booking Receipt</h6>
-                            <hr class="mt24 mb24" />
-                            <div class="row plan-items">
-                                <div class="col-md-8 col-6">
-                                    <div class="brand-primary t-l">Channel Ad Plan</div>
-                                </div>
-                                <div class="col-md-4 col-6">
-                                    <div class="black text-right">
-                                        <div class="d-flex justify-content-end">
-                                            <div>{{ $parent.clientAdPlan.PlanAmount | currency }}/week</div>
-                                            <div class="pointer">
-                                                <i class="ml8 material-icons brand-primary t-xl" @mouseover="showPriceBreakdown(true)" @mouseout="showPriceBreakdown(false)">info</i>
+                    <div class="col-md-4 mt-3 mt-md-0 rounded  d-flex flex-column justify-content-between ">
+                        <div class="shadow-border p24">
+                            <div class="booking-details ">
+                                <h6 class="t-l medium text-center brand-secondary">Booking Receipt</h6>
+                                <hr class="mt24 mb24" />
+                                <div class="row plan-items">
+                                    <div class="col-md-8 col-6">
+                                        <div class="brand-primary t-l">Channel Ad Plan</div>
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <div class="black text-right">
+                                            <div class="d-flex justify-content-end">
+                                                <div>{{ $parent.clientAdPlan.PlanAmount | currency }}/week</div>
+                                                <div class="pointer">
+                                                    <i class="ml8 material-icons brand-primary t-xl" @mouseover="showPriceBreakdown(true)" @mouseout="showPriceBreakdown(false)">info</i>
+                                                </div>
+                                            </div>
+                                            <div v-show="priceBreakDown" class="tooltip-info">
+                                                <div class="t-s" :key="key" v-for="(slot, key) in $parent.clientAdPlan.ChannelProduct.ChannelSlots">{{ slot.Slot.Name }} - {{ (slot.RatePerSecond * slot.Duration * $parent.daysSelected.length) | currency }}</div>
                                             </div>
                                         </div>
-                                        <div v-show="priceBreakDown" class="tooltip-info">
-                                            <div class="t-s" :key="key" v-for="(slot, key) in $parent.clientAdPlan.ChannelProduct.ChannelSlots">{{ slot.Slot.Name }} - {{ (slot.RatePerSecond * slot.Duration * $parent.daysSelected.length) | currency }}</div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="t-m">
+                                            Plan Length:
+                                            <span class="bold">{{ $parent.clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
+                                        </div>
+                                        <div class="t-s d-block d-md-none">Days: {{ getSelectedDays(true) }}</div>
+                                        <div class="t-m d-none d-md-block">
+                                            Days:
+                                            <span class="bold">{{ getSelectedDays(false) }}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-8">
-                                    <div class="t-m">
-                                        Plan Length:
-                                        <span class="bold">{{ $parent.clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
-                                    </div>
-                                    <div class="t-s d-block d-md-none">Days: {{ getSelectedDays(true) }}</div>
-                                    <div class="t-m d-none d-md-block">
-                                        Days:
-                                        <span class="bold">{{ getSelectedDays(false) }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between t-l mt48" v-if="$parent.clientAdPlan.Addons && $parent.clientAdPlan.Addons.length > 0">
-                                <div>
+                                <div class="d-flex justify-content-between t-l mt48" v-if="$parent.clientAdPlan.Addons && $parent.clientAdPlan.Addons.length > 0">
                                     <div>
-                                        <div class="brand-primary d-flex flex-column flex-md-row align-items-md-end">
-                                            <div>{{ $parent.clientAdPlan.Addons[0].Name }}</div>
-                                            <div class="ml-md-2">
-                                                <span class="tag-sm">Add On</span>
+                                        <div>
+                                            <div class="brand-primary d-flex flex-column flex-md-row align-items-md-end">
+                                                <div>
+                                                    {{ $parent.clientAdPlan.Addons[0].Name }}
+                                                    <div>
+                                                        <span class="tag-sm">Add On</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="t-s mt8" v-for="benefit in $parent.clientAdPlan.Addons[0].Benefits" :key="benefit">{{ benefit }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="black">{{ $parent.clientAdPlan.AddonsAmount | currency }}</div>
+                                </div>
+                                <hr class="mb24" />
+                                <div class="total mt24">
+                                    <div class="row">
+                                        <div class="col-6 col-sm-6">
+                                            <div class="taxes">
+                                                <span class="t-l">Subtotal</span>
                                             </div>
                                         </div>
-                                        <div class="t-s mt8" v-for="benefit in $parent.clientAdPlan.Addons[0].Benefits" :key="benefit">{{ benefit }}</div>
-                                    </div>
-                                </div>
-                                <div class="black">{{ $parent.clientAdPlan.AddonsAmount | currency }}</div>
-                            </div>
-                            <hr class="mb24" />
-                            <div class="total mt24">
-                                <div class="row">
-                                    <div class="col-6 col-sm-6">
-                                        <div class="taxes">
-                                            <span class="t-l">Subtotal</span>
+                                        <div class="col-6 col-sm-6 text-right">
+                                            <div class="t-l black">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount) | currency }}</div>
                                         </div>
                                     </div>
-                                    <div class="col-6 col-sm-6 text-right">
-                                        <div class="t-l black">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount) | currency }}</div>
-                                    </div>
                                 </div>
-                            </div>
-                            <div class="total mb32">
-                                <div class="row">
-                                    <div class="col-6 col-sm-6">
-                                        <div class="taxes">
-                                            <span class="t-l">Taxes</span>
-                                            <i class="material-icons" @mouseover="showTaxInfo(true)" @mouseout="showTaxInfo(false)">info</i>
-                                            <div v-show="taxInfo" class="tooltip-info">
-                                                <div v-for="tax in taxes" :key="tax.Name">
-                                                    <div class="name">
-                                                        {{ tax.Name }}
-                                                        <span>({{ tax.Description }})</span>
+                                <div class="total mb32">
+                                    <div class="row">
+                                        <div class="col-6 col-sm-6">
+                                            <div class="taxes">
+                                                <span class="t-l">Taxes</span>
+                                                <i class="material-icons" @mouseover="showTaxInfo(true)" @mouseout="showTaxInfo(false)">info</i>
+                                                <div v-show="taxInfo" class="tooltip-info">
+                                                    <div v-for="tax in taxes" :key="tax.Name">
+                                                        <div class="name">
+                                                            {{ tax.Name }}
+                                                            <span>({{ tax.Description }})</span>
+                                                        </div>
+                                                        <div class="value text-right" v-if="tax.Type === 'PERCENTAGE'">{{ tax.Value }}%</div>
+                                                        <div class="value text-right" v-else>{{ tax.Value | currency }}</div>
                                                     </div>
-                                                    <div class="value text-right" v-if="tax.Type === 'PERCENTAGE'">{{ tax.Value }}%</div>
-                                                    <div class="value text-right" v-else>{{ tax.Value | currency }}</div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-6 col-sm-6 text-right" v-if="taxAmount">
+                                            <div class="black">{{ taxAmount | currency }}</div>
+                                        </div>
                                     </div>
-                                    <div class="col-6 col-sm-6 text-right" v-if="taxAmount">
-                                        <div class="black">{{ taxAmount | currency }}</div>
+                                    <div class="row mt32">
+                                        <div class="col-6 col-sm-6">
+                                            <h5 class="t-l">Total Payable</h5>
+                                        </div>
+                                        <div class="col-6 col-sm-6 text-right">
+                                            <h5 class="amount t-l black pull-right">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</h5>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row mt32">
-                                    <div class="col-6 col-sm-6">
-                                        <h5 class="t-l">Total Payable</h5>
-                                    </div>
-                                    <div class="col-6 col-sm-6 text-right">
-                                        <h5 class="amount t-l black pull-right">{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</h5>
-                                    </div>
+                            </div>
+                            <div>
+                                <div class="note black rounded">
+                                    <i class="material-icons mt-icon-sub brand-primary">info</i>
+                                    Total payable includes first week's charge plus any addons if selected.
                                 </div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="note black rounded">
-                                <i class="material-icons mt-icon-sub brand-primary">info</i>
-                                Total payable includes first week's charge plus any addons if selected.
-                            </div>
-                            <div class="note black rounded mt16">
-                                <i class="material-icons mt-icon-sub brand-primary">info</i>
-                                You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing
-                            </div>
-                            <div class="row mt24">
-                                <div class="col">
-                                    <button :disabled="!isPayable" @click="payStripe" class="btn btn-success btn-icon form-control">
-                                        <i class="material-icons">lock</i>
-                                        Confirm Payment of
-                                        <strong>{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</strong>
-                                    </button>
+                                <div class="note black rounded mt16">
+                                    <i class="material-icons mt-icon-sub brand-primary">info</i>
+                                    You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing
+                                </div>
+                                <div class="row mt24">
+                                    <div class="col">
+                                        <button :disabled="!isPayable" @click="payStripe" class="btn btn-success btn-icon form-control">
+                                            <i class="material-icons">lock</i>
+                                            Confirm Payment of
+                                            <strong>{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</strong>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

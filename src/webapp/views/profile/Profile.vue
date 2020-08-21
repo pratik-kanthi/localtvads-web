@@ -86,7 +86,7 @@
                 <div class="profile-cards">
                     <div class="d-flex justify-content-between">
                         <div class="t-xl black">Payment Methods</div>
-                        <div>
+                        <div v-if="false">
                             <button @click="openNewCardModal" class="btn btn-primary-small">Add Card</button>
                         </div>
                     </div>
@@ -96,16 +96,11 @@
 
                     <div v-if="savedCards && savedCards.length > 0" class="row cards-details mt24">
                         <div class="col-md-4" v-for="(card, key) in savedCards" :key="key">
-                            <div class="saved-card border p24 rounded" @click="setPreferredCard(card)">
-                                <div :class="{ 'radio-btn-tick': card.IsPreferred, 'radio-btn-untick': !card.IsPreferred }" class="mr16">
-                                    <input type="radio" v-model="preferredCard" :value="card._id" />
-                                    <label></label>
-                                </div>
+                            <div class="saved-card border p24 rounded">
                                 <img :src="getImageUrl(card.Card.Vendor)" alt />
                                 <span class="t-l black">&nbsp;&nbsp;XXXX XXXX XXXX {{ card.Card.LastFour }}</span>
                                 <span class="t-l black">{{ card.Card.Name }}</span>
                             </div>
-                            <button class="btn btn-link error mb0" @click="deleteCard(card._id)" :disabled="card.IsPreferred">Remove Card</button>
                         </div>
                     </div>
                 </div>

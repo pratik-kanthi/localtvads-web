@@ -27,7 +27,7 @@
         </div>
 
         <div v-if="showUpdateCard">
-            <UpdateCard :show="showUpdateCard" @close="handleUpdateCard" :client-ad-plan-id="clientAdPlan._id"></UpdateCard>
+            <UpdateCard :show="showUpdateCard" @close="handleUpdateCard" :client-ad-plan-id="clientAdPlan._id" :current-card="clientAdPlan.PaymentMethod._id"></UpdateCard>
         </div>
 
         <div class="container" v-if="clientAdPlan">
@@ -59,11 +59,11 @@
                                     <div class="t-l black">Channel</div>
                                     <div class="t-l">{{ clientAdPlan.Channel.Name }}</div>
                                 </div>
-                                <div class="plan-info col-md-4">
+                                <div class="plan-info col-md-4 mt-3 mt-md-3">
                                     <div class="t-l black">Plan Duration</div>
                                     <div class="t-l">{{ clientAdPlan.ChannelProduct.ProductLength.Duration }} months</div>
                                 </div>
-                                <div class="plan-info col-md-4">
+                                <div class="plan-info col-md-4 mt-3 mt-md-3">
                                     <div class="t-l black">Booked date</div>
                                     <div class="t-l">{{ clientAdPlan.BookedDate | formatDate('DD MMM YYYY') }}</div>
                                 </div>
@@ -78,7 +78,7 @@
                                         <br />will be available once your ad is approved
                                     </div>
                                 </div>
-                                <div class="col-md-4 mt-sm-2">
+                                <div class="col-md-4 mt-sm-2 mt-3 mt-md-3">
                                     <div class="t-l black">Slots Selected</div>
                                     <div>
                                         <span class v-for="(slot, key) in clientAdPlan.ChannelProduct.ChannelSlots" :key="key">
@@ -86,7 +86,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4 mt-3 mt-md-3">
                                     <div class="t-l black">Weekly Schedule</div>
                                     <WeekDays :disabled="true" mode="table" :value="clientAdPlan.Days"></WeekDays>
                                 </div>
@@ -268,7 +268,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 mt-3 mt-md-0">
                                 <div class="col-md-12 border shadow-sm p24 h-100 d-flex flex-column justify-content-between">
                                     <div>
                                         <div class="t-xl black">Payment Method</div>
@@ -278,7 +278,7 @@
                                             XXXX XXXX XXXX {{ clientAdPlan.PaymentMethod.Card.LastFour }}
                                         </div>
                                     </div>
-                                    <button @click="toggleUpdatePayment" class="btn btn-secondary">Update Payment Method</button>
+                                    <button @click="toggleUpdatePayment" class="mt-3 mt-md-0 btn btn-secondary">Update Payment Method</button>
                                 </div>
                             </div>
                         </div>
