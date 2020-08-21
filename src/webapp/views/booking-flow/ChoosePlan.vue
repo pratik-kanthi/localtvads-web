@@ -30,8 +30,8 @@
                 <div class="slot-container mt24" :key="slotsKey">
                     <div class="slot shadow-border rounded p24 mt16" v-for="(channelSlot, slotIndex) in $parent.clientAdPlan.ChannelProduct.ChannelSlots" :key="slotIndex + '1'">
                         <div class="row d-flex align-items-center">
-                            <div class="col-sm-1 h-100 black">SLOT {{ slotIndex + 1 }}</div>
-                            <div class="col-sm-3">
+                            <div class="col-md-1 h-100 black">SLOT {{ slotIndex + 1 }}</div>
+                            <div class="col-md-3 mt-3 mt-md-0">
                                 <b-form-select @change="selectSlot($event, slotIndex)">
                                     <b-form-select-option value="null">Select Your Slot</b-form-select-option>
                                     <b-form-select-option v-for="(slotData, key) in $parent.selectedPlan.ChannelSlots" :key="key" :value="slotData.Slot._id">
@@ -39,12 +39,12 @@
                                     </b-form-select-option>
                                 </b-form-select>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4 mt-3 mt-md-0">
                                 <div class="slot-details" v-if="channelSlot && channelSlot.Slot">
                                     <div class="t-m brand-primary"><i class="material-icons mt-icon-sub">info</i> Ad duration of {{ channelSlot.Duration }} seconds</div>
                                 </div>
                             </div>
-                            <div class="col-sm-4 text-right" v-if="channelSlot && channelSlot.Slot">
+                            <div class="col-md-4 mt-3 mt-md-0 text-left text-md-right" v-if="channelSlot && channelSlot.Slot">
                                 <div class="slot-price">
                                     <span class="brand-primary t-l">{{ (channelSlot.RatePerSecond * channelSlot.Duration * $parent.daysSelected.length) | currency }}/week</span> from the day we go live with your ad.
                                 </div>
@@ -73,7 +73,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 mt-3 mt-md-0">
                             <div class="brand-primary t-xl d-flex justify-content-start justify-content-md-end">
                                 <div>Weekly Amount:</div>
                                 <div>&nbsp;{{ weekTotal | currency }}</div>

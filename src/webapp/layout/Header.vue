@@ -48,22 +48,22 @@
                                 <ul class="" :class="{ 'profile-menu': showProfile }">
                                     <span @click="toggleSubMenu">
                                         <router-link tag="li" to="/profile">
-                                            <div class="black"><i class="brand-primary material-icons mt-icon-sub pr8">person_outline</i>My Account</div>
+                                            <div><i class=" material-icons mt-icon-sub pr8">person_outline</i>My Account</div>
                                         </router-link>
                                     </span>
                                     <span @click="toggleSubMenu">
                                         <router-link tag="li" to="/ads">
-                                            <div class="black"><i class="brand-primary material-icons mt-icon-sub pr8">video_library</i>My Ads</div></router-link
+                                            <div><i class=" material-icons mt-icon-sub pr8">video_library</i>My Ads</div></router-link
                                         >
                                     </span>
                                     <span @click="toggleSubMenu">
                                         <router-link tag="li" to="/assets">
-                                            <div class="black"><i class="brand-primary material-icons mt-icon-sub pr8">collections</i>My Assets</div></router-link
+                                            <div><i class=" material-icons mt-icon-sub pr8">collections</i>My Assets</div></router-link
                                         >
                                     </span>
                                     <span @click="toggleSubMenu">
                                         <router-link tag="li" to="/transactions">
-                                            <div class="black"><i class="brand-primary material-icons mt-icon-sub pr8">receipt_long</i>Transactions</div></router-link
+                                            <div><i class=" material-icons mt-icon-sub pr8">receipt_long</i>Transactions</div></router-link
                                         >
                                     </span>
 
@@ -287,23 +287,8 @@ nav {
                         height: auto;
                         overflow: auto;
 
-                        &::before {
-                            background: #fff;
-                            border-left: 1px solid #d9dee2;
-                            border-top: 1px solid #d9dee2;
-                            content: '';
-                            display: block;
-                            height: 10px;
-                            left: auto;
-                            position: absolute;
-                            right: 16px;
-                            top: -6px;
-                            transform: rotate(45deg);
-                            width: 10px;
-                        }
-
                         li {
-                            color: $base;
+                            color: $black;
                             background-color: $white;
                             line-height: initial;
                             width: 100%;
@@ -311,9 +296,17 @@ nav {
                             cursor: pointer;
                             padding: 16px 24px;
 
+                            .material-icons {
+                                color: $brand-primary !important;
+                            }
+
                             &:hover {
-                                background-color: $brand-primary;
+                                background-color: $brand-primary !important;
                                 color: $white;
+
+                                .material-icons {
+                                    color: $white !important;
+                                }
                             }
                         }
                     }
