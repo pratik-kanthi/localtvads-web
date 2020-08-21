@@ -42,8 +42,8 @@
             </div>
         </transition>
 
-        <div class="action mt80 mb64 d-flex justify-content-center">
-            <button class="btn btn-white w-25 border" @click="cancel">Cancel</button>
+        <div class="action mt80 mb64 d-flex justify-content-between">
+            <button class="btn btn-white w-25 border" @click="goBack">Cancel</button>
             <button class="btn btn-primary w-25 ml16" @click="saveAddOnOption">Proceed</button>
         </div>
     </div>
@@ -80,7 +80,7 @@ export default {
             this.$parent.currentStage = ChoosePlan;
         },
         cancel() {
-            this.$router.push('/', () => {});
+            this.$router.go(-1);
         },
         selectAddon(addon) {
             let plan = { ...this.$parent.clientAdPlan };

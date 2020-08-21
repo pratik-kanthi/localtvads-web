@@ -54,6 +54,7 @@ $grey: lighten(#000, 33.5%); // #555
 $light-grey: rgba(100, 100, 100, 0.5);
 $lighter-grey: rgba(100, 100, 100, 0.1);
 $line-color: lighten($dark-grey, 65%);
+$sand: #fbd8b4;
 
 /* Base Style
 ------------------------------------
@@ -96,3 +97,13 @@ $icon-large: 32px;
 ------------------------------------
 */
 $enable-gradients: true;
+
+
+
+/* Table
+------------------------------------
+*/
+
+$table-border-width:1px;
+$table-border-radius: 5px;
+$default-content-padding: 5px;

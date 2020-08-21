@@ -26,6 +26,10 @@
             <DocumentUpload :show="showDocumentUploadModal" @close="handleDocumentUploadModal"></DocumentUpload>
         </div>
 
+        <div v-if="showUpdateCard">
+            <UpdateCard :show="showUpdateCard" @close="handleUpdateCard" :client-ad-plan-id="clientAdPlan._id"></UpdateCard>
+        </div>
+
         <div class="container" v-if="clientAdPlan">
             <div class="d-flex justify-content-between mt64">
                 <div v-if="displayMode == 'VIEW'">
@@ -49,7 +53,7 @@
             <div class="mt32 horizontal-tabs">
                 <b-tabs>
                     <b-tab title="Plan Information" active>
-                        <div class="p32 shadow-sm mt32">
+                        <div class="p32 shadow-border mt32">
                             <div class="row mt">
                                 <div class="plan-info col-md-4">
                                     <div class="t-l black">Channel</div>
@@ -93,7 +97,7 @@
                                 <div>
                                     <div class="t-l black">Add On:</div>
                                     <div v-if="clientAdPlan.Addons.length > 0">
-                                        <div v-for="(addon, key) in clientAdPlan.Addons" :key="key" class="plan-addon shadow-sm rounded p32 mt24">
+                                        <div v-for="(addon, key) in clientAdPlan.Addons" :key="key" class="plan-addon shadow-border rounded p32 mt24">
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="t-l black bold">{{ addon.Name }}</div>
@@ -205,7 +209,7 @@
                     <b-tab title="Billing & Transactions">
                         <div class="row mt32">
                             <div class="col-md-8" v-if="planTransactions.length > 0">
-                                <div class="col-md-12 border shadow-sm p24">
+                                <div class="col-md-12 shadow-border p24">
                                     <div class="t-xl black">Initial Payment</div>
                                     <span class="t-m">Details of initial payment made for you plan.</span>
                                     <div class="mt24">
@@ -242,7 +246,7 @@
                                             <div class="line"></div>
                                         </div>
 
-                                        <div class="total ">
+                                        <div class="total">
                                             <div class="row mt32">
                                                 <div class="col-6 col-sm-6">
                                                     <div class="t-l">Taxes</div>
@@ -264,14 +268,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4 ">
-                                <div class="col-md-12 border shadow-sm p24 h-100">
-                                    <div class="t-xl black">Payment Method</div>
-                                    <span class="t-m">Payments for this plan are collected automatically on this card</span>
-                                    <div class="t-l black mt24 ">
-                                        <img class="mr16" :src="getImageUrl(clientAdPlan.PaymentMethod.Card.Vendor)" />
-                                        XXXX XXXX XXXX {{ clientAdPlan.PaymentMethod.Card.LastFour }}
+                            <div class="col-md-4">
+                                <div class="col-md-12 border shadow-sm p24 h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <div class="t-xl black">Payment Method</div>
+                                        <span class="t-m">Payments for this plan are collected automatically on this card</span>
+                                        <div class="t-l black mt24">
+                                            <img class="mr16" :src="getImageUrl(clientAdPlan.PaymentMethod.Card.Vendor)" />
+                                            XXXX XXXX XXXX {{ clientAdPlan.PaymentMethod.Card.LastFour }}
+                                        </div>
                                     </div>
+                                    <button @click="toggleUpdatePayment" class="btn btn-secondary">Update Payment Method</button>
                                 </div>
                             </div>
                         </div>
@@ -320,6 +327,7 @@ import DocumentUpload from '@/webapp/common/modals/DocumentUpload';
 import AttachVideo from '@/webapp/common/modals/AttachVideo';
 import AttachImages from '@/webapp/common/modals/AttachImages';
 import VideoModal from '@/webapp/common/modals/VideoModal';
+import UpdateCard from '@/webapp/common/modals/UpdateCard';
 import ResourceService from '@/services/ResourceService';
 import CoolLightBox from 'vue-cool-lightbox';
 import VideoUpload from '@/webapp/common/modals/VideoUploadModal';
@@ -338,7 +346,8 @@ export default {
         CoolLightBox,
         VideoCard,
         VideoUpload,
-        DocumentUpload
+        DocumentUpload,
+        UpdateCard
     },
     mixins: [uploadMixin],
     data() {
@@ -405,7 +414,8 @@ export default {
             lightboxIndex: null,
             showVideoUploadModal: false,
             showDocumentUploadModal: false,
-            displayMode: 'VIEW'
+            displayMode: 'VIEW',
+            showUpdateCard: false
         };
     },
     methods: {
@@ -483,6 +493,12 @@ export default {
         },
         addDocument() {
             this.showDocumentUploadModal = true;
+        },
+        handleUpdateCard(data) {
+            this.showUpdateCard = false;
+            if (data) {
+                this.clientAdPlan.PaymentMethod = data;
+            }
         },
         async handleDocumentUploadModal(data) {
             this.showDocumentUploadModal = false;
@@ -690,6 +706,9 @@ export default {
         },
         getImageUrl(vendor) {
             return require('@/assets/images/cards/' + vendor.toUpperCase() + '.svg');
+        },
+        toggleUpdatePayment() {
+            this.showUpdateCard = !this.showUpdateCard;
         },
         ...mapGetters(['getUser'])
     },

@@ -44,23 +44,34 @@
                                 </div>
                                 <img v-else-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl" class="picture" :src="getImageUrl" :alt="$store.state.user.Owner.Title" />
                             </a>
-                            <ul class="" :class="{ 'profile-menu': showProfile }">
-                                <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="/profile">My Account</router-link>
-                                </span>
-                                <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="/ads">My Ads</router-link>
-                                </span>
-                                <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="/assets">My Assets</router-link>
-                                </span>
-                                <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="/transactions">Transactions</router-link>
-                                </span>
-                                <li @click="logout">
-                                    <a>Logout</a>
-                                </li>
-                            </ul>
+                            <transition name="list">
+                                <ul class="" :class="{ 'profile-menu': showProfile }">
+                                    <span @click="toggleSubMenu">
+                                        <router-link tag="li" to="/profile">
+                                            <div class="black"><i class="brand-primary material-icons mt-icon-sub pr8">person_outline</i>My Account</div>
+                                        </router-link>
+                                    </span>
+                                    <span @click="toggleSubMenu">
+                                        <router-link tag="li" to="/ads">
+                                            <div class="black"><i class="brand-primary material-icons mt-icon-sub pr8">video_library</i>My Ads</div></router-link
+                                        >
+                                    </span>
+                                    <span @click="toggleSubMenu">
+                                        <router-link tag="li" to="/assets">
+                                            <div class="black"><i class="brand-primary material-icons mt-icon-sub pr8">collections</i>My Assets</div></router-link
+                                        >
+                                    </span>
+                                    <span @click="toggleSubMenu">
+                                        <router-link tag="li" to="/transactions">
+                                            <div class="black"><i class="brand-primary material-icons mt-icon-sub pr8">receipt_long</i>Transactions</div></router-link
+                                        >
+                                    </span>
+
+                                    <li class="b-t black" @click="logout">
+                                        <a>Logout</a>
+                                    </li>
+                                </ul>
+                            </transition>
                         </li>
                     </ul>
                 </div>
@@ -218,6 +229,19 @@ nav {
                 text-align: right;
                 position: relative;
 
+                .list-item {
+                    display: inline-block;
+                    margin-right: 10px;
+                }
+                .list-enter-active,
+                .list-leave-active {
+                    transition: all 1s;
+                }
+                .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
                 .profile {
                     cursor: pointer !important;
                     display: inline-block;
@@ -257,11 +281,26 @@ nav {
                         color: $brand-primary;
                         margin-top: -8px;
                         padding: 0;
-                        width: 162px;
+                        width: 220px;
                         border-radius: 6px;
                         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
                         height: auto;
                         overflow: auto;
+
+                        &::before {
+                            background: #fff;
+                            border-left: 1px solid #d9dee2;
+                            border-top: 1px solid #d9dee2;
+                            content: '';
+                            display: block;
+                            height: 10px;
+                            left: auto;
+                            position: absolute;
+                            right: 16px;
+                            top: -6px;
+                            transform: rotate(45deg);
+                            width: 10px;
+                        }
 
                         li {
                             color: $base;
@@ -269,8 +308,8 @@ nav {
                             line-height: initial;
                             width: 100%;
                             text-align: left;
-                            padding: 10px;
                             cursor: pointer;
+                            padding: 16px 24px;
 
                             &:hover {
                                 background-color: $brand-primary;

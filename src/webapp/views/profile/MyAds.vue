@@ -6,7 +6,7 @@
 
         <LoaderModal :showloader="isLoading" message="Please wait while we fetch the data..."></LoaderModal>
         <div class="container table-container pm-24">
-            <h3 class="brand-secondary mt64 mb48">My Ad Plans</h3>
+            <h3 class="brand-secondary mt64 mb48">My Ads</h3>
 
             <div v-if="!isLoading && clientAdPlans.length === 0">
                 <p class="lead">You haven't purchased any ad plans</p>
@@ -75,7 +75,7 @@ export default {
                 },
                 {
                     key: 'PurchaseDate',
-                    label: 'Purchase Date'
+                    label: 'Date Booked'
                 },
                 {
                     key: 'PlanDuration',
@@ -163,9 +163,3 @@ export default {
     }
 };
 </script>
-
-<style lang="scss" scoped>
-.myads {
-    background: #f9f9f9;
-}
-</style>

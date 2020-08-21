@@ -1,5 +1,5 @@
 <template>
-    <section class="transactions bg--grey">
+    <section class="transactions">
         <LoaderModal :showloader="isLoading" :message="isLoadingMessage"></LoaderModal>
         <div class="container">
             <h3 class="brand-secondary">Transactions</h3>

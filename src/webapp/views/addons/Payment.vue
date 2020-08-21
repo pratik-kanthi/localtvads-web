@@ -1,12 +1,12 @@
 <template>
-    <div class="container">
+    <div class="container mb80">
         <div v-show="!paymentLoading">
             <div v-if="isLoggedIn" class="payment-wrapper">
                 <h3 class="mt64 brand-secondary">Payment</h3>
                 <div class="row mt24">
                     <div class="col-md-8">
-                        <div class="t-xl brand-secondary">Billing Information</div>
-                        <div class="method-wrapper mt16">
+                        <div class="method-wrapper shadow-border">
+                            <div class="t-xl brand-secondary">Billing Information</div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -24,7 +24,7 @@
 
                             <div class="t-m black">Billing Address</div>
                             <div class="form-groupm mt16">
-                                <AddressFinder :address.sync="address" :google="google"></AddressFinder>
+                                <AddressFinder :address.sync="address" type=""></AddressFinder>
                                 <div v-if="address">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -66,7 +66,7 @@
 
                         <div class="t-xl brand-secondary mt24">Select a Payment Method</div>
                         <div class="cards-wrapper">
-                            <div class="method-wrapper saved-cards mt16" v-if="savedCards.length > 0">
+                            <div class="method-wrapper shadow-border saved-cards mt16" v-if="savedCards.length > 0">
                                 <div class="cards" :class="{ 'selection-card-option': activeToggle == 'SavedCards' }">
                                     <div class="method-title" @click="togglePaymentOptions('SavedCards')" :class="{ active: activeToggle === 'SavedCards' }">
                                         <div class="radio-btn-tick mr8">
@@ -95,7 +95,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="method-wrapper mt16" :class="{ 'selection-card-option': activeToggle == 'NewCard' }">
+                            <div class="method-wrapper shadow-border mt16" :class="{ 'selection-card-option': activeToggle == 'NewCard' }">
                                 <div class="method-title" @click="togglePaymentOptions('NewCard')" :class="{ active: activeToggle === 'NewCard' }">
                                     <div class="radio-btn-tick mr8">
                                         <input type="radio" v-model="activeToggle" value="NewCard" />
@@ -109,7 +109,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <input type="text" class="form-control" />
+                                            <input type="text" class="form-control black" placeholder="Name on the card" />
                                         </div>
 
                                         <div class="row mt16">
@@ -125,26 +125,19 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div v-if="cardError">
+                                            <div class="error">{{ cardError }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row mt24">
-                            <div class="col-md-6">
-                                <button @click="payStripe" class="btn btn-success btn-icon form-control">
-                                    <i class="material-icons">lock</i>
-                                    Confirm Payment of
-                                    <strong>{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</strong>
-                                </button>
-                            </div>
-                        </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="booking-details mt40">
+                    <div class="col-md-4 shadow-border rounded p24 d-flex flex-column justify-content-between">
+                        <div class="booking-details">
                             <h6 class="t-l medium text-center brand-secondary">Booking Receipt</h6>
-                            <hr class="mb24" />
+                            <hr class="mt24 mb24" />
                             <div class="row plan-items">
                                 <div class="col-md-8 col-6">
                                     <div class="brand-primary t-l">Channel Ad Plan</div>
@@ -232,8 +225,25 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="t-s mt16 mb0">Note: Total payable includes first week's charge plus any addons if selected.</div>
-                            <div class="t-s mb0">Note: You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing.</div>
+                        </div>
+                        <div>
+                            <div class="note black rounded">
+                                <i class="material-icons mt-icon-sub brand-primary">info</i>
+                                Total payable includes first week's charge plus any addons if selected.
+                            </div>
+                            <div class="note black rounded mt16">
+                                <i class="material-icons mt-icon-sub brand-primary">info</i>
+                                You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing
+                            </div>
+                            <div class="row mt24">
+                                <div class="col">
+                                    <button :disabled="!isPayable" @click="payStripe" class="btn btn-success btn-icon form-control">
+                                        <i class="material-icons">lock</i>
+                                        Confirm Payment of
+                                        <strong>{{ ($parent.clientAdPlan.PlanAmount + $parent.clientAdPlan.AddonsAmount + taxAmount) | currency }}</strong>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -273,12 +283,23 @@ export default {
             name: '',
             address: new Address(),
             google: window.google,
-            isCardValid: false,
             //eslint-disable-next-line
-            elements: stripe.elements(),
+            elements: stripe.elements({
+                fonts: [
+                    {
+                        cssSrc: 'https://use.typekit.net/xrc3emd.css'
+                    }
+                ]
+            }),
             cardElement: null,
+            cardExpiryElement: null,
+            cardCvcElement: null,
             existingCard: null,
-            paymentLoading: false
+            paymentLoading: false,
+            isCardValid: false,
+            isExpValid: false,
+            isCvcValid: false,
+            cardError: null
         };
     },
     methods: {
@@ -315,47 +336,71 @@ export default {
             }
         },
         async payStripe() {
-            try {
-                this.paymentLoading = true;
-                let paymentMethod;
-                if (!this.existingCard) {
+            this.$swal({
+                title: 'Proceed with payment?',
+                text: 'Your card will be charged',
+                type: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Confirm'
+            }).then(async isConfirm => {
+                if (isConfirm.value) {
                     try {
-                        //eslint-disable-next-line
-                        paymentMethod = await stripe.createPaymentMethod({
-                            type: 'card',
-                            card: this.cardElement
+                        window.scrollTo(0, 0);
+                        this.paymentLoading = true;
+
+                        let result, paymentMethod;
+
+                        if (!this.existingCard) {
+                            //eslint-disable-next-line
+                            result = await stripe.createPaymentMethod({
+                                type: 'card',
+                                card: this.cardElement
+                            });
+
+                            if (result.error) {
+                                this.cardError = result.error.message;
+                                throw result.error;
+                            } else {
+                                paymentMethod = result.paymentMethod;
+                            }
+                        }
+
+                        let obj = {
+                            clientAdPlan: {
+                                Client: this.$store.state.user.Owner._id,
+                                Name: this.name,
+                                VAT: this.vat,
+                                Channel: this.$parent.clientAdPlan.Channel,
+                                Days: this.$parent.clientAdPlan.Days,
+                                ChannelProduct: this.$parent.clientAdPlan.ChannelProduct._id,
+                                ChannelSlots: this.$parent.clientAdPlan.ChannelProduct.ChannelSlots.map(function(item) {
+                                    return item.Slot._id;
+                                }),
+                                Addons: this.$parent.clientAdPlan.Addons && this.$parent.clientAdPlan.Addons.length > 0 ? [this.$parent.clientAdPlan.Addons[0]._id] : [],
+                                BillingAddress: this.address
+                            },
+                            newCard: paymentMethod ? paymentMethod : null,
+                            savedCard: this.existingCard ? this.existingCard : null
+                        };
+                        await ClientAdService.createSubscription(obj);
+                        this.paymentLoading = false;
+                        this.$swal({
+                            title: 'Payment Successful',
+                            text: 'Payment was successful',
+                            type: 'success'
                         });
-                        paymentMethod.Name = 'Card Holder';
+                        this.$emit('advanceToConfirmation');
                     } catch (err) {
+                        this.paymentLoading = false;
+                        this.$swal({
+                            title: 'Error',
+                            text: err.message,
+                            type: 'error'
+                        });
                         console.error(err);
                     }
                 }
-
-                let obj = {
-                    clientAdPlan: {
-                        Client: this.$store.state.user.Owner._id,
-                        Name: this.name,
-                        VAT: this.vat,
-                        Channel: this.$parent.clientAdPlan.Channel,
-                        Days: this.$parent.clientAdPlan.Days,
-                        ChannelProduct: this.$parent.clientAdPlan.ChannelProduct._id,
-                        ChannelSlots: this.$parent.clientAdPlan.ChannelProduct.ChannelSlots.map(function(item) {
-                            return item.Slot._id;
-                        }),
-                        Addons: this.$parent.clientAdPlan.Addons && this.$parent.clientAdPlan.Addons.length > 0 ? [this.$parent.clientAdPlan.Addons[0]._id] : [],
-                        BillingAddress: this.address
-                    },
-                    newCard: paymentMethod ? paymentMethod : null,
-                    savedCard: this.existingCard ? this.existingCard : null
-                };
-                await ClientAdService.createSubscription(obj);
-
-                this.paymentLoading = false;
-                this.$emit('advanceToConfirmation');
-            } catch (err) {
-                this.paymentLoading = false;
-                console.error(err);
-            }
+            });
         },
         showTaxInfo(isDisplay) {
             this.taxInfo = isDisplay;
@@ -376,6 +421,13 @@ export default {
     computed: {
         isProceedable() {
             return this.address.PostCode ? true : false;
+        },
+        isPayable() {
+            if (this.address.PostCode && this.name && this.vat && (this.existingCard || (this.isCardValid && this.isExpValid && this.isCvcValid))) {
+                return true;
+            } else {
+                return false;
+            }
         }
     },
     mounted() {
@@ -384,7 +436,7 @@ export default {
                 color: '#',
                 fontFamily: '"azo-sans-web", sans-serif',
                 fontSmoothing: 'antialiased',
-                fontSize: '18px',
+                fontSize: '16px',
                 '::placeholder': {
                     color: '#aab7c4'
                 },
@@ -403,16 +455,48 @@ export default {
             style: style
         });
 
-        this.cardElement = cardNumberElement;
         let cardExpiryElement = this.elements.create('cardExpiry', {
             style: style
         });
         let cardCvcElement = this.elements.create('cardCvc', {
             style: style
         });
+
+        this.cardElement = cardNumberElement;
+        this.cardExpiryElement = cardExpiryElement;
+        this.cardCvcElement = cardCvcElement;
+
         cardNumberElement.mount(this.$refs.cardNumber);
         cardExpiryElement.mount(this.$refs.cardExpiry);
         cardCvcElement.mount(this.$refs.cardCvc);
+
+        // validation
+        this.cardElement.on('change', event => {
+            if (event.complete) {
+                this.isCardValid = true;
+                this.cardError = null;
+            } else if (event.error) {
+                this.isCardValid = false;
+            }
+        });
+
+        this.cardExpiryElement.on('change', event => {
+            if (event.complete) {
+                this.isExpValid = true;
+                this.cardError = null;
+            } else if (event.error) {
+                this.isExpValid = false;
+            }
+        });
+
+        this.cardCvcElement.on('change', event => {
+            if (event.complete) {
+                this.isCvcValid = true;
+                this.cardError = null;
+            } else if (event.error) {
+                this.isCvcValid = false;
+            }
+        });
     },
     destroyed() {
         this.cardElement.destroy();
@@ -441,12 +525,6 @@ export default {
 <style lang="scss" scoped>
 .payment-wrapper {
     .booking-details {
-        height: 100%;
-        padding: 24px;
-        position: relative;
-        background-color: $white;
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-
         &:after {
             background: linear-gradient(-45deg, #ffffff 16px, transparent 0) linear-gradient(45deg, #ffffff 16px, transparent 0) repeat-x left bottom;
             background-size: 32px 32px;
@@ -611,7 +689,6 @@ export default {
 
     .method-wrapper {
         padding: 24px;
-        border: 1px solid #b7b7b7bf;
         border-radius: 6px;
     }
 

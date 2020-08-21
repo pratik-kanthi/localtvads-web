@@ -2,70 +2,77 @@
     <div class="choose-plan">
         <div class="container">
             <h3 class="mt64 page-heading">Create your plan</h3>
-            <div class="mt32">
-                <div class="t-xl">Choose a plan length</div>
+            <div class="mt32 shadow-border p24 rounded">
+                <div class="t-xl black">Choose a plan length</div>
                 <div class="channel-plans-wrapper d-flex mt8 justify-content-start">
-                    <div class="channel-plan" v-for="(plan, key) in channelPlans" :key="key" :class="$parent.selectedPlan._id == plan._id ? 'active' : ''" @click="selectPlan(plan)">
-                        <span>{{ plan.ProductLength.Name }}</span>
+                    <div class="channel-plan black rounded" v-for="(plan, key) in channelPlans" :key="key" :class="$parent.selectedPlan._id == plan._id ? 'active' : ''" @click="selectPlan(plan)">
+                        <span>{{ plan.ProductLength.Duration }} <span class="t-m">months</span> </span>
                     </div>
                 </div>
             </div>
             <div v-if="$parent.selectedPlan">
-                <div class="d-flex justify-content-between mt32">
+                <div class="shadow-border rounded p24 d-flex justify-content-between mt32">
                     <div>
-                        <div class="t-xl">How many times do you want your ad to air in a day?</div>
+                        <div class="t-xl black">How many times do you want your ad to air in a day?</div>
                         <div class="t-l">This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
 
                         <div class="counter d-flex align-items-center mt24">
                             <button @click="decrement()" :disabled="$parent.clientAdPlan.ChannelProduct.ChannelSlots.length < 2" class="btn btn-primary btn-circle">-</button>
-                            <div class="quantity t-l p16">{{ $parent.clientAdPlan.ChannelProduct.ChannelSlots.length }}</div>
+                            <div class="quantity black  t-l p16">{{ $parent.clientAdPlan.ChannelProduct.ChannelSlots.length }}</div>
                             <button @click="increment()" :disabled="$parent.clientAdPlan.ChannelProduct.ChannelSlots.length > 2" class="btn btn-primary btn-circle">+</button>
                         </div>
                     </div>
                 </div>
                 <div class="mt32">
-                    <div class="t-xl">Select you ad slots</div>
+                    <div class="t-xl black">Select you ad slots</div>
                     <div class="t-l">Select the slots for you ad.</div>
                 </div>
                 <div class="slot-container mt24" :key="slotsKey">
-                    <transition-group name="slot">
-                        <div class="slot rounded p16 mt8" v-for="(channelSlot, slotIndex) in $parent.clientAdPlan.ChannelProduct.ChannelSlots" :key="slotIndex + '1'">
-                            <div class="row">
-                                <div class="mt8 col-sm-1">Slot {{ slotIndex + 1 }}</div>
-                                <div class="mt8 col-sm-4">
-                                    <b-form-select @change="selectSlot($event, slotIndex)">
-                                        <b-form-select-option value="null">Select Your Slot</b-form-select-option>
-                                        <b-form-select-option v-for="(slotData, key) in $parent.selectedPlan.ChannelSlots" :key="key" :value="slotData.Slot._id">
-                                            <p class="slot-name">{{ slotData.Slot.Name + ' (' + slotData.Slot.StartTime + '-' + slotData.Slot.EndTime + ')' }}</p>
-                                        </b-form-select-option>
-                                    </b-form-select>
+                    <div class="slot shadow-border rounded p24 mt16" v-for="(channelSlot, slotIndex) in $parent.clientAdPlan.ChannelProduct.ChannelSlots" :key="slotIndex + '1'">
+                        <div class="row d-flex align-items-center">
+                            <div class="col-sm-1 h-100 black">SLOT {{ slotIndex + 1 }}</div>
+                            <div class="col-sm-3">
+                                <b-form-select @change="selectSlot($event, slotIndex)">
+                                    <b-form-select-option value="null">Select Your Slot</b-form-select-option>
+                                    <b-form-select-option v-for="(slotData, key) in $parent.selectedPlan.ChannelSlots" :key="key" :value="slotData.Slot._id">
+                                        <p class="slot-name">{{ slotData.Slot.Name + ' (' + slotData.Slot.StartTime + '-' + slotData.Slot.EndTime + ')' }}</p>
+                                    </b-form-select-option>
+                                </b-form-select>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="slot-details" v-if="channelSlot && channelSlot.Slot">
+                                    <div class="t-m brand-primary"><i class="material-icons mt-icon-sub">info</i> Ad duration of {{ channelSlot.Duration }} seconds</div>
                                 </div>
-                                <div class="col-sm-3">
-                                    <div class="mt8 slot-details" v-if="channelSlot && channelSlot.Slot">
-                                        <div class="t-s brand-primary">You will need to upload a video of {{ channelSlot.Duration }} seconds</div>
-                                    </div>
-                                </div>
-                                <div class="mt8 col-sm-3" v-if="channelSlot && channelSlot.Slot">
-                                    <div class="slot-price">
-                                        You will be charged
-                                        <span class="brand-primary">{{ (channelSlot.RatePerSecond * channelSlot.Duration * $parent.daysSelected.length) | currency }} / week</span> from the day we go live with the ad.
-                                    </div>
+                            </div>
+                            <div class="col-sm-4 text-right" v-if="channelSlot && channelSlot.Slot">
+                                <div class="slot-price">
+                                    <span class="brand-primary t-l">{{ (channelSlot.RatePerSecond * channelSlot.Duration * $parent.daysSelected.length) | currency }}/week</span> from the day we go live with your ad.
                                 </div>
                             </div>
                         </div>
-                    </transition-group>
+                    </div>
                 </div>
-                <div class="pricing-info mt32 p24">
+                <div class="pricing-info rounded mt32 p24">
                     <div class="row">
                         <div class="col-md-6" v-if="$parent.clientAdPlan && $parent.clientAdPlan.ChannelProduct.ProductLength">
-                            <div class="t-xl">Plan duration : {{ $parent.clientAdPlan.ChannelProduct.ProductLength.Duration }} months</div>
-                            <div v-for="(saving, key) in savings" :key="key" class="t-l brand-primary">
-                                You could save {{ saving.Amount | currency }} / week on
-                                <a href @click.prevent="selectPlan(saving.Plan)">
-                                    <u class="italic">{{ saving.Plan.ProductLength.Name + ' plan' }}</u>
-                                </a>
+                            <div class="t-l black mb16">Selected Plan Duration : {{ $parent.clientAdPlan.ChannelProduct.ProductLength.Duration }} months</div>
+                            <div v-for="(saving, key) in savings" :key="key" class="col-md-6 border rounded p16 black">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div><img src="@/assets/images/saving.png" height="32" alt="" /></div>
+                                    <div>
+                                        <div>You can save</div>
+                                        <div>
+                                            <span class="t-xl">{{ saving.Amount | currency }}</span
+                                            >/ week on a
+                                        </div>
+                                        <a href @click.prevent="selectPlan(saving.Plan)">
+                                            <u class="">{{ saving.Plan.ProductLength.Name + ' Plan' }}</u>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                         <div class="col-md-6">
                             <div class="brand-primary t-xl d-flex justify-content-start justify-content-md-end">
                                 <div>Weekly Amount:</div>
@@ -77,7 +84,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="t-m italic mt16 mb0">Note: You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing.</div>
+                </div>
+
+                <div class="p16 ">
+                    <div class="t-m brand-secondary"><i class="material-icons brand-primary mt-icon-sub">info</i> Note: You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing.</div>
                 </div>
 
                 <div class="action mt48 mb64 d-flex justify-content-center">
@@ -323,20 +333,19 @@ export default {
 <style lang="scss" scoped>
 .channel-plans-wrapper {
     .channel-plan {
-        padding: 8px 48px;
+        padding: 24px;
         border: 1px solid #eee;
-        font-size: 14px;
         margin-right: 8px;
+        font-size: 16px;
         cursor: pointer;
         &.active {
-            color: $brand-primary;
+            background: #ff65000d;
             border: 1px solid $brand-primary;
         }
 
         @include media-breakpoint-up(md) {
-            margin-right: 16px;
-            padding: 8px 64px;
-            font-size: 18px;
+            padding: 24px 32px;
+            font-size: 24px;
         }
     }
 }
@@ -350,16 +359,21 @@ export default {
             opacity: 0;
             transform: translateY(30px);
         }
-        .slot {
-            box-shadow: 0 0 8px 0 rgba(100, 100, 100, 0.1);
-            border: 1px solid rgba(100, 100, 100, 0.1);
-        }
     }
     .counter {
         .btn-circle {
             border-radius: 50%;
             height: 32px;
             width: 42px;
+
+            background: $white !important;
+            border: 3px solid $brand-primary !important;
+            color: $brand-primary;
+            font-weight: bold;
+
+            &:focus {
+                outline: none;
+            }
         }
     }
     .border-primary {

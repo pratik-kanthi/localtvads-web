@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="google-address" v-click-outside="closeAddressList">
-            <input type="text" aria-label="google-address" v-model.lazy="searchTxt" class="google-address-text" @change="searchChanged" autocomplete="no" placeholder="Start typing to search..." />
+            <input type="text" aria-label="google-address" v-model="searchTxt" class="google-address-text" @keyup="searchChanged" autocomplete="no" placeholder="Start typing to search..." />
             <div ref="mapDiv"></div>
             <ul class="places-result" v-if="!addressSelected && predictions.length > 0">
                 <li v-for="(_pred, key) in predictions" :key="key">
@@ -24,10 +24,6 @@ export default {
                 return {};
             }
         },
-        google: {
-            type: Object,
-            required: true
-        },
         options: {
             type: Object
         }
@@ -47,7 +43,7 @@ export default {
         },
         setAddress(pred) {
             this.addressObj = {};
-            new this.google.maps.places.PlacesService(this.$refs.mapDiv).getDetails(
+            new window.google.maps.places.PlacesService(this.$refs.mapDiv).getDetails(
                 {
                     placeId: pred.place_id,
                     fields: ['address_component', 'geometry', 'formatted_address']
@@ -101,7 +97,7 @@ export default {
         },
         searchChanged() {
             if (this.searchTxt.length >= 3) {
-                new this.google.maps.places.AutocompleteService().getPlacePredictions(
+                new window.google.maps.places.AutocompleteService().getPlacePredictions(
                     {
                         input: this.searchTxt,
                         ...this.options
@@ -166,6 +162,7 @@ export default {
             padding: 0.5rem;
             border-bottom: 1px solid $line-color;
             a {
+                color: $black;
                 width: 100%;
                 display: block;
                 white-space: nowrap;
