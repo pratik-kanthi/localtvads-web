@@ -6,7 +6,16 @@
                 <div class="t-xl black">Choose a plan length</div>
                 <div class="channel-plans-wrapper d-flex mt8 justify-content-start">
                     <div class="channel-plan black rounded" v-for="(plan, key) in channelPlans" :key="key" :class="$parent.selectedPlan._id == plan._id ? 'active' : ''" @click="selectPlan(plan)">
-                        <span>{{ plan.ProductLength.Duration }} <span class="t-m">months</span> </span>
+                        <span v-if="plan.ProductLength.Duration != 0">
+                            {{ plan.ProductLength.Duration }}
+                            <span class="t-m">months</span>
+                        </span>
+                        <span v-else>
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="t-l">One-off</div>
+                                <div class="t-s brand-primary">Single run announcement ads</div>
+                            </div>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -17,9 +26,9 @@
                         <div class="t-l">This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
 
                         <div class="counter d-flex align-items-center mt24">
-                            <button @click="decrement()" :disabled="$parent.clientAdPlan.ChannelProduct.ChannelSlots.length < 2" class="btn btn-primary btn-circle">-</button>
-                            <div class="quantity black  t-l p16">{{ $parent.clientAdPlan.ChannelProduct.ChannelSlots.length }}</div>
-                            <button @click="increment()" :disabled="$parent.clientAdPlan.ChannelProduct.ChannelSlots.length > 2" class="btn btn-primary btn-circle">+</button>
+                            <button @click="decrement()" :disabled="$parent.clientAdPlan.ChannelProduct.ChannelSlots.length < $parent.selectedPlan.MaxSlotsAllowed - 1" class="btn btn-primary btn-circle">-</button>
+                            <div class="quantity black t-l p16">{{ $parent.clientAdPlan.ChannelProduct.ChannelSlots.length }}</div>
+                            <button @click="increment()" :disabled="$parent.clientAdPlan.ChannelProduct.ChannelSlots.length > $parent.selectedPlan.MaxSlotsAllowed - 1" class="btn btn-primary btn-circle">+</button>
                         </div>
                     </div>
                 </div>
@@ -41,24 +50,31 @@
                             </div>
                             <div class="col-md-4 mt-3 mt-md-0">
                                 <div class="slot-details" v-if="channelSlot && channelSlot.Slot">
-                                    <div class="t-m brand-primary"><i class="material-icons mt-icon-sub">info</i> Ad duration of {{ channelSlot.Duration }} seconds</div>
+                                    <div class="t-m brand-primary">
+                                        <i class="material-icons mt-icon-sub">info</i>
+                                        Ad duration of {{ channelSlot.Duration }} seconds
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-4 mt-3 mt-md-0 text-left text-md-right" v-if="channelSlot && channelSlot.Slot">
                                 <div class="slot-price">
-                                    <span class="brand-primary t-l">{{ (channelSlot.RatePerSecond * channelSlot.Duration * $parent.daysSelected.length) | currency }}/week</span> from the day we go live with your ad.
+                                    <span v-if="!$parent.isAnnouncement" class="brand-primary t-l">{{ (channelSlot.RatePerSecond * channelSlot.Duration * $parent.daysSelected.length) | currency }}/week from the day we go live with your ad.</span>
+
+                                    <span v-else class="brand-primary t-l">{{ (channelSlot.RatePerSecond * channelSlot.Duration * $parent.daysSelected.length) | currency }}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="pricing-info rounded mt32 p24">
-                    <div class="row">
-                        <div class="col-md-6" v-if="$parent.clientAdPlan && $parent.clientAdPlan.ChannelProduct.ProductLength">
+                    <div class="row" v-if="$parent.clientAdPlan && $parent.clientAdPlan.ChannelProduct.ProductLength && !$parent.isAnnouncement">
+                        <div class="col-md-6">
                             <div class="t-l black mb16">Selected Plan Duration : {{ $parent.clientAdPlan.ChannelProduct.ProductLength.Duration }} months</div>
                             <div v-for="(saving, key) in savings" :key="key" class="col-md-6 border rounded p16 black">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <div><img src="@/assets/images/saving.png" height="32" alt="" /></div>
+                                    <div>
+                                        <img src="@/assets/images/saving.png" height="32" alt />
+                                    </div>
                                     <div>
                                         <div>You can save</div>
                                         <div>
@@ -66,7 +82,7 @@
                                             >/ week on a
                                         </div>
                                         <a href @click.prevent="selectPlan(saving.Plan)">
-                                            <u class="">{{ saving.Plan.ProductLength.Name + ' Plan' }}</u>
+                                            <u class>{{ saving.Plan.ProductLength.Name + ' Plan' }}</u>
                                         </a>
                                     </div>
                                 </div>
@@ -84,9 +100,21 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row" v-else>
+                        <div class="col-md-6">
+                            <div class="t-l black mb16">Selected Product : {{ $parent.selectedPlan.Name }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="brand-primary t-xl d-flex justify-content-start justify-content-md-end">
+                                <div>Total Amount:</div>
+                                <div>&nbsp;{{ weekTotal | currency }}</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="p16 ">
+                <div v-if="!$parent.isAnnouncement" class="p16">
                     <div class="t-m brand-secondary"><i class="material-icons brand-primary mt-icon-sub">info</i> Note: You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing.</div>
                 </div>
 
@@ -261,6 +289,12 @@ export default {
                 ChannelSlots: slots
             };
             this.$parent.clientAdPlan = tempPlan;
+
+            if (!this.$parent.selectedPlan.ProductLength.Duration) {
+                this.$parent.isAnnouncement = true;
+            } else {
+                this.$parent.isAnnouncement = false;
+            }
         }
     },
     computed: {

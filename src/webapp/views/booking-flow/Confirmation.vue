@@ -21,18 +21,15 @@
                             <div class="row">
                                 <div class="col-md-8 col-6"><div class="brand-primary t-l">Channel Ad Plan</div></div>
                                 <div class="col-md-4 col-6">
-                                    <div class="black text-right">
-                                        {{ $parent.clientAdPlan.PlanAmount | currency }}/week
-                                        <!--i class="material-icons pointer brand-primary t-xl" @mouseover="showPriceBreakdown(true)" @mouseout="showPriceBreakdown(false)">info</i>
-                                        <div v-show="priceBreakDown" class="tooltip-info">
-                                            <div class="t-s" :key="key" v-for="(slot, key) in $parent.clientAdPlan.ChannelProduct.ChannelSlots">{{ slot.Slot.Name }} - {{ (slot.RatePerSecond * slot.Duration * $parent.daysSelected.length) | currency }}</div>
-                                        </div-->
+                                    <div v-if="!$parent.isAnnouncement" class="black text-right">{{ $parent.clientAdPlan.PlanAmount | currency }}/week</div>
+                                    <div v-else class="black text-right">
+                                        {{ $parent.clientAdPlan.PlanAmount | currency }}
                                     </div>
                                 </div>
 
                                 <div class="col-md-8">
                                     <div class="t-m">
-                                        Plan Length: <span class="bold">{{ $parent.clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
+                                        Plan: <span class="bold">{{ $parent.clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
                                     </div>
                                     <!--div class="t-s d-block d-md-none">Days: {{ getSelectedDays(true) }}</div>
                                     <div class="t-m d-none d-md-block">

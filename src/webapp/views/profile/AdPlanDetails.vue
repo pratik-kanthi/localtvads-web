@@ -120,7 +120,7 @@
                                                                 <div class="brand-primary">Upload Image</div>
                                                             </div>
                                                         </div>
-                                                        <div v-for="(image, key) in images" :key="key" class="col-sm-3 image-box">
+                                                        <div v-for="(image, index) in images" :key="index" class="col-sm-3 image-box">
                                                             <i class="image-delete-icon material-icons" @click="removeAddonResource(image._id)">delete</i>
                                                             <div class="image ml8 pointer" @click="lightboxIndex = key" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + image.ResourceUrl + ')' }"></div>
                                                         </div>
@@ -139,7 +139,7 @@
                                                                     <div class="brand-primary">Upload Video</div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-sm-4 image-box" v-for="(video, key) in videos" :key="key">
+                                                            <div class="col-sm-4 image-box" v-for="(video, index) in videos" :key="index">
                                                                 <i class="image-delete-icon material-icons" @click="removeAddonResource(video._id)">delete</i>
                                                                 <VideoCard :video-url="video.ResourceUrl" :id="video._id" @click="openVideo(video.ResourceUrl)"></VideoCard>
                                                             </div>
@@ -160,7 +160,7 @@
                                                                     <div class="brand-primary">Upload Document</div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-sm-3 mt16 document-box" v-for="(doc, key) in documents" :key="key">
+                                                            <div class="col-sm-3 mt16 document-box" v-for="(doc, index) in documents" :key="index">
                                                                 <i class="image-delete-icon material-icons" @click="removeAddonResource(doc._id)">delete</i>
                                                                 <div class="border p24 d-flex justify-content-start align-items-center">
                                                                     <div>
@@ -185,10 +185,10 @@
                     </b-tab>
                     <b-tab title="Your Ad">
                         <h4 class="mt-4">Ad video</h4>
-                        <span class="t-l">Your final Ad video will appear here. If you have chosen an Addon, our team of professionals will create and upload it here for you.</span>
                         <div v-if="clientAdPlan.AdVideo" class="ad-video mt16" @click="openVideo(clientAdPlan.AdVideo.ResourceUrl)">
                             <VideoCard :id="clientAdPlan.AdVideo._id" :auto-height="true" :video-url="clientAdPlan.AdVideo.ResourceUrl"></VideoCard>
                         </div>
+                        <span v-else class="t-l">Your final Ad video will appear here. If you have chosen an Addon, our team of professionals will create and upload it here for you.</span>
                         <div v-if="!clientAdPlan.Addons || (clientAdPlan.Addons && clientAdPlan.Addons.length === 0)">
                             <span class="t-l">Please add your video by pressing the "Attach Video" button.</span>
                             <br />

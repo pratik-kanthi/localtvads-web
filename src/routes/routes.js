@@ -98,13 +98,6 @@ export const routes = [{
     props: true
 },
 {
-    path: '/addons',
-    name: 'Addons',
-    component: () => {
-        return import( /* webpackChunkName: "post-login" */ '@/webapp/views/addons/Addons.vue');
-    }
-},
-{
     path: '/transactions',
     name: 'Transactions',
     component: () => {

@@ -1,5 +1,5 @@
 <template>
-    <div class="">
+    <div class>
         <div v-if="showNewCard">
             <NewCardModal :show-new-card="showNewCard" @close="close"></NewCardModal>
         </div>
@@ -12,10 +12,10 @@
                     <div class="t-xl black">Account Settings</div>
                     <div class="d-flex justify-content-start align-items justify-content-lg-end">
                         <div v-if="mode === 'VIEW'">
-                            <button class="btn  btn-primary-small" @click="openEditMode()">Edit Details</button>
+                            <button class="btn btn-primary-small" @click="openEditMode()">Edit Details</button>
                         </div>
                         <div v-if="mode === 'EDIT'" class="text-right mr16">
-                            <button class="btn btn-sm btn-primary  save" @click="updateProfile" :disabled="isProceedable">Save</button>
+                            <button class="btn btn-sm btn-primary save" @click="updateProfile" :disabled="isProceedable">Save</button>
                         </div>
                         <div v-if="mode === 'EDIT'" class="text-right">
                             <button class="btn btn-sm btn-secondary cancel" @click="closeEditMode">Cancel</button>
@@ -33,7 +33,7 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-9 d-flex justify-content-between flex-column-reverse  ">
+                    <div class="col-lg-9 d-flex justify-content-between flex-column-reverse">
                         <div class="w-lg-50 mt-3 mt-lg-0">
                             <div class="form-group mb16">
                                 <label class="ml0">Name</label>
@@ -90,9 +90,7 @@
                             <button @click="openNewCardModal" class="btn btn-primary-small">Add Card</button>
                         </div>
                     </div>
-                    <div class="t-l mt16">
-                        You need at least one card added to your account to keep your plans active.
-                    </div>
+                    <div class="t-l mt16">You need at least one card added to your account to keep your plans active.</div>
 
                     <div v-if="savedCards && savedCards.length > 0" class="row cards-details mt24">
                         <div class="col-md-4" v-for="(card, key) in savedCards" :key="key">
@@ -112,7 +110,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex';
-import instance from '@/api';
+import { get, remove, put } from '@/services/ApiService';
 import NewCardModal from '@/webapp/common/modals/NewCardModal';
 import ImageUpload from '@/e9_components/components/ImageUpload';
 import LoaderModal from '@/webapp/common/modals/LoaderModal';
@@ -162,7 +160,7 @@ export default {
         },
         async getSavedCards() {
             try {
-                let result = await instance.get('api/client/cards?client=' + this.getUser().Owner._id);
+                let result = await get('api/:clientid/cards?client=' + this.getUser().Owner._id);
                 this.savedCards = result.data;
                 if (this.savedCards.length > 0) {
                     this.preferredCard = this.savedCards.find(card => card.IsPreferred)._id;
@@ -186,7 +184,7 @@ export default {
             }).then(async isConfirm => {
                 if (isConfirm.value) {
                     try {
-                        await instance.delete('api/client/deletecard?client=' + this.getUser().Owner._id + '&card=' + card);
+                        await remove('api/:clientid/deletecard?client=' + this.getUser().Owner._id + '&card=' + card);
                         this.savedCards = this.savedCards.filter(c => {
                             return c._id != card;
                         });
@@ -214,45 +212,6 @@ export default {
                 name: 'BookingFlow',
                 query: {
                     clientadplan: id
-                }
-            });
-        },
-        setPreferredCard(card) {
-            this.$swal({
-                title: 'Are you sure?',
-                text: 'Your preferred card will be updated',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Confirm'
-            }).then(async isConfirm => {
-                if (isConfirm.value) {
-                    try {
-                        this.isLoading = true;
-                        await instance.post('api/client/preferredcard', { client: this.getUser().Owner._id, card: card._id });
-                        this.preferredCard = card._id;
-
-                        this.savedCards = this.savedCards.map(scard => {
-                            if (scard._id == this.preferredCard) {
-                                scard.IsPreferred = true;
-                            } else {
-                                scard.IsPreferred = false;
-                            }
-                            return scard;
-                        });
-
-                        this.$swal({
-                            title: 'Updated',
-                            text: 'Preferred card has been updated',
-                            type: 'success'
-                        });
-                        this.isLoading = false;
-                    } catch (err) {
-                        this.$swal({
-                            title: 'Error',
-                            text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
-                            type: 'error'
-                        });
-                    }
                 }
             });
         },
@@ -293,7 +252,7 @@ export default {
                     };
                     this.isLoading = true;
                     try {
-                        let result = await instance.put('api/client/profile', requestObj);
+                        let result = await put('api/:clientid/profile', requestObj);
 
                         if (result.status === 200) {
                             user.Owner.Email = result.data.Email;

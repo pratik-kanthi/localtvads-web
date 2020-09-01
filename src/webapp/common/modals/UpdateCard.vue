@@ -68,7 +68,7 @@ export default {
         },
         async getSavedCards() {
             try {
-                let result = await get('api/client/cards?client=' + this.getUser().Owner._id);
+                let result = await get('api/:clientid/cards?client=' + this.getUser().Owner._id);
                 this.cards = result.data.filter(card => {
                     return card._id != this.currentCard;
                 });

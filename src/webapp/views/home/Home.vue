@@ -585,8 +585,6 @@ export default {
         try {
             let result = await get('api/serviceaddons/all');
             this.addons = result.data;
-            result = await get(`api/offers/all?startDate=${this.moment().format('YYYY-MM-DD')}&endDate=${this.moment().format('YYYY-MM-DD')}`);
-            this.offers = result.data;
         } catch (err) {
             this.$swal({
                 title: 'Error',

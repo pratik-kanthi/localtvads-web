@@ -1,5 +1,7 @@
 import BaseService from './BaseService';
-import { get } from './ApiService';
+import {
+    get
+} from './ApiService';
 
 export default class TransactionService extends BaseService {
     static _url = '/api/transactions';
@@ -7,7 +9,11 @@ export default class TransactionService extends BaseService {
     static getTransactions(client, planId) {
         return new Promise(async (resolve, reject) => {
             try {
-                let _res = await get('api/client/transactions?client=' + client + '&plan=' + planId);
+                let queryString = '';
+                if (planId) {
+                    queryString += `&plan=${planId}`;
+                }
+                let _res = await get(`api/:clientid/transactions?client=${client}${queryString}`);
                 resolve(_res.data);
             } catch (err) {
                 return reject(err);
@@ -18,7 +24,7 @@ export default class TransactionService extends BaseService {
     static downloadReceipt(transaction_id) {
         return new Promise(async (resolve, reject) => {
             try {
-                let _res = await get('api/client/transaction?id=' + transaction_id);
+                let _res = await get('api/:clientid/transaction?id=' + transaction_id);
                 resolve(_res.data);
             } catch (err) {
                 return reject(err);
