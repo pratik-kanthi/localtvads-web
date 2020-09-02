@@ -125,7 +125,6 @@ export default {
     data() {
         return {
             savedCards: [],
-            preferredCard: '',
             currentPassword: '',
             newPassword: '',
             showNewCard: false,
@@ -162,9 +161,6 @@ export default {
             try {
                 let result = await get('api/:clientid/cards?client=' + this.getUser().Owner._id);
                 this.savedCards = result.data;
-                if (this.savedCards.length > 0) {
-                    this.preferredCard = this.savedCards.find(card => card.IsPreferred)._id;
-                }
             } catch (err) {
                 this.$swal({
                     title: 'Error',

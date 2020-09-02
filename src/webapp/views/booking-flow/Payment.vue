@@ -352,7 +352,6 @@ export default {
                 this.savedCards = result.data;
                 if (this.savedCards.length > 0 && !this.activeToggle) {
                     this.activeToggle = 'SavedCards';
-                    this.existingCard = this.savedCards.find(s => s.IsPreferred)._id;
                 } else {
                     this.activeToggle = 'NewCard';
                     this.loadCardJS();
