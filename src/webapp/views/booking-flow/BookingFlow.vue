@@ -24,7 +24,7 @@
 
                     <div class="col-md-3 booking-option">
                         <div class="brand-secondary">
-                            <span>Plan Duration</span>
+                            <span>Plan </span>
                         </div>
                         <div v-if="currentStep > 1" class="mt8 t-l brand-primary">{{ clientAdPlan.ChannelProduct.ProductLength.Name }}</div>
                         <div v-else class="mt8">-</div>

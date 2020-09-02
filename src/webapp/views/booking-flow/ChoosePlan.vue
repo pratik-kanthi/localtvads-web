@@ -3,18 +3,27 @@
         <div class="container">
             <h3 class="mt64 page-heading">Create your plan</h3>
             <div class="mt32 shadow-border p24 rounded">
-                <div class="t-xl black">Choose a plan length</div>
-                <div class="channel-plans-wrapper d-flex mt8 justify-content-start">
-                    <div class="channel-plan black rounded" v-for="(plan, key) in channelPlans" :key="key" :class="$parent.selectedPlan._id == plan._id ? 'active' : ''" @click="selectPlan(plan)">
-                        <span v-if="plan.ProductLength.Duration != 0">
-                            {{ plan.ProductLength.Duration }}
-                            <span class="t-m">months</span>
-                        </span>
-                        <span v-else>
-                            <div class="d-flex flex-column align-items-center">
-                                <div class="t-l">One-off</div>
-                                <div class="t-s brand-primary">Single run announcement ads</div>
+                <div class="t-xl black">Choose a plan</div>
+                <div class="t-l ">The following plans are available for {{ $parent.channel.Name }}</div>
+                <div class="channel-plans-wrapper row">
+                    <div class="channel-plan col-md-3 col-sm-12 black rounded mr24 mt16" v-for="(plan, key) in channelPlans" :key="key" :class="$parent.selectedPlan._id == plan._id ? 'active' : ''" @click="selectPlan(plan)">
+                        <div class="channel-plan-saver rounded p8 brand-primary-bg white t-s">
+                            SAVER
+                        </div>
+
+                        <div v-if="plan.ProductLength.Duration != 0">
+                            <div>
+                                {{ plan.ProductLength.Name }}
                             </div>
+                            <div class="t-m brand-secondary"><i class="material-icons mt-icon-sub brand-primary t-m">check_circle</i> Billed Weekly</div>
+                            <div class="t-m brand-secondary"><i class="material-icons mt-icon-sub brand-primary t-m">check_circle</i> {{ plan.ProductLength.Duration }} month plan</div>
+                        </div>
+                        <span v-else>
+                            <div>
+                                {{ plan.ProductLength.Name }}
+                            </div>
+                            <div class="t-m brand-secondary"><i class="material-icons mt-icon-sub brand-primary t-m">check_circle</i> One-off purchase</div>
+                            <div class="t-m brand-secondary"><i class="material-icons mt-icon-sub brand-primary t-m">check_circle</i> Announce birthdays, weddings on TV</div>
                         </span>
                     </div>
                 </div>
@@ -26,7 +35,7 @@
                         <div class="t-l">This is the total number of ad runs per day, you can select your ad to be aired across multiple slots.</div>
 
                         <div class="counter d-flex align-items-center mt24">
-                            <button @click="decrement()" :disabled="$parent.clientAdPlan.ChannelProduct.ChannelSlots.length < $parent.selectedPlan.MaxSlotsAllowed - 1" class="btn btn-primary btn-circle">-</button>
+                            <button @click="decrement()" :disabled="$parent.clientAdPlan.ChannelProduct.ChannelSlots.length < 2" class="btn btn-primary btn-circle">-</button>
                             <div class="quantity black t-l p16">{{ $parent.clientAdPlan.ChannelProduct.ChannelSlots.length }}</div>
                             <button @click="increment()" :disabled="$parent.clientAdPlan.ChannelProduct.ChannelSlots.length > $parent.selectedPlan.MaxSlotsAllowed - 1" class="btn btn-primary btn-circle">+</button>
                         </div>
@@ -103,12 +112,13 @@
 
                     <div class="row" v-else>
                         <div class="col-md-6">
-                            <div class="t-l black mb16">Selected Product : {{ $parent.selectedPlan.Name }}</div>
+                            <div class="t-l black">Selected Plan</div>
+                            <div class="brand-primary t-xl">{{ $parent.selectedPlan.ProductLength.Name }}</div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="brand-primary t-xl d-flex justify-content-start justify-content-md-end">
-                                <div>Total Amount:</div>
-                                <div>&nbsp;{{ weekTotal | currency }}</div>
+                        <div class="col-md-6 justify-content-end d-flex">
+                            <div class="brand-primary">
+                                <div class="black t-l">Total Amount</div>
+                                <div class="brand-primary t-xl">&nbsp;{{ weekTotal | currency }}</div>
                             </div>
                         </div>
                     </div>
@@ -366,10 +376,13 @@ export default {
 
 <style lang="scss" scoped>
 .channel-plans-wrapper {
+    @include media-breakpoint-up(md) {
+        padding: 24px;
+    }
+
     .channel-plan {
         padding: 24px;
         border: 1px solid #eee;
-        margin-right: 8px;
         font-size: 16px;
         cursor: pointer;
         &.active {
@@ -380,6 +393,12 @@ export default {
         @include media-breakpoint-up(md) {
             padding: 24px 32px;
             font-size: 24px;
+
+            &-saver {
+                position: absolute;
+                padding: 0 8px;
+                top: -10px;
+            }
         }
     }
 }
