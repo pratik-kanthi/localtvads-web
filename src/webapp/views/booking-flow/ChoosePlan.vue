@@ -7,10 +7,6 @@
                 <div class="t-l ">The following plans are available for {{ $parent.channel.Name }}</div>
                 <div class="channel-plans-wrapper row">
                     <div class="channel-plan col-md-3 col-sm-12 black rounded mr24 mt16" v-for="(plan, key) in channelPlans" :key="key" :class="$parent.selectedPlan._id == plan._id ? 'active' : ''" @click="selectPlan(plan)">
-                        <div class="channel-plan-saver rounded p8 brand-primary-bg white t-s">
-                            SAVER
-                        </div>
-
                         <div v-if="plan.ProductLength.Duration != 0">
                             <div>
                                 {{ plan.ProductLength.Name }}
