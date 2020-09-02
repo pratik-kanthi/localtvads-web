@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-sm-4 mt24" v-for="(img, key) in clientImages" :key="key">
                 <div class="image" :style="{ 'background-image': 'url(' + GOOGLE_BUCKET_ENDPOINT + img.ResourceUrl + ')' }" @click="selectImage(key)">
-                    <input :id="img._id" type="checkbox" class="check" v-model="image.selected" :value="img._id" :disabled="true" />
+                    <input :id="img._id" type="checkbox" class="check" v-model="img.selected" :value="img._id" :disabled="true" />
                     <label :for="img._id" class="check-label box mb8 mr8">
                         <span></span>
                     </label>
@@ -111,6 +111,7 @@ export default {
                 result = result.filter(asset => {
                     return usedAssets.indexOf(asset._id) == -1;
                 });
+
                 result.map(resource => {
                     resource.selected = false;
                     if (resource.ResourceType == 'IMAGE') {
