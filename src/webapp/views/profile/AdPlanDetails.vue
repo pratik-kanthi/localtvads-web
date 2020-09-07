@@ -31,26 +31,14 @@
         </div>
 
         <div class="container" v-if="clientAdPlan">
-            <div class="d-flex justify-content-between mt64">
-                <div v-if="displayMode == 'VIEW'">
-                    <h3 class="brand-secondary">{{ clientAdPlan.Name }}</h3>
-                </div>
-                <div class="row" v-else>
-                    <div class="form-group">
-                        <input class="w-100 form-control input-lg heading-input" id="inputlg" type="text" v-model="clientAdPlan.Name" />
-                    </div>
-                </div>
-                <!--div class="t-l ml16" :class="getStatusClass(clientAdPlan.Status)">{{ clientAdPlan.Status }}</div-->
-                <div>
-                    <button v-if="displayMode == 'VIEW'" @click="displayMode = 'EDIT'" class="btn btn-link">Edit</button>
-                </div>
-                <div v-if="displayMode == 'EDIT'">
-                    <button @click="upateClientAdPlan" class="btn btn-primary-small">Save</button>
-                    <button @click="displayMode = 'VIEW'" class="ml16 btn btn-secondary-small">Cancel</button>
+            <div class="mt64 d-flex align-items-center">
+                <div class="t-xxl bold brand-secondary">{{ clientAdPlan.Name }}</div>
+                <div class="ml8">
+                    <span class="status-tag" :class="getStatusClass(clientAdPlan.Status)">{{ clientAdPlan.Status }}</span>
                 </div>
             </div>
 
-            <div class="mt32 horizontal-tabs">
+            <div class="mt16 horizontal-tabs">
                 <b-tabs>
                     <b-tab title="Plan Information" active>
                         <div class="p32 shadow-border mt32">
@@ -92,11 +80,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt32 mb32">
+                        <div class="row mt32 mb32" v-if="clientAdPlan.Addons.length > 0">
                             <div class="col">
                                 <div>
                                     <div class="t-l black">Add On:</div>
-                                    <div v-if="clientAdPlan.Addons.length > 0">
+                                    <div>
                                         <div v-for="(addon, key) in clientAdPlan.Addons" :key="key" class="plan-addon shadow-border rounded p32 mt24">
                                             <div class="row">
                                                 <div class="col-md-6">
@@ -176,13 +164,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div v-else>
-                                        <div class="t-l mt24">You have not purchased any add ons for this plan.</div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </b-tab>
+
                     <b-tab title="Your Ad">
                         <h4 class="mt-4">Ad video</h4>
                         <div v-if="clientAdPlan.AdVideo" class="ad-video mt16" @click="openVideo(clientAdPlan.AdVideo.ResourceUrl)">

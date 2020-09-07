@@ -6,16 +6,16 @@
                 <i class="material-icons">close</i>
             </button>
         </div>
-        <div class="upload-wrapper p48">
+        <div class="upload-wrapper p24">
             <div class="upload-box" v-if="!upload.chosen && progress === 0">
                 <h4 class="bold">Upload your video</h4>
-                <p class="text-muted mb0">Click on the upload button or drag and drop your upload file here.</p>
+                <p class="text-muted mb0">Click on the upload button to select your video.</p>
                 <p class="brand-primary">(please upload a video in any of these formats: {{ config.allowedExtensions.join(', ') }} )</p>
 
                 <input id="fileUpload" class="hidden" type="file" @change="fileUploaded" accept="video/mp4, video/x-m4v, video/*" ref="fileUpload" />
                 <button class="btn btn-primary upload mt16" @click="chooseFile" :disabled="isLoading">
                     <img src="@/assets/images/upload.svg" />
-                    <span class="button-text">Upload Video</span>
+                    <span class="button-text">Choose Video</span>
                 </button>
             </div>
             <div class="video-wrapper" v-if="progress === 0 && upload.chosen">
@@ -112,11 +112,6 @@ export default {
     }
     .video-wrapper {
         height: auto;
-        video {
-            height: 400px;
-            object-fit: contain;
-            background: #000;
-        }
     }
 }
 </style>

@@ -17,7 +17,22 @@
         </div>
 
         <h3 class="mt64 page-heading">Your Assets</h3>
-        <div class="t-l brand-secondary mt24 light-grey">This section allows you to manage all your assets. You can use these assets in your ad videos</div>
+        <div class="d-flex flex-column flex-md-row justify-content-between">
+            <div class="t-l brand-secondary light-grey">This section allows you to manage all your assets. You can use these assets in your ad videos</div>
+
+            <div class="storage mt-3 mt-md-0" :class="{ full: isFull }">
+                <b-progress :value="storage.used" :max="storage.used + storage.max"></b-progress>
+                <div class="mt8">
+                    <span>
+                        You have used <span class="black"> {{ storage.used }} MB</span> out of your <span class="black">{{ storage.used + storage.max }} MB</span> limit.
+                    </span>
+                </div>
+                <div v-if="isFull">
+                    <div class="error t-l mt16"><i class="material-icons mt-icon-sub">info</i>Your storage is full, please delete unused assets to free up space</div>
+                </div>
+            </div>
+        </div>
+
         <div class="horizontal-tabs mt24">
             <b-tabs>
                 <b-tab title="Videos">
@@ -32,7 +47,7 @@
                     </div>
 
                     <div v-if="adminVideos.length > 0" class="mt24">
-                        <div class="t-l black">LocalTV Ads management videos</div>
+                        <div class="t-l black">Videos uploaded by Local TV Ads for you</div>
                         <hr />
                         <div class="videos-wrapper row">
                             <div class="video-container col-md-4 mt16" v-for="(video, key) in adminVideos" :key="key">
@@ -99,6 +114,7 @@ import VideoModal from '@/webapp/common/modals/VideoModal';
 import ResourceService from '@/services/ResourceService';
 import ImageAssetCard from '@/webapp/common/components/ImageAssetCard';
 import CoolLightBox from 'vue-cool-lightbox';
+import { BProgress } from 'bootstrap-vue';
 import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css';
 
 export default {
@@ -109,7 +125,8 @@ export default {
         VideoModal,
         ImageAssetCard,
         CoolLightBox,
-        DocumentUpload
+        DocumentUpload,
+        BProgress
     },
     mixins: [uploadMixin],
     data() {
@@ -136,6 +153,11 @@ export default {
                 api: `/api/${this.$store.getters.getUser.Owner._id}/clientresource/image`,
                 maxSize: 5,
                 aspectRatio: 1
+            },
+
+            storage: {
+                used: 0,
+                max: 0
             }
         };
     },
@@ -171,6 +193,22 @@ export default {
         forwardVideo(id) {
             let elem = document.getElementById(id);
             elem.currentTime = 2;
+        },
+        async getStorage() {
+            try {
+                const result = await ResourceService.getStorage();
+
+                this.storage.used = result.total_used;
+                this.storage.max = result.total_available;
+            } catch (err) {
+                this.$swal({
+                    title: 'Error',
+                    text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
+                    type: 'error'
+                });
+                console.error(err);
+                this.isLoading = false;
+            }
         },
         async getClientResouces() {
             try {
@@ -217,8 +255,19 @@ export default {
         },
         ...mapGetters(['getUser'])
     },
+    computed: {
+        isFull() {
+            let val = (this.storage.used / this.storage.max) * 100;
+            if (val > 90) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    },
     created() {
         this.getClientResouces();
+        this.getStorage();
     }
 };
 </script>

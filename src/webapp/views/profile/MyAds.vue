@@ -6,12 +6,15 @@
 
         <LoaderModal :showloader="isLoading" message="Please wait while we fetch the data..."></LoaderModal>
         <div class="container table-container pm-24">
-            <h3 class="brand-secondary mt64 mb48">My Ads</h3>
-
-            <div v-if="!isLoading && clientAdPlans.length === 0">
-                <p class="lead">You haven't purchased any ad plans</p>
+            <div v-if="!isLoading && clientAdPlans.length === 0" class="d-flex mt64 flex-column align-items-center justify-content-center">
+                <div class="text-center">
+                    <div class="t-xl bold">It's empty here</div>
+                    <div class="t-l black">You haven't purchased any ad plans yet</div>
+                </div>
             </div>
+
             <div v-else-if="clientAdPlans.length > 0">
+                <h3 class="brand-secondary mt64 mb48">My Ads</h3>
                 <div class="table-wrapper">
                     <Table :on-row-click="openAdPlanDetails" :items="clientAdPlans" :headings="fields" :pagination="pagination" :sort.sync="sort" responsive table-class="table-responsive-xs table-responsive-stable-responsive-md">
                         <template v-slot:Channel="data">

@@ -107,3 +107,23 @@ $enable-gradients: true;
 $table-border-width:1px;
 $table-border-radius: 5px;
 $default-content-padding: 5px;
+
+
+/* Tabs
+------------------------------------
+*/
+
+$tabs-border-radius:0px;
+
+
+/* Status Colors
+------------------------------------
+*/
+
+$paid: $brand-primary;
+
+$live:#cbf4c9;
+$live-text:#0e6245;
+
+$rejected: $error;
+$inactive: $concrete;

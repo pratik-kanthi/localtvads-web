@@ -39,8 +39,8 @@ section {
 }
 
 .shadow-border {
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
-    border: 1px solid #dee2e6 !important;
+    box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    border-radius: 5px;
 }
 
 .note {
@@ -300,6 +300,7 @@ footer {
     }
 }
 
+
 .t-l {
     font-size: 14px;
 
@@ -358,6 +359,15 @@ footer {
 
 .text-muted {
     opacity: 0.5 !important;
+}
+
+
+.t-18 {
+    font-size: 18px !important;
+
+    @include media-breakpoint-down(md) {
+        font-size: 16px !important;
+    }
 }
 
 @for $i from 0 through 10 {
@@ -553,6 +563,10 @@ footer {
 
 .brand-secondary {
     color: $brand-secondary;
+}
+
+.bs-dark {
+    color: #222222;
 }
 
 .brand-light {

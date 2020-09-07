@@ -21,13 +21,18 @@ export const uploadMixin = {
             this.isValid = false;
             this.upload.chosen = this.$refs.fileUpload.files[0];
             window.URL = window.URL || window.webkitURL;
+
             let video = document.createElement('video');
             video.preload = 'auto';
+            this.isValid = true;
+
+            video.src = URL.createObjectURL(this.upload.chosen);
+            this.videoUrl = video.src;
+
             video.onloadedmetadata = () => {
                 window.URL.revokeObjectURL(video.src);
-
                 if (this.config.maxSize && this.upload.chosen.size > 1024 * 1024 * this.config.maxSize) {
-                    this.$swal('Warning', 'File exceeds the minimum size of ' + this.config.maxSize + ' MB', 'warning');
+                    this.$swal('Warning', 'Video file exceeds the maximum size of ' + this.config.maxSize + ' MB', 'warning');
                     this.upload.chosen = null;
                     return;
                 }
@@ -36,11 +41,11 @@ export const uploadMixin = {
                     this.upload.chosen = null;
                     return;
                 }
-                this.isValid = true;
+                video.src = URL.createObjectURL(this.upload.chosen);
                 this.videoUrl = video.src;
             };
-            video.src = URL.createObjectURL(this.upload.chosen);
-            this.videoUrl = video.src;
+
+
         },
         cancelUpload() {
             this.upload.chosen = null;

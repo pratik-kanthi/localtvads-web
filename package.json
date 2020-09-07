@@ -15,6 +15,7 @@
         "dev": "vue-cli-service build --mode=dev"
     },
     "dependencies": {
+        "@e9ine/vue_components": "^1.0.5-b",
         "axios": "^0.19.0",
         "bootstrap": "^4.3.1",
         "bootstrap-vue": "^2.15.0",
@@ -90,7 +91,7 @@
         "semi": true,
         "tabWidth": 4,
         "singleQuote": true,
-        "printWidth": 800,
+        "printWidth": 1300,
         "jsxBracketSameLine": true
     },
     "postcss": {

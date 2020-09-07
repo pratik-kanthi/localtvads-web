@@ -16,4 +16,15 @@ export default class ResourceService extends BaseService {
             }
         });
     }
+
+    static getStorage() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let _res = await get('api/:clientid/storage');
+                resolve(_res.data);
+            } catch (err) {
+                return reject(err);
+            }
+        });
+    }
 }

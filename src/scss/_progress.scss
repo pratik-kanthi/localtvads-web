@@ -1,0 +1,15 @@
+.storage {
+    .progress {
+        &-bar {
+            background-color: $brand-primary;
+        }
+    }
+
+    &.full {
+        .progress {
+            &-bar {
+                background-color: $error;
+            }
+        }
+    }
+}

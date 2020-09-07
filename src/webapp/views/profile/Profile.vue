@@ -1,11 +1,12 @@
 <template>
     <div class>
+        <LoaderModal :showloader="isLoading" message="Fetching your profile..."></LoaderModal>
         <div v-if="showNewCard">
             <NewCardModal :show-new-card="showNewCard" @close="close"></NewCardModal>
         </div>
         <div class="container">
             <h3 class="brand-secondary mt64">My Account</h3>
-            <div class="t-l brand-secondary light-grey mt24">Manage your account and payment methods using this section</div>
+            <div class="t-l brand-secondary mt24">Manage your account and payment methods using this page</div>
 
             <div class="profile-wrapper shadow-border p24 rounded mt32">
                 <div class="d-flex justify-content-between">
@@ -85,13 +86,12 @@
             <div class="profile-payment shadow-border p24 rounded mt32">
                 <div class="profile-cards">
                     <div class="d-flex justify-content-between">
-                        <div class="t-xl black">Payment Methods</div>
+                        <div class="t-xl black">Cards</div>
                         <div v-if="false">
                             <button @click="openNewCardModal" class="btn btn-primary-small">Add Card</button>
                         </div>
                     </div>
-                    <div class="t-l mt16">You need at least one card added to your account to keep your plans active.</div>
-
+                    <div class="t-l brand-secondary">You need at least one card added to your account to keep your plans active.</div>
                     <div v-if="savedCards && savedCards.length > 0" class="row cards-details mt24">
                         <div class="col-md-4" v-for="(card, key) in savedCards" :key="key">
                             <div class="saved-card border p24 rounded">
@@ -105,7 +105,6 @@
             </div>
         </div>
         <ImageUpload v-if="uploadImageModal" @cancel="cancelModal" @close="hideProfileImageModal" :show="true" :config="config" :data="user"></ImageUpload>
-        <LoaderModal :showloader="isLoading" message="Please wait while we update your profile"></LoaderModal>
     </div>
 </template>
 <script>
@@ -159,14 +158,17 @@ export default {
         },
         async getSavedCards() {
             try {
+                this.isLoading = true;
                 let result = await get('api/:clientid/cards?client=' + this.getUser().Owner._id);
                 this.savedCards = result.data;
+                this.isLoading = false;
             } catch (err) {
                 this.$swal({
                     title: 'Error',
                     text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                     type: 'error'
                 });
+                this.isLoading = false;
                 console.error(err);
             }
         },
