@@ -1,6 +1,11 @@
 <template>
     <b-modal v-model="showCropper" width="700" persistent no-close-on-esc no-close-on-backdrop hide-footer data-app size="lg">
-        <button slot="modal-header-close" @click="cancel" class="close">×</button>
+        <div slot="modal-header">
+            <strong>Upload images</strong>
+            <button class="close float-right" type="button" @click="cancel">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
         <div>
             <h4 class="section-subtitle mt0 mb8">1. Choose File</h4>
             <input type="file" @change="fileUploaded" accept="image/*" ref="fileUpload" />
@@ -149,18 +154,18 @@ export default {
         async uploadCropped() {
             this.$parent.isLoading = true;
             this.data.name = this.$refs.fileUpload.files[0].name;
+            this.data.cropx = this.position.left;
+            this.data.cropy = this.position.top;
+            this.data.cropw = this.position.width;
+            this.data.croph = this.position.height;
+
             let formData = new window.FormData();
             formData.append('file', this.upload.chosen);
             let bodyObj = {
                 ...this.data
             };
             let t = new URLSearchParams(bodyObj).toString();
-            this.config.api = this.config.api + '&' + t;
-            this.config.api += '&cropx=' + this.position.left;
-            this.config.api += '&cropy=' + this.position.top;
-            this.config.api += '&cropw=' + this.position.width;
-            this.config.api += '&croph=' + this.position.height;
-
+            this.config.api = this.config.api + '?&' + t;
             formData.append('document', JSON.stringify(bodyObj));
             try {
                 let result = await this.callAPI(formData);

@@ -1,113 +1,46 @@
 <template>
     <section class="myads pt24">
         <div v-if="displayAdVideo">
-            <VideoModal
-                class="promo"
-                :show-video="displayAdVideo"
-                :video-url="videoUrl"
-                @close="closeVideo"
-            ></VideoModal>
+            <VideoModal class="promo" :show-video="displayAdVideo" :video-url="videoUrl" @close="closeVideo"></VideoModal>
         </div>
 
         <LoaderModal :showloader="isLoading" message="Please wait while we fetch the data..."></LoaderModal>
         <div class="container table-container pm-24">
-            <div class="d-flex justify-content-between align-items-center">
-                <h3 class="brand-secondary mt64 mb48">My Ad Plans</h3>
-                <div></div>
+            <div v-if="!isLoading && clientAdPlans.length === 0" class="d-flex mt64 flex-column align-items-center justify-content-center">
+                <div class="text-center">
+                    <div class="t-xl bold">It's empty here</div>
+                    <div class="t-l black">You haven't purchased any ad plans yet</div>
+                </div>
             </div>
 
-            <div v-if="!isLoading && clientAds.length === 0">
-                <p class="lead">You haven't purchased any ad plans</p>
-            </div>
-            <div v-else-if="clientAds.length > 0">
-                <div class="table-wrapper d-none d-md-block">
-                    <Table
-                        :items="clientAds"
-                        :headings="fields"
-                        :pagination="pagination"
-                        :sort.sync="sort"
-                        table-class="table-responsive-xs table-responsive-stable-responsive-md"
-                    >
+            <div v-else-if="clientAdPlans.length > 0">
+                <h3 class="brand-secondary mt64 mb48">My Ads</h3>
+                <div class="table-wrapper">
+                    <Table :on-row-click="openAdPlanDetails" :items="clientAdPlans" :headings="fields" :pagination="pagination" :sort.sync="sort" responsive table-class="table-responsive-xs table-responsive-stable-responsive-md">
+                        <template v-slot:Channel="data">
+                            <div>{{ data.value.Channel.Name }}</div>
+                        </template>
+                        <template v-slot:PurchaseDate="data">
+                            <div>{{ data.value.BookedDate | formatDate('DD MMMM YYYY') }}</div>
+                        </template>
                         <template v-slot:Name="data">
                             <div>{{ data.value.Name }}</div>
                         </template>
+                        <template v-slot:WeeklySchedule="data">
+                            <div><WeekDays mode="table" :value="data.value.Days"></WeekDays></div>
+                        </template>
                         <template v-slot:Status="data">
-                            <div class="t-s brand-secondary d-flex align-items-center">
-                                <i class="material-icons">public</i>
-                                <span class="pl8">Active</span>
-                            </div>
+                            <div :class="getStatusClass(data.value.Status)">{{ data.value.Status }}</div>
                         </template>
-                        <template v-slot:Channel="data">
-                            <div>{{ data.value.ChannelPlan.Plan.Channel.Name }}</div>
-                        </template>
-
-                        <template v-slot:Schedule="data">
-                            <div>
-                                {{ data.value.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.Name }}
-                                <div
-                                    class="t-s"
-                                >{{ data.value.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.StartTime }} - {{ data.value.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.EndTime }}</div>
+                        <template v-slot:SlotsBooked="data">
+                            <div class="d-flex flex-row flex-md-column">
+                                <div v-for="(slot, key) in data.value.ChannelProduct.ChannelSlots" :key="key">{{ slot.Slot.Name }} ( {{ slot.Slot.StartTime }} - {{ slot.Slot.EndTime }})</div>
                             </div>
                         </template>
                         <template v-slot:PlanDuration="data">
-                            <div>6 months</div>
-                            <div
-                                class="t-s"
-                            >{{ data.value.StartDate | formatDate('DD MMM YYYY') }} to {{ data.value.EndDate | formatDate('DD MMM YYYY') }}</div>
-                        </template>
-                        <template v-slot:Action="data">
-                            <div v-if="data.value.ClientAd">
-                                <button
-                                    @click="openVideo(data.value.ClientAd.VideoUrl)"
-                                    class="t-s btn btn-sm btn-link pl0 pr0"
-                                >View Ad</button>
-                            </div>
-                            <div v-else>
-                                <button
-                                    @click="goToVideoUpload(data.value._id)"
-                                    class="t-s btn btn-sm btn-link pl0 pr0 error"
-                                >Finish Setup</button>
-                            </div>
+                            <div>{{ data.value.ChannelProduct.ProductLength.Name }}</div>
                         </template>
                     </Table>
-                </div>
-
-                <div class="d-block d-md-none" v-for="ad in clientAds">
-                    <b-card :title="ad.Name" class="mb-2">
-                        <b-card-text>
-                            <div class="d-flex flex-row justify-content-between">
-                                <div>
-                                    <div>Schedule:</div>
-                                    <div class>
-                                        <span
-                                            class="bold"
-                                        >{{ ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.Name }}</span>
-                                        <span
-                                            class="t-s"
-                                        >{{ ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.StartTime }} - {{ ad.ChannelPlan.Plan.ChannelAdSchedule.AdSchedule.EndTime }}</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div>Channel:</div>
-                                    <div class="bold">{{ ad.ChannelPlan.Plan.Channel.Name }}</div>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-column justify-content-center mt16">
-                                <div v-if="ad.ClientAd">
-                                    <button
-                                        @click="openVideo(ad.ClientAd.VideoUrl)"
-                                        class="btn btn-sm btn-link pl0 pr0"
-                                    >View Ad</button>
-                                </div>
-                                <div v-else>
-                                    <button
-                                        @click="goToVideoUpload(ad._id)"
-                                        class="btn btn-sm btn-link pl0 pr0 error"
-                                    >Finish Setup</button>
-                                </div>
-                            </div>
-                        </b-card-text>
-                    </b-card>
                 </div>
             </div>
         </div>
@@ -116,61 +49,71 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import instance from '@/api';
+import ClientAdService from '@/services/ClientAdService';
 import VideoModal from '@/webapp/common/modals/VideoModal';
 import Table from '@/e9_components/components/Table';
+import WeekDays from '@/e9_components/components/WeekDays';
 
 export default {
     name: 'MyAds',
     components: {
         VideoModal,
-        Table
+        Table,
+        WeekDays
     },
     data() {
         return {
             displayAdVideo: false,
-
-            clientAds: [],
+            clientAdPlans: [],
             videoUrl: '',
-
             fields: [
                 {
-                    key: 'Name',
-                    sortable: true
-                },
-               
-                {
-                    key: 'Channel',
-                    sortable: true
+                    key: 'Name'
                 },
                 {
-                    key: 'Schedule',
-                    sortable: true
+                    key: 'Channel'
+                },
+                {
+                    key: 'Status'
+                },
+                {
+                    key: 'PurchaseDate',
+                    label: 'Date Booked'
                 },
                 {
                     key: 'PlanDuration',
-                    label: 'Plan Duration',
-                    sortable: true
+                    label: 'Plan Duration'
                 },
                 {
-                    key: 'Action',
-                    label: ' '
+                    key: 'WeeklySchedule',
+                    label: 'Weekly Schedule'
+                },
+                {
+                    key: 'SlotsBooked',
+                    label: 'Slots Selected'
                 }
             ],
-
-            showLoadMore: true,
-            isLoading: false,
+            isLoading: true,
             pagination: {
                 currentPage: 1,
                 perPage: 10
             },
             sort: {
-                name: 'Name',
+                name: 'BookedDate',
                 value: 'asc'
             }
         };
     },
     methods: {
+        getSelectedDays(selectedDays, isMobile) {
+            let days = ['', ' Monday', ' Tuesday', ' Wednesday', ' Thursday', ' Friday', ' Saturday', ' Sunday'];
+            if (isMobile) days = ['', ' Mon', ' Tue', ' Wed', ' Thu', ' Fri', ' Sat', ' Sun'];
+            return selectedDays
+                .map(day => {
+                    return days[day];
+                })
+                .join(',');
+        },
         filterTable(row, filter) {
             if (row.Name.toLowerCase().includes(filter)) {
                 return row;
@@ -187,21 +130,16 @@ export default {
         },
         async getClientAds() {
             try {
-                this.isLoading = true;
-                let result = await instance.get('api/clientad/getall?clientid=' + this.getUser().Owner._id + '&top=' + this.pagination.count + '&skip=' + this.clientAds.length);
-                if (!result.data.length || result.data.length < this.pagination.count) {
-                    this.showLoadMore = false;
-                }
-                this.clientAds = [...this.clientAds, ...result.data];
+                this.clientAdPlans = await ClientAdService.getAllPlans(this.$store.getters.getUser.Owner._id);
                 this.isLoading = false;
             } catch (err) {
-                this.isLoading = false;
                 this.$swal({
                     title: 'Error',
                     text: err && err.data && err.data.message ? err.data.message : 'Some error occurred',
                     type: 'error'
                 });
                 console.error(err);
+                this.isLoading = false;
             }
         },
         getVideoUrl(url) {
@@ -215,20 +153,16 @@ export default {
                 }
             });
         },
-        ...mapGetters(['getUser']),
-        openVideo(url) {
-            this.displayAdVideo = true;
-            this.videoUrl = this.GOOGLE_BUCKET_ENDPOINT + url;
-        }
+        openAdPlanDetails(clientadplan) {
+            this.$router.push({ name: 'AdPlanDetails', params: { planid: clientadplan._id } });
+        },
+        getStatusClass(status) {
+            return status.toLowerCase();
+        },
+        ...mapGetters(['getUser'])
     },
     created() {
         this.getClientAds();
     }
 };
 </script>
-
-<style lang="scss" scoped>
-.myads {
-    background: #f9f9f9;
-}
-</style>

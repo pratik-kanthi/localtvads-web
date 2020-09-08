@@ -65,11 +65,8 @@ export default {
             this.$store.commit('LOGIN_LOADER', true);
             try {
                 let result = await instance.post('api/auth/clientlogin', this.user);
-                this.$cookies.set(
-                    'token',
-                    result.data.TokenString,
-                    result.data.iat - Math.floor(Date.now() / 1000) + 's'
-                );
+                this.$cookies.set('token', result.data.TokenString, result.data.iat - Math.floor(Date.now() / 1000) + 's');
+                this.$cookies.set('clientId', result.data.Owner._id, result.data.iat - Math.floor(Date.now() / 1000) + 's');
                 delete result.data.TokenString;
                 localStorage.setItem('user', JSON.stringify(result.data));
                 this.$store.dispatch('loginSuccess');
@@ -100,28 +97,28 @@ export default {
 </script>
 
 <style scoped lang="scss">
-    .separater {
-        border-top: 1px solid #ddd;
-        margin: 16px 0;
-        line-height: 20px;
+.separater {
+    border-top: 1px solid #ddd;
+    margin: 16px 0;
+    line-height: 20px;
 
-        .content {
-            background: #fff;
-            padding: 12px;
-            font-size: 12px;
-            color: #333 !important;
-            position: relative;
-            top: -12px;
+    .content {
+        background: #fff;
+        padding: 12px;
+        font-size: 12px;
+        color: #333 !important;
+        position: relative;
+        top: -12px;
 
-            .pointer {
-                cursor: pointer;
-            }
+        .pointer {
+            cursor: pointer;
+        }
 
-            p.underline {
-                &:hover {
-                    text-decoration: underline;
-                }
+        p.underline {
+            &:hover {
+                text-decoration: underline;
             }
         }
     }
+}
 </style>

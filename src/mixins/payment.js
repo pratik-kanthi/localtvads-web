@@ -1,11 +1,15 @@
 import Card from 'card';
-import { mapGetters, mapState } from 'vuex';
+import {
+    mapGetters,
+    mapState
+} from 'vuex';
 export const paymentMixin = {
     data() {
         return {
             cardObj: null,
             activeToggle: '',
             cardNumber: null,
+            newCardError: '',
             cvv: null,
             paymentLoading: false,
             expiry: null,
@@ -17,7 +21,7 @@ export const paymentMixin = {
     },
     methods: {
         getImageUrl(vendor) {
-            return require('@/assets/images/cards/' + vendor + '.svg');
+            return require('@/assets/images/cards/' + vendor.toUpperCase() + '.svg');
         },
         generateToken() {
             this.$swal({
@@ -41,12 +45,12 @@ export const paymentMixin = {
                                 this.expiry.substring(this.expiry.indexOf('/') + 1)
                             ),
                             name: this.name
-                        },
-                        (code, result) => {
+                        }, (code, result) => {
                             if (code === 200) {
                                 this.payNow(result.id, user.Owner._id);
                             } else {
                                 this.paymentLoading = false;
+                                this.newCardError = result.error.message;
                                 this.$swal({
                                     title: 'Error',
                                     text: result && result.error && result.error.message ? result.error.message : 'Some error occurred',
@@ -54,8 +58,7 @@ export const paymentMixin = {
                                 });
                                 console.error(result);
                             }
-                        }
-                        );
+                        });
                     }
                 }
             });
@@ -96,8 +99,7 @@ export const paymentMixin = {
                     return require('@/assets/images/cards/AMERICANEXPRESS.svg');
 
                 // Discover
-                re = new RegExp('^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)'
-                );
+                re = new RegExp('^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)');
                 if (this.cardNumber.match(re) != null)
                     return require('@/assets/images/cards/DISCOVER.svg');
 
@@ -131,7 +133,8 @@ export const paymentMixin = {
                 this.cardNumber.length > 12 &&
                 this.cardNumber.length <= 19 &&
                 this.expiry &&
-                new Date(this.expiry.substring(this.expiry.indexOf('/') + 1), this.expiry.substring(0, 2))
+                new Date(this.expiry.substring(this.expiry.indexOf('/') + 1), this.expiry.substring(0, 2)) &&
+                this.getUser()
             );
         },
         ...mapState(['isAuth'])

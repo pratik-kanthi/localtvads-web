@@ -44,6 +44,7 @@ export const store = new Vuex.Store({
         [LOGOUT](state) {
             localStorage.removeItem('user');
             VueCookies.remove('token');
+            VueCookies.remove('clientId');
             state.isAuth = false;
         },
         [DIALOG](state, val) {
@@ -61,10 +62,14 @@ export const store = new Vuex.Store({
         }
     },
     actions: {
-        loginSuccess({ commit }) {
+        loginSuccess({
+            commit
+        }) {
             commit(LOGIN_SUCCESS);
         },
-        logout({ commit }) {
+        logout({
+            commit
+        }) {
             commit(LOGOUT);
         }
     },

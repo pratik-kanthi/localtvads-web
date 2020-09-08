@@ -17,6 +17,7 @@
         <meta property="og:title" content="Local TV Ads" />
         <meta property="og:image" content="<%= BASE_URL %>images/logo-dark.svg" />
         <meta property="og:description" content="Grow your business faster. Creating an ad for your business is easier than you think." />
+        <script async defer type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLmAV6TLE15qpQH_9UdhwxR0w0LF-Elow&libraries=places"></script>
     </head>
     <style>
         #fallback {
@@ -32,9 +33,10 @@
             font-family: 'Roboto';
         }
     </style>
+
     <body style="margin: 0">
         <noscript>
-            <strong>We're sorry but localtvads-website doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+            <strong>We're sorry but localtvads-website doesn't work properly without JavaScript enabled. Please enable it to continue. </strong>
         </noscript>
         <div id="app"></div>
         <!-- built files will be auto injected -->
@@ -72,9 +74,8 @@
                     document.getElementById('fallback').style.display = 'block';
                 }
             }
-
             msieversion();
         </script>
-        <script src="https://js.stripe.com/v2/"></script>
+        <script src="https://js.stripe.com/v3/"></script>
     </body>
 </html>

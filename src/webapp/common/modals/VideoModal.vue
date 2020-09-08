@@ -34,7 +34,7 @@ export default {
 <style lang="scss">
 #video-modal {
     .modal-content {
-        background-color: $black !important;
+        background-color: transparent !important;
         border: none;
         .modal-body {
             padding: 0;
@@ -61,7 +61,7 @@ export default {
         color: $white;
         display: none;
         position: absolute;
-        top: 4px;
+        top: 8px;
         right: 4px;
         padding: 2px;
         background-color: $black;

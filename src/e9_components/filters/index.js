@@ -9,14 +9,11 @@ Vue.filter('trucateChars', (val, num) => {
     let result = '';
     if (val) {
         result = val.substring(0, num);
-        if (val.length > num) {
-            result += '...';
-        }
     }
     return result;
 });
 
-Vue.filter('currency', (value) => {
+Vue.filter('currency', value => {
     if (typeof value !== 'number') {
         return value;
     }

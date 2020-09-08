@@ -66,6 +66,7 @@ export default {
 
     .content-wrapper {
         min-height: calc(100vh - 80px);
+
         .cookie-policy {
             position: fixed;
             width: 100%;

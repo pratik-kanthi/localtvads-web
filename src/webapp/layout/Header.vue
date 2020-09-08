@@ -28,7 +28,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-lg-2 ipad-view">
+                <div class="col-lg-2 auth-parent">
                     <ul class="auth-wrapper" :class="{ 'nav-menu': showMenu }">
                         <li v-if="!isLoggedIn">
                             <a @click="chooseAuth('login')">Login</a>
@@ -44,23 +44,34 @@
                                 </div>
                                 <img v-else-if="$store.state.user.Owner && $store.state.user.Owner.ImageUrl" class="picture" :src="getImageUrl" :alt="$store.state.user.Owner.Title" />
                             </a>
-                            <ul class="" :class="{ 'profile-menu': showProfile }">
-                                <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="profile">My Account</router-link>
-                                </span>
-                                <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="ads">My Ads</router-link>
-                                </span>
-                                <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="my-addons">My Addons</router-link>
-                                </span>
-                                <span @click="toggleSubMenu">
-                                    <router-link tag="li" to="transactions">Transactions</router-link>
-                                </span>
-                                <li @click="logout">
-                                    <a>Logout</a>
-                                </li>
-                            </ul>
+                            <transition name="list">
+                                <ul class="" :class="{ 'profile-menu': showProfile }">
+                                    <span @click="toggleSubMenu">
+                                        <router-link tag="li" to="/profile">
+                                            <div><i class=" material-icons mt-icon-sub pr8">person_outline</i>My Account</div>
+                                        </router-link>
+                                    </span>
+                                    <span @click="toggleSubMenu">
+                                        <router-link tag="li" to="/ads">
+                                            <div><i class=" material-icons mt-icon-sub pr8">video_library</i>My Ads</div></router-link
+                                        >
+                                    </span>
+                                    <span @click="toggleSubMenu">
+                                        <router-link tag="li" to="/assets">
+                                            <div><i class=" material-icons mt-icon-sub pr8">collections</i>My Assets</div></router-link
+                                        >
+                                    </span>
+                                    <span @click="toggleSubMenu">
+                                        <router-link tag="li" to="/transactions">
+                                            <div><i class=" material-icons mt-icon-sub pr8">receipt_long</i>Transactions</div></router-link
+                                        >
+                                    </span>
+
+                                    <li class="b-t black" @click="logout">
+                                        <a>Logout</a>
+                                    </li>
+                                </ul>
+                            </transition>
                         </li>
                     </ul>
                 </div>
@@ -143,11 +154,12 @@ nav {
 .container-fluid {
     background-color: $brand-primary;
     position: fixed;
-    z-index: 1;
+    z-index: 5;
 }
 
 .nav-bar {
     min-height: 80px;
+    z-index: 4;
 
     /* iPad Pro Portrait */
     @media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1) {
@@ -203,7 +215,6 @@ nav {
         align-items: center;
         li {
             float: left;
-            margin-right: 40px;
             line-height: 78px;
             color: $white;
             font-family: $font-family-heading;
@@ -217,6 +228,19 @@ nav {
             &.profile-wrapper {
                 text-align: right;
                 position: relative;
+
+                .list-item {
+                    display: inline-block;
+                    margin-right: 10px;
+                }
+                .list-enter-active,
+                .list-leave-active {
+                    transition: all 1s;
+                }
+                .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
 
                 .profile {
                     cursor: pointer !important;
@@ -257,24 +281,32 @@ nav {
                         color: $brand-primary;
                         margin-top: -8px;
                         padding: 0;
-                        width: 162px;
+                        width: 220px;
                         border-radius: 6px;
                         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
                         height: auto;
                         overflow: auto;
 
                         li {
-                            color: $base;
+                            color: $black;
                             background-color: $white;
                             line-height: initial;
                             width: 100%;
                             text-align: left;
-                            padding: 10px;
                             cursor: pointer;
+                            padding: 16px 24px;
+
+                            .material-icons {
+                                color: $brand-primary !important;
+                            }
 
                             &:hover {
-                                background-color: $brand-primary;
+                                background-color: $brand-primary !important;
                                 color: $white;
+
+                                .material-icons {
+                                    color: $white !important;
+                                }
                             }
                         }
                     }
@@ -357,7 +389,7 @@ nav {
     }
 
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-        .ipad-view {
+        .auth-parent {
             padding: 0 15px 0 0;
 
             ul.auth-wrapper {

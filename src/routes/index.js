@@ -9,11 +9,17 @@ export default new Router({
     mode: 'history',
     scrollBehavior(to, from, savedPosition) {
         if (to.hash) {
-            return window.scrollTo({ top: document.querySelector(to.hash).offsetTop - 80, behavior: 'smooth' });
+            return window.scrollTo({
+                top: document.querySelector(to.hash).offsetTop - 80,
+                behavior: 'smooth'
+            });
         } else if (savedPosition) {
             return savedPosition;
         } else {
-            return { x: 0, y: 0 };
+            return {
+                x: 0,
+                y: 0
+            };
         }
     }
 });

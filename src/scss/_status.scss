@@ -1,0 +1,25 @@
+.status-tag {
+
+    color: $white;
+    padding: 4px 16px;
+    font-size: 14px;
+    border-radius: 5px;
+
+    &.paid {
+        background-color: $paid;
+
+    }
+
+    &.live {
+        background-color: $live;
+        color: $live-text;
+    }
+
+    &.rejected {
+        background-color: $rejected;
+    }
+
+    &.inactive {
+        background-color: $inactive;
+    }
+}

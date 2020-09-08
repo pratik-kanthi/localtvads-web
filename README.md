@@ -1,15 +1,17 @@
 # localtvads-website
 
 ## Project setup
+
 ```
 npm install
 ```
 
 ### Copy config.js file in public folder
+
 ```js
 window.endpoint = 'https://dev-api.localtvads.com/';
 window.socketendpoint = 'https://dev-api.localtvads.com:9997/';
-window.google = {
+window.googleCredentials = {
     apiKey: '20k8iF8V4pJnjAwrhQqexEq2',
     clientId: '955842204870-l42aal4di5env4ud2t31m4ici46l70lf.apps.googleusercontent.com'
 };
@@ -22,31 +24,36 @@ window.slotduration = 175;
 ```
 
 ### Compiles and hot-reloads for development
+
 ```
 npm run serve
 ```
 
 ### Compiles and minifies for production
+
 ```
 npm run build
 ```
 
 ### Run your tests
+
 ```
 npm run test
 ```
 
 ### Lints and fixes files
+
 ```
 npm run lint
 ```
 
 ### Customize configuration
+
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### Commit Guidelines
 
-Keep first keyword as one of the below ```(feat|fix|docs|dx|style|refactor|perf|test|workflow|build|chore|types|wip)```
+Keep first keyword as one of the below `(feat|fix|docs|dx|style|refactor|perf|test|workflow|build|chore|types|wip)`
 
 example :
 

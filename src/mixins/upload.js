@@ -3,7 +3,7 @@ export const uploadMixin = {
         return {
             config: {
                 maxSize: 250,
-                allowedExtensions: ['mp4', 'webm', 'avi', 'mpv', 'mpg', 'flv']
+                allowedExtensions: ['mp4', 'webm', 'avi', 'mpv', 'mpg', 'flv', 'mov']
             },
             isValid: false,
             upload: {
@@ -12,7 +12,8 @@ export const uploadMixin = {
             socket: null,
             videoUrl: '',
             progress: 0,
-            isLoading: false
+            isLoading: false,
+
         };
     },
     methods: {
@@ -20,19 +21,18 @@ export const uploadMixin = {
             this.isValid = false;
             this.upload.chosen = this.$refs.fileUpload.files[0];
             window.URL = window.URL || window.webkitURL;
-            let duration,
-                video = document.createElement('video');
+
+            let video = document.createElement('video');
             video.preload = 'auto';
+            this.isValid = true;
+
+            video.src = URL.createObjectURL(this.upload.chosen);
+            this.videoUrl = video.src;
+
             video.onloadedmetadata = () => {
                 window.URL.revokeObjectURL(video.src);
-                duration = video.duration;
-                if (this.$parent.clientAdPlan && duration > this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds) {
-                    this.$swal('Warning', 'Video duration exceeds ' + this.$parent.clientAdPlan.ChannelPlan.Plan.Seconds + ' seconds. Please keep it within allowed duration', 'warning');
-                    this.upload.chosen = null;
-                    return;
-                }
                 if (this.config.maxSize && this.upload.chosen.size > 1024 * 1024 * this.config.maxSize) {
-                    this.$swal('Warning', 'File exceeds the minimum size of ' + this.config.maxSize + ' MB', 'warning');
+                    this.$swal('Warning', 'Video file exceeds the maximum size of ' + this.config.maxSize + ' MB', 'warning');
                     this.upload.chosen = null;
                     return;
                 }
@@ -41,11 +41,11 @@ export const uploadMixin = {
                     this.upload.chosen = null;
                     return;
                 }
-                this.isValid = true;
+                video.src = URL.createObjectURL(this.upload.chosen);
                 this.videoUrl = video.src;
             };
-            video.src = URL.createObjectURL(this.upload.chosen);
-            this.videoUrl = video.src;
+
+
         },
         cancelUpload() {
             this.upload.chosen = null;
@@ -59,9 +59,7 @@ export const uploadMixin = {
                 data: chunk,
                 sequence: counter,
                 isLast: chunk.size < chunkSize,
-                client: data.Client,
-                clientAdPlan: data._id,
-                clientServiceAddOn: data._id,
+                client: data,
                 name: this.upload.chosen.name
             });
         },
@@ -77,6 +75,72 @@ export const uploadMixin = {
                 if (isConfirm.value) {
                     this.uploadFile();
                 }
+            });
+        },
+        async uploadFile() {
+            this.$store.commit('VIDEO_BEING_UPLOADED', true);
+            let counter = 1;
+            let chunkSize = 100000;
+            this.socket = this.io(window.socketendpoint, {
+                query: {
+                    token: this.$cookies.get('token')
+                }
+            });
+            let start = 0;
+            let chunk = this.upload.chosen.slice(start, chunkSize);
+
+            this.sendSocket(chunk, counter, chunkSize, this.$store.getters.getUser.Owner._id, 'UPLOAD_CHUNK');
+            this.socket.on('UPLOAD_CHUNK_FINISHED', data => {
+                this.progress = (((data * 100000) / this.upload.chosen.size) * 100).toFixed(0);
+                ++counter;
+                start = start + chunkSize;
+                if (start - chunkSize < this.upload.chosen.size) {
+                    chunk = this.upload.chosen.slice(start, start + chunkSize);
+                    this.sendSocket(chunk, counter, chunkSize, this.$store.getters.getUser.Owner._id, 'UPLOAD_CHUNK');
+                }
+            });
+
+            this.socket.on('UPLOAD_FINISHED', () => {
+                this.progress = 100;
+                this.processing = true;
+            });
+
+            this.socket.on('UPLOAD_ERROR', () => {
+                this.$swal({
+                    title: 'Error',
+                    text: 'There was an error while uploading the video',
+                    type: 'error'
+                });
+                this.socket.disconnect();
+                this.isLoading = false;
+                this.$store.commit('VIDEO_BEING_UPLOADED', false);
+            });
+
+            this.socket.on('PROCESS_FINISHED', (data) => {
+                setTimeout(() => {
+                    this.$swal({
+                        title: 'Uploaded',
+                        text: 'Ad has been uploaded successfully',
+                        type: 'success',
+                        confirmButtonColor: '#ff6500'
+                    });
+                    this.progress = 0;
+                    this.processing = false;
+                    this.$store.commit('VIDEO_BEING_UPLOADED', false);
+                    this.socket.disconnect();
+                    this.closeUpload(data);
+
+                }, 1000);
+            });
+
+            this.socket.on('PROCESS_ERROR', () => {
+                this.$swal({
+                    title: 'Error',
+                    text: 'There was an error while uploading the video',
+                    type: 'error'
+                });
+                this.socket.disconnect();
+                this.isLoading = false;
             });
         }
     }
