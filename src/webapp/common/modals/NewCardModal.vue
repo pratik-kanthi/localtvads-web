@@ -120,7 +120,7 @@ export default {
 
                 // AMEX
                 re = new RegExp('^3[47]');
-                if (this.cardNumber.match(re) != null) return require('@/assets/images/cards/AMERICANEXPRESS.svg');
+                if (this.cardNumber.match(re) != null) return require('@/assets/images/cards/AMEX.svg');
 
                 // Discover
                 re = new RegExp('^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)');
