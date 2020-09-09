@@ -100,7 +100,7 @@ export default {
             },
             sort: {
                 name: 'BookedDate',
-                value: 'asc'
+                value: 'desc'
             }
         };
     },

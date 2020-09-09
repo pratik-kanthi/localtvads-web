@@ -80,7 +80,6 @@ export default {
 }
 footer {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
-    border: 1px solid #dee2e6 !important;
 
     padding: 40px 45px;
     .logo {
