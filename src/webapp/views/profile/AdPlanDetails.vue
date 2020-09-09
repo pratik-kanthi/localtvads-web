@@ -174,8 +174,10 @@
                         <div v-if="clientAdPlan.AdVideo" class="ad-video mt16" @click="openVideo(clientAdPlan.AdVideo.ResourceUrl)">
                             <VideoCard :id="clientAdPlan.AdVideo._id" :auto-height="true" :video-url="clientAdPlan.AdVideo.ResourceUrl"></VideoCard>
                         </div>
-                        <span v-else class="t-l">Your final Ad video will appear here. If you have chosen an Addon, our team of professionals will create and upload it here for you.</span>
-                        <div v-if="!clientAdPlan.Addons || (clientAdPlan.Addons && clientAdPlan.Addons.length === 0)">
+
+                        <span v-else-if="clientAdPlan.Addons" class="t-l">Your final Ad video will appear here. If you have chosen an Addon, our team of professionals will create and upload it here for you.</span>
+
+                        <div v-if="!clientAdPlan.AdVideo && clientAdPlan.Addons.length === 0">
                             <span class="t-l">Please add your video by pressing the "Attach Video" button.</span>
                             <br />
                             <button @click="showVideoSelector" class="btn btn-primary-small mt16">Attach Video</button>
