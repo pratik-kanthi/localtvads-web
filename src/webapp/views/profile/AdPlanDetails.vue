@@ -41,7 +41,7 @@
             <div class="mt16 horizontal-tabs">
                 <b-tabs>
                     <b-tab title="Plan Information" active>
-                        <div class="p32 shadow-border mt32">
+                        <div class="p32 shadow-sm border rounded mt32">
                             <div class="row mt">
                                 <div class="plan-info col-md-4">
                                     <div class="t-l black">Channel</div>
@@ -196,78 +196,83 @@
                         </div>
                     </b-tab>
                     <b-tab title="Billing & Transactions">
-                        <div class="row mt32">
-                            <div class="col-md-8" v-if="planTransactions.length > 0">
-                                <div class="col-md-12 shadow-border p24">
-                                    <div class="t-xl black">Initial Payment</div>
-                                    <span class="t-m">Details of initial payment made for you plan.</span>
-                                    <div class="mt24">
-                                        <div class="row">
-                                            <div class="col-md-8 col-6">
-                                                <div class="brand-primary t-l">Channel Ad Plan</div>
-                                            </div>
-                                            <div class="col-md-4 col-6">
-                                                <div class="black text-right t-l">{{ clientAdPlan.WeeklyAmount | currency }}</div>
-                                            </div>
+                        <div v-if="planTransactions.length > 0" class="border mt24      shadow-sm p24">
+                            <div class="t-xl black">Plan Billing</div>
+                            <div class="row">
+                                <div class="col-md-4 mt24">
+                                    <div class="brand-primary t-l">Plan Type</div>
+                                    <div v-if="!isAnnouncement" class="black t-l">Subscription</div>
+                                    <div v-else class="black  t-l">Announcement</div>
+                                </div>
+                                <div class="col-md-4 mt24">
+                                    <div class="brand-primary t-l">Amount</div>
+                                    <div v-if="isAnnouncement" class="black t-l">{{ clientAdPlan.WeeklyAmount | currency }}</div>
+                                    <div v-else class="black t-l">{{ clientAdPlan.WeeklyAmount | currency }}/week</div>
+                                </div>
+                                <div class="col-md-4 mt24">
+                                    <div class="brand-primary t-l">Plan Length</div>
+                                    <div v-if="!isAnnouncement" class="t-l black">{{ clientAdPlan.ChannelProduct.ProductLength.Name }}</div>
+                                    <div v-else class="t-l black bold">--</div>
+                                </div>
+                            </div>
 
-                                            <div class="col-md-8">
-                                                <div class="t-m">
-                                                    Plan Length:
-                                                    <span class="bold">{{ clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between t-l mt32" v-if="clientAdPlan.Addons && clientAdPlan.Addons.length > 0">
-                                            <div>
-                                                <div>
-                                                    <div class="brand-primary d-flex flex-column flex-lg-row align-items-lg-end">
-                                                        <div>{{ clientAdPlan.Addons[0].Name }}</div>
-                                                        <div class="ml-md-2">
-                                                            <span class="tag-sm">Add On</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="black">{{ clientAdPlan.AddonsAmount | currency }}</div>
-                                        </div>
+                            <div class="row mt32">
+                                <div class="col-md-4 mt24">
+                                    <div class="brand-primary t-l">Puchase Date</div>
+                                    <div class="t-l black">{{ clientAdPlan.BookedDate | formatDate('DD MMM YYYY') }}</div>
+                                </div>
+                                <div class="col-md-4 mt24">
+                                    <div class="brand-primary t-l">Start Date</div>
+                                    <div v-if="clientAdPlan.StartDate" class="black">{{ clientAdPlan.StartDate }}</div>
+                                    <div v-else class="black t-l">Not Available Yet</div>
+                                </div>
+                                <div class="col-md-4 mt24">
+                                    <div class="t-l brand-primary">Initial Payment</div>
+                                    <div class="d-flex justify-content-between">
+                                        <div>Plan Amount</div>
+                                        <div class="black">{{ clientAdPlan.WeeklyAmount | currency }}</div>
+                                    </div>
 
-                                        <div class="dashed-line">
-                                            <div class="line"></div>
-                                        </div>
+                                    <div v-if="clientAdPlan.Addons && clientAdPlan.Addons.length > 0" class="d-flex justify-content-between">
+                                        <div>{{ clientAdPlan.Addons[0].Name }}<span class="ml8 tag-sm">Add On</span></div>
+                                        <div class="black">{{ clientAdPlan.AddonsAmount | currency }}</div>
+                                    </div>
 
-                                        <div class="total">
-                                            <div class="row mt32">
-                                                <div class="col-6 col-sm-6">
-                                                    <div class="t-l">Taxes</div>
-                                                </div>
-                                                <div class="col-6 col-sm-6 text-right">
-                                                    <div class="amount t-l black pull-right">{{ planTransactions[0].TaxAmount | currency }}</div>
-                                                </div>
-                                            </div>
-                                            <hr />
-                                            <div class="row mt24">
-                                                <div class="col-6 col-sm-6">
-                                                    <h5 class="t-l black">Total Amount</h5>
-                                                </div>
-                                                <div class="col-6 col-sm-6 text-right">
-                                                    <h5 class="amount t-xl black pull-right">{{ planTransactions[0].TotalAmount | currency }}</h5>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="d-flex justify-content-between">
+                                        <div>Taxes</div>
+                                        <div class="black">{{ planTransactions[0].TaxAmount | currency }}</div>
+                                    </div>
+
+                                    <div class="b-t d-flex justify-content-between">
+                                        <div>Total</div>
+                                        <div class="black">{{ planTransactions[0].TotalAmount | currency }}</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4 mt-3 mt-md-0">
-                                <div class="col-md-12 border shadow-sm p24 h-100 d-flex flex-column justify-content-between">
-                                    <div>
-                                        <div class="t-xl black">Payment Method</div>
-                                        <span class="t-m">Payments for this plan are collected automatically on this card</span>
-                                        <div class="t-l black mt24">
+                        </div>
+
+                        <div class="border shadow-sm p24 mt24 d-flex flex-column justify-content-between">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="t-l black">Payment Method</div>
+                                    <div class="t-m black payment-method mt16">
+                                        <div class="d-flex">
                                             <img class="mr16" :src="getImageUrl(clientAdPlan.PaymentMethod.Card.Vendor)" />
-                                            XXXX XXXX XXXX {{ clientAdPlan.PaymentMethod.Card.LastFour }}
+                                            <span>**** **** **** {{ clientAdPlan.PaymentMethod.Card.LastFour }} </span>
+                                            <span v-if="!isAnnouncement" @click="toggleUpdatePayment" class="ml8 pointer brand-primary">Change</span>
                                         </div>
                                     </div>
-                                    <button @click="toggleUpdatePayment" class="mt-3 mt-md-0 btn btn-secondary">Update Payment Method</button>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="t-l black">Upcoming Invoice Date</div>
+                                    <div v-if="isAnnouncement" class="mt16">N/A</div>
+                                    <div v-else class="mt16">{{ clientAdPlan.NextBillingDate | formatDate('DD MMM YYYY') }}</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="t-l black">Previous Invoice Date</div>
+                                    <div v-if="isAnnouncement" class="mt16">N/A</div>
+                                    <div v-else class="mt16">{{ clientAdPlan.LastBillingDate | formatDate('DD MMM YYYY') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -716,6 +721,9 @@ export default {
             return this.planAssets.filter(resource => {
                 return resource.ResourceType == 'DOCUMENT';
             });
+        },
+        isAnnouncement() {
+            return this.clientAdPlan && this.clientAdPlan.ChannelProduct.ProductLength.Duration == 0 ? true : false;
         }
     },
     async created() {
@@ -803,5 +811,11 @@ export default {
 .image {
     width: auto;
     height: 200px;
+}
+
+.payment-method {
+    img {
+        width: 32px;
+    }
 }
 </style>

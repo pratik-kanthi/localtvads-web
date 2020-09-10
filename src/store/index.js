@@ -12,6 +12,7 @@ const DIALOG = 'DIALOG';
 const DIALOG_CHOSEN = 'DIALOG_CHOSEN';
 const VIDEO_BEING_UPLOADED = 'VIDEO_BEING_UPLOADED';
 const FORGOT_PASSWORD = 'FORGOT_PASSWORD';
+const SET_STORAGE = 'SET_STORAGE';
 
 export const store = new Vuex.Store({
     state: {
@@ -26,7 +27,11 @@ export const store = new Vuex.Store({
         bookingFlow: {
             videoBeingUploaded: false
         },
-        forgotPassword: false
+        forgotPassword: false,
+        bucketStorage: {
+            used: null,
+            max: null
+        }
     },
     mutations: {
         [LOADER_TOGGLE](state, val) {
@@ -59,6 +64,10 @@ export const store = new Vuex.Store({
         },
         [FORGOT_PASSWORD](state, val) {
             state.forgotPassword = val;
+        },
+        [SET_STORAGE](state, val) {
+            state.bucketStorage.used = val.used;
+            state.bucketStorage.max = val.max;
         }
     },
     actions: {
@@ -91,6 +100,9 @@ export const store = new Vuex.Store({
         },
         getIsVideoBeingUploaded: state => {
             return state.bookingFlow.videoBeingUploaded;
+        },
+        getBucketStorage: state => {
+            return state.bucketStorage;
         }
     }
 });

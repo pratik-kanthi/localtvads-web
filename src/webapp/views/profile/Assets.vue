@@ -197,9 +197,9 @@ export default {
         async getStorage() {
             try {
                 const result = await ResourceService.getStorage();
-
                 this.storage.used = result.total_used;
                 this.storage.max = result.total_available;
+                this.$store.commit('SET_STORAGE', { used: result.total_used, max: result.total_available });
             } catch (err) {
                 this.$swal({
                     title: 'Error',
@@ -253,7 +253,7 @@ export default {
         openDocument(doc) {
             window.open(this.GOOGLE_BUCKET_ENDPOINT + doc.ResourceUrl);
         },
-        ...mapGetters(['getUser'])
+        ...mapGetters(['getUser', 'getBucketStorage'])
     },
     computed: {
         isFull() {
@@ -265,7 +265,7 @@ export default {
             }
         }
     },
-    created() {
+    async created() {
         this.getClientResouces();
         this.getStorage();
     }

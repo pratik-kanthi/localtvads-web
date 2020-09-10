@@ -75,7 +75,6 @@ export default {
             hasAddOn: false,
             serviceAddOn: null,
             selectedPlan: null,
-            isAnnouncement: false,
             channel: {},
             steps: [
                 {

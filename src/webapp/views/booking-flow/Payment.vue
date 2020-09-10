@@ -5,7 +5,7 @@
                 <h3 class="mt64 brand-secondary">Payment</h3>
                 <div class="row mt24">
                     <div class="col-md-8">
-                        <div class="method-wrapper shadow-border">
+                        <div class="method-wrapper shadow-sm border rounded">
                             <div class="t-xl brand-secondary">Billing Information</div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -66,7 +66,7 @@
 
                         <div class="t-xl brand-secondary mt24">Select a Payment Method</div>
                         <div class="cards-wrapper">
-                            <div class="method-wrapper shadow-border saved-cards mt16" v-if="savedCards.length > 0">
+                            <div class="method-wrapper shadow-sm border rounded saved-cards mt16" v-if="savedCards.length > 0">
                                 <div class="cards" :class="{ 'selection-card-option': activeToggle == 'SavedCards' }">
                                     <div class="method-title" @click="togglePaymentOptions('SavedCards')" :class="{ active: activeToggle === 'SavedCards' }">
                                         <div class="radio-btn-tick mr8">
@@ -95,7 +95,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="method-wrapper shadow-border mt16" :class="{ 'selection-card-option': activeToggle == 'NewCard' }">
+                            <div class="method-wrapper shadow-sm border rounded mt16" :class="{ 'selection-card-option': activeToggle == 'NewCard' }">
                                 <div class="method-title" @click="togglePaymentOptions('NewCard')" :class="{ active: activeToggle === 'NewCard' }">
                                     <div class="radio-btn-tick mr8">
                                         <input type="radio" v-model="activeToggle" value="NewCard" />
@@ -109,7 +109,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <input type="text" class="form-control black" placeholder="Name on the card" />
+                                            <input v-model="cardHolderName" type="text" class="form-control black" placeholder="Name on the card" />
                                         </div>
 
                                         <div class="row mt16">
@@ -134,12 +134,12 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 mt-3 mt-md-0 rounded  d-flex flex-column justify-content-between ">
-                        <div class="shadow-border p24">
+                    <div class="col-md-4 mt-3 mt-md-0 rounded  d-flex flex-column justify-content-between h-100">
+                        <div class="shadow-sm border rounded p24">
                             <div class="booking-details ">
                                 <h6 class="t-l medium text-center brand-secondary">Booking Receipt</h6>
                                 <hr class="mt24 mb24" />
-                                <div v-if="!$parent.isAnnouncement" class="row plan-items">
+                                <div v-if="!isAnnouncement" class="row plan-items">
                                     <div class="col-md-8 col-6">
                                         <div class="brand-primary t-l">Channel Ad Plan</div>
                                     </div>
@@ -170,7 +170,7 @@
                                 </div>
                                 <div class="row plan-items" v-else>
                                     <div class="col-md-8 col-6">
-                                        <div class="brand-primary t-l">One Off</div>
+                                        <div class="brand-primary t-l">Announcements on {{ $parent.channel.Name }}</div>
                                     </div>
                                     <div class="col-md-4 col-6">
                                         <div class="black text-right">
@@ -186,10 +186,6 @@
                                         </div>
                                     </div>
                                     <div class="col-md-8">
-                                        <div class="t-m">
-                                            Plan Length:
-                                            <span class="bold">{{ $parent.clientAdPlan.ChannelProduct.ProductLength.Name }}</span>
-                                        </div>
                                         <div class="t-s d-block d-md-none">Days: {{ getSelectedDays(true) }}</div>
                                         <div class="t-m d-none d-md-block">
                                             Days:
@@ -259,11 +255,11 @@
                                 </div>
                             </div>
                             <div>
-                                <div class="note black rounded">
+                                <div v-if="!isAnnouncement" class="note black rounded">
                                     <i class="material-icons mt-icon-sub brand-primary">info</i>
                                     Total payable includes first week's charge plus any addons if selected.
                                 </div>
-                                <div class="note black rounded mt16">
+                                <div v-if="!isAnnouncement" class="note black rounded mt16">
                                     <i class="material-icons mt-icon-sub brand-primary">info</i>
                                     You will be charged on a weekly basis. Total amount for your plan will depend on the date your Ad starts airing
                                 </div>
@@ -324,6 +320,7 @@ export default {
                     }
                 ]
             }),
+            cardHolderName: null,
             cardElement: null,
             cardExpiryElement: null,
             cardCvcElement: null,
@@ -394,6 +391,7 @@ export default {
                                 throw result.error;
                             } else {
                                 paymentMethod = result.paymentMethod;
+                                paymentMethod.CardName = this.cardHolderName;
                             }
                         }
 
@@ -460,6 +458,9 @@ export default {
             } else {
                 return false;
             }
+        },
+        isAnnouncement() {
+            return this.$parent.clientAdPlan && this.$parent.clientAdPlan.ChannelProduct.ProductLength.Duration == 0 ? true : false;
         }
     },
     mounted() {
