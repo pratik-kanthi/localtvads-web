@@ -267,12 +267,14 @@
                                 <div class="col-md-4">
                                     <div class="t-l black">Upcoming Invoice Date</div>
                                     <div v-if="isAnnouncement" class="mt16">N/A</div>
-                                    <div v-else class="mt16">{{ clientAdPlan.NextBillingDate | formatDate('DD MMM YYYY') }}</div>
+                                    <div v-else-if="clientAdPlan.Status == 'LIVE'" class="mt16">{{ clientAdPlan.NextBillingDate | formatDate('DD MMM YYYY') }}</div>
+                                    <div v-else>Not Available Yet</div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="t-l black">Previous Invoice Date</div>
                                     <div v-if="isAnnouncement" class="mt16">N/A</div>
-                                    <div v-else class="mt16">{{ clientAdPlan.LastBillingDate | formatDate('DD MMM YYYY') }}</div>
+                                    <div v-else-if="clientAdPlan.Status == 'LIVE'" class="mt16">{{ clientAdPlan.LastBillingDate | formatDate('DD MMM YYYY') }}</div>
+                                    <div v-else>Not Available Yet</div>
                                 </div>
                             </div>
                         </div>
