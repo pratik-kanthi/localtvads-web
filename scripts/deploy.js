@@ -97,21 +97,22 @@ const pushToServer = (ssh, server, username, password) => {
     if (!args['environment'] || ['dev', 'staging', 'production'].indexOf(args['environment']) === -1) {
         process.stdout.write('environment arg is missing or incorrect. Please either pass production or staging as environment argument');
         process.exit(1);
-    } else if (args['environment'].indexOf('dev') != -1) {
+    } else if (args['environment'].indexOf('dev') != -1 || args['environment'].indexOf('production') != -1) {
         require('dotenv').config({
-            path: path.join(__dirname, '/../.env.dev')
+            path: path.join(__dirname, '/../.env.' + args['environment'])
         });
+        console.log('monik' + process.env.DESTINATION);
         const folderPath = path.join(__dirname + '/../' + process.env.FOLDERNAME);
         try {
             if (process.env.FOLDERNAME && fs.existsSync(folderPath) && process.env.DESTINATION && process.env.SERVERHOST1 && process.env.SERVERHOST2 && process.env.SERVERHOST3 && process.env.USERNAME && process.env.PASSWORD) {
                 console.log(process.env);
-                console.log('Pushing to Server 1');
+                console.log('Pushing to ' + args['environment'] + ' : Server 1');
                 const ssh1 = new node_ssh();
                 await pushToServer(ssh1, process.env.SERVERHOST1, process.env.USERNAME, process.env.PASSWORD);
-                console.log('Pushing to Server 2');
+                console.log('Pushing to ' + args['environment'] + ' : Server 2');
                 const ssh2 = new node_ssh();
                 await pushToServer(ssh2, process.env.SERVERHOST2, process.env.USERNAME, process.env.PASSWORD);
-                console.log('Pushing to Server 3');
+                console.log('Pushing to ' + args['environment'] + ' : Server 3');
                 const ssh3 = new node_ssh();
                 await pushToServer(ssh3, process.env.SERVERHOST3, process.env.USERNAME, process.env.PASSWORD);
                 console.log('Completed');

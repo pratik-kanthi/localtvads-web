@@ -12,7 +12,8 @@
         "lint-fix": "vue-cli-service lint",
         "lint-style": "stylelint .",
         "staging": "vue-cli-service build --mode=staging",
-        "dev": "vue-cli-service build --mode=dev"
+        "dev": "vue-cli-service build --mode=dev",
+        "prod": "vue-cli-service build --mode=production"
     },
     "dependencies": {
         "@e9ine/vue_components": "^1.0.5-b",
@@ -91,7 +92,7 @@
         "semi": true,
         "tabWidth": 4,
         "singleQuote": true,
-        "printWidth": 1300,
+        "printWidth": 1500,
         "jsxBracketSameLine": true
     },
     "postcss": {
