@@ -434,47 +434,27 @@ export default {
     }
 }
 .profile-wrapper {
-    .profile-image {
-        width: 108px;
-        height: 108px;
-        border-radius: 50%;
-        background-size: cover;
-        background-repeat: no-repeat;
-        margin-bottom: 24px;
-        border: 2px solid $brand-primary;
-    }
+    .profile-details {
+        .profile-image {
+            width: 108px;
+            height: 108px;
+            border-radius: 50%;
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin-bottom: 24px;
+            border: 2px solid $brand-primary;
+        }
 
-    .profile-info {
-        .profile-details {
-            padding: 24px 0;
-
-            .profile-text {
-                width: 108px;
-                height: 108px;
-                padding: 0 30px;
-                line-height: 104px;
-                border: 1px solid $brand-primary;
-                border-radius: 50%;
-                font-size: 80px;
-                color: $brand-primary;
-                margin-bottom: 24px;
-            }
-
-            ul.edit-options {
-                @include list-unstyled();
-
-                li {
-                    margin-bottom: 66px;
-                    display: block;
-                    text-align: right;
-                    font-size: 16px;
-                    color: $brand-primary;
-
-                    &:first-child {
-                        margin: 50px 0 88px;
-                    }
-                }
-            }
+        .profile-text {
+            width: 108px;
+            height: 108px;
+            padding: 0 30px;
+            line-height: 104px;
+            border: 1px solid $brand-primary;
+            border-radius: 50%;
+            font-size: 80px;
+            color: $brand-primary;
+            margin-bottom: 24px;
         }
     }
 
@@ -514,6 +494,7 @@ export default {
     }
 }
 </style>
+
 <style lang="scss">
 .vti {
     &__dropdown {
