@@ -25,7 +25,6 @@ yarn-error.log*
 *.sw?
 
 # config files
-config.js
 
 .firebaserc
 firebase.json
